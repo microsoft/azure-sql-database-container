@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+{% include head.html %}
+<body>
+{% include nav.html %}
+<main id="main" class="doc">
+  <div class="container doc-inner">
+    <article class="prose">
+      <p class="eyebrow"><span class="eyebrow-dot"></span>Documentation</p>
+      <h1>{{ page.title }}</h1>
+      {{ content }}
+    </article>
+  </div>
+</main>
+{% include footer.html %}
+<script src="{{ '/assets/js/main.js' | relative_url }}" defer></script>
+</body>
+</html>

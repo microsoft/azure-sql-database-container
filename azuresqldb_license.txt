@@ -1,4 +1,0 @@
-MICROSOFT SOFTWARE LICENSE TERMS
-MICROSOFT Azure SQL Database
-This software is licensed to you as part of your or your company's subscription license for Microsoft Azure Services. You may only use the software with Microsoft Azure Services and subject to the terms and conditions of the agreement under which you obtained Microsoft Azure Services. If you do not have an active subscription license for Microsoft Azure Services, you may not use the software. Additionally, this software may be used for local development and testing purposes only and must not be used in production environments. This includes participation in the private preview phase, during which feedback will be gathered to refine the product.
-Microsoft Azure Legal Information: https://azure.microsoft.com/en-us/support/legal/

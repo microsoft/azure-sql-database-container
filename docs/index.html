@@ -1,0 +1,394 @@
+---
+layout: home
+title: Azure SQL Database container
+---
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-grid-bg" aria-hidden="true"></div>
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="container hero-inner">
+    <div class="hero-copy">
+      <p class="eyebrow eyebrow-light"><span class="eyebrow-dot"></span>Private Preview</p>
+      <h1>The Azure SQL Database engine,<br>running <span class="grad">locally</span>.</h1>
+      <p class="hero-sub">Build and test against the same engine you run in the Microsoft Azure cloud. Try Azure SQL Database before you deploy, and run your tests in CI. Free for local development. No Azure subscription.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="https://youtu.be/{{ site.youtube_id }}" rel="noopener">
+          <span class="play-glyph" aria-hidden="true"></span>Watch the demo
+        </a>
+        <a class="btn btn-ghost-light" href="{{ '/getting-started.html' | relative_url }}">Get started</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <a class="video" href="https://youtu.be/{{ site.youtube_id }}" rel="noopener" aria-label="Play the demo video on YouTube">
+        <img src="https://img.youtube.com/vi/{{ site.youtube_id }}/maxresdefault.jpg" alt="Azure SQL Database container demo" loading="eager" width="640" height="360">
+        <span class="video-play" aria-hidden="true"></span>
+        <span class="video-cap">Watch the 3-minute demo</span>
+      </a>
+    </div>
+  </div>
+  <div class="container hero-stats">
+    <div class="stat"><span class="stat-v">~60s</span><span class="stat-l">From <code>docker pull</code> to your first query</span></div>
+    <div class="stat"><span class="stat-v">Free</span><span class="stat-l">For local development and CI, no subscription</span></div>
+    <div class="stat"><span class="stat-v">Native</span><span class="stat-l">Apple Silicon, Linux, and Windows</span></div>
+  </div>
+</section>
+
+<!-- ============ COMPAT STRIP ============ -->
+<section class="strip">
+  <div class="container strip-inner">
+    <span class="strip-label">Works with the drivers, ORMs, and editors you already use</span>
+    <div class="chip-groups">
+      <div class="chip-group">
+        <span class="chip-label">Drivers</span>
+        <ul class="chips">
+          <li><a href="https://learn.microsoft.com/sql/connect/node-js/node-js-driver-for-sql-server" rel="noopener">node-mssql</a></li>
+          <li><a href="https://learn.microsoft.com/sql/connect/python/mssql-python/python-sql-driver-mssql-python" rel="noopener">mssql-python</a></li>
+          <li><a href="https://learn.microsoft.com/sql/connect/python/pyodbc/python-sql-driver-pyodbc" rel="noopener">pyodbc</a></li>
+          <li><a href="https://learn.microsoft.com/sql/connect/jdbc/microsoft-jdbc-driver-for-sql-server" rel="noopener">mssql-jdbc</a></li>
+        </ul>
+      </div>
+      <div class="chip-group">
+        <span class="chip-label">ORMs</span>
+        <ul class="chips">
+          <li><a href="https://learn.microsoft.com/sql/connect/sql-connection-libraries" rel="noopener">Prisma</a></li>
+          <li><a href="https://learn.microsoft.com/sql/connect/sql-connection-libraries" rel="noopener">SQLAlchemy</a></li>
+          <li><a href="https://learn.microsoft.com/ef/core/" rel="noopener">EF Core</a></li>
+          <li><a href="https://learn.microsoft.com/sql/connect/sql-connection-libraries" rel="noopener">Django</a></li>
+          <li><a href="https://learn.microsoft.com/sql/connect/sql-connection-libraries" rel="noopener">TypeORM</a></li>
+        </ul>
+      </div>
+      <div class="chip-group">
+        <span class="chip-label">Tools</span>
+        <ul class="chips">
+          <li><a href="https://learn.microsoft.com/sql/tools/sqlcmd/sqlcmd-utility" rel="noopener">sqlcmd</a></li>
+          <li><a href="https://marketplace.visualstudio.com/items?itemName=ms-mssql.mssql" rel="noopener">MSSQL for VS Code</a></li>
+          <li><a href="https://learn.microsoft.com/sql/ssms/sql-server-management-studio-ssms" rel="noopener">SSMS</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHY ============ -->
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow"><span class="eyebrow-dot"></span>Why the container</p>
+      <h2>Cloud parity, in your local environment.</h2>
+      <p class="lead">This is the Azure SQL Database engine itself, running locally. The database in your local environment behaves like the one in the Microsoft Azure cloud.</p>
+    </div>
+    <div class="grid-3">
+      <article class="card">
+        <span class="tag">Same engine</span>
+        <h3>What runs locally runs in Azure</h3>
+        <p>It is the Azure SQL Database engine itself, with the same defaults, the same T-SQL, and the same error messages. When you deploy to the Microsoft Azure cloud, there are no behavior surprises.</p>
+      </article>
+      <article class="card card-accent">
+        <span class="tag tag-vector">AI-ready</span>
+        <h3>AI-ready, like Azure SQL Database</h3>
+        <p>Native <code>vector</code> type, DiskANN vector indexes, <code>VECTOR_DISTANCE</code> search, <code>AI_GENERATE_EMBEDDINGS</code>, and <code>CREATE EXTERNAL MODEL</code>. Build RAG locally with a local model, then switch to Azure OpenAI in the cloud.</p>
+      </article>
+      <article class="card">
+        <span class="tag">Lift and shift</span>
+        <h3>One codebase, two endpoints</h3>
+        <p>Same drivers, same T-SQL, same migrations. When you are ready, point the connection at Azure SQL Database and deploy the same app to the Microsoft Azure cloud. The application does not change.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SAME CODE (signature) ============ -->
+<section class="section section-rail">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow"><span class="eyebrow-dot"></span>Inner loop to the cloud</p>
+      <h2>Same code. Only the connection string changes.</h2>
+      <p class="lead">Write your app once against the container. Ship it to Azure SQL Database in the cloud without touching the code.</p>
+    </div>
+
+    <div class="split">
+      <div class="split-cols">
+        <div class="codeblock">
+          <div class="codeblock-bar">
+            <span class="codeblock-badge badge-local">Local environment</span>
+            <span class="codeblock-name">.env</span>
+          </div>
+          <pre class="codeblock-body"><code id="env-local">SQL_CONNECTION_STRING=
+  Server=<span class="hl">localhost,1433</span>;
+  Database=appdb;
+  User Id=sa;TrustServerCertificate=true</code></pre>
+        </div>
+
+        <div class="codeblock">
+          <div class="codeblock-bar">
+            <span class="codeblock-badge badge-cloud">In Azure</span>
+            <span class="codeblock-name">.env</span>
+          </div>
+          <pre class="codeblock-body"><code id="env-cloud">SQL_CONNECTION_STRING=
+  Server=<span class="hl">app.database.windows.net</span>;
+  Database=appdb;
+  Authentication=Active Directory Default</code></pre>
+        </div>
+      </div>
+
+      <div class="codeblock codeblock-app">
+        <div class="codeblock-bar">
+          <span class="codeblock-name">app.js</span>
+          <span class="codeblock-badge">identical in both</span>
+        </div>
+        <pre class="codeblock-body"><code id="app-code"><span class="c-kw">import</span> sql <span class="c-kw">from</span> <span class="c-str">'mssql'</span>
+
+<span class="c-com">// reads the connection string from the environment</span>
+<span class="c-kw">const</span> pool = <span class="c-kw">await</span> sql.<span class="c-fn">connect</span>(process.env.<span class="c-var">SQL_CONNECTION_STRING</span>)
+
+<span class="c-kw">const</span> { recordset } = <span class="c-kw">await</span> pool.<span class="c-fn">query</span>`
+  <span class="c-sql">SELECT TOP 5</span> name,
+    <span class="c-sql">VECTOR_DISTANCE</span>(<span class="c-str">'cosine'</span>, embedding, <span class="c-var">@q</span>) <span class="c-sql">AS</span> score
+  <span class="c-sql">FROM</span> products <span class="c-sql">ORDER BY</span> score`</code></pre>
+      </div>
+    </div>
+    <p class="rail-foot">Two connection strings, side by side. The highlighted server is all that changes. Your <code>app.js</code> is identical in both.</p>
+  </div>
+</section>
+
+<!-- ============ QUICKSTART ============ -->
+<section class="section" id="quickstart">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow"><span class="eyebrow-dot"></span>Quickstart</p>
+      <h2>Up and running in three commands.</h2>
+      <p class="lead">New to containers? This is all you need: pull the image, start it, and run your first query. The exact image tag and password arrive in your welcome email.</p>
+    </div>
+    <div class="qsteps">
+      <div class="qstep">
+        <span class="qstep-num">1</span>
+        <div class="qstep-body">
+          <h3>Pull the image</h3>
+          <p class="qstep-desc">Download the container from Microsoft Container Registry.</p>
+          <div class="qstep-cmd">
+            <code><span class="cmd-p">$</span> docker pull mcr.microsoft.com/azure-sql-database:latest</code>
+            <button class="copy-btn" type="button" data-copy-text="docker pull mcr.microsoft.com/azure-sql-database:latest"><span class="copy-label">Copy</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="qstep">
+        <span class="qstep-num">2</span>
+        <div class="qstep-body">
+          <h3>Start the container</h3>
+          <p class="qstep-desc">Run it on port 1433 with a strong SA password.</p>
+          <div class="qstep-cmd">
+            <code><span class="cmd-p">$</span> docker run -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
+    -p 1433:1433 -d mcr.microsoft.com/azure-sql-database:latest</code>
+            <button class="copy-btn" type="button" data-copy-text="docker run -e &quot;MSSQL_SA_PASSWORD=YourStrong!Passw0rd&quot; \&#10;    -p 1433:1433 -d mcr.microsoft.com/azure-sql-database:latest"><span class="copy-label">Copy</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="qstep">
+        <span class="qstep-num">3</span>
+        <div class="qstep-body">
+          <h3>Connect and query</h3>
+          <p class="qstep-desc">Open a session with sqlcmd and run your first query.</p>
+          <div class="qstep-cmd">
+            <code><span class="cmd-p">$</span> sqlcmd -S localhost,1433 -U sa -P "YourStrong!Passw0rd" -C</code>
+            <button class="copy-btn" type="button" data-copy-text="sqlcmd -S localhost,1433 -U sa -P &quot;YourStrong!Passw0rd&quot; -C"><span class="copy-label">Copy</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="steps-foot">Prefer docker compose, VS Code, or step-by-step detail? Read the <a href="{{ '/getting-started.html' | relative_url }}">full Get started guide &rarr;</a></p>
+  </div>
+</section>
+
+<!-- ============ AI AGENTS ============ -->
+<section class="section section-tint">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow"><span class="eyebrow-dot"></span>Built for AI-assisted development</p>
+      <h2>Bring your AI coding agent.</h2>
+      <p class="lead">Point your agent at the container and let it scaffold the schema, write the migrations, and build the data layer against a real local database. The repo ships ready-to-use <a href="{{ site.repo }}/tree/main/samples/agent-skills" rel="noopener">agent skills</a>.</p>
+    </div>
+    <div class="agents">
+      <a class="agent" href="https://docs.github.com/copilot/get-started/quickstart" rel="noopener">
+        <img src="{{ '/assets/img/agents/copilot.svg' | relative_url }}" alt="" width="34" height="34" aria-hidden="true">
+        <h3>GitHub Copilot</h3>
+        <p>App, CLI, and VS Code</p>
+      </a>
+      <a class="agent" href="https://code.claude.com/docs/en/setup" rel="noopener">
+        <img src="{{ '/assets/img/agents/claude.svg' | relative_url }}" alt="" width="34" height="34" aria-hidden="true">
+        <h3>Claude Code</h3>
+        <p>Container skill included</p>
+      </a>
+      <a class="agent" href="https://developers.openai.com/codex/quickstart" rel="noopener">
+        <img src="{{ '/assets/img/agents/codex.svg' | relative_url }}" alt="" width="34" height="34" aria-hidden="true">
+        <h3>Codex</h3>
+        <p>Terminal and IDE</p>
+      </a>
+      <a class="agent" href="https://cursor.com/download" rel="noopener">
+        <img src="{{ '/assets/img/agents/cursor.svg' | relative_url }}" alt="" width="34" height="34" aria-hidden="true">
+        <h3>Cursor</h3>
+        <p>AI-native editor</p>
+      </a>
+    </div>
+
+    <div class="skill">
+      <p class="skill-line">Install the skill once. It works across Claude Code, GitHub Copilot, Codex, and Cursor, then you just ask your agent in plain English.</p>
+      <div class="skill-cmd">
+        <code><span class="cmd-p">$</span> npx skills add azure-sql-database-container</code>
+        <button class="copy-btn" type="button" data-copy-text="npx skills add azure-sql-database-container"><span class="copy-label">Copy</span></button>
+      </div>
+      <a class="skill-link" href="{{ site.repo }}/tree/main/samples/agent-skills" rel="noopener">Browse the skill on GitHub &rarr;</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ USE CASES (JTBD) ============ -->
+<section class="section section-tint">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow"><span class="eyebrow-dot"></span>Use cases</p>
+      <h2>What can you build with it?</h2>
+      <p class="lead">The everyday jobs a cloud-only database makes slow or expensive. Pick one, copy the prompt, and let your AI agent build it against the container.</p>
+    </div>
+    <div class="grid-3">
+      <article class="card">
+        <span class="tag">local &rarr; cloud</span>
+        <h3>Build locally, ship to Azure</h3>
+        <p>Develop and test at local-disk speed with no cloud round trip, then deploy the same code to Azure SQL Database. Lift and shift is a connection-string change.</p>
+        <button class="card-prompt" type="button" data-copy-text="Add the Azure SQL Database container to this project as the local database. Add a docker compose service for mcr.microsoft.com/azure-sql-database:latest on port 1433, read the connection string from a SQL_CONNECTION_STRING environment variable, and add a .env.example with both a local value and an Azure SQL Database value so the same code runs in both places with no changes."><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
+      </article>
+      <article class="card">
+        <span class="tag tag-vector">ai / rag</span>
+        <h3>Prototype AI and RAG apps</h3>
+        <p>Build vector search and embeddings against a local database with a local model like Ollama, then switch to Azure OpenAI in the cloud. No cloud spend while you experiment.</p>
+        <button class="card-prompt" type="button" data-copy-text="Build a retrieval-augmented-generation pipeline in this project against the Azure SQL Database container. Create a documents table with a native VECTOR column, write a script that chunks and embeds text with a local model (Ollama), stores the vectors, and runs top-k similarity search with VECTOR_DISTANCE using cosine distance. Add a small end-to-end query example."><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
+      </article>
+      <article class="card">
+        <span class="tag">ci</span>
+        <h3>Run integration tests in CI</h3>
+        <p>Spin the container up as a service in GitHub Actions or Azure Pipelines. Real end-to-end tests, with no Azure subscription and no shared-instance flakiness.</p>
+        <button class="card-prompt" type="button" data-copy-text="Add the Azure SQL Database container as a service to my GitHub Actions workflow. Start it on port 1433, wait until it is healthy, run my integration test suite against it on every pull request, and tear it down afterward. Show me the full workflow YAML."><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
+      </article>
+      <article class="card">
+        <span class="tag">offline</span>
+        <h3>Develop offline</h3>
+        <p>Run demos, classes, and workshops with no internet. After the first pull, the container runs fully offline on a laptop.</p>
+        <button class="card-prompt" type="button" data-copy-text="Set up this project so I can develop and demo it fully offline against the Azure SQL Database container. Add a docker compose service, an initial schema migration, and a seed script with realistic sample data so everything works with no internet connection."><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
+      </article>
+      <article class="card">
+        <span class="tag">compose</span>
+        <h3>Drop in as a sidecar</h3>
+        <p>Add SQL Database to a docker compose stack or a Dev Container as a sidecar service, wire-compatible with the drivers and ORMs you already use.</p>
+        <button class="card-prompt" type="button" data-copy-text="Add the Azure SQL Database container as a sidecar service to my existing docker compose stack and Dev Container. Expose it on port 1433, wire my app connection string to it via SQL_CONNECTION_STRING, and add a healthcheck so my app waits for the database before it starts."><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
+      </article>
+      <article class="card">
+        <span class="tag">templates</span>
+        <h3>Scaffold new projects</h3>
+        <p>Start a new .NET Aspire, FastAPI, Next.js, or NestJS project with Azure SQL Database as the default local development resource.</p>
+        <button class="card-prompt" type="button" data-copy-text="Scaffold a new project for my stack (.NET Aspire, FastAPI, Next.js, or NestJS) that uses the Azure SQL Database container as its default local database. Set up the connection string, an initial schema with one example entity, the first migration, and a typed data-access layer."><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SAMPLES ============ -->
+<section class="section" id="samples">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow"><span class="eyebrow-dot"></span>Samples</p>
+      <h2>Start from your stack.</h2>
+      <p class="lead">Each sample runs locally against the container and includes a local-to-cloud leg. Working code lands per sample during the preview.</p>
+    </div>
+    <div class="grid-3 samples">
+      <div class="sample">
+        <span class="tag">TypeScript</span>
+        <h3>Node.js + Prisma</h3>
+        <p>JavaScript and TypeScript projects with Prisma migrations.</p>
+        <div class="sample-foot">
+          <button class="card-prompt" type="button" data-copy-text="npx degit microsoft/azure-sql-database-container/samples/nodejs-prisma azure-sql-nodejs-prisma"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Clone</span></button>
+          <a class="sample-go" href="{{ site.repo }}/tree/main/samples/nodejs-prisma" rel="noopener">GitHub &rarr;</a>
+        </div>
+      </div>
+      <div class="sample">
+        <span class="tag">Python</span>
+        <h3>Python + SQLAlchemy</h3>
+        <p>Python apps with SQLAlchemy models and Alembic migrations.</p>
+        <div class="sample-foot">
+          <button class="card-prompt" type="button" data-copy-text="npx degit microsoft/azure-sql-database-container/samples/python-sqlalchemy azure-sql-python-sqlalchemy"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Clone</span></button>
+          <a class="sample-go" href="{{ site.repo }}/tree/main/samples/python-sqlalchemy" rel="noopener">GitHub &rarr;</a>
+        </div>
+      </div>
+      <div class="sample sample-accent">
+        <span class="tag tag-vector">AI / RAG</span>
+        <h3>AI / RAG with vector search</h3>
+        <p>Embeddings and similarity search with the native vector type.</p>
+        <div class="sample-foot">
+          <button class="card-prompt" type="button" data-copy-text="npx degit microsoft/azure-sql-database-container/samples/ai-rag azure-sql-ai-rag"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Clone</span></button>
+          <a class="sample-go" href="{{ site.repo }}/tree/main/samples/ai-rag" rel="noopener">GitHub &rarr;</a>
+        </div>
+      </div>
+      <div class="sample">
+        <span class="tag">.NET</span>
+        <h3>.NET Aspire</h3>
+        <p>SQL Database as a first-class Aspire resource.</p>
+        <div class="sample-foot">
+          <button class="card-prompt" type="button" data-copy-text="npx degit microsoft/azure-sql-database-container/samples/dotnet-aspire azure-sql-dotnet-aspire"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Clone</span></button>
+          <a class="sample-go" href="{{ site.repo }}/tree/main/samples/dotnet-aspire" rel="noopener">GitHub &rarr;</a>
+        </div>
+      </div>
+      <div class="sample">
+        <span class="tag">CLI</span>
+        <h3>CLI quickstart</h3>
+        <p>A docker-compose-only path to a running database.</p>
+        <div class="sample-foot">
+          <button class="card-prompt" type="button" data-copy-text="npx degit microsoft/azure-sql-database-container/samples/cli azure-sql-cli"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Clone</span></button>
+          <a class="sample-go" href="{{ site.repo }}/tree/main/samples/cli" rel="noopener">GitHub &rarr;</a>
+        </div>
+      </div>
+      <div class="sample">
+        <span class="tag">AI agents</span>
+        <h3>Agent skills</h3>
+        <p>Tool-agnostic container skills for Claude and GitHub Copilot.</p>
+        <div class="sample-foot">
+          <button class="card-prompt" type="button" data-copy-text="npx degit microsoft/azure-sql-database-container/samples/agent-skills azure-sql-agent-skills"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Clone</span></button>
+          <a class="sample-go" href="{{ site.repo }}/tree/main/samples/agent-skills" rel="noopener">GitHub &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ENGAGE (dark) ============ -->
+<section class="section section-dark">
+  <div class="hero-grid-bg" aria-hidden="true"></div>
+  <div class="container">
+    <div class="section-head section-head-light">
+      <p class="eyebrow eyebrow-light"><span class="eyebrow-dot"></span>Get involved</p>
+      <h2>You shape this preview.</h2>
+      <p class="lead lead-light">Your bugs and feature requests set the priorities. Reach the team directly, or pick the channel that fits your question.</p>
+    </div>
+    <div class="engage-cta">
+      <a class="btn btn-primary" href="https://aka.ms/azuresql-container-meet" rel="noopener">Connect with the team</a>
+      <a class="btn btn-ghost-light" href="mailto:azuresqldb-container@microsoft.com">Email the team</a>
+    </div>
+    <div class="grid-4">
+      <a class="res" href="{{ '/getting-started.html' | relative_url }}">
+        <h3>Read the docs &rarr;</h3>
+        <p>From prerequisites to your first query in under five minutes.</p>
+      </a>
+      <a class="res" href="{{ site.repo }}/discussions" rel="noopener">
+        <h3>Discussions &rarr;</h3>
+        <p>Ask a question, share what you built, or pitch an idea.</p>
+      </a>
+      <a class="res" href="{{ site.repo }}/issues/new?template=bug_report.yml" rel="noopener">
+        <h3>Report a bug &rarr;</h3>
+        <p>A reproducible test case is the fastest path to a fix.</p>
+      </a>
+      <a class="res" href="{{ '/feedback-and-how-to-engage.html' | relative_url }}">
+        <h3>All channels &rarr;</h3>
+        <p>Email, Teams, office hours, and the full channel guide.</p>
+      </a>
+    </div>
+  </div>
+</section>

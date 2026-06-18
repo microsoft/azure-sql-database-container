@@ -1,0 +1,29 @@
+# Azure SQL Database container
+
+> The Azure SQL Database engine, running locally for development and CI. Build and test against the same engine, defaults, and T-SQL you run in the Microsoft Azure cloud, with AI-native capabilities built in. Free for local development; no Azure subscription required. Lift and shift to Azure SQL Database in the cloud is a connection-string change, not a code change. Status: Private Preview.
+
+## Documentation
+- [What is the Azure SQL Database container](https://microsoft.github.io/azure-sql-database-container/what-is-the-container.html): the engine surface, AI-native capabilities, drivers and ORMs, and supported runtimes and platforms.
+- [Goals of the Private Preview](https://microsoft.github.io/azure-sql-database-container/goals-of-the-private-preview.html): what this preview sets out to learn and validate.
+- [Prerequisites](https://microsoft.github.io/azure-sql-database-container/prerequisites.html): supported hosts, container runtimes, system resources, and tooling.
+- [Getting started](https://microsoft.github.io/azure-sql-database-container/getting-started.html): pull the image, start the container, and run your first query in under a minute.
+- [Known limitations](https://microsoft.github.io/azure-sql-database-container/known-limitations.html): current gaps and workarounds.
+- [Feedback and how to engage](https://microsoft.github.io/azure-sql-database-container/feedback-and-how-to-engage.html): GitHub Issues and Discussions, the team email, and office hours.
+
+## Samples
+- [Node.js + Prisma](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/nodejs-prisma)
+- [Python + SQLAlchemy](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/python-sqlalchemy)
+- [AI / RAG with vector search](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/ai-rag)
+- [.NET Aspire](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/dotnet-aspire)
+- [CLI quickstart](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/cli)
+- [Agent skills for Claude Code and GitHub Copilot](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/agent-skills)
+
+## Key facts
+- Image: mcr.microsoft.com/azure-sql-database, multi-arch (linux/amd64 and linux/arm64). The exact tag for Private Preview is shared in the welcome email.
+- Connection: TCP port 1433; SQL login (sa) locally, Microsoft Entra in the cloud. Apps read the connection string from the SQL_CONNECTION_STRING environment variable.
+- AI-native: native vector data type, DiskANN vector indexes, VECTOR_DISTANCE similarity search, AI_GENERATE_EMBEDDINGS, CREATE EXTERNAL MODEL, native JSON, and RegEx.
+- Parity: same engine, defaults, T-SQL, and error messages as Azure SQL Database in the cloud.
+
+## Optional
+- [Repository](https://github.com/microsoft/azure-sql-database-container)
+- [Install the container agent skill](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/agent-skills): npx skills add azure-sql-database-container

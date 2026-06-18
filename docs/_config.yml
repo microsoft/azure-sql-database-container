@@ -1,0 +1,37 @@
+title: Azure SQL Database container
+description: >-
+  Azure SQL Database, running on your laptop. Build, test, and ship against the
+  real engine. No Azure subscription, no shared instance, no connection-string
+  rewrites from inner loop to production.
+# Project Pages site is served from /docs on the default branch.
+# baseurl is the production path; the local preview overrides it with --baseurl "".
+baseurl: "/azure-sql-database-container"
+url: "https://microsoft.github.io"
+repo: "https://github.com/microsoft/azure-sql-database-container"
+youtube_id: "S6PWxUAUspY"
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+sass:
+  style: compressed
+
+plugins:
+  - jekyll-relative-links
+  - jekyll-sitemap
+relative_links:
+  enabled: true
+  collections: false
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: page
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - Dockerfile.preview
+  - vendor

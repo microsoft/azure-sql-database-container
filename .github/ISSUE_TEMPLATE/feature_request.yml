@@ -1,0 +1,65 @@
+name: Feature request
+description: Request a new capability, a behavior change, or an extension to the Azure SQL Database container.
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion. Feature requests help shape the road from Private Preview to Public Preview. Please tell us not just what you want, but why and for whom.
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use case
+      description: What are you trying to do? Describe the developer workflow or scenario.
+      placeholder: "I am building ... and I need ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-workaround
+    attributes:
+      label: Current workaround
+      description: How are you handling this today? "No workaround" is a valid answer.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed
+    attributes:
+      label: Proposed behavior
+      description: What would the ideal solution look like?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: who-benefits
+    attributes:
+      label: Who benefits
+      multiple: true
+      options:
+        - Modern Application Developers (Next.js, NestJS, FastAPI, Hono, etc.)
+        - AI / Cloud-Native Developers (RAG, agents, AI features)
+        - Platform Engineers (Dev Containers, docker compose, CI / CD)
+        - Database Developers (T-SQL, schema, migrations)
+        - All developers
+    validations:
+      required: true
+
+  - type: dropdown
+    id: urgency
+    attributes:
+      label: Urgency
+      options:
+        - Blocks my evaluation of the Private Preview
+        - Important for my Public Preview adoption
+        - Nice to have
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Links to related issues, prior art in other databases, spec references.

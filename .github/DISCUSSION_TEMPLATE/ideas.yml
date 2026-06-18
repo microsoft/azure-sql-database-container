@@ -1,0 +1,28 @@
+title: "[Idea]: "
+labels: ["idea"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Pitch an idea or a direction. Ideas are open-ended; they do not have to be fully specified. If you have a concrete feature request with a clear ask, file a Feature request issue instead.
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: The idea
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why this matters
+      description: What workflow gets better? Who benefits?
+    validations:
+      required: true
+
+  - type: textarea
+    id: open-questions
+    attributes:
+      label: Open questions
+      description: Things you would want to discuss before this becomes a concrete spec.
