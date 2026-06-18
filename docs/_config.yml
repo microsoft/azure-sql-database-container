@@ -1,0 +1,17 @@
+title: Azure SQL Database container
+description: Private Preview documentation
+theme: jekyll-theme-minimal
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+plugins:
+  - jekyll-relative-links
+relative_links:
+  enabled: true
+  collections: false
+include:
+  - README.md
+exclude:
+  - HANDOFF.md
+  - samples/

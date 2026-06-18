@@ -1,25 +1,29 @@
-# TODO: The maintainer of this repo has not yet edited this file
-
-**REPO OWNER**: Do you want Customer Service & Support (CSS) support for this product/project?
-
-- **No CSS support:** Fill out this template with information about how to file issues and get help.
-- **Yes CSS support:** Fill out an intake form at [aka.ms/onboardsupport](https://aka.ms/onboardsupport). CSS will work with/help you to determine next steps.
-- **Not sure?** Fill out an intake as though the answer were "Yes". CSS will help you decide.
-
-*Then remove this first heading from this SUPPORT.MD file before publishing your repo.*
-
 # Support
 
-## How to file issues and get help  
+## How to file issues and get help
 
-This project uses GitHub Issues to track bugs and feature requests. Please search the existing 
-issues before filing new issues to avoid duplicates.  For new issues, file your bug or 
-feature request as a new Issue.
+This project uses GitHub Issues to track bugs and feature requests for the Private Preview. Please search the [existing issues](../../issues) before filing new ones to avoid duplicates.
 
-For help and questions about using this project, please **REPO MAINTAINER: INSERT INSTRUCTIONS HERE 
-FOR HOW TO ENGAGE REPO OWNERS OR COMMUNITY FOR HELP. COULD BE A STACK OVERFLOW TAG OR OTHER
-CHANNEL. WHERE WILL YOU HELP PEOPLE?**.
+- **Bug reports:** [New bug report](../../issues/new?template=bug_report.yml)
+- **Feature requests:** [New feature request](../../issues/new?template=feature_request.yml)
+- **Questions and "how do I" topics:** [GitHub Discussions Q&A](../../discussions/categories/q-a)
+- **Show what you built:** [GitHub Discussions Show & Tell](../../discussions/categories/show-and-tell)
+- **Real-time conversation:** the private Teams channel shared with you in the welcome email (Private Preview participants only)
 
-## Microsoft Support Policy  
+See [Feedback and how to engage](docs/feedback-and-how-to-engage.md) for the full guide on which channel fits which question.
 
-Support for this **PROJECT or PRODUCT** is limited to the resources listed above.
+## Response SLAs
+
+The triage rotation owns these SLAs for the duration of the Private Preview:
+
+| Channel                       | First response         | Plan                       |
+| ----------------------------- | ---------------------- | -------------------------- |
+| GitHub issue (P0)             | 1 business day         | 2 business days            |
+| GitHub issue (P1)             | 1 business day         | 5 business days            |
+| GitHub issue (P2 or feature)  | 5 business days        | Triaged in the next sprint |
+| GitHub Discussion (Q&A)       | 1 business day         | n / a                      |
+| Teams channel                 | Best effort, same day  | n / a                      |
+
+## Microsoft Support Policy
+
+Support for the **Azure SQL Database container** Private Preview is limited to the resources listed above. The Private Preview is not covered by standard Microsoft commercial support.

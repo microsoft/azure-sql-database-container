@@ -1,0 +1,107 @@
+name: Bug report
+description: Report a bug, regression, or unexpected behavior in the Azure SQL Database container.
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug. Please fill every field. The more complete the report, the faster the triage.
+
+        Before filing, please scan the [open issues](../../issues) for a duplicate and read [Known limitations](../../docs/known-limitations.md). If your bug is a known limitation, comment on the tracking issue with your scenario instead of opening a new one.
+
+  - type: input
+    id: image-tag
+    attributes:
+      label: Container image tag
+      description: The exact image tag you pulled.
+      placeholder: "mcr.microsoft.com/azure-sql-database/container:preview"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: host-os
+    attributes:
+      label: Host OS
+      options:
+        - macOS (arm64 / Apple Silicon)
+        - macOS (x86_64 / Intel)
+        - Linux (x86_64)
+        - Linux (arm64)
+        - Windows 11 (x86_64)
+        - Windows 11 (arm64)
+        - Other (describe in repro)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: runtime
+    attributes:
+      label: Container runtime
+      options:
+        - Docker Desktop
+        - Podman
+        - Rancher Desktop
+        - containerd / nerdctl
+        - Apple Container
+        - Other (describe in repro)
+    validations:
+      required: true
+
+  - type: input
+    id: runtime-version
+    attributes:
+      label: Runtime version
+      placeholder: "Docker Desktop 4.34.2"
+    validations:
+      required: true
+
+  - type: input
+    id: driver-orm
+    attributes:
+      label: Driver / ORM
+      description: If applicable.
+      placeholder: "Prisma 5.18 / mssql-python 1.0 / EF Core 9.0"
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      description: Step-by-step. Include the docker compose file or run command if relevant.
+      placeholder: |
+        1. Run `docker compose up -d` with the attached `docker-compose.yml`.
+        2. Connect with `sqlcmd -S localhost,1433 -U sa -P ... -C`.
+        3. Run query: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include error messages, stack traces, and `docker logs sqldb` output.
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Anything else relevant. Screenshots, related issues, links.
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmation
+      options:
+        - label: I have scanned open issues for duplicates.
+          required: true
+        - label: I have read the Known limitations doc.
+          required: true
