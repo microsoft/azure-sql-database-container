@@ -6,7 +6,7 @@ description: "Current gaps and rough edges in the Private Preview, with workarou
 ## Table of Contents
 
 - [How to read this page](#how-to-read-this-page)
-- [Current P0 issues](#current-p0-issues)
+- [Active issues we are fixing](#active-issues-we-are-fixing)
 - [Known behavior gaps](#known-behavior-gaps)
 - [Out of scope by design](#out-of-scope-by-design)
 - [Where to find live status](#where-to-find-live-status)
@@ -15,14 +15,14 @@ description: "Current gaps and rough edges in the Private Preview, with workarou
 
 This page lists the limitations we know about as of the version date above. Two categories matter:
 
-- **Current P0 issues** are blockers we are actively working on. If you hit one, the workaround is listed inline and the upstream fix is tracked.
+- **Active issues we are fixing** are blockers we are working on now. If you hit one, the workaround is listed inline and the fix is tracked.
 - **Known behavior gaps** are functional differences from Azure SQL Database in the cloud. They may close, or they may not, depending on Private Preview feedback.
 
 If you hit a limitation that is not on this page, please file a [GitHub issue](https://github.com/microsoft/azure-sql-database-container/issues/new?template=bug_report.yml) so we can either add it here or fix it.
 
-## Current P0 issues
+## Active issues we are fixing
 
-The following four issues are P0 blockers that we are actively tracking.
+The following four issues are the ones we are actively fixing.
 
 ### 1. Restriction enforcement gaps
 
