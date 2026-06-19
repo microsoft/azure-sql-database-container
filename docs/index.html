@@ -256,37 +256,55 @@ title: Azure SQL Database container
         <span class="tag">local &rarr; cloud</span>
         <h3>Build locally, ship to Azure</h3>
         <p>Develop and test at local-disk speed with no cloud round trip, then deploy the same code to Azure SQL Database. Lift and shift is a connection-string change.</p>
-        <button class="card-prompt" type="button" data-copy-text="Add the Azure SQL Database container to this project as the local database. Add a docker compose service for mcr.microsoft.com/azure-sql-database:latest on port 1433, read the connection string from a SQL_CONNECTION_STRING environment variable, and add a .env.example with both a local value and an Azure SQL Database value so the same code runs in both places with no changes."><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
+        <div class="card-actions">
+          <button class="card-prompt" type="button" data-prompt="{{ '/prompts/local-to-cloud.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
+          <a class="card-view" href="{{ '/prompts/local-to-cloud.md' | relative_url }}">View</a>
+        </div>
       </article>
       <article class="card">
         <span class="tag tag-vector">ai / rag</span>
         <h3>Prototype AI and RAG apps</h3>
         <p>Build vector search and embeddings against a local database with a local model like Ollama, then switch to Azure OpenAI in the cloud. No cloud spend while you experiment.</p>
-        <button class="card-prompt" type="button" data-copy-text="Build a retrieval-augmented-generation pipeline in this project against the Azure SQL Database container. Create a documents table with a native VECTOR column, write a script that chunks and embeds text with a local model (Ollama), stores the vectors, and runs top-k similarity search with VECTOR_DISTANCE using cosine distance. Add a small end-to-end query example."><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
+        <div class="card-actions">
+          <button class="card-prompt" type="button" data-prompt="{{ '/prompts/ai-rag.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
+          <a class="card-view" href="{{ '/prompts/ai-rag.md' | relative_url }}">View</a>
+        </div>
       </article>
       <article class="card">
         <span class="tag">ci</span>
         <h3>Run integration tests in CI</h3>
         <p>Spin the container up as a service in GitHub Actions or Azure Pipelines. Real end-to-end tests, with no Azure subscription and no shared-instance flakiness.</p>
-        <button class="card-prompt" type="button" data-copy-text="Add the Azure SQL Database container as a service to my GitHub Actions workflow. Start it on port 1433, wait until it is healthy, run my integration test suite against it on every pull request, and tear it down afterward. Show me the full workflow YAML."><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
+        <div class="card-actions">
+          <button class="card-prompt" type="button" data-prompt="{{ '/prompts/ci.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
+          <a class="card-view" href="{{ '/prompts/ci.md' | relative_url }}">View</a>
+        </div>
       </article>
       <article class="card">
         <span class="tag">offline</span>
         <h3>Develop offline</h3>
         <p>Run demos, classes, and workshops with no internet. After the first pull, the container runs fully offline on a laptop.</p>
-        <button class="card-prompt" type="button" data-copy-text="Set up this project so I can develop and demo it fully offline against the Azure SQL Database container. Add a docker compose service, an initial schema migration, and a seed script with realistic sample data so everything works with no internet connection."><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
+        <div class="card-actions">
+          <button class="card-prompt" type="button" data-prompt="{{ '/prompts/offline.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
+          <a class="card-view" href="{{ '/prompts/offline.md' | relative_url }}">View</a>
+        </div>
       </article>
       <article class="card">
         <span class="tag">compose</span>
         <h3>Drop in as a sidecar</h3>
         <p>Add SQL Database to a docker compose stack or a Dev Container as a sidecar service, wire-compatible with the drivers and ORMs you already use.</p>
-        <button class="card-prompt" type="button" data-copy-text="Add the Azure SQL Database container as a sidecar service to my existing docker compose stack and Dev Container. Expose it on port 1433, wire my app connection string to it via SQL_CONNECTION_STRING, and add a healthcheck so my app waits for the database before it starts."><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
+        <div class="card-actions">
+          <button class="card-prompt" type="button" data-prompt="{{ '/prompts/sidecar.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
+          <a class="card-view" href="{{ '/prompts/sidecar.md' | relative_url }}">View</a>
+        </div>
       </article>
       <article class="card">
         <span class="tag">templates</span>
         <h3>Scaffold new projects</h3>
         <p>Start a new .NET Aspire, FastAPI, Next.js, or NestJS project with Azure SQL Database as the default local development resource.</p>
-        <button class="card-prompt" type="button" data-copy-text="Scaffold a new project for my stack (.NET Aspire, FastAPI, Next.js, or NestJS) that uses the Azure SQL Database container as its default local database. Set up the connection string, an initial schema with one example entity, the first migration, and a typed data-access layer."><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
+        <div class="card-actions">
+          <button class="card-prompt" type="button" data-prompt="{{ '/prompts/templates.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
+          <a class="card-view" href="{{ '/prompts/templates.md' | relative_url }}">View</a>
+        </div>
       </article>
     </div>
   </div>

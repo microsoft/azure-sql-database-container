@@ -236,6 +236,10 @@ code, pre { font-family: var(--font-mono); }
 .card-prompt.is-copied { color: #0a8f6a; border-color: rgba(20,160,110,.5); background: rgba(20,160,110,.1); }
 .card-prompt-ico { width: 8px; height: 8px; border-radius: 2px; background: var(--vector); flex-shrink: 0; }
 .card-prompt.is-copied .card-prompt-ico { background: #0a8f6a; }
+.card-actions { margin-top: auto; display: flex; align-items: center; gap: 14px; }
+.card-actions .card-prompt { margin-top: 0; align-self: center; }
+.card-view { font-family: var(--font-mono); font-size: .74rem; color: var(--muted); text-decoration: underline; text-underline-offset: 2px; text-decoration-color: var(--line); }
+.card-view:hover { color: var(--azure); text-decoration: none; }
 .card code { font-family: var(--font-mono); font-size: .86em; background: var(--mist); padding: 1px 6px; border-radius: 5px; color: var(--ink); }
 .card-accent { border-color: rgba(24,199,199,.4); box-shadow: var(--shadow), 0 0 0 1px rgba(24,199,199,.12); }
 
