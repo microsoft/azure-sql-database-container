@@ -4,7 +4,7 @@
 
 ### The Azure SQL Database engine, running locally.
 
-Build and test against the same engine you run in the Microsoft Azure cloud. Try Azure SQL Database before you deploy, and run your tests in CI. Free for local development. No Azure subscription.
+Build and test against the same engine you run in the Microsoft Azure cloud. Try Azure SQL Database before you deploy, and run your tests in CI. Free for local development. No Azure subscription. No credit card.
 
 [![Status: Private Preview](https://img.shields.io/badge/status-private%20preview-1366E0?style=for-the-badge)](https://microsoft.github.io/azure-sql-database-container/)
 [![Docs](https://img.shields.io/badge/docs-read-0A1830?style=for-the-badge)](https://microsoft.github.io/azure-sql-database-container/)
