@@ -2,9 +2,18 @@
 
 # Azure SQL Database container
 
-### The Azure SQL Database engine, running locally.
+### Build apps and AI features faster with Azure SQL Database container
 
-Build and test against the same engine you run in the Microsoft Azure cloud. Try Azure SQL Database before you deploy, and run your tests in CI. Free for local development. No Azure subscription.
+Try Azure SQL Database in minutes with no Azure subscription and no credit card required. Azure SQL Database Container provides a local development environment that mirrors Azure SQL Database behavior, helping you build faster, validate your application locally, and deploy to the cloud with confidence.
+Whether you're building web applications, APIs, integration services, or AI-powered experiences, start building in minutes using the Azure SQL Database Container.
+
+✅ No Azure subscription required
+✅ Works offline
+✅ Runs on Docker and Podman
+✅ Supports AMD64 and ARM64
+✅ Build locally, deploy to Azure SQL Database later
+
+
 
 [![Status: Private Preview](https://img.shields.io/badge/status-private%20preview-1366E0?style=for-the-badge)](https://microsoft.github.io/azure-sql-database-container/)
 [![Docs](https://img.shields.io/badge/docs-read-0A1830?style=for-the-badge)](https://microsoft.github.io/azure-sql-database-container/)
@@ -19,18 +28,118 @@ Build and test against the same engine you run in the Microsoft Azure cloud. Try
 
 </div>
 
-The Azure SQL Database container is the Azure SQL Database engine, running locally. It runs on any modern container runtime (Docker, Podman, containerd, Rancher Desktop, Apple Container) on macOS, Linux, and Windows, and works with the drivers, ORMs, and editors developers already use. It supports the same AI-native capabilities as Azure SQL Database in the Microsoft Azure cloud: the native vector type, DiskANN vector indexes, vector search with `VECTOR_DISTANCE`, and in-database embeddings.
+## Build apps and AI experiences faster
 
-For the first time, developers can build, test, and ship applications against the Azure SQL Database engine without an Azure subscription and without a shared cloud instance. When you deploy to Azure SQL Database in the Microsoft Azure cloud, it is a connection-string change, not a code change.
+Ship features without waiting on cloud setup. Azure SQL Database container gives app developers a local environment aligned with Azure SQL Database behavior, so you can build, test, and iterate locally, then move to Azure SQL Database with confidence.
 
-## Global Table of Contents
+Whether you are building web apps, APIs, background workers, integration services, or AI and RAG experiences, you can get started in minutes.
 
-- [What is the Azure SQL Database container?](docs/what-is-the-container.md)
-- [Goals of the Private Preview](docs/goals-of-the-private-preview.md)
-- [Prerequisites](docs/prerequisites.md)
-- [Getting Started](docs/getting-started.md)
-- [Known limitations](docs/known-limitations.md)
-- [Feedback and how to engage](docs/feedback-and-how-to-engage.md)
+✅ No Azure subscription required  
+✅ No credit card required  
+✅ Works offline after image pull  
+✅ Runs on Docker and Podman  
+✅ Supports AMD64 and ARM64  
+✅ Build locally, deploy to Azure SQL Database later
+
+## Start here
+
+- Request Private Preview access: [Sign up](docs/sign-up.md)
+- Get running quickly: [Getting Started](docs/getting-started.md)
+- Ask questions: [GitHub Discussions](../../discussions)
+- Report bugs: [Bug report](../../issues/new?template=bug_report.yml)
+- Request features: [Feature request](../../issues/new?template=feature_request.yml)
+- Contact the team: [Support options](docs/support.md)
+
+## Private Preview in 5 steps
+
+### 1) Request access
+
+Start here: [docs/sign-up.md](docs/sign-up.md)
+
+### 2) Receive approval details
+
+If approved, you will receive:
+- Current preview onboarding guidance
+- Access instructions
+- Known limitations and feedback channels
+
+### 3) Pull and run the container
+
+```bash
+docker pull mcr.microsoft.com/azure-sql-database
+
+docker run \
+  -e MSSQL_SA_PASSWORD=<your-password> \
+  -p 1433:1433 \
+  mcr.microsoft.com/azure-sql-database
+```
+
+### 4) Connect using your preferred tools
+
+- Visual Studio Code
+- Visual Studio
+- sqlcmd
+- SQL Server Management Studio (SSMS)
+- Docker Compose
+- SQL Server compatible drivers and ORMs
+
+### 5) Verify Azure SQL Database identity
+
+```sql
+SELECT @@VERSION;
+SELECT SERVERPROPERTY('EngineEdition');
+```
+
+Expected result:
+
+```text
+EngineEdition = 5
+```
+
+## Why app developers use this
+
+- Develop locally without provisioning cloud resources
+- Validate schema changes and migrations before deployment
+- Run integration tests in CI/CD against a real Azure SQL Database engine surface
+- Build AI and RAG workflows with vector capabilities
+- Keep local and cloud behavior aligned to reduce deployment surprises
+
+## Common scenarios
+
+### Build application features locally
+
+Use your existing stack and tools:
+- .NET / ASP.NET
+- Node.js
+- Python
+- Java
+- Go
+- Rust
+
+### Run automated tests in CI/CD
+
+Use the container in:
+- GitHub Actions
+- Azure Pipelines
+- Docker Compose
+- Testcontainers
+
+### Build AI and RAG features
+
+Prototype and test AI application patterns with:
+- Vector data type
+- Vector search and indexes
+- JSON support
+- External REST endpoints
+
+## Local to cloud workflow
+
+Use one development path:
+1. Build and test locally
+2. Validate behavior and migrations
+3. Run integration tests
+4. Deploy app and database artifacts
+5. Switch environment configuration and connect to Azure SQL Database in production
 
 ## Samples
 
@@ -42,49 +151,64 @@ For the first time, developers can build, test, and ship applications against th
 - [Container-specialized agent skills (tool-agnostic)](samples/agent-skills/)
 - [Azure skills collection for local-to-cloud deployment](samples/azure-skills/)
 
-> **NOTE:** This Private Preview is designed for developers building modern applications, with a focus on the following key personas:
->
-> - **Modern Application Developers:** Building feature-rich, scalable applications with frameworks like Next.js, NestJS, FastAPI, .NET Aspire, and Node.js.
-> - **AI / Cloud-Native Developers:** Building RAG, agents, and AI features against a local database that supports vector data types, vector search, and embeddings out of the box.
-> - **Platform Engineers:** Wiring SQL Database into Dev Containers, docker compose stacks, and CI / CD pipelines without provisioning a cloud instance.
-> - **Database Developers:** Working in T-SQL against the same engine surface that runs in Azure SQL Database in the cloud, with no behavior surprises at deployment time.
+## Documentation
 
-## Local to cloud
+- [What is the Azure SQL Database container?](docs/what-is-the-container.md)
+- [Goals of the Private Preview](docs/goals-of-the-private-preview.md)
+- [Prerequisites](docs/prerequisites.md)
+- [Getting Started](docs/getting-started.md)
+- [Known limitations](docs/known-limitations.md)
+- [Sign up for Private Preview](docs/sign-up.md)
+- [Support options](docs/support.md)
+- [FAQ](docs/faq.md)
+- [Feedback and how to engage](docs/feedback-and-how-to-engage.md)
 
-The container speaks the same protocol as Azure SQL Database in the Microsoft Azure cloud: the same drivers, the same T-SQL, the same migrations. Every sample in this repository includes a **local-to-cloud leg** that uses the [Azure skills collection](samples/azure-skills/) to deploy the same application to Azure SQL Database in the Microsoft Azure cloud. There is no code change between local development and the cloud.
-
-## Feedback
+## Feedback and support
 
 - File a bug: [GitHub Issues](../../issues/new?template=bug_report.yml)
 - Request a feature: [GitHub Issues](../../issues/new?template=feature_request.yml)
-- Ask a question, share a build, suggest an idea: [GitHub Discussions](../../discussions)
+- Ask a question or share an idea: [GitHub Discussions](../../discussions)
 - Connect with the team: [book a session](https://aka.ms/azuresql-container-meet) or email [azuresqldb-container@microsoft.com](mailto:azuresqldb-container@microsoft.com)
-- Real-time conversation: the private Teams channel shared with you in the welcome email
 
-See [Feedback and how to engage](docs/feedback-and-how-to-engage.md) for the full guide on which channel fits which question.
+## FAQ
+
+### Is this SQL Server?
+
+No. This container is designed for Azure SQL Database aligned development and testing scenarios.
+
+### Do I need an Azure subscription?
+
+No. You can develop and test locally without an Azure subscription.
+
+### Does it work offline?
+
+Yes. After you pull the image, local development and testing can run offline.
+
+### Can I use it in CI/CD?
+
+Yes. It is designed to support automated testing workflows in CI/CD pipelines.
+
+### Can I use it in production?
+
+No. This Private Preview is for local development, testing, and CI/CD scenarios. Use Azure SQL Database in Azure for production.
 
 ## License
 
-This Private Preview is governed by a separate Private Preview license shared with you during sign-up. The samples in this repository are released under the MIT license.
+This Private Preview is governed by a separate Private Preview license shared during sign-up. Samples in this repository are released under the MIT license.
 
 ## Contributing
 
-This project welcomes contributions and suggestions. Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+This project welcomes contributions and suggestions. Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution.
 
-When you submit a pull request, a CLA bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
+For details, visit https://cla.opensource.microsoft.com.
+
+When you submit a pull request, a CLA bot will automatically determine whether you need to provide a CLA and decorate the PR appropriately. Simply follow the instructions provided by the bot. You only need to do this once across all repos using our CLA.
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+For more information, see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
 
 ## Trademarks
 
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft
-trademarks or logos is subject to and must follow
-[Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
+This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
 Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
-Any use of third-party trademarks or logos are subject to those third-party's policies.
+Any use of third-party trademarks or logos is subject to those third-party policies.
