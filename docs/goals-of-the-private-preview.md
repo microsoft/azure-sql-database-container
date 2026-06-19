@@ -36,7 +36,7 @@ This Private Preview is the first time the container is in the hands of real dev
 
 ## What you get from us
 
-- **Direct engineering channel.** The triage rotation is a named engineer per week. Bugs are acknowledged within one business day; P0 issues get an acknowledgement plus a plan within two business days.
+- **Direct engineering channel.** The triage rotation is a named engineer per week. Bugs are acknowledged within one business day; critical issues get an acknowledgement plus a plan within two business days.
 - **Working samples across stacks.** Node.js + Prisma, Python + SQLAlchemy, AI / RAG, .NET Aspire, CLI. Each sample is tested end to end and includes the local-to-cloud deployment leg.
 - **Container-specialized agent skills.** Loadable by any AI agent (Claude, Codex, GitHub Copilot) so the agent understands prerequisites, parameters, connection, common errors, and the local-to-cloud handoff.
 - **Private Teams channel for real-time conversation.** Customers are under NDA; the channel is private and access-controlled.

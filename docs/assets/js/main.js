@@ -69,10 +69,11 @@
     setEnv("local");
   }
 
-  // ---- open off-page links in a new tab (in-page #anchors scroll in place) ----
+  // ---- open off-page links in a new tab (header nav and in-page #anchors stay in place) ----
   document.querySelectorAll("a[href]").forEach(function (a) {
     var href = a.getAttribute("href");
-    if (href && href.charAt(0) !== "#") {
+    var inNav = a.closest && a.closest(".nav");
+    if (href && href.charAt(0) !== "#" && !inNav) {
       a.setAttribute("target", "_blank");
       a.setAttribute("rel", "noopener noreferrer");
     }
