@@ -1,0 +1,123 @@
+# AI Prompt: Build a local RAG pipeline on the Azure SQL Database container
+
+**Role:** You are an expert AI engineer building a retrieval-augmented-generation (RAG) data layer in the current project, using the Azure SQL Database container as a local vector store.
+
+**Purpose:** Stand up the container, create a table with a native `VECTOR` column, embed text locally with a free model, store the vectors, and run top-k similarity search with `VECTOR_DISTANCE`. The same schema and queries run unchanged against Azure SQL Database in the Microsoft Azure cloud; only the embedding endpoint changes (local model now, Azure OpenAI in production).
+
+**Scope:**
+- Assumes a Python project with Docker available. Adapt to Node.js with the `mssql` driver if the project is JavaScript.
+- Uses Ollama for local embeddings so there is no cloud spend or data egress while prototyping.
+
+Read the entire instruction set before executing.
+
+---
+
+## Instructions
+
+### 1. Start the container
+
+```bash
+docker run -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
+    -p 1433:1433 -d mcr.microsoft.com/azure-sql-database:latest
+```
+
+### 2. Install dependencies and a local embedding model
+
+```bash
+pip install mssql-python ollama python-dotenv
+ollama pull nomic-embed-text   # 768-dimensional embeddings, runs locally
+```
+
+### 3. Configure the connection string
+
+Create `.env` with a single connection string (swap only this value for the cloud later):
+
+```dotenv
+SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;Uid=sa;Pwd=YourStrong!Passw0rd;TrustServerCertificate=yes;"
+```
+
+### 4. Create the RAG script
+
+Create `rag.py`. If the project already has code, preserve it and add this as a new module.
+
+```python
+import os, json, ollama
+import mssql_python
+from dotenv import load_dotenv
+
+load_dotenv()
+DIM = 768  # nomic-embed-text
+
+def embed(text: str) -> str:
+    vec = ollama.embeddings(model="nomic-embed-text", prompt=text)["embedding"]
+    return json.dumps(vec)  # the VECTOR column accepts a JSON array
+
+conn = mssql_python.connect(os.environ["SQL_CONNECTION_STRING"])
+cur = conn.cursor()
+
+# Schema: a native VECTOR column, same type as Azure SQL Database in the cloud
+cur.execute(f"""
+    DROP TABLE IF EXISTS documents;
+    CREATE TABLE documents (
+        id INT IDENTITY(1,1) PRIMARY KEY,
+        content NVARCHAR(MAX) NOT NULL,
+        embedding VECTOR({DIM}) NOT NULL
+    );
+""")
+
+# Index for embeddings: store each chunk with its vector
+chunks = [
+    "The Azure SQL Database container runs the Azure SQL Database engine locally.",
+    "It supports a native vector type and VECTOR_DISTANCE similarity search.",
+    "Build and test locally, then deploy to Azure SQL Database with a connection-string change.",
+]
+for c in chunks:
+    cur.execute(
+        "INSERT INTO documents (content, embedding) VALUES (?, CAST(? AS VECTOR(?)));",
+        c, embed(c), DIM,
+    )
+conn.commit()
+
+# Retrieve: top-k nearest neighbours by cosine distance
+query = "How do I run vector search locally?"
+cur.execute(
+    """
+    SELECT TOP 3 content,
+        VECTOR_DISTANCE('cosine', embedding, CAST(? AS VECTOR(?))) AS distance
+    FROM documents
+    ORDER BY distance;
+    """,
+    embed(query), DIM,
+)
+print(f"Query: {query}\n")
+for content, distance in cur.fetchall():
+    print(f"{distance:.4f}  {content}")
+
+cur.close()
+conn.close()
+```
+
+Run it:
+
+```bash
+python rag.py
+```
+
+---
+
+## Validation rules
+
+- The `embedding` column is a native `VECTOR(768)`; vectors are inserted as JSON arrays cast with `CAST(? AS VECTOR(768))`.
+- Retrieval uses `VECTOR_DISTANCE('cosine', ...)` and orders ascending (smaller distance = closer match).
+- The embedding dimension is consistent between insert and query.
+- The connection string is read from the environment; queries are parameterized with `?`.
+
+## Going to the cloud
+
+- The schema and queries are unchanged in Azure SQL Database. Swap the local Ollama embedding call for Azure OpenAI (or keep a pluggable `embed()` function), and point `SQL_CONNECTION_STRING` at your Azure SQL Database server.
+
+## Do not
+
+- Do not hardcode the connection string or send local data to any external service while prototyping (Ollama runs on the machine).
+- Do not mix embedding models or dimensions between writing and querying.
+- Do not set `ACCEPT_EULA`; the container does not require it.

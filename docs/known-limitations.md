@@ -22,7 +22,7 @@ If you hit a limitation that is not on this page, please file a [GitHub issue](h
 
 ## Current P0 issues
 
-The following four issues are P0 blockers tracked by the validation suite. Live status is at the [validation framework readiness report](https://croblesm.github.io/sqldb-container-validation/).
+The following four issues are P0 blockers that we are actively tracking.
 
 ### 1. Restriction enforcement gaps
 
@@ -46,7 +46,7 @@ Some session-level and database-level defaults (collation, transaction isolation
 
 The arm64 image layer is being optimized. On Apple Silicon and arm64 Linux you may see slower startup or a missing capability compared to the x86_64 image.
 
-**Workaround:** Run under Rosetta translation if you hit a regression: `docker run --platform linux/amd64 ...`. Track the arm64 layer status in the validation framework.
+**Workaround:** Run under Rosetta translation if you hit a regression: `docker run --platform linux/amd64 ...`. Track the arm64 layer status in the open issues.
 
 ## Known behavior gaps
 
@@ -67,8 +67,5 @@ These are intentional non-goals for the container:
 
 ## Where to find live status
 
-- **Live validation status:** [https://croblesm.github.io/sqldb-container-validation/](https://croblesm.github.io/sqldb-container-validation/)
 - **Open issues:** [GitHub Issues](https://github.com/microsoft/azure-sql-database-container/issues)
 - **Roadmap discussion:** [GitHub Discussions](https://github.com/microsoft/azure-sql-database-container/discussions)
-
-The validation framework runs against every container build and gives you a real-time picture of which limitations are currently active.

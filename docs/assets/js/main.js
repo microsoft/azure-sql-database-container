@@ -14,6 +14,18 @@
     }, 1600);
   }
 
+  function copyText(text, btn) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { flash(btn); }, function () {});
+    } else {
+      var ta = document.createElement("textarea");
+      ta.value = text; document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); flash(btn); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+  }
+
+  // inline copy (commands, code blocks)
   document.querySelectorAll("[data-copy], [data-copy-text]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       var text = btn.getAttribute("data-copy-text");
@@ -21,14 +33,17 @@
         var target = document.querySelector(btn.getAttribute("data-copy"));
         text = target ? target.innerText : "";
       }
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(text).then(function () { flash(btn); }, function () {});
-      } else {
-        var ta = document.createElement("textarea");
-        ta.value = text; document.body.appendChild(ta); ta.select();
-        try { document.execCommand("copy"); flash(btn); } catch (e) {}
-        document.body.removeChild(ta);
-      }
+      copyText(text, btn);
+    });
+  });
+
+  // copy a full prompt fetched from a hosted markdown file
+  document.querySelectorAll("[data-prompt]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var url = btn.getAttribute("data-prompt");
+      fetch(url).then(function (r) { return r.text(); }).then(function (text) {
+        copyText(text, btn);
+      }).catch(function () {});
     });
   });
 
