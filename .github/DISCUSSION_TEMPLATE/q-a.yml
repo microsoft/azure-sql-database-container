@@ -1,0 +1,24 @@
+title: "[Q&A]: "
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ask a "how do I" question about the Azure SQL Database container. Before posting, scan the existing Q&A and the docs:
+
+        - [Prerequisites](../../docs/prerequisites.md)
+        - [Getting Started](../../docs/getting-started.md)
+        - [Known limitations](../../docs/known-limitations.md)
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+    validations:
+      required: true
+
+  - type: textarea
+    id: tried
+    attributes:
+      label: What you have already tried
+      description: Helps the responder skip the obvious suggestions.

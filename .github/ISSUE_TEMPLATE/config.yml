@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Ask a question
+    url: ../../discussions/categories/q-a
+    about: For "how do I" questions, use GitHub Discussions Q&A.
+  - name: Share what you built
+    url: ../../discussions/categories/show-and-tell
+    about: Show & Tell category in GitHub Discussions.
+  - name: Suggest an idea or direction
+    url: ../../discussions/categories/ideas
+    about: For open-ended ideas and direction proposals, use Discussions Ideas.
+  - name: Read the Private Preview docs
+    url: ../../docs/feedback-and-how-to-engage.md
+    about: Pick the right channel for your question.

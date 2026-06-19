@@ -1,0 +1,35 @@
+title: "[Show & Tell]: "
+labels: ["show-and-tell"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Tell the cohort what you built with the Azure SQL Database container.
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What you built
+    validations:
+      required: true
+
+  - type: textarea
+    id: stack
+    attributes:
+      label: Stack
+      description: Language, framework, ORM, AI components if any.
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-worked
+    attributes:
+      label: What worked well
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-was-rough
+    attributes:
+      label: What was rough
+      description: The friction matters as much as the wins. The team reads every post.

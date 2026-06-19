@@ -1,0 +1,11 @@
+# Internal build/handoff artifacts (not repo content)
+HANDOFF.md
+
+# Local Jekyll preview tooling (not needed for GitHub Pages build)
+docs/Gemfile
+docs/Gemfile.lock
+docs/_site/
+docs/.jekyll-cache/
+docs/.jekyll-metadata
+docs/.bundle/
+docs/vendor/
