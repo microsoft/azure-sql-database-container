@@ -53,4 +53,13 @@
     });
     setEnv("local");
   }
+
+  // ---- open off-page links in a new tab (in-page #anchors scroll in place) ----
+  document.querySelectorAll("a[href]").forEach(function (a) {
+    var href = a.getAttribute("href");
+    if (href && href.charAt(0) !== "#") {
+      a.setAttribute("target", "_blank");
+      a.setAttribute("rel", "noopener noreferrer");
+    }
+  });
 })();

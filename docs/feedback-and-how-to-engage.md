@@ -17,11 +17,11 @@ description: "Pick the right channel for your question: GitHub Issues, Discussio
 
 | You want to                                                | Use                                            |
 | ---------------------------------------------------------- | ---------------------------------------------- |
-| Report a bug, regression, or unexpected behavior           | [GitHub Issues: Bug report](../../issues/new?template=bug_report.yml) |
-| Request a feature or capability                            | [GitHub Issues: Feature request](../../issues/new?template=feature_request.yml) |
-| Ask a "how do I" question                                  | [GitHub Discussions: Q&A](../../discussions/categories/q-a) |
-| Share what you built                                       | [GitHub Discussions: Show & Tell](../../discussions/categories/show-and-tell) |
-| Suggest a direction or pitch an idea                       | [GitHub Discussions: Ideas](../../discussions/categories/ideas) |
+| Report a bug, regression, or unexpected behavior           | [GitHub Issues: Bug report](https://github.com/microsoft/azure-sql-database-container/issues/new?template=bug_report.yml) |
+| Request a feature or capability                            | [GitHub Issues: Feature request](https://github.com/microsoft/azure-sql-database-container/issues/new?template=feature_request.yml) |
+| Ask a "how do I" question                                  | [GitHub Discussions: Q&A](https://github.com/microsoft/azure-sql-database-container/discussions/categories/q-a) |
+| Share what you built                                       | [GitHub Discussions: Show & Tell](https://github.com/microsoft/azure-sql-database-container/discussions/categories/show-and-tell) |
+| Suggest a direction or pitch an idea                       | [GitHub Discussions: Ideas](https://github.com/microsoft/azure-sql-database-container/discussions/categories/ideas) |
 | Email the team directly                                    | [azuresqldb-container@microsoft.com](mailto:azuresqldb-container@microsoft.com) |
 | Book live time with the team                               | [Connect with the team](https://aka.ms/azuresql-container-meet) |
 | Talk to the team in real time                              | Private Teams channel (link in the welcome email) |
