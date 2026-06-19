@@ -18,7 +18,7 @@ This page lists the limitations we know about as of the version date above. Two 
 - **Current P0 issues** are blockers we are actively working on. If you hit one, the workaround is listed inline and the upstream fix is tracked.
 - **Known behavior gaps** are functional differences from Azure SQL Database in the cloud. They may close, or they may not, depending on Private Preview feedback.
 
-If you hit a limitation that is not on this page, please file a [GitHub issue](../../issues/new?template=bug_report.yml) so we can either add it here or fix it.
+If you hit a limitation that is not on this page, please file a [GitHub issue](https://github.com/microsoft/azure-sql-database-container/issues/new?template=bug_report.yml) so we can either add it here or fix it.
 
 ## Current P0 issues
 
@@ -28,7 +28,7 @@ The following four issues are P0 blockers tracked by the validation suite. Live 
 
 Some PaaS restrictions that are enforced in Azure SQL Database in the cloud are not yet enforced by the container. This means a query that succeeds locally may fail at deployment time against the cloud database.
 
-**Workaround:** Run your queries against an Azure SQL Database instance once before declaring readiness. The [Azure skills collection](../samples/azure-skills/) provisions a target database you can use for a one-shot validation pass.
+**Workaround:** Run your queries against an Azure SQL Database instance once before declaring readiness. The [Azure skills collection](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/azure-skills/) provisions a target database you can use for a one-shot validation pass.
 
 ### 2. Default value alignment
 
@@ -68,7 +68,7 @@ These are intentional non-goals for the container:
 ## Where to find live status
 
 - **Live validation status:** [https://croblesm.github.io/sqldb-container-validation/](https://croblesm.github.io/sqldb-container-validation/)
-- **Open issues:** [GitHub Issues](../../issues)
-- **Roadmap discussion:** [GitHub Discussions](../../discussions)
+- **Open issues:** [GitHub Issues](https://github.com/microsoft/azure-sql-database-container/issues)
+- **Roadmap discussion:** [GitHub Discussions](https://github.com/microsoft/azure-sql-database-container/discussions)
 
 The validation framework runs against every container build and gives you a real-time picture of which limitations are currently active.

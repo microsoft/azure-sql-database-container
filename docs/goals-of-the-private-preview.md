@@ -28,9 +28,9 @@ This Private Preview is the first time the container is in the hands of real dev
 
 ## What we are asking from you
 
-- **Try the samples in the [samples folder](../samples/).** Each sample includes a local-to-cloud leg using the Azure skills collection. Run both legs end-to-end and tell us where the seams are.
+- **Try the samples in the [samples folder](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/).** Each sample includes a local-to-cloud leg using the Azure skills collection. Run both legs end-to-end and tell us where the seams are.
 - **Build something real, however small.** A demo, a learning project, a feature in an existing application. The closer to your actual workflow, the better the feedback.
-- **File issues for everything that surprises you.** Performance, behavior, ergonomics, documentation. Even small surprises matter. Use [GitHub Issues](../../issues) for bugs and feature requests; use [GitHub Discussions](../../discussions) for questions and ideas.
+- **File issues for everything that surprises you.** Performance, behavior, ergonomics, documentation. Even small surprises matter. Use [GitHub Issues](https://github.com/microsoft/azure-sql-database-container/issues) for bugs and feature requests; use [GitHub Discussions](https://github.com/microsoft/azure-sql-database-container/discussions) for questions and ideas.
 - **Show up to office hours.** A weekly slot for live questions, demos, and feedback. See the welcome email for the calendar invite.
 - **Respond to the profiling survey.** Sent one week after sign-up. Five minutes, multiple choice. Helps us segment the cohort and tailor the engagement.
 

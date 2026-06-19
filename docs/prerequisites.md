@@ -77,4 +77,4 @@ The container itself does not require an Azure subscription. The local-to-cloud 
 - An Azure SQL Database server and database
 - A target compute resource for the application: Azure App Service, Azure Container Apps, or Azure Functions, depending on the stack
 
-See the [Azure skills collection](../samples/azure-skills/) for the deploy flow. If you do not have an Azure subscription, you can still run every local sample and exercise the full inner loop.
+See the [Azure skills collection](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/azure-skills/) for the deploy flow. If you do not have an Azure subscription, you can still run every local sample and exercise the full inner loop.

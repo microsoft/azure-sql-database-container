@@ -128,12 +128,12 @@ docker compose down -v
 
 ## Next: pick a sample
 
-Once you have a working connection, jump into a sample in the [samples folder](../samples/). Pick the one closest to your stack:
+Once you have a working connection, jump into a sample in the [samples folder](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/). Pick the one closest to your stack:
 
-- [Node.js + Prisma](../samples/nodejs-prisma/) for JavaScript and TypeScript projects
-- [Python + SQLAlchemy](../samples/python-sqlalchemy/) for Python projects
-- [AI / RAG with vector search](../samples/ai-rag/) for AI applications using embeddings and vector search
-- [.NET Aspire](../samples/dotnet-aspire/) for .NET projects
-- [CLI quickstart](../samples/cli/) for a docker-compose-only path
+- [Node.js + Prisma](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/nodejs-prisma/) for JavaScript and TypeScript projects
+- [Python + SQLAlchemy](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/python-sqlalchemy/) for Python projects
+- [AI / RAG with vector search](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/ai-rag/) for AI applications using embeddings and vector search
+- [.NET Aspire](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/dotnet-aspire/) for .NET projects
+- [CLI quickstart](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/cli/) for a docker-compose-only path
 
-Each sample includes a local-to-cloud leg that deploys the same application against Azure SQL Database in production using the [Azure skills collection](../samples/azure-skills/).
+Each sample includes a local-to-cloud leg that deploys the same application against Azure SQL Database in production using the [Azure skills collection](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/azure-skills/).
