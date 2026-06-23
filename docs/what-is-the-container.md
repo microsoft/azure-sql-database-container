@@ -14,7 +14,7 @@ description: "The Azure SQL Database engine, running locally for development and
 
 ## Overview
 
-The Azure SQL Database container is the Azure SQL Database engine, running locally. It is for the developer who wants a local database that behaves like Azure SQL Database in the Microsoft Azure cloud, with no Azure subscription and no shared instance.
+The Azure SQL Database container is the Azure SQL Database engine, running locally. It is for the developer who wants a local database that behaves like Azure SQL Database in the Microsoft Azure cloud, with no Azure subscription, no shared instance and no credit card required.
 
 The container runs the same engine that powers Azure SQL Database in the cloud. That means the T-SQL dialect, the system views, the connection protocol, the driver behavior, and the AI-native capabilities are the same as in the cloud. The connection string changes; the application does not.
 
@@ -23,7 +23,7 @@ The container runs the same engine that powers Azure SQL Database in the cloud. 
 The container is the **Azure SQL Database engine** itself, running locally. Three things follow from that:
 
 1. **The same engine as the cloud.** The container runs the same engine, the same defaults, and the same T-SQL as Azure SQL Database. Features that are cloud-only in the box SQL Server product (Always Encrypted with secure enclaves, ledger, some DMVs) work locally the same way they work in the cloud.
-2. **No Azure subscription required.** The container runs entirely on the developer machine or in CI. No service principal, no credit card, no shared instance. Free for local development and CI.
+2. **No Azure subscription, no credit card required.** The container runs entirely on the developer machine or in CI. No service principal, no credit card, no shared instance. Free for local development and CI.
 3. **Works with the drivers, ORMs, and editors you already use.** Everything that talks to Azure SQL Database talks to the container without changes: node-mssql, mssql-python, pyodbc, and mssql-jdbc; Prisma, SQLAlchemy, EF Core, Django, and TypeORM; sqlcmd, the MSSQL extension for VS Code, and SSMS.
 
 ## Engine surface
