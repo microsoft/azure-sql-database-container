@@ -19,20 +19,20 @@ This Private Preview is the first time the container is in the hands of real dev
 
 ## What we want to validate
 
-1. **Understand modern developer workflows.** How do you actually use a local database in a Next.js, NestJS, FastAPI, .NET Aspire, Hono, or AI / RAG project? What does your inner loop look like? Where does the container fit and where does it not?
-2. **Validate the inner-loop-to-outer-loop story.** Is the container truly a drop-in for Azure SQL Database in the cloud? Same connection string, same drivers, same T-SQL, same migrations, same behavior at deployment time.
-3. **Validate AI-native scenarios.** Does the container work for prototyping RAG and vector-search applications using vector data types, vector search, and embeddings? Does the cloud handoff hold?
-4. **Validate AI coding agent scenarios.** Can you hand a project to Claude, Codex, or GitHub Copilot with the container as the local database and have the agent scaffold the schema, the migrations, and the data access layer?
-5. **Identify gaps and pain points.** Where does the container surprise you compared to the cloud database? Where does it surprise you compared to other local databases you have used?
-6. **Assess the experience for code-first developers.** For developers who do not write T-SQL day to day, is the container approachable through the same drivers and ORMs they already use?
+1. **Real developer workflows.** How the container fits into daily development across modern stacks, and where it does not
+2. **Local-to-cloud consistency.** Whether it is a true drop-in for Azure SQL Database: same connection string, drivers, T-SQL, migrations, and deployment behavior.
+3. **AI-native development.** Whether vector and embedding scenarios work well for local RAG and transition cleanly to cloud.
+4. **AI coding agent workflows.** Whether agents like Claude, Codex, and GitHub Copilot can reliably scaffold schema, migrations, and data access against the container
+5. **Gaps and friction.** Where behavior, performance, or ergonomics are surprising versus Azure SQL Database in cloud or other local databases.
+6. **Code-first usability.** Whether developers can be productive using familiar drivers and ORMs without deep T-SQL expertise.
 
 ## What we are asking from you
 
 - **Try the samples in the [samples folder](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/).** Each sample includes a local-to-cloud leg using the Azure skills collection. Run both legs end-to-end and tell us where the seams are.
 - **Build something real, however small.** A demo, a learning project, a feature in an existing application. The closer to your actual workflow, the better the feedback.
-- **File issues for everything that surprises you.** Performance, behavior, ergonomics, documentation. Even small surprises matter. Use [GitHub Issues](https://github.com/microsoft/azure-sql-database-container/issues) for bugs and feature requests; use [GitHub Discussions](https://github.com/microsoft/azure-sql-database-container/discussions) for questions and ideas.
+- **File issues for everything that surprises you.** Performance, behavior, ergonomics, documentation. Use [GitHub Issues](https://github.com/microsoft/azure-sql-database-container/issues) for bugs and feature requests;
 - **Show up to office hours.** A weekly slot for live questions, demos, and feedback. See the welcome email for the calendar invite.
-- **Respond to the profiling survey.** Sent one week after sign-up. Five minutes, multiple choice. Helps us segment the cohort and tailor the engagement.
+
 
 ## What you get from us
 
