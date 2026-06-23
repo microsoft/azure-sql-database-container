@@ -2,9 +2,16 @@
 
 # Azure SQL Database container
 
-### The Azure SQL Database engine, running locally.
+### Build modern applications and AI experiences locally with Azure SQL Database.
 
-Build and test against the same engine you run in the Microsoft Azure cloud. Try Azure SQL Database before you deploy, and run your tests in CI. Free for local development. No Azure subscription.
+Try Azure SQL Database in minutes with no Azure subscription and no credit card required. Azure SQL Database Container provides a local development environment that mirrors Azure SQL Database behavior, helping you build faster, validate your application locally, and deploy to the cloud with confidence.
+Whether you're building web applications, APIs, integration services, or AI-powered experiences, start building in minutes using the Azure SQL Database Container.
+✅ No Azure subscription required
+✅ Works offline
+✅ Runs on Docker and Podman
+✅ Supports AMD64 and ARM64
+✅ Build locally, deploy to Azure SQL Database later
+
 
 [![Status: Private Preview](https://img.shields.io/badge/status-private%20preview-1366E0?style=for-the-badge)](https://microsoft.github.io/azure-sql-database-container/)
 [![Docs](https://img.shields.io/badge/docs-read-0A1830?style=for-the-badge)](https://microsoft.github.io/azure-sql-database-container/)
