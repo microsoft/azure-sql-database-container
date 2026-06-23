@@ -6,13 +6,13 @@
 
 Build and test against the same engine you run in the Microsoft Azure cloud. Try Azure SQL Database before you deploy, and run your tests in CI. Free for local development. No Azure subscription.
 
-[![Status: Private Preview](https://img.shields.io/badge/status-private%20preview-1366E0?style=for-the-badge)](https://microsoft.github.io/azure-sql-database-container/)
+[![Status: Private Preview]
 [![Docs](https://img.shields.io/badge/docs-read-0A1830?style=for-the-badge)](https://microsoft.github.io/azure-sql-database-container/)
 [![Discussions](https://img.shields.io/badge/discussions-join-18C7C7?style=for-the-badge)](../../discussions)
 [![Report a bug](https://img.shields.io/badge/report-a%20bug-D6334B?style=for-the-badge)](../../issues/new?template=bug_report.yml)
 
-<a href="https://youtu.be/S6PWxUAUspY">
-  <img src="https://img.youtube.com/vi/S6PWxUAUspY/maxresdefault.jpg" alt="Watch the Azure SQL Database container demo" width="760">
+<a href="placeholder">
+  <img src=placeholder>
 </a>
 
 **▶ Watch the demo**
