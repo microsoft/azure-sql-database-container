@@ -19,7 +19,7 @@
 - [Agent skills for Claude Code and GitHub Copilot](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/agent-skills)
 
 ## Key facts
-- Image: mcr.microsoft.com/azure-sql-database, multi-arch (linux/amd64 and linux/arm64). The exact tag for Private Preview is shared in the welcome email.
+- Image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition, multi-arch (linux/amd64 and linux/arm64). The exact tag for Private Preview is shared in the welcome email.
 - Connection: TCP port 1433; SQL login (sa) locally, Microsoft Entra in the cloud. Apps read the connection string from the SQL_CONNECTION_STRING environment variable.
 - AI-native: native vector data type, DiskANN vector indexes, VECTOR_DISTANCE similarity search, AI_GENERATE_EMBEDDINGS, CREATE EXTERNAL MODEL, native JSON, and RegEx.
 - Parity: same engine, defaults, T-SQL, and error messages as Azure SQL Database in the cloud.

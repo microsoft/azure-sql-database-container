@@ -1,46 +1,98 @@
 ---
 title: "Getting started"
-description: "Pull the image, start the container, and run your first query against the Azure SQL Database engine in under five minutes."
+description: "Get the Azure SQL Database container running and run your first query, either by asking an AI coding agent or by hand."
 ---
 
 ## Table of Contents
 
 - [Before you start](#before-you-start)
-- [Step 1: pull the image](#step-1-pull-the-image)
-- [Step 2: start the container](#step-2-start-the-container)
-- [Step 3: verify it is running](#step-3-verify-it-is-running)
-- [Step 4: connect from sqlcmd](#step-4-connect-from-sqlcmd)
-- [Step 5: connect from the VS Code MSSQL extension](#step-5-connect-from-the-vs-code-mssql-extension)
-- [Step 6: run your first query](#step-6-run-your-first-query)
-- [Step 7: stop and clean up](#step-7-stop-and-clean-up)
-- [Next: pick a sample](#next-pick-a-sample)
+- [Option A: let an AI coding agent do it](#option-a-let-an-ai-coding-agent-do-it)
+- [Option B: set it up yourself](#option-b-set-it-up-yourself)
+  - [Step 1: sign in and pull the image](#step-1-sign-in-and-pull-the-image)
+  - [Step 2: start the container](#step-2-start-the-container)
+  - [Step 3: verify it is running](#step-3-verify-it-is-running)
+  - [Step 4: connect and query](#step-4-connect-and-query)
+- [Next: build something](#next-build-something)
 
 ## Before you start
 
 Confirm you have:
 
-- A supported container runtime installed and running (see [Prerequisites](prerequisites.md)).
+- A supported container engine installed and running (Docker, Podman, containerd, Rancher Desktop, or Apple Container). See [Prerequisites](prerequisites.md).
 - Port `1433` available on the host.
-- A terminal or VS Code window open.
+- The registry username and password from your welcome email.
 
-Estimated time to first query: under 5 minutes.
+Everything below works the same on macOS, Linux, and Windows.
 
-## Step 1: pull the image
+## Option A: let an AI coding agent do it
+
+The fastest path is to let your AI coding agent set everything up. Install the container skill once. It works across Claude Code, GitHub Copilot, Codex, and Cursor.
 
 ```bash
-docker pull mcr.microsoft.com/azure-sql-database/container:preview
+npx skills add azure-sql-database-container
 ```
 
-The image tag and registry path are provisional during Private Preview. The exact path you use will be the one shared with you in the welcome email.
+Then ask your agent in plain English, for example:
 
-## Step 2: start the container
+> Add a local Azure SQL Database to this project, then scaffold the schema, migrations, and data-access layer for my stack.
 
-The fastest path is `docker compose`. Create a file named `docker-compose.yml`:
+The skill teaches your agent the registry, image, ports, and connection string, so it can sign in, start the container, and wire your app to it. Browse the skill and more ready-made prompts in [agent skills](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/agent-skills).
+
+## Option B: set it up yourself
+
+Prefer to run the commands yourself? Pick your container engine and follow the steps. Everything works the same on macOS, Linux, and Windows.
+
+<div class="pivot" role="tablist" aria-label="Container engine">
+  <button class="pivot-btn" type="button" data-engine="docker" role="tab">Docker / Podman</button>
+  <button class="pivot-btn" type="button" data-engine="apple" role="tab">Apple Containers</button>
+</div>
+
+### Step 1: sign in and pull the image
+
+The preview image is served from a private registry. Sign in with the username and password from your welcome email, then pull the image.
+
+<div class="engine-block" data-engine="docker" markdown="1">
+
+```bash
+docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>
+docker pull sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+```
+
+With Podman, replace `docker` with `podman`.
+
+</div>
+
+<div class="engine-block" data-engine="apple" markdown="1">
+
+Start the container system once per boot, then sign in and pull:
+
+```bash
+container system start
+container registry login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>
+container image pull sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+```
+
+</div>
+
+The registry path, image tag, and credentials are provisional during Private Preview. The exact values you use will be the ones shared with you in the welcome email.
+
+### Step 2: start the container
+
+<div class="engine-block" data-engine="docker" markdown="1">
+
+Start it on port `1433` with one command:
+
+```bash
+docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
+    -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+```
+
+Or use `docker compose`. Create a `docker-compose.yml`, then run `docker compose up -d`.
 
 ```yaml
 services:
   sqldb:
-    image: mcr.microsoft.com/azure-sql-database/container:preview
+    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
     container_name: sqldb
     ports:
       - "1433:1433"
@@ -54,86 +106,114 @@ volumes:
   sqldb-data:
 ```
 
-Then start it:
+</div>
+
+<div class="engine-block" data-engine="apple" markdown="1">
+
+Start it on port `1433`. Apple Containers defaults to 1 GB of memory, but the engine needs at least 2 GB, so pass `--memory 4g`.
 
 ```bash
-docker compose up -d
+container run -d --name sqldb --memory 4g --cpus 4 \
+    -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
+    -p 1433:1433 sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```
 
-> **NOTE:** Replace `YourStrong!Passw0rd` with a password of your own. The container enforces the default SQL password complexity policy: at least 8 characters, with a mix of upper, lower, numeric, and non-alphanumeric characters.
+Apple Containers has no `docker compose` equivalent; use `container run`.
 
-## Step 3: verify it is running
+</div>
+
+> **NOTE:** Replace `YourStrong!Passw0rd` with your own. The container enforces the default SQL password complexity policy: at least 8 characters, with a mix of upper, lower, numeric, and non-alphanumeric characters.
+
+### Step 3: verify it is running
+
+<div class="engine-block" data-engine="docker" markdown="1">
 
 ```bash
 docker ps --filter "name=sqldb"
 ```
 
-You should see the `sqldb` container in `Up` status. If the container exited, check the logs:
+You should see the `sqldb` container in `Up` status. If it exited, check the logs with `docker logs sqldb`.
+
+</div>
+
+<div class="engine-block" data-engine="apple" markdown="1">
 
 ```bash
-docker logs sqldb
+container ls
 ```
 
-The most common startup failure is a password that does not meet the complexity policy. Pick a stronger password and recreate the container.
+You should see `sqldb` in `running` status. If it exited, check the logs with `container logs sqldb`.
 
-## Step 4: connect from sqlcmd
+</div>
+
+The most common startup failure is a password that does not meet the complexity policy; pick a stronger password and recreate the container.
+
+### Step 4: connect and query
+
+If you have [sqlcmd](https://learn.microsoft.com/sql/tools/sqlcmd/sqlcmd-utility) installed, connect and run your first query in one command (port `1433` is published in both engines). The `-C` flag trusts the container's self-signed certificate:
 
 ```bash
-sqlcmd -S localhost,1433 -U sa -P "YourStrong!Passw0rd" -C
+sqlcmd -S localhost,1433 -U sa -P "YourStrong!Passw0rd" -C \
+    -Q "SELECT @@VERSION;"
 ```
 
-The `-C` flag trusts the server certificate. The container uses a self-signed certificate by default.
+You should see `Microsoft SQL Azure`, confirming you are on the Azure SQL Database engine.
 
-## Step 5: connect from the VS Code MSSQL extension
+**Other ways to query:**
 
-1. Open VS Code.
-2. Open the **MSSQL** extension panel (database icon in the activity bar). Install the [MSSQL extension](https://marketplace.visualstudio.com/items?itemName=ms-mssql.mssql) if you do not already have it.
-3. Click **Add Connection**.
-4. Fill the connection dialog:
-   - **Server:** `localhost,1433`
-   - **Authentication:** SQL Login
-   - **User name:** `sa`
-   - **Password:** the password you set in Step 2
-   - **Database:** leave blank for the default
-   - **Trust server certificate:** Yes
-5. Click **Connect**. The connection appears in the **Connections** view.
+- **Ask your AI agent, no T-SQL required.** With the [container skill](prerequisites.md#agent-skill) installed, ask your agent in plain English, for example: *"Connect to my local Azure SQL Database and show the version and edition."* It already knows the connection details and runs the query for you. This is the fastest path if you would rather not write SQL by hand.
+- **No sqlcmd installed? Use the copy bundled in the container:**
 
-## Step 6: run your first query
+  <div class="engine-block" data-engine="docker" markdown="1">
 
-In sqlcmd:
+  ```bash
+  docker exec sqldb /opt/mssql-tools18/bin/sqlcmd \
+      -S localhost -U sa -P "YourStrong!Passw0rd" -C -Q "SELECT @@VERSION;"
+  ```
 
-```sql
-SELECT
-    SERVERPROPERTY('EngineEdition') AS EngineEdition,
-    SERVERPROPERTY('ProductVersion') AS ProductVersion,
-    @@VERSION AS FullVersion
-GO
-```
+  </div>
 
-`EngineEdition = 5` confirms you are talking to the Azure SQL Database engine, the same engine that runs in the cloud.
+  <div class="engine-block" data-engine="apple" markdown="1">
 
-In the VS Code MSSQL extension, open a new SQL file (`.sql`), select the connection in the toolbar, paste the same query, and run it.
+  ```bash
+  container exec sqldb /opt/mssql-tools18/bin/sqlcmd \
+      -S localhost -U sa -P "YourStrong!Passw0rd" -C -Q "SELECT @@VERSION;"
+  ```
 
-## Step 7: stop and clean up
+  </div>
+
+- **Use the VS Code MSSQL extension, with Copilot.** Install the [MSSQL extension](https://marketplace.visualstudio.com/items?itemName=ms-mssql.mssql), click **Add Connection**, and connect with server `localhost,1433`, SQL Login, user `sa`, your password, and **Trust server certificate: Yes**. Open a `.sql` file to run queries, and use the extension's inline GitHub Copilot assistance to write SQL from natural language.
+- **Install sqlcmd** from the [sqlcmd utility](https://learn.microsoft.com/sql/tools/sqlcmd/sqlcmd-utility) docs.
+
+### Stop and clean up
+
+<div class="engine-block" data-engine="docker" markdown="1">
 
 ```bash
+docker rm -f sqldb
+# or, if you used docker compose (add -v to also remove the data volume):
 docker compose down
 ```
 
-To remove the data volume as well:
+</div>
+
+<div class="engine-block" data-engine="apple" markdown="1">
 
 ```bash
-docker compose down -v
+container rm -f sqldb
 ```
 
-## Next: pick a sample
+</div>
 
-Once you have a working connection, jump into a sample in the [samples folder](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/). Pick the one closest to your stack:
+## Next: build something
 
-- [Node.js + Prisma](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/nodejs-prisma/) for JavaScript and TypeScript projects
-- [Python + SQLAlchemy](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/python-sqlalchemy/) for Python projects
-- [AI / RAG with vector search](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/ai-rag/) for AI applications using embeddings and vector search
-- [.NET Aspire](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/dotnet-aspire/) for .NET projects
-- [CLI quickstart](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/cli/) for a docker-compose-only path
+Pick a job and let your AI coding agent build it against the container. Each links to a ready-made prompt you can copy.
 
-Each sample includes a local-to-cloud leg that deploys the same application against Azure SQL Database in production using the [Azure skills collection](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/azure-skills/).
+- [Build locally, ship to Azure]({{ '/prompts/local-to-cloud.md' | relative_url }}): develop and test locally, then deploy the same code to Azure SQL Database with a connection-string change.
+- [Prototype AI and RAG apps]({{ '/prompts/ai-rag.md' | relative_url }}): vector search and embeddings with a local model, then Azure OpenAI in the cloud.
+- [Run integration tests in CI]({{ '/prompts/ci.md' | relative_url }}): the container as a service in GitHub Actions, with no Azure subscription.
+- [Develop offline]({{ '/prompts/offline.md' | relative_url }}): demos, classes, and workshops with no internet.
+- [Drop in as a sidecar]({{ '/prompts/sidecar.md' | relative_url }}): add it to a docker compose stack or Dev Container.
+- [Scaffold new projects]({{ '/prompts/templates.md' | relative_url }}): start a new .NET Aspire, FastAPI, Next.js, or NestJS project.
+
+Haven't installed the skill yet? See [Agent skill](prerequisites.md#agent-skill).

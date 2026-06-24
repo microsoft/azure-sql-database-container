@@ -40,7 +40,7 @@ Prefer `docker compose` over `docker run` because it is reproducible and survive
 # docker-compose.yml
 services:
   sqldb:
-    image: mcr.microsoft.com/azure-sql-database/container:preview
+    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
     container_name: sqldb
     ports:
       - "1433:1433"

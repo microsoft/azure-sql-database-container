@@ -17,8 +17,10 @@ Read the entire instruction set before executing.
 ### 1. Start the container
 
 ```bash
-docker run -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
-    -p 1433:1433 -d mcr.microsoft.com/azure-sql-database:latest
+# The image is in a private preview registry; sign in with the credentials from the welcome email first
+docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io
+docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
+    -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```
 
 ### 2. Install dependencies and a local embedding model
@@ -120,4 +122,3 @@ python rag.py
 
 - Do not hardcode the connection string or send local data to any external service while prototyping (Ollama runs on the machine).
 - Do not mix embedding models or dimensions between writing and querying.
-- Do not set `ACCEPT_EULA`; the container does not require it.
