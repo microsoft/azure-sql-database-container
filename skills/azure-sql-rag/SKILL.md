@@ -1,6 +1,6 @@
 ---
 name: azure-sql-rag
-description: Use this skill when the user wants to build retrieval-augmented generation (RAG), vector search, embeddings, or semantic search on the Azure SQL Database container. Triggers include "RAG with SQL Database", "store embeddings locally", "vector search in Azure SQL", "VECTOR_DISTANCE", "similarity search", or "build a local vector store". Start from the azure-sql-database-container skill to get the container running first. Note that vector search is x64 only in the preview.
+description: Use this skill when the user wants to build retrieval-augmented generation (RAG), vector search, embeddings, or semantic search on the Azure SQL Database container. Triggers include "RAG with SQL Database", "store embeddings locally", "vector search in Azure SQL", "VECTOR_DISTANCE", "similarity search", or "build a local vector store". Start from the azure-sql-database-container skill to get the container running first. The image is x64; on Apple Silicon and arm64 it runs under emulation.
 ---
 
 # Local RAG on the Azure SQL Database container
@@ -9,7 +9,7 @@ description: Use this skill when the user wants to build retrieval-augmented gen
 
 Prerequisite: the container is running (use the `azure-sql-database-container` skill).
 
-> Vector search and indexes (DiskANN) are **x64 only** in the preview. On Apple Silicon / arm64, run the x64 image under emulation: `docker run --platform linux/amd64 ...`.
+> The image is x64 (`linux/amd64`). On Apple Silicon / arm64, run it under emulation: `docker run --platform linux/amd64 ...` (or `container run --arch amd64 --rosetta ...` on Apple Containers). The `VECTOR` type and `VECTOR_DISTANCE` work under emulation; `CREATE VECTOR INDEX` (DiskANN) is still in development, so use full-scan similarity for now.
 
 ## 1. Dependencies and a local embedding model
 

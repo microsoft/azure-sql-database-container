@@ -29,7 +29,7 @@ docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>
 container registry login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>
 ```
 
-Image reference: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest` (multi-arch: `linux/amd64` and `linux/arm64`). The exact registry, tag, and credentials are provisional during Private Preview and arrive in the welcome email.
+Image reference: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest` (x64, `linux/amd64`). On Apple Silicon and arm64 Linux it runs under emulation (`--platform linux/amd64`). The exact registry, tag, and credentials are provisional during Private Preview and arrive in the welcome email.
 
 ## 2. Start the container
 
@@ -60,10 +60,10 @@ volumes:
   sqldb-data:
 ```
 
-**Apple Containers (Apple Silicon):** it defaults to 1 GB of memory, which is below the engine minimum, so always pass `--memory 4g`.
+**Apple Containers (Apple Silicon):** the image is x64, so pass `--arch amd64 --rosetta` to run under emulation. It also defaults to 1 GB of memory, which is below the engine minimum, so always pass `--memory 4g`.
 
 ```bash
-container run -d --name sqldb --memory 4g --cpus 4 \
+container run -d --name sqldb --arch amd64 --rosetta --memory 4g --cpus 4 \
     -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
     -p 1433:1433 sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```
@@ -108,8 +108,8 @@ container rm -f sqldb         # Apple Containers
 
 ## Known limitations (apply automatically)
 
-- **Vector search is x64 only.** Vector indexes and similarity search (DiskANN) do not work on the arm64 image yet. For vector features on an arm64 machine, run the x64 image under emulation (`docker run --platform linux/amd64 ...`).
-- **Windows on ARM is not supported.** Use an x64 Windows host, or macOS / Linux on arm64 (native).
+- **The image is x64 (`linux/amd64`); arm64 runs under emulation.** There is no native arm64 image. On Apple Silicon or arm64 Linux, run with `--platform linux/amd64` (Docker), or `--arch amd64 --rosetta` (Apple Containers). The engine, T-SQL, and `VECTOR_DISTANCE` work under emulation; enable Rosetta in Docker Desktop for speed.
+- **Windows on ARM is not supported.** Use an x64 Windows host, or macOS / Linux on arm64 under emulation.
 - **Restriction parity is still landing.** Some PaaS restrictions are not yet enforced locally, and a few session-level defaults differ. Validate against an Azure SQL Database instance once before declaring production readiness, and set defaults explicitly in the connection string when they matter.
 
 More symptoms and fixes (password complexity, port in use, TLS) are in `references/troubleshooting.md`.

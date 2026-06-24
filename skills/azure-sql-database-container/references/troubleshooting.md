@@ -9,8 +9,8 @@
 | Connection refused on `localhost:1433` | Port already in use, or the container is still starting | Wait for "SQL Server is now ready for client connections" in `docker logs sqldb`; or remap the host port (`-p 1436:1433`) and connect to `localhost,1436`. |
 | TLS / certificate validation error from a driver | Driver does not trust the self-signed certificate | Set `TrustServerCertificate=true` (or `yes`), or `-C` for sqlcmd. |
 | `USE <db>` returns `Msg 40508` | Azure SQL Database does not allow `USE` to switch databases | Select the database in the connection string (`Database=appdb`) and open a new connection; see `connection-model.md`. |
-| Vector index / `VECTOR_DISTANCE` fails on Apple Silicon or arm64 Linux | Vector search (DiskANN) is x64 only in the preview | Run the x64 image under emulation: `docker run --platform linux/amd64 ...`. |
-| Running on Windows on ARM | Not supported in the preview | Use an x64 Windows host, or macOS / Linux on arm64. |
+| Image will not pull or run on Apple Silicon / arm64 (`no matching manifest`) | The image is x64 only; there is no native arm64 image | Run under emulation: `docker run --platform linux/amd64 ...`, or `container run --arch amd64 --rosetta ...` on Apple Containers. Enable Rosetta in Docker Desktop for speed. |
+| Running on Windows on ARM | Not supported in the preview | Use an x64 Windows host, or macOS / Linux on arm64 under emulation. |
 | A statement succeeds locally but fails in Azure SQL Database | Some PaaS restrictions are not yet enforced locally | Validate against an Azure SQL Database instance before declaring readiness; the engine surface is the same but restriction enforcement is still landing. |
 
 ## Quick health check

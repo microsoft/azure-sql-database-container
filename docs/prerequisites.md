@@ -7,7 +7,7 @@ description: "Supported host platforms, container runtimes, system resources, an
 
 - [Supported host platforms](#supported-host-platforms)
 - [Supported container runtimes](#supported-container-runtimes)
-- [Apple Silicon (arm64) notes](#apple-silicon-arm64-notes)
+- [Apple Silicon and arm64 (emulation)](#apple-silicon-and-arm64-emulation)
 - [System resources](#system-resources)
 - [Network and connectivity](#network-and-connectivity)
 - [Agent skill](#agent-skill)
@@ -16,14 +16,16 @@ description: "Supported host platforms, container runtimes, system resources, an
 
 ## Supported host platforms
 
-| Host OS                        | Architecture | Status                                |
-| ------------------------------ | ------------ | ------------------------------------- |
-| macOS 14 or later              | arm64        | Supported (see Apple Silicon notes)   |
-| macOS 14 or later              | x86_64       | Supported                             |
-| Linux (Ubuntu, Debian, Fedora) | x86_64       | Supported                             |
-| Linux (Ubuntu, Debian, Fedora) | arm64        | Supported                             |
-| Windows 11                     | x86_64       | Supported (Docker Desktop or WSL2)    |
-| Windows 11                     | arm64        | Not supported                         |
+The image is x64 (`linux/amd64`). On arm64 hosts it runs under emulation (see the notes below).
+
+| Host OS                        | Architecture | Status                                       |
+| ------------------------------ | ------------ | -------------------------------------------- |
+| macOS 14 or later              | x86_64       | Supported (native)                           |
+| macOS 14 or later              | arm64        | Supported under emulation (see notes)        |
+| Linux (Ubuntu, Debian, Fedora) | x86_64       | Supported (native)                           |
+| Linux (Ubuntu, Debian, Fedora) | arm64        | Supported under emulation                    |
+| Windows 11                     | x86_64       | Supported (Docker Desktop or WSL2)           |
+| Windows 11                     | arm64        | Not supported                                |
 
 ## Supported container runtimes
 
@@ -37,15 +39,15 @@ The container is OCI-compliant and runs on any modern runtime. Tested runtimes:
 
 Pick the runtime that already works on your machine. The container image and the connection behavior are the same across runtimes.
 
-## Apple Silicon (arm64) notes
+## Apple Silicon and arm64 (emulation)
 
-The container runs natively on Apple Silicon. If you encounter a regression specific to the arm64 image, the workaround is to start the container under Rosetta translation:
+The image is x64 (`linux/amd64`), so on Apple Silicon and arm64 Linux it runs under emulation. Pass `--platform linux/amd64` so the runtime selects the x64 image:
 
 ```bash
 docker run --platform linux/amd64 ...
 ```
 
-Track the arm64 layer status in [Known limitations](known-limitations.md).
+On Apple Silicon, enable "Use Rosetta for x86/amd64 emulation" in Docker Desktop (Settings, General) for a large speedup. The engine, T-SQL, and `VECTOR_DISTANCE` similarity search all work under emulation; expect some overhead compared with a native x64 host. See [Known limitations](known-limitations.md).
 
 ## System resources
 

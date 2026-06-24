@@ -72,15 +72,15 @@ The container is OCI-compliant and runs on any modern container runtime.
 | Rancher Desktop   | Supported |
 | Apple Container   | Supported |
 
-Host platforms:
+Host platforms. The image is x64 (`linux/amd64`); on arm64 hosts it runs under emulation.
 
-| Host OS                        | Architecture | Status                              |
-| ------------------------------ | ------------ | ----------------------------------- |
-| macOS                          | arm64        | Supported (see Known limitations)   |
-| macOS                          | x86_64       | Supported                           |
-| Linux                          | x86_64       | Supported                           |
-| Linux                          | arm64        | Supported (see Known limitations)   |
-| Windows                        | x86_64       | Supported (Docker Desktop, WSL2)    |
-| Windows                        | arm64        | Not supported                       |
+| Host OS                        | Architecture | Status                                |
+| ------------------------------ | ------------ | ------------------------------------- |
+| macOS                          | x86_64       | Supported (native)                    |
+| macOS                          | arm64        | Supported under emulation             |
+| Linux                          | x86_64       | Supported (native)                    |
+| Linux                          | arm64        | Supported under emulation             |
+| Windows                        | x86_64       | Supported (Docker Desktop, WSL2)      |
+| Windows                        | arm64        | Not supported                         |
 
 See [Prerequisites](prerequisites.md) for setup details and [Known limitations](known-limitations.md) for current gaps.
