@@ -58,7 +58,8 @@ The container speaks the same protocol as Azure SQL Database in the Microsoft Az
 - File a bug: [GitHub Issues](../../issues/new?template=bug_report.yml)
 - Request a feature: [GitHub Issues](../../issues/new?template=feature_request.yml)
 - Ask a question, share a build, suggest an idea: [GitHub Discussions](../../discussions)
-- Real-time conversation: the private Teams channel shared with you in the welcome email https://teams.microsoft.com/l/channel/19%3AYZW8nttYGGWZlY2w6AuPtylkJWZovR5MYKpYF8zy-Ms1%40thread.tacv2/Welcome?groupId=c71a0c05-37d6-4aa5-a9b3-63247af23387&tenantId=72f988bf-86f1-41af-91ab-2d7cd011db47
+- Connect with the team: [book a session](https://aka.ms/azuresql-container-meet) or email [azuresqldb-container@microsoft.com](mailto:azuresqldb-container@microsoft.com)
+- Real-time conversation: the private Teams channel shared with you in the welcome email
 
 See [Feedback and how to engage](docs/feedback-and-how-to-engage.md) for the full guide on which channel fits which question.
 
