@@ -110,10 +110,10 @@ volumes:
 
 <div class="engine-block" data-engine="apple" markdown="1">
 
-Start it on port `1433`. Apple Containers defaults to 1 GB of memory, but the engine needs at least 2 GB, so pass `--memory 4g`.
+Start it on port `1433`. The image is x64, so on Apple Silicon pass `--arch amd64 --rosetta` to run it under emulation. Apple Containers also defaults to 1 GB of memory, but the engine needs at least 2 GB, so pass `--memory 4g`.
 
 ```bash
-container run -d --name sqldb --memory 4g --cpus 4 \
+container run -d --name sqldb --arch amd64 --rosetta --memory 4g --cpus 4 \
     -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
     -p 1433:1433 sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```

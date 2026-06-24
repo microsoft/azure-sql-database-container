@@ -1,6 +1,6 @@
 # Running the container on any engine and architecture
 
-Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest` (multi-arch `linux/amd64` + `linux/arm64`). Sign in first (see the core skill, step 1). Required env: `ACCEPT_EULA=Y` and a complex `MSSQL_SA_PASSWORD`. Required memory: at least 2 GB.
+Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest` (x64, `linux/amd64`). On Apple Silicon and arm64 Linux it runs under emulation. Sign in first (see the core skill, step 1). Required env: `ACCEPT_EULA=Y` and a complex `MSSQL_SA_PASSWORD`. Required memory: at least 2 GB.
 
 ## Docker
 
@@ -46,26 +46,26 @@ volumes:
 
 `docker compose up -d` to start, `docker compose down` to stop (`-v` also removes the data volume).
 
-## Apple Containers (Apple Silicon, native arm64)
+## Apple Containers (Apple Silicon, under emulation)
 
-Apple Containers uses the `container` CLI (not `docker`) and defaults to **1 GB** of memory, which is below the engine minimum, so it exits with `requires at least 2000 megabytes of memory`. Always pass `--memory 4g`. Start the system once per boot.
+Apple Containers uses the `container` CLI (not `docker`). The image is x64, so on Apple Silicon pass `--arch amd64 --rosetta` to run it under emulation. It also defaults to **1 GB** of memory, which is below the engine minimum, so it exits with `requires at least 2000 megabytes of memory`. Always pass `--memory 4g`. Start the system once per boot.
 
 ```bash
 container system start
-container run -d --name sqldb --memory 4g --cpus 4 \
+container run -d --name sqldb --arch amd64 --rosetta --memory 4g --cpus 4 \
     -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
     -p 1433:1433 sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```
 
-Port publishing (`-p 1433:1433`) reaches the host at `localhost,1433`. There is no `docker compose` equivalent; use `container run`. Verified to run natively on Apple Silicon (arm64).
+Port publishing (`-p 1433:1433`) reaches the host at `localhost,1433`. There is no `docker compose` equivalent; use `container run`.
 
 ## Architecture notes
 
-- **macOS (Apple Silicon, arm64):** native, no emulation.
-- **Linux arm64 and x64:** native.
-- **Windows x64:** supported via Docker Desktop or WSL2.
+The image is x64 (`linux/amd64`). There is no native arm64 image.
+
+- **x64 hosts (Linux x64, Windows x64 via Docker Desktop or WSL2, Intel Mac):** native.
+- **Apple Silicon and arm64 Linux:** run under emulation. Use `--platform linux/amd64` (Docker) or `--arch amd64 --rosetta` (Apple Containers). The engine, T-SQL, and `VECTOR_DISTANCE` work; enable Rosetta in Docker Desktop for speed.
 - **Windows on ARM:** not supported in the preview.
-- **Vector features on arm64:** not functional yet; run the x64 image under emulation with `--platform linux/amd64` if you need vector search.
 
 ## Verify it is running
 

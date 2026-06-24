@@ -42,14 +42,14 @@ Some session-level and database-level defaults (collation, transaction isolation
 
 **Workaround:** For Private Preview prototypes, run vector search without an index (full scan). This is fine for the corpus sizes typical of a prototype. For larger corpora, file a feature request and we will prioritize.
 
-### 4. arm64: vector search and Windows on ARM
+### 4. Apple Silicon and arm64: run under emulation
 
-The container runs natively on Apple Silicon and arm64 Linux. Two arm64 gaps apply during the preview:
+The image is x64 (`linux/amd64`). It runs natively on x64 hosts: Linux, Windows (Docker Desktop or WSL2), and Intel Macs.
 
-- **Vector search is x64 only.** Vector indexes and similarity search (DiskANN) are not functional on the arm64 image yet. They work only on the x64 (amd64) image. If you need to evaluate vector features during the preview, use the x64 image.
-- **Windows on ARM is not supported.** Use an x64 Windows host, or macOS or Linux on arm64, where everything except vector search works natively.
+- **Apple Silicon and arm64 Linux run under emulation.** There is no native arm64 image. On an arm64 host, run the x64 image under emulation by passing `--platform linux/amd64`. The engine, T-SQL, and `VECTOR_DISTANCE` similarity search all work this way; expect some overhead compared with a native x64 host.
+- **Windows on ARM is not supported.** Use an x64 Windows host, or macOS or Linux on arm64 under emulation.
 
-**Workaround:** For vector features on an arm64 machine, run the x64 image under emulation: `docker run --platform linux/amd64 ...`. Track arm64 status in the open issues.
+**Tip:** On Apple Silicon, enable "Use Rosetta for x86/amd64 emulation" in Docker Desktop (Settings, General) for a large speedup over the default emulator. For the smoothest experience with heavier workloads, use a native x64 host.
 
 ## Known behavior gaps
 
