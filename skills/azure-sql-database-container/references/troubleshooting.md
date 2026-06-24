@@ -10,7 +10,7 @@
 | TLS / certificate validation error from a driver | Driver does not trust the self-signed certificate | Set `TrustServerCertificate=true` (or `yes`), or `-C` for sqlcmd. |
 | `USE <db>` returns `Msg 40508` | Azure SQL Database does not allow `USE` to switch databases | Select the database in the connection string (`Database=appdb`) and open a new connection; see `connection-model.md`. |
 | Image will not pull or run on Apple Silicon / arm64 (`no matching manifest`) | The image is x64 only; there is no native arm64 image | Run under emulation: `docker run --platform linux/amd64 ...`, or `container run --arch amd64 --rosetta ...` on Apple Containers. Enable Rosetta in Docker Desktop for speed. |
-| Running on Windows on ARM | Not supported in the preview | Use an x64 Windows host, or macOS / Linux on arm64 under emulation. |
+| Running on Windows on ARM | Not supported; the x64 emulation path is unavailable there (Apple Silicon and arm64 Linux are fine under emulation) | Use a native x64 Windows host. |
 | A statement succeeds locally but fails in Azure SQL Database | Some PaaS restrictions are not yet enforced locally | Validate against an Azure SQL Database instance before declaring readiness; the engine surface is the same but restriction enforcement is still landing. |
 
 ## Quick health check
