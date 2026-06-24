@@ -28,8 +28,9 @@ jobs:
     runs-on: ubuntu-latest
     services:
       sqldb:
-        image: mcr.microsoft.com/azure-sql-database:latest
+        image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
         env:
+          ACCEPT_EULA: "Y"
           MSSQL_SA_PASSWORD: ${{ secrets.SQL_SA_PASSWORD }}
         ports:
           - 1433:1433
@@ -70,7 +71,7 @@ Ensure tests read `process.env.SQL_CONNECTION_STRING` (Node) or the equivalent, 
 - The workflow waits until the database accepts connections before running tests (no fixed `sleep`).
 - The SA password comes from a secret, never hardcoded in the YAML.
 - Tests read the connection string from the environment and do not depend on a pre-seeded shared database.
-- `ACCEPT_EULA` is not set; the container does not require it.
+- `ACCEPT_EULA` is set to `Y`; the container requires it.
 
 ## Do not
 

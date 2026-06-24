@@ -81,6 +81,6 @@ Host platforms:
 | Linux                          | x86_64       | Supported                           |
 | Linux                          | arm64        | Supported (see Known limitations)   |
 | Windows                        | x86_64       | Supported (Docker Desktop, WSL2)    |
-| Windows                        | arm64        | Supported (Docker Desktop, WSL2)    |
+| Windows                        | arm64        | Not supported                       |
 
 See [Prerequisites](prerequisites.md) for setup details and [Known limitations](known-limitations.md) for current gaps.

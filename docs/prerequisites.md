@@ -10,6 +10,7 @@ description: "Supported host platforms, container runtimes, system resources, an
 - [Apple Silicon (arm64) notes](#apple-silicon-arm64-notes)
 - [System resources](#system-resources)
 - [Network and connectivity](#network-and-connectivity)
+- [Agent skill](#agent-skill)
 - [Tooling](#tooling)
 - [Azure account (optional, for local-to-cloud)](#azure-account-optional-for-local-to-cloud)
 
@@ -22,7 +23,7 @@ description: "Supported host platforms, container runtimes, system resources, an
 | Linux (Ubuntu, Debian, Fedora) | x86_64       | Supported                             |
 | Linux (Ubuntu, Debian, Fedora) | arm64        | Supported                             |
 | Windows 11                     | x86_64       | Supported (Docker Desktop or WSL2)    |
-| Windows 11                     | arm64        | Supported (Docker Desktop or WSL2)    |
+| Windows 11                     | arm64        | Not supported                         |
 
 ## Supported container runtimes
 
@@ -61,6 +62,16 @@ If your Docker Desktop or Rancher Desktop VM is set lower than this, the contain
 - **Initial pull:** You need an internet connection the first time you pull the image. After the pull, the container runs fully offline.
 - **TDS port:** The container exposes port `1433` by default. Make sure it is not already in use, or remap it in your `docker compose.yml` or run command.
 - **No outbound calls.** The container does not call home. It does not require internet connectivity at runtime.
+
+## Agent skill
+
+If you are driving the container with an AI coding agent (Claude Code, Codex, GitHub Copilot, or Cursor) or from the CLI, install the container skill first. For that workflow it is a hard requirement, more important than any individual tool below: the skill teaches your agent the registry sign-in, image name, ports, connection string, and the local-to-cloud handoff, so a single plain-English prompt is enough.
+
+```bash
+npx skills add azure-sql-database-container
+```
+
+It works across Claude Code, GitHub Copilot, Codex, and Cursor. Browse the skill and ready-made prompts in [agent skills](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/agent-skills). Without it, the agent will not know how to sign in to the registry, which image to run, or how to connect.
 
 ## Tooling
 

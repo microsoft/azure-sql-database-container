@@ -28,9 +28,10 @@ services:
         condition: service_healthy
 
   sqldb:
-    image: mcr.microsoft.com/azure-sql-database:latest
+    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
     environment:
       MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
     volumes:
@@ -67,7 +68,7 @@ docker compose up
 - The app uses `depends_on: condition: service_healthy` so it does not start before the database is ready.
 - Inside the compose network the connection host is the service name (`sqldb`), not `localhost`.
 - The connection string is provided via the environment, not hardcoded in app code.
-- `ACCEPT_EULA` is not set; the container does not require it.
+- `ACCEPT_EULA` is set to `Y`; the container requires it.
 
 ## Do not
 

@@ -27,9 +27,10 @@ Add a `docker-compose.yml` with the container so the database starts with one co
 ```yaml
 services:
   sqldb:
-    image: mcr.microsoft.com/azure-sql-database:latest
+    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
     environment:
       MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
     volumes:
@@ -69,7 +70,7 @@ docker compose up -d
 - Migrations and models use T-SQL-compatible types and `IDENTITY` keys.
 - Data access uses the ORM or parameterized queries, never string concatenation.
 - The project documents how to start the database and run migrations.
-- `ACCEPT_EULA` is not set; the container does not require it.
+- `ACCEPT_EULA` is set to `Y`; the container requires it.
 
 ## Do not
 

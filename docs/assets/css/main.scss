@@ -312,7 +312,8 @@ code, pre { font-family: var(--font-mono); }
 .prose blockquote { margin: 24px 0; padding: 16px 20px; background: var(--mist); border-left: 3px solid var(--azure); border-radius: 0 10px 10px 0; color: var(--text); }
 .prose blockquote p { margin: 0; }
 .prose code { font-family: var(--font-mono); font-size: .87em; background: var(--mist); border: 1px solid var(--line); padding: 1px 6px; border-radius: 5px; color: var(--ink); }
-.prose pre { background: var(--ink); color: #e7eefc; border-radius: 12px; padding: 18px 20px; overflow-x: auto; margin: 0 0 22px; border: 1px solid var(--ink-3); box-shadow: var(--shadow); }
+.prose pre { position: relative; background: var(--ink); color: #e7eefc; border-radius: 12px; padding: 18px 20px; overflow-x: auto; margin: 0 0 22px; border: 1px solid var(--ink-3); box-shadow: var(--shadow); }
+.code-copy { position: absolute; top: 10px; right: 10px; }
 .prose pre code { background: none; border: 0; padding: 0; color: inherit; font-size: .86rem; line-height: 1.7; }
 .prose table { width: 100%; border-collapse: collapse; margin: 0 0 24px; font-size: .94rem; }
 .prose th, .prose td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); }
@@ -394,6 +395,13 @@ code, pre { font-family: var(--font-mono); }
 .install-foot { padding: 14px 18px 16px; border-top: 1px solid var(--line-dark); color: var(--on-dark-mut); font-size: .82rem; line-height: 1.5; }
 .install-foot a { color: var(--vector); }
 .install-foot a:hover { text-decoration: none; opacity: .85; }
+
+/* ---------- engine pivot (Docker vs Apple Containers) in docs ---------- */
+.pivot { display: inline-flex; gap: 4px; background: var(--mist); border: 1px solid var(--line); border-radius: 10px; padding: 4px; margin: 0 0 16px; }
+.pivot-btn { font-family: var(--font-display); font-weight: 600; font-size: .88rem; color: var(--muted); background: transparent; border: 0; border-radius: 7px; padding: 7px 16px; cursor: pointer; transition: background .15s ease, color .15s ease, box-shadow .15s ease; }
+.pivot-btn.is-active { background: var(--white); color: var(--ink); box-shadow: var(--shadow); }
+.pivot-btn:hover:not(.is-active) { color: var(--ink); }
+.engine-block[hidden] { display: none; }
 
 /* ---------- quickstart: numbered steps with full-width command bars ---------- */
 .qsteps { display: flex; flex-direction: column; gap: 18px; max-width: 940px; }

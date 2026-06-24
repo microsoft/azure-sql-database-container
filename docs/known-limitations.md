@@ -42,11 +42,14 @@ Some session-level and database-level defaults (collation, transaction isolation
 
 **Workaround:** For Private Preview prototypes, run vector search without an index (full scan). This is fine for the corpus sizes typical of a prototype. For larger corpora, file a feature request and we will prioritize.
 
-### 4. arm64 layer
+### 4. arm64: vector search and Windows on ARM
 
-The arm64 image layer is being optimized. On Apple Silicon and arm64 Linux you may see slower startup or a missing capability compared to the x86_64 image.
+The container runs natively on Apple Silicon and arm64 Linux. Two arm64 gaps apply during the preview:
 
-**Workaround:** Run under Rosetta translation if you hit a regression: `docker run --platform linux/amd64 ...`. Track the arm64 layer status in the open issues.
+- **Vector search is x64 only.** Vector indexes and similarity search (DiskANN) are not functional on the arm64 image yet. They work only on the x64 (amd64) image. If you need to evaluate vector features during the preview, use the x64 image.
+- **Windows on ARM is not supported.** Use an x64 Windows host, or macOS or Linux on arm64, where everything except vector search works natively.
+
+**Workaround:** For vector features on an arm64 machine, run the x64 image under emulation: `docker run --platform linux/amd64 ...`. Track arm64 status in the open issues.
 
 ## Known behavior gaps
 

@@ -18,14 +18,16 @@ Identify the project's package manager (`npm`, `yarn`, `pnpm`, `bun`) and use it
 
 ### 1. Start the Azure SQL Database container
 
-Run the container locally on port 1433 with a strong SA password. Do NOT set `ACCEPT_EULA`; this container does not require it.
+Run the container locally on port 1433 with a strong SA password. Set `ACCEPT_EULA=Y`; this container requires it.
 
 ```bash
-docker run -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
-    -p 1433:1433 -d mcr.microsoft.com/azure-sql-database:latest
+# The image is in a private preview registry; sign in with the credentials from the welcome email first
+docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io
+docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
+    -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```
 
-The image tag is provisional during Private Preview; use the exact tag from the welcome email if different.
+The registry path and image tag are provisional during Private Preview; use the exact values from the welcome email if different.
 
 ### 2. Install the driver and configure the project
 
@@ -133,4 +135,3 @@ node index.js
 
 - Do not hardcode credentials or print the connection string or password.
 - Do not change the application code to deploy to the cloud. To go to Azure SQL Database, change only `SQL_CONNECTION_STRING` (server + auth). The drivers, T-SQL, and migrations stay the same.
-- Do not set `ACCEPT_EULA`; the container does not require it.

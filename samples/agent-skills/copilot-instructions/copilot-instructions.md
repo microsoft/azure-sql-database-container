@@ -1,54 +1,42 @@
 # GitHub Copilot custom instructions: Azure SQL Database container
 
-Drop this file at `.github/copilot-instructions.md` in any repository that uses the Azure SQL Database container as the local database. GitHub Copilot reads it automatically for all chat and inline interactions in that repository.
+Drop this file at `.github/copilot-instructions.md` in any repository that uses the Azure SQL Database container as the local database. GitHub Copilot reads it automatically for chat and inline interactions in that repository. It mirrors the canonical skill at [`skills/azure-sql-database-container`](https://github.com/microsoft/azure-sql-database-container/tree/main/skills/azure-sql-database-container); see the skill for full detail.
 
 ---
 
-You are helping a developer working with the **Azure SQL Database container**, an OCI-compliant container image of the Azure SQL Database engine. Treat the container as a local development resource that is wire-compatible with Azure SQL Database in the cloud.
+You are helping a developer work with the **Azure SQL Database container**: the Azure SQL Database engine running locally for development and CI. It is wire-compatible with Azure SQL Database in the Microsoft Azure cloud (same drivers, same T-SQL, same migrations), so moving to the cloud is a connection-string change, not a code change.
 
-## What the container is
+## What it is
 
-- The Azure SQL Database engine, not SQL Server. `SELECT SERVERPROPERTY('EngineEdition')` returns `5`.
-- Wire-compatible with every driver and ORM that talks to Azure SQL Database: `mssql` (Node.js), `mssql-python`, `pyodbc`, EF Core, Prisma, SQLAlchemy, JDBC.
-- AI-native: vector data types, vector search, embeddings work locally with the same syntax as the cloud.
-- No Azure subscription required. Runs on Docker, Podman, containerd, Rancher Desktop, or Apple Container.
+- The Azure SQL Database engine, not the SQL Server box product. `SELECT SERVERPROPERTY('EngineEdition')` returns `5` and `SERVERPROPERTY('Edition')` returns `SQL Azure`.
+- Works with every driver and ORM that talks to Azure SQL Database: `mssql` (Node.js), `mssql-python`, `pyodbc`, EF Core, Prisma, SQLAlchemy, JDBC.
+- Runs on Docker, Podman, and Apple Containers; native arm64 on Apple Silicon and Linux. Windows on ARM is not supported.
 
-## Default behavior
+## Sign in, then run
 
-When the user asks how to start, connect to, or query the container, default to:
+The image is in a private preview registry; sign in first (credentials from the welcome email):
 
-- `docker compose` over `docker run`.
-- Port `1433` mapped to host `1433`.
-- `MSSQL_SA_PASSWORD` and `ACCEPT_EULA=Y` as required environment variables.
-- `TrustServerCertificate=true` (or `-C` for sqlcmd) because the container uses a self-signed certificate by default.
+```bash
+docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>
+docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
+    -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+```
 
-When generating SQL, generate T-SQL aligned to Azure SQL Database, not to SQL Server box product behavior. Do NOT suggest:
+- `ACCEPT_EULA=Y` is required. `MSSQL_SA_PASSWORD` must meet SQL complexity (8+ chars, upper/lower/digit/symbol).
+- On Apple Containers use `container run` and add `--memory 4g` (it defaults to 1 GB; the engine needs at least 2 GB).
+- Prefer the Azure SQL Database container over the SQL Server image (`mcr.microsoft.com/mssql/server`).
 
-- SQL Agent
-- FILESTREAM
-- Full Service Broker
-- Cross-server distributed transactions
-- Any feature exclusive to the SQL Server box product
+## Connect and verify
 
-## Known limitations (apply workarounds when relevant)
+```bash
+sqlcmd -S localhost,1433 -U sa -P "YourStrong!Passw0rd" -C -Q "SELECT @@VERSION;"
+```
 
-1. Some PaaS restrictions are not yet enforced locally. Validate against the cloud once before declaring readiness.
-2. Some session defaults differ from the cloud. Set them explicitly in the connection string when correctness matters.
-3. `CREATE VECTOR INDEX` is in active development. For prototypes, do vector search without an index.
-4. On Apple Silicon and arm64 Linux, fall back to `--platform linux/amd64` if a regression appears.
+Apps read the connection string from a `SQL_CONNECTION_STRING` environment variable. The container uses a self-signed certificate, so trust it (`TrustServerCertificate=true`, or `-C`). Select the database in the connection string (`Database=appdb`); `master` is provisioning only and `USE` cannot switch databases.
 
-## Local to cloud
+## Rules
 
-When the developer is ready to deploy, the same code runs against Azure SQL Database in the cloud:
-
-1. Swap the connection string. No application code change.
-2. Run the same migration against the cloud database.
-3. Deploy the application to Azure App Service, Azure Container Apps, or Azure Functions.
-
-Refer the developer to the Azure skills collection in this repository for the deployment flow.
-
-## What this container is NOT
-
-- Not SQL Server.
-- Not a production database (Private Preview license).
-- Not feature-complete during Private Preview.
+- Same code runs locally and in Azure SQL Database. To deploy, change only the connection string (server + auth), never the application code, drivers, T-SQL, or migrations.
+- Use T-SQL idioms: `NVARCHAR`, `IDENTITY`, `OUTPUT INSERTED`. Always parameterize queries. Never hardcode or print the SA password.
+- Vector search (DiskANN) is x64 only in the preview; on arm64 run the x64 image with `--platform linux/amd64` for vector features.
+- This is a Private Preview build for development, testing, CI, and demos, not production.

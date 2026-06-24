@@ -11,7 +11,6 @@ description: "Pick the right channel for your question: GitHub Issues, Discussio
 - [Email and meetings](#email-and-meetings)
 - [Private Teams channel](#private-teams-channel)
 - [Office hours](#office-hours)
-- [Profiling survey](#profiling-survey)
 
 ## Pick the right channel
 
@@ -26,7 +25,6 @@ description: "Pick the right channel for your question: GitHub Issues, Discussio
 | Book live time with the team                               | [Connect with the team](https://aka.ms/azuresql-container-meet) |
 | Talk to the team in real time                              | Private Teams channel (link in the welcome email) |
 | Demo, ask questions live, hear roadmap updates             | Office hours (calendar invite in the welcome email) |
-| Fill out the cohort profile survey                         | Profiling survey (link sent one week after sign-up) |
 
 ## GitHub Issues
 
@@ -86,7 +84,3 @@ Weekly office hours run for the duration of the Private Preview. The agenda temp
 - 10 min: engineering update
 
 Engineering attends. Bring your hardest question.
-
-## Profiling survey
-
-One week after you sign up, you receive a short profiling survey by email and in the Teams channel. It covers stack, deployment environment, scenarios, and use cases. It takes about five minutes and helps us segment the cohort so we can tailor what we ship next.

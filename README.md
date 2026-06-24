@@ -1,18 +1,14 @@
-<div align="center">
-
 # Azure SQL Database container
 
-### The Azure SQL Database engine, running locally.
+Run and build against Azure SQL Database, right on your local environment. Try it before you deploy, run your tests in CI, and ship with no code change. Free for development, with no Azure subscription and no credit card required.
 
-Build and test against the same engine you run in the Microsoft Azure cloud. Try Azure SQL Database before you deploy, and run your tests in CI. Free for local development. No Azure subscription.
-
-[![Status: Private Preview](https://img.shields.io/badge/status-private%20preview-1366E0?style=for-the-badge)](https://microsoft.github.io/azure-sql-database-container/)
-[![Docs](https://img.shields.io/badge/docs-read-0A1830?style=for-the-badge)](https://microsoft.github.io/azure-sql-database-container/)
-[![Discussions](https://img.shields.io/badge/discussions-join-18C7C7?style=for-the-badge)](../../discussions)
-[![Report a bug](https://img.shields.io/badge/report-a%20bug-D6334B?style=for-the-badge)](../../issues/new?template=bug_report.yml)
+[![Private Preview](https://img.shields.io/badge/Private%20Preview-green?logo=github)](https://microsoft.github.io/azure-sql-database-container/)
+[![Report Bug](https://img.shields.io/badge/Report%20Bug-red?logo=github)](../../issues/new?template=bug_report.yml)
+[![Request Feature](https://img.shields.io/badge/Request%20Feature-blue?logo=github)](../../issues/new?template=feature_request.yml)
+[![Discussions](https://img.shields.io/badge/Discussions-blueviolet?logo=github)](../../discussions)
 
 <a href="https://youtu.be/S6PWxUAUspY">
-  <img src="https://img.youtube.com/vi/S6PWxUAUspY/maxresdefault.jpg" alt="Watch the Azure SQL Database container demo" width="760">
+  <img src="docs/assets/img/azuresqldb-thumbnail.png" alt="Watch the Azure SQL Database container demo" width="760">
 </a>
 
 **▶ Watch the demo**

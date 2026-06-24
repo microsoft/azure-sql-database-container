@@ -19,10 +19,11 @@ Create `docker-compose.yml`. The container runs initialization `.sql` files moun
 ```yaml
 services:
   sqldb:
-    image: mcr.microsoft.com/azure-sql-database:latest
+    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
     container_name: sqldb
     environment:
       MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
+      ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
     volumes:
@@ -74,7 +75,7 @@ Verify offline operation by disabling the network and confirming the app still r
 - Seed data loads from a mounted `.sql` script, so no external service is needed at runtime.
 - A named volume persists data across restarts.
 - The app reads `SQL_CONNECTION_STRING` from the environment.
-- `ACCEPT_EULA` is not set; the container does not require it.
+- `ACCEPT_EULA` is set to `Y`; the container requires it.
 
 ## Do not
 

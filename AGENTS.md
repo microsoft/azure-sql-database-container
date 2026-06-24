@@ -8,15 +8,17 @@ The Azure SQL Database container is the Azure SQL Database engine, running local
 
 ## Use the container as a local database
 
-- Image: `mcr.microsoft.com/azure-sql-database` (multi-arch: linux/amd64 and linux/arm64). The exact tag for Private Preview is shared in the welcome email.
+- Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition` (multi-arch: linux/amd64 and linux/arm64). The exact tag for Private Preview is shared in the welcome email.
 - Start it:
 
   ```bash
-  docker run -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
-      -p 1433:1433 -d mcr.microsoft.com/azure-sql-database:latest
+  # The image is in a private preview registry; sign in with the credentials from the welcome email first
+  docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io
+  docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
+      -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
   ```
 
-- Do not set `ACCEPT_EULA`; this container does not require it at runtime.
+- Set `ACCEPT_EULA=Y`; this container requires it at runtime.
 - Connect with server `localhost,1433`, user `sa`, and the password you set. Expose the connection string to applications through a `SQL_CONNECTION_STRING` environment variable so the same code runs locally and in the cloud.
 
 ## When asked to add a SQL database to a project
@@ -27,7 +29,7 @@ The Azure SQL Database container is the Azure SQL Database engine, running local
 
 ## Ready-to-use skills
 
-- Container agent skill for Claude Code and GitHub Copilot: [`samples/agent-skills/`](samples/agent-skills/)
+- Container agent skills (Claude Code, GitHub Copilot, Codex, Cursor): [`skills/`](skills/) (install with `npx skills add microsoft/azure-sql-database-container`)
 
 ## Documentation
 
