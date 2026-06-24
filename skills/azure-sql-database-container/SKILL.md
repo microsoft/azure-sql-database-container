@@ -109,7 +109,7 @@ container rm -f sqldb         # Apple Containers
 ## Known limitations (apply automatically)
 
 - **The image is x64 (`linux/amd64`); arm64 runs under emulation.** There is no native arm64 image. On Apple Silicon or arm64 Linux, run with `--platform linux/amd64` (Docker), or `--arch amd64 --rosetta` (Apple Containers). The engine, T-SQL, and `VECTOR_DISTANCE` work under emulation; enable Rosetta in Docker Desktop for speed.
-- **Windows on ARM is not supported.** Use an x64 Windows host, or macOS / Linux on arm64 under emulation.
+- **Windows on ARM is the one unsupported host.** Use a native x64 Windows host. Apple Silicon and arm64 Linux are supported under emulation (see the bullet above).
 - **Restriction parity is still landing.** Some PaaS restrictions are not yet enforced locally, and a few session-level defaults differ. Validate against an Azure SQL Database instance once before declaring production readiness, and set defaults explicitly in the connection string when they matter.
 
 More symptoms and fixes (password complexity, port in use, TLS) are in `references/troubleshooting.md`.

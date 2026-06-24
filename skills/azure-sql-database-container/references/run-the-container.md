@@ -65,7 +65,7 @@ The image is x64 (`linux/amd64`). There is no native arm64 image.
 
 - **x64 hosts (Linux x64, Windows x64 via Docker Desktop or WSL2, Intel Mac):** native.
 - **Apple Silicon and arm64 Linux:** run under emulation. Use `--platform linux/amd64` (Docker) or `--arch amd64 --rosetta` (Apple Containers). The engine, T-SQL, and `VECTOR_DISTANCE` work; enable Rosetta in Docker Desktop for speed.
-- **Windows on ARM:** not supported in the preview.
+- **Windows on ARM:** not supported in the preview (use a native x64 Windows host). Apple Silicon and arm64 Linux are fine under emulation.
 
 ## Verify it is running
 
