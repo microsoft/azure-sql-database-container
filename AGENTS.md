@@ -29,7 +29,7 @@ The Azure SQL Database container is the Azure SQL Database engine, running local
 
 ## Ready-to-use skills
 
-- Container agent skill for Claude Code and GitHub Copilot: [`samples/agent-skills/`](samples/agent-skills/)
+- Container agent skills (Claude Code, GitHub Copilot, Codex, Cursor): [`skills/`](skills/) (install with `npx skills add microsoft/azure-sql-database-container`)
 
 ## Documentation
 

@@ -16,7 +16,7 @@
 - [AI / RAG with vector search](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/ai-rag)
 - [.NET Aspire](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/dotnet-aspire)
 - [CLI quickstart](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/cli)
-- [Agent skills for Claude Code and GitHub Copilot](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/agent-skills)
+- [Agent skills for Claude Code, GitHub Copilot, Codex, and Cursor](https://github.com/microsoft/azure-sql-database-container/tree/main/skills)
 
 ## Key facts
 - Image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition, multi-arch (linux/amd64 and linux/arm64). The exact tag for Private Preview is shared in the welcome email.
@@ -26,4 +26,4 @@
 
 ## Optional
 - [Repository](https://github.com/microsoft/azure-sql-database-container)
-- [Install the container agent skill](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/agent-skills): npx skills add azure-sql-database-container
+- [Install the container agent skills](https://github.com/microsoft/azure-sql-database-container/tree/main/skills): npx skills add microsoft/azure-sql-database-container
