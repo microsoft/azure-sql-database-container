@@ -85,9 +85,9 @@ Recommended developer tooling for working with the container:
 
 ## Azure account (optional, for local-to-cloud)
 
-The container itself does not require an Azure subscription. The local-to-cloud leg in each sample (deploying the same application against Azure SQL Database in production) does require an Azure subscription with permission to create:
+The container itself does not require an Azure subscription. The local-to-cloud leg (deploying the same application against Azure SQL Database in production) does require an Azure subscription with permission to create:
 
 - An Azure SQL Database server and database
 - A target compute resource for the application: Azure App Service, Azure Container Apps, or Azure Functions, depending on the stack
 
-See the [Azure skills collection](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/azure-skills/) for the deploy flow. If you do not have an Azure subscription, you can still run every local sample and exercise the full inner loop.
+See the [Azure skills collection](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/azure-skills/) for the deploy flow. If you do not have an Azure subscription, you can still do all local development and exercise the full inner loop.

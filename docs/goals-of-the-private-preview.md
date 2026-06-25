@@ -19,7 +19,7 @@ This Private Preview is the first time the container is in the hands of real dev
 
 ## What we want to validate
 
-1. **Real developer workflows.** How the container fits into daily development across modern stacks, and where it does not
+1. **Developer workflows.** How the container fits into daily development across modern stacks, and where it does not.
 2. **Local-to-cloud consistency.** Whether it is a true drop-in for Azure SQL Database: same connection string, drivers, T-SQL, migrations, and deployment behavior.
 3. **AI-native development.** Whether vector and embedding scenarios work well for local RAG and transition cleanly to cloud.
 4. **AI coding agent workflows.** Whether agents like Claude, Codex, and GitHub Copilot can reliably scaffold schema, migrations, and data access against the container
@@ -28,7 +28,7 @@ This Private Preview is the first time the container is in the hands of real dev
 
 ## What we are asking from you
 
-- **Try the samples in the [samples folder](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/).** Each sample includes a local-to-cloud leg using the Azure skills collection. Run both legs end-to-end and tell us where the seams are.
+- **Try the ready-made prompts.** Point your AI agent at the container with the [agent skill](https://github.com/microsoft/azure-sql-database-container/tree/main/skills) and a prompt from [docs/prompts](https://github.com/microsoft/azure-sql-database-container/tree/main/docs/prompts), and tell us where the seams are.
 - **Build something real, however small.** A demo, a learning project, a feature in an existing application. The closer to your actual workflow, the better the feedback.
 - **File issues for everything that surprises you.** Performance, behavior, ergonomics, documentation. Use [GitHub Issues](https://github.com/microsoft/azure-sql-database-container/issues) for bugs and feature requests.
 - **Show up to office hours.** A weekly slot for live questions, demos, and feedback. See the welcome email for the calendar invite.
@@ -36,7 +36,7 @@ This Private Preview is the first time the container is in the hands of real dev
 ## What you get from us
 
 - **Direct engineering channel.** The triage rotation is a named engineer per week. Bugs are acknowledged within one business day; critical issues get an acknowledgement plus a plan within two business days.
-- **Working samples across stacks.** Node.js + Prisma, Python + SQLAlchemy, AI / RAG, .NET Aspire, CLI. Each sample is tested end to end and includes the local-to-cloud deployment leg.
+- **Ready-made prompts and an agent skill.** Prompts for the common scenarios (local-to-cloud, AI / RAG, CI, offline, sidecar, scaffolding) plus a skill any AI agent can load so it understands the registry, image, connection, and the local-to-cloud handoff.
 - **Container-specialized agent skills.** Loadable by any AI agent (Claude, Codex, GitHub Copilot) so the agent understands prerequisites, parameters, connection, common errors, and the local-to-cloud handoff.
 - **Private Teams channel for real-time conversation.** Customers are under NDA; the channel is private and access-controlled.
 - **Weekly office hours.** Live questions, demos, and roadmap updates. Engineering attends.
