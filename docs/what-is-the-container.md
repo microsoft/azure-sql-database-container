@@ -78,7 +78,7 @@ Host platforms. The image is x64 (`linux/amd64`); on a non-x64 host, add `--plat
 | ------------------------------ | ------------ | ------------------------------------- |
 | macOS                          | x86_64       | Supported (native)                    |
 | Linux                          | x86_64       | Supported (native)                    |
-| Windows                        | x86_64       | Supported (Docker Desktop, WSL2)      |
+| Windows                        | x86_64       | Supported (WSL2)                      |
 
 See [Prerequisites](prerequisites.md) for setup details and [Known limitations](known-limitations.md) for current gaps.
 

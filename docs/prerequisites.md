@@ -21,13 +21,13 @@ The image is x64 (`linux/amd64`); on a non-x64 host, add `--platform linux/amd64
 | ------------------------------ | ------------ | -------------------------------------------- |
 | macOS 14 or later              | x86_64       | Supported (native)                           |
 | Linux (Ubuntu, Debian, Fedora) | x86_64       | Supported (native)                           |
-| Windows 11                     | x86_64       | Supported (Docker Desktop or WSL2)           |
+| Windows 11                     | x86_64       | Supported (WSL2)                             |
 
 ## Supported container runtimes
 
 The container is OCI-compliant and runs on any modern runtime. Tested runtimes:
 
-- **Docker Desktop** 4.30 or later
+- **Docker** 24 or later
 - **Podman** 5.0 or later
 - **Rancher Desktop** 1.13 or later
 - **containerd** (via `nerdctl` or Kubernetes)
@@ -42,7 +42,7 @@ Minimum allocation for the container runtime:
 - **Memory:** 4 GB available to the runtime VM
 - **Disk:** 10 GB free for the image and a small database; more for larger datasets
 
-If your Docker Desktop or Rancher Desktop VM is set lower than this, the container may fail to start or may run with reduced performance.
+If your container runtime's VM is set lower than this, the container may fail to start or may run with reduced performance.
 
 ## Network and connectivity
 

@@ -36,7 +36,7 @@ body:
     attributes:
       label: Container runtime
       options:
-        - Docker Desktop
+        - Docker
         - Podman
         - Rancher Desktop
         - containerd / nerdctl
@@ -48,7 +48,7 @@ body:
     id: runtime-version
     attributes:
       label: Runtime version
-      placeholder: "Docker Desktop 4.34.2"
+      placeholder: "Docker 27.0.3"
     validations:
       required: true
 
