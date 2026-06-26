@@ -35,13 +35,9 @@ volumes:
 
 ### 2. Create the schema and seed data
 
-Create `db/seed.sql` with the schema and enough realistic rows to demo the app offline.
+Create `db/seed.sql` with the schema and enough realistic rows to demo the app offline. It targets `appdb` (selected with `-d appdb` in step 3), so it contains no `CREATE DATABASE` and no `USE`:
 
 ```sql
-IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;
-GO
-USE appdb;
-GO
 CREATE TABLE products (
     id INT IDENTITY(1,1) PRIMARY KEY,
     name NVARCHAR(200) NOT NULL,
@@ -59,13 +55,16 @@ GO
 ```bash
 docker compose up -d
 
-# Wait until the engine accepts connections, then apply the seed (it is not auto-run)
+# Wait until the engine is ready and create appdb (it is not auto-created). The -b makes a SQL
+# error set the exit code, so transient startup errors are retried, not masked.
 until docker compose exec -T sqldb /opt/mssql-tools18/bin/sqlcmd \
-    -S localhost -U sa -P "YourStrong!Passw0rd" -C -l 2 -Q "SELECT 1" >/dev/null 2>&1; do
+    -S localhost -U sa -P "YourStrong!Passw0rd" -C -b -l 2 \
+    -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do
   sleep 2
 done
+# Apply the schema and data to appdb. Select the database with -d; do not USE.
 docker compose exec -T sqldb /opt/mssql-tools18/bin/sqlcmd \
-    -S localhost -U sa -P "YourStrong!Passw0rd" -C -i /seed.sql
+    -S localhost -U sa -P "YourStrong!Passw0rd" -C -b -d appdb -i /seed.sql
 ```
 
 The seed runs once; the named volume keeps `appdb` and its data across restarts, so later `docker compose up -d` runs need no network and no re-seed.
