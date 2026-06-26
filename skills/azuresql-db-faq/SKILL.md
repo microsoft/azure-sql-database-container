@@ -42,7 +42,7 @@ managed cloud service, and it is not the SQL Server box product. Sort almost any
 
 ## Most-asked questions (quick answers)
 
-- **"Can I take a backup?"** No: `BACKUP DATABASE` and `RESTORE DATABASE` return **Msg 40510 ("not supported in this version")**, the same as Azure SQL Database in the cloud, where backups are managed by the platform (not by the `BACKUP` statement). For local data persistence, use a Docker named volume (`-v sqldb-data:/var/opt/mssql`); for managed backups, point-in-time restore, or geo-replication, use Azure SQL Database in the cloud.
+- **"Can I take a backup?"** No: `BACKUP DATABASE` and `RESTORE DATABASE` return **Msg 40510 ("not supported in this version")** on the container, in every session. Azure SQL Database in the cloud likewise does not support them, because backups there are managed by the platform (not run with the `BACKUP` statement). For local data persistence, use a Docker named volume (`-v sqldb-data:/var/opt/mssql`); for managed backups, point-in-time restore, or geo-replication, use Azure SQL Database in the cloud.
 - **"Why does `USE otherdb` fail with Msg 40508?"** Because a connection to a user database is an Azure-faithful (SDS) session that enforces the same restriction as Azure SQL Database in the cloud. Select the database in the connection string (`Database=appdb`), do not switch with `USE`. (`USE` "works" only on a `master` connection, which is a non-SDS provisioning session.)
 - **"Why does connecting fail until I create the database?"** The engine does **not** auto-create databases on connect. Provision once on a `master` connection (`CREATE DATABASE appdb`), then connect with `Database=appdb`.
 - **"Is Apple Silicon / arm64 supported?"** The image is x64 only. On a non-x64 host it runs under emulation by adding `--platform linux/amd64` (Docker) or `platform: linux/amd64` (compose). Treat arm64 as "runs under emulation", not "supported".
@@ -68,4 +68,4 @@ limitations list (kept in step with the docs) is in [references/limitations.md](
 - Never claim a managed-service feature (automated backup, PITR, geo-replication,
   elastic pools, portal management) exists on the container.
 - Never tell a user arm64/Apple Silicon is "supported"; it runs under emulation.
-- Never claim `BACKUP DATABASE` / `RESTORE DATABASE` work on the container; they return Msg 40510, like the cloud. Use a Docker named volume for local persistence.
+- Never claim `BACKUP DATABASE` / `RESTORE DATABASE` work on the container; they return Msg 40510. (Azure SQL Database in the cloud likewise does not support them.) Use a Docker named volume for local persistence.

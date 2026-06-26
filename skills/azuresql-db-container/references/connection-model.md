@@ -18,8 +18,9 @@ The single most common source of failures. Read this before connecting an app.
 3. **A `master` connection is for provisioning only.** `master` is a non-SDS
    session: the Azure SQL statement filter (`USE`, `SHUTDOWN`, `RECONFIGURE`) is
    not enforced there, so `USE` works. (`BACKUP`/`RESTORE` are a separate case:
-   they are not supported in any session and return `Msg 40510`, matching the
-   cloud, so do not rely on them on `master` either.) Never develop or validate
+   they are not supported in any session and return `Msg 40510`; Azure SQL Database
+   in the cloud likewise does not support them, so do not rely on them on `master`
+   either.) Never develop or validate
    against `master`; use it only to `CREATE`/`DROP DATABASE`, then connect
    directly to the user database (SDS), which enforces Azure SQL Database semantics.
 

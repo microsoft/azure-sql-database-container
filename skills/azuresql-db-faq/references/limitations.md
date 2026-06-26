@@ -17,7 +17,7 @@ https://aka.ms/azuresqldb-container-bug to file an issue.
 
 ## Known behavior gaps (differences from the cloud)
 
-- **Backup and restore.** `BACKUP DATABASE` / `RESTORE DATABASE` are not supported (return `Msg 40510` in any session, like the cloud). Use a Docker named volume for local persistence; use Azure SQL Database in the cloud for managed backups, point-in-time restore, and geo-replication.
+- **Backup and restore.** `BACKUP DATABASE` / `RESTORE DATABASE` are not supported on the container (return `Msg 40510` in any session). Azure SQL Database in the cloud likewise does not support them. Use a Docker named volume for local persistence; use Azure SQL Database in the cloud for managed backups, point-in-time restore, and geo-replication.
 - **Always Encrypted with secure enclaves.** Basic Always Encrypted works; secure enclaves need host TEE support and are not validated.
 - **Auditing to Log Analytics or Storage.** Audit-to-file works; audit-to-cloud-targets is not applicable on the container.
 - **Resource governance.** No per-database DTU or vCore caps (those are cloud SKU properties).
