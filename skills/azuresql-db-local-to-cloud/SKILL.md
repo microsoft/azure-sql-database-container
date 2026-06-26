@@ -97,8 +97,7 @@ Just enough to run the examples on a fresh container. For full detail see the
 - Avoid `USE` to switch databases. In a user-database (SDS) session (the
   Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly
   as in Azure SQL Database in the cloud. A `master` connection is a non-SDS
-  provisioning session where the Azure statement filter is not enforced, so `USE`
-  (and `BACKUP`/`RESTORE`) appear to work there, but `master` is for provisioning
+  provisioning session where the Azure statement filter is not enforced, so `USE` appears to work there, but `master` is for provisioning
   only, not application work. Always select the target database in the connection
   string (`Database=appdb`, or `-d appdb` for sqlcmd).
 
@@ -226,7 +225,7 @@ A third stack and the deployment checklist live in
   session (the Azure-faithful context where you develop), `USE` returns
   `Msg 40508`, exactly as in Azure SQL Database in the cloud. A `master`
   connection is a non-SDS provisioning session where the Azure statement filter is
-  not enforced, so `USE` (and `BACKUP`/`RESTORE`) appear to work there, but
+  not enforced, so `USE` appears to work there, but
   `master` is for provisioning only, not application work. Always select the
   target database in the connection string (`Database=appdb`, or `-d appdb` for
   sqlcmd).
