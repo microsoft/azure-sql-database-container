@@ -35,7 +35,7 @@ embedding model returns. Common values:
 | many cloud text models | 1536      |
 
 If you change models, the dimension usually changes; the column type, the
-`CAST(? AS VECTOR(n))` literal, and `EMBED_DIM` in code must all move together.
+`CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n))` literal, and `EMBED_DIM` in code must all move together.
 
 ## Table shapes
 

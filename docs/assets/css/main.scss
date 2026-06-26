@@ -412,12 +412,13 @@ section[id] { scroll-margin-top: 84px; }
 .install-foot a { color: var(--vector); }
 .install-foot a:hover { text-decoration: none; opacity: .85; }
 
-/* ---------- engine pivot in docs ---------- */
-.pivot { display: inline-flex; gap: 4px; background: var(--mist); border: 1px solid var(--line); border-radius: 10px; padding: 4px; margin: 0 0 16px; }
-.pivot-btn { font-family: var(--font-display); font-weight: 600; font-size: .88rem; color: var(--muted); background: transparent; border: 0; border-radius: 7px; padding: 7px 16px; cursor: pointer; transition: background .15s ease, color .15s ease, box-shadow .15s ease; }
-.pivot-btn.is-active { background: var(--white); color: var(--ink); box-shadow: var(--shadow); }
-.pivot-btn:hover:not(.is-active) { color: var(--ink); }
-.engine-block[hidden] { display: none; }
+/* ---------- "what the skills do" table in #ai-agents ---------- */
+.skill-table-lead { color: var(--muted); font-size: 1.05rem; max-width: 760px; margin: 36px 0 14px; }
+.skill-table { width: 100%; border-collapse: collapse; margin: 0 0 8px; font-size: .95rem; }
+.skill-table th, .skill-table td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.skill-table thead th { font-family: var(--font-display); font-size: .8rem; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.skill-table tbody td:first-child { font-weight: 600; color: var(--ink); white-space: nowrap; }
+.skill-table code { font-size: .85em; }
 
 /* ---------- quickstart: numbered steps with full-width command bars ---------- */
 .qsteps { display: flex; flex-direction: column; gap: 18px; max-width: 940px; }

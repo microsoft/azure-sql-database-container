@@ -59,7 +59,7 @@ remove or replace every usage.
 ## New capabilities
 
 - Native `VECTOR(n)` column type and `VECTOR_DISTANCE('cosine', a, b)` for
-  embedding search. Insert with `CAST(? AS VECTOR(n))` where `n` is a literal,
+  embedding search. Insert with `CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n))` where `n` is a literal,
   never a bind parameter. `CREATE VECTOR INDEX` (DiskANN) is still in
   development; use a full-scan top-k query for now.
 - Behavior matches Azure SQL Database, so local dev catches Azure-specific

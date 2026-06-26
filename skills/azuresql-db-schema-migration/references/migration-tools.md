@@ -193,7 +193,7 @@ Notes:
 - `Msg 913` / connection refused right after `docker run`: the engine was not
   ready. Run the ready-wait loop with `-b -l` before migrating.
 - "Incorrect syntax near '@P3'" on a vector insert: the `VECTOR(n)` dimension was
-  passed as a bind parameter. Make `n` a literal in `CAST(? AS VECTOR(n))`.
+  passed as a bind parameter. Make `n` a literal in `CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n))`.
 - Login/cert errors with ODBC Driver 18 or sqlcmd: add `TrustServerCertificate`
   (`=yes` for ODBC URLs, `=true` for ADO.NET, `-C` for sqlcmd).
 - Tool points at `mcr.microsoft.com/mssql/server`: wrong image. Use

@@ -1,8 +1,8 @@
 # Azure SQL Database Skills (azuresql-db-*)
 
-**This is the actual Azure SQL Database engine running locally, with cloud parity.** Not an emulator, not a look-alike, not the SQL Server box image. It is the same managed cloud engine you run in Azure, packaged as a container for local development. **No competitor runs the managed cloud engine locally.**
+The Azure SQL Database container is the Azure SQL Database engine, running locally. It is for the developer who wants a local database that behaves like Azure SQL Database in the Microsoft Azure cloud, with no Azure subscription, no shared instance, and no credit card required. The container runs the same engine that powers Azure SQL Database in the cloud: the T-SQL dialect, the system views, the connection protocol, the driver behavior, and the AI-native capabilities are the same as in the cloud. The connection string changes; the application does not.
 
-You can prove the identity from any connection:
+These skills teach an AI coding agent to use it the right way. You can prove the identity from any connection:
 
 ```sql
 SELECT SERVERPROPERTY('EngineEdition');  -- 5
@@ -60,11 +60,9 @@ Same skills, per-agent install location (mirrors how Google, Supabase, and Neon 
 | Agent | Install location |
 | --- | --- |
 | Claude Code | `.claude/skills/` (project) or `~/.claude/skills/` (global) |
-| Claude Desktop | `~/Library/Application Support/Claude/skills/` |
-| Cursor | `.cursor/skills/` (project) |
-| GitHub Copilot in VS Code | `.github/skills/` |
+| GitHub Copilot (VS Code + CLI) | `.github/skills/` (the VS Code extension and the Copilot CLI both read it) |
 | Codex | `~/.codex/skills/` |
-| Gemini CLI | `~/.gemini/skills/` |
+| Cursor | `.cursor/skills/` (project) |
 
 `npx skills add` targets the active agent automatically; the table above is for manual placement.
 
@@ -74,7 +72,9 @@ Same skills, per-agent install location (mirrors how Google, Supabase, and Neon 
 
 Every skill in this collection holds these facts true. If a generated workflow contradicts any of them, it is wrong.
 
-- **Image:** `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest` (x64 / linux/amd64, private preview registry). Sign in first: `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>` (enter the password when prompted). The shared, pull-only credentials are not in any doc; request them through the early-access feedback channel. Treat them as secrets and do not redistribute; they are pull-only and may rotate during the preview. It is **not** `mcr.microsoft.com/mssql/server`.
+- **Image:** `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest` (x64 / linux/amd64, private preview registry). Sign in first: `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>` (enter the password when prompted). It is **not** `mcr.microsoft.com/mssql/server`.
+
+  > **Note:** the registry username and password are **provided to Private Preview cohort participants**. Request them via the early-access feedback channel. They are shared and pull-only, must be treated as secrets (do not redistribute), and may be rotated during the preview.
 - **EULA:** `ACCEPT_EULA=Y` is required.
 - **Password:** a complex `MSSQL_SA_PASSWORD` (8+ chars, upper/lower/digit/symbol) is required.
 - **Port:** the engine listens on **1433**.
@@ -82,7 +82,7 @@ Every skill in this collection holds these facts true. If a generated workflow c
 
 ### Platform
 
-The image is x64 only; there is no arm64 image. On a non-x64 host, add `--platform linux/amd64` (Docker) or `platform: linux/amd64` (compose). Apple Silicon / arm64 is not "supported"; it runs only under x64 emulation.
+The image is x64 only; there is no arm64 image. On a non-x64 host, add `--platform linux/amd64` (Docker) or `platform: linux/amd64` (compose) to run it under x64 emulation.
 
 ### Connection model (three facts that bite)
 
