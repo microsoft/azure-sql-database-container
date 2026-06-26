@@ -1,4 +1,4 @@
-# Azure SQL Database Skills (azuresql-db-*)
+# Azure SQL Database Skills
 
 The Azure SQL Database container is the Azure SQL Database engine, running locally. It is for the developer who wants a local database that behaves like Azure SQL Database in the Microsoft Azure cloud, with no Azure subscription, no shared instance, and no credit card required. The container runs the same engine that powers Azure SQL Database in the cloud: the T-SQL dialect, the system views, the connection protocol, the driver behavior, and the AI-native capabilities are the same as in the cloud. The connection string changes; the application does not.
 
