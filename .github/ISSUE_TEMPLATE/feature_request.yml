@@ -1,7 +1,8 @@
 name: Feature request
 description: Request a new capability, a behavior change, or an extension to the Azure SQL Database container.
 title: "[Feature]: "
-labels: ["enhancement", "needs-triage"]
+type: Feature
+labels: ["enhancement", "needs-triage", "User-filled"]
 body:
   - type: markdown
     attributes:
@@ -21,9 +22,7 @@ body:
     id: current-workaround
     attributes:
       label: Current workaround
-      description: How are you handling this today? "No workaround" is a valid answer.
-    validations:
-      required: true
+      description: How are you handling this today? "No workaround" is a valid answer. Optional.
 
   - type: textarea
     id: proposed

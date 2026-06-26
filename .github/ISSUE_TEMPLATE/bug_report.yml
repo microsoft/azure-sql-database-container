@@ -1,21 +1,19 @@
 name: Bug report
 description: Report a bug, regression, or unexpected behavior in the Azure SQL Database container.
 title: "[Bug]: "
-labels: ["bug", "needs-triage"]
+type: Bug
+labels: ["bug", "needs-triage", "User-filled"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to file a bug. Please fill every field. The more complete the report, the faster the triage.
-
-        Before filing, please scan the [open issues](../../issues) for a duplicate and read [Known limitations](../../docs/known-limitations.md). If your bug is a known limitation, comment on the tracking issue with your scenario instead of opening a new one.
+        Thanks for filing a bug. Before you do, scan the [open issues](../../issues) and [Known limitations](https://microsoft.github.io/azure-sql-database-container/known-limitations.html) — if it is a known limitation, comment there instead.
 
   - type: input
     id: image-tag
     attributes:
       label: Container image tag
-      description: The exact image tag you pulled.
-      placeholder: "mcr.microsoft.com/azure-sql-database/container:preview"
+      placeholder: "sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest"
     validations:
       required: true
 
@@ -27,62 +25,35 @@ body:
         - macOS (x86_64 / Intel)
         - Linux (x86_64)
         - Windows 11 (x86_64)
-        - Other (describe in repro)
+        - Other (describe below)
     validations:
       required: true
 
-  - type: dropdown
+  - type: input
     id: runtime
     attributes:
-      label: Container runtime
-      options:
-        - Docker
-        - Podman
-        - Rancher Desktop
-        - containerd / nerdctl
-        - Other (describe in repro)
+      label: Container runtime and version
+      placeholder: "Docker 27.0.3 / Podman 5.0 / Rancher Desktop 1.13"
     validations:
       required: true
 
-  - type: input
-    id: runtime-version
+  - type: textarea
+    id: description
     attributes:
-      label: Runtime version
-      placeholder: "Docker 27.0.3"
+      label: What happened
+      description: What you expected versus what actually happened. Include error messages and `docker logs sqldb`.
     validations:
       required: true
-
-  - type: input
-    id: driver-orm
-    attributes:
-      label: Driver / ORM
-      description: If applicable.
-      placeholder: "Prisma 5.18 / mssql-python 1.0 / EF Core 9.0"
 
   - type: textarea
     id: repro
     attributes:
-      label: Reproduction steps
-      description: Step-by-step. Include the docker compose file or run command if relevant.
+      label: Steps to reproduce
+      description: Include the `docker run` command or `docker-compose.yml` if relevant.
       placeholder: |
-        1. Run `docker compose up -d` with the attached `docker-compose.yml`.
+        1. Start the container with ...
         2. Connect with `sqlcmd -S localhost,1433 -U sa -P ... -C`.
-        3. Run query: ...
-    validations:
-      required: true
-
-  - type: textarea
-    id: expected
-    attributes:
-      label: Expected behavior
-    validations:
-      required: true
-
-  - type: textarea
-    id: actual
-    attributes:
-      label: Actual behavior
-      description: Include error messages, stack traces, and `docker logs sqldb` output.
+        3. Run query / observe ...
     validations:
       required: true
 
@@ -90,14 +61,12 @@ body:
     id: additional
     attributes:
       label: Additional context
-      description: Anything else relevant. Screenshots, related issues, links.
+      description: Driver/ORM and version, screenshots, related issues. Optional.
 
   - type: checkboxes
     id: confirm
     attributes:
       label: Confirmation
       options:
-        - label: I have scanned open issues for duplicates.
-          required: true
-        - label: I have read the Known limitations doc.
+        - label: I scanned open issues and Known limitations for a duplicate.
           required: true

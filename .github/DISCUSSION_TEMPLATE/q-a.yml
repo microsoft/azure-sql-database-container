@@ -6,9 +6,9 @@ body:
       value: |
         Ask a "how do I" question about the Azure SQL Database container. Before posting, scan the existing Q&A and the docs:
 
-        - [Prerequisites](../../docs/prerequisites.md)
-        - [Getting Started](../../docs/getting-started.md)
-        - [Known limitations](../../docs/known-limitations.md)
+        - [Prerequisites](https://microsoft.github.io/azure-sql-database-container/prerequisites.html)
+        - [Getting Started](https://microsoft.github.io/azure-sql-database-container/getting-started.html)
+        - [Known limitations](https://microsoft.github.io/azure-sql-database-container/known-limitations.html)
 
   - type: textarea
     id: question

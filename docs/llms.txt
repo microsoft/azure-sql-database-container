@@ -10,12 +10,14 @@
 - [Known limitations](https://microsoft.github.io/azure-sql-database-container/known-limitations.html): current gaps and workarounds.
 - [Feedback and how to engage](https://microsoft.github.io/azure-sql-database-container/feedback-and-how-to-engage.html): GitHub Issues and Discussions, the team email, and office hours.
 
-## Samples
-- [Node.js + Prisma](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/nodejs-prisma)
-- [Python + SQLAlchemy](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/python-sqlalchemy)
-- [AI / RAG with vector search](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/ai-rag)
-- [.NET Aspire](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/dotnet-aspire)
-- [CLI quickstart](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/cli)
+## Build prompts
+Copy-and-run prompts to hand your AI coding agent, each building a scenario against the container:
+- [Build locally, ship to Azure (Node.js)](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/local-to-cloud.md)
+- [Prototype AI / RAG with vector search (Python + Ollama)](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/ai-rag.md)
+- [Run integration tests in CI](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/ci.md)
+- [Develop offline](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/offline.md)
+- [Drop in as a sidecar](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/sidecar.md)
+- [Scaffold a new project](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/templates.md)
 - [Agent skills for Claude Code, GitHub Copilot, Codex, and Cursor](https://github.com/microsoft/azure-sql-database-container/tree/main/skills)
 
 ## Key facts
