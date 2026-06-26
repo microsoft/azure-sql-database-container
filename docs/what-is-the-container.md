@@ -41,7 +41,7 @@ The container exposes the same engine surface as Azure SQL Database:
 The container supports the same AI-native capabilities as Azure SQL Database:
 
 - **Native vector type.** Store embeddings in a native `vector` column, with the same type and storage as the cloud.
-- **DiskANN vector indexes.** Build approximate-nearest-neighbor indexes with `CREATE VECTOR INDEX` for fast similarity search at scale.
+- **DiskANN vector indexes (in development).** `CREATE VECTOR INDEX` for approximate-nearest-neighbor search at scale is in active development; run full-scan `VECTOR_DISTANCE` queries today. See [Known limitations](known-limitations.md).
 - **Vector search.** Run similarity search with `VECTOR_DISTANCE` (cosine, euclidean, and dot product).
 - **In-database embeddings and models.** Generate embeddings with `AI_GENERATE_EMBEDDINGS` and bind an embedding endpoint with `CREATE EXTERNAL MODEL`. Use a local model (Ollama) while you build, then switch to Azure OpenAI in the cloud.
 - **REST from T-SQL.** Call external services with `sp_invoke_external_rest_endpoint`.
@@ -100,7 +100,7 @@ This is the first time the container is in the hands of developers building real
 - **Try the ready-made prompts.** Point your AI agent at the container with the [agent skill](https://github.com/microsoft/azure-sql-database-container/tree/main/skills) and a prompt from [docs/prompts](https://github.com/microsoft/azure-sql-database-container/tree/main/docs/prompts), and tell us where the seams are.
 - **Build something real, however small.** A demo, a learning project, or a feature in an existing application. The closer to your actual workflow, the better the feedback.
 - **File issues for everything that surprises you.** Performance, behavior, ergonomics, documentation. Use [GitHub Issues](https://github.com/microsoft/azure-sql-database-container/issues) for bugs and feature requests.
-- **Show up to office hours.** A weekly slot for live questions, demos, and feedback. See the welcome email for the calendar invite.
+- **Show up to office hours.** A weekly slot for live questions, demos, and feedback. The calendar invite is shared via the early-access feedback channel.
 
 ### What you get from us
 

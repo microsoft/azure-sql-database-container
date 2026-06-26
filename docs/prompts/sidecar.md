@@ -41,7 +41,7 @@ services:
     volumes:
       - sqldb-data:/var/opt/mssql
     healthcheck:
-      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost,1433 -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' || exit 1"]
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost,1433 -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -b -l 2 -Q 'SELECT 1' || exit 1"]
       interval: 10s
       timeout: 10s
       retries: 12

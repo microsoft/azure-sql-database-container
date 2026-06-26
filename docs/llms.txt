@@ -15,6 +15,7 @@ Copy-and-run prompts to hand your AI coding agent, each building a scenario agai
 - [Build locally, ship to Azure (Node.js)](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/local-to-cloud.md)
 - [Prototype AI / RAG with vector search (Python + Ollama)](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/ai-rag.md)
 - [Run integration tests in CI](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/ci.md)
+- [Convert from the SQL Server box image](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/from-sql-server.md)
 - [Develop offline](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/offline.md)
 - [Drop in as a sidecar](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/sidecar.md)
 - [Scaffold a new project](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/templates.md)

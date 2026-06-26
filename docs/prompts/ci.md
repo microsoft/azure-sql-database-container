@@ -43,7 +43,7 @@ jobs:
         # The runner has no sqlcmd; let the service report readiness with a health check
         # that runs sqlcmd INSIDE the container. Actions blocks the job's steps until it passes.
         options: >-
-          --health-cmd="/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$MSSQL_SA_PASSWORD\" -C -l 2 -Q 'SELECT 1'"
+          --health-cmd="/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$MSSQL_SA_PASSWORD\" -C -b -l 2 -Q 'SELECT 1'"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=12

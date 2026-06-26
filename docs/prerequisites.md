@@ -55,7 +55,7 @@ If your container runtime's VM is set lower than this, the container may fail to
 If you are driving the container with an AI coding agent (Claude Code, Codex, GitHub Copilot, or Cursor) or from the CLI, install the container skill first. For that workflow it is a hard requirement, more important than any individual tool below: the skill teaches your agent the registry sign-in, image name, ports, connection string, and the local-to-cloud handoff, so a single plain-English prompt is enough.
 
 ```bash
-npx skills add azuresql-db-container
+npx skills add microsoft/azure-sql-database-container
 ```
 
 It works across Claude Code, GitHub Copilot, Codex, and Cursor. Browse the skill and ready-made prompts in [agent skills](https://github.com/microsoft/azure-sql-database-container/tree/main/skills). Without it, the agent will not know how to sign in to the registry, which image to run, or how to connect.
