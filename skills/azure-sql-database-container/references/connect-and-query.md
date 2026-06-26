@@ -24,10 +24,6 @@ The image ships `sqlcmd` at `/opt/mssql-tools18/bin/sqlcmd`:
 ```bash
 docker exec sqldb /opt/mssql-tools18/bin/sqlcmd \
     -S localhost -U sa -P "YourStrong!Passw0rd" -C -Q "SELECT @@VERSION;"
-
-# Apple Containers
-container exec sqldb /opt/mssql-tools18/bin/sqlcmd \
-    -S localhost -U sa -P "YourStrong!Passw0rd" -C -Q "SELECT @@VERSION;"
 ```
 
 ## VS Code MSSQL extension

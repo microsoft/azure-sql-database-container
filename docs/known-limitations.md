@@ -42,15 +42,9 @@ Some session-level and database-level defaults (collation, transaction isolation
 
 **Workaround:** For Private Preview prototypes, run vector search without an index (full scan). This is fine for the corpus sizes typical of a prototype. For larger corpora, file a feature request and we will prioritize.
 
-### 4. ARM hosts: supported under emulation, except Windows on ARM
+### 4. x64 image; non-x64 hosts need a platform flag
 
-The image is x64 (`linux/amd64`); there is no native arm64 image. ARM hosts are still supported. They run the x64 image under emulation:
-
-- **x64 hosts run it natively:** Linux, Windows (Docker Desktop or WSL2), and Intel Macs.
-- **Apple Silicon and arm64 Linux run it under emulation.** Pass `--platform linux/amd64`. The engine, T-SQL, and `VECTOR_DISTANCE` similarity search all work; expect some overhead compared with a native x64 host.
-- **Windows on ARM is the one exception: not supported.** The x64 emulation path is not available there, so use a native x64 Windows host. Apple Silicon and arm64 Linux remain supported under emulation.
-
-**Tip:** On Apple Silicon, enable "Use Rosetta for x86/amd64 emulation" in Docker Desktop (Settings, General) for a large speedup over the default emulator. For the smoothest experience with heavier workloads, use a native x64 host.
+The image is x64 (`linux/amd64`); on a non-x64 host, add `--platform linux/amd64`.
 
 ## Known behavior gaps
 

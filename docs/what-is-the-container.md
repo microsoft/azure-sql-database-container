@@ -71,18 +71,14 @@ The container is OCI-compliant and runs on any modern container runtime.
 | Podman            | Supported |
 | containerd        | Supported |
 | Rancher Desktop   | Supported |
-| Apple Container   | Supported |
 
-Host platforms. The image is x64 (`linux/amd64`); on arm64 hosts it runs under emulation.
+Host platforms. The image is x64 (`linux/amd64`); on a non-x64 host, add `--platform linux/amd64`.
 
 | Host OS                        | Architecture | Status                                |
 | ------------------------------ | ------------ | ------------------------------------- |
 | macOS                          | x86_64       | Supported (native)                    |
-| macOS                          | arm64        | Supported under emulation             |
 | Linux                          | x86_64       | Supported (native)                    |
-| Linux                          | arm64        | Supported under emulation             |
 | Windows                        | x86_64       | Supported (Docker Desktop, WSL2)      |
-| Windows                        | arm64        | Not supported                         |
 
 See [Prerequisites](prerequisites.md) for setup details and [Known limitations](known-limitations.md) for current gaps.
 

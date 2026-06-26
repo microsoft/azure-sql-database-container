@@ -24,12 +24,9 @@ body:
     attributes:
       label: Host OS
       options:
-        - macOS (arm64 / Apple Silicon)
         - macOS (x86_64 / Intel)
         - Linux (x86_64)
-        - Linux (arm64)
         - Windows 11 (x86_64)
-        - Windows 11 (arm64)
         - Other (describe in repro)
     validations:
       required: true
@@ -43,7 +40,6 @@ body:
         - Podman
         - Rancher Desktop
         - containerd / nerdctl
-        - Apple Container
         - Other (describe in repro)
     validations:
       required: true
