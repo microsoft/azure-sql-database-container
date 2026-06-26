@@ -22,7 +22,7 @@ If you hit a limitation that is not on this page, please file a [GitHub issue](h
 
 ## Active issues we are fixing
 
-The following five issues are the ones we are actively fixing.
+The following issues are the ones we are actively fixing.
 
 ### 1. Restriction enforcement gaps
 
@@ -49,6 +49,12 @@ The image is x64 (`linux/amd64`); on a non-x64 host, add `--platform linux/amd64
 ### 5. Two-step provisioning
 
 Two-step provisioning is a current limitation: you provision a database on a master connection, then reconnect directly to it. Public preview will let the container set a default startup database (for example `MSSQL_DB=appdb`) so you connect straight into an Azure-faithful (SDS) session without going through master.
+
+### 6. GUI tooling compatibility (MSSQL extension and SSMS)
+
+Graphical tools are not yet 100% compatible with the container. The [VS Code MSSQL extension](https://marketplace.visualstudio.com/items?itemName=ms-mssql.mssql) and SQL Server Management Studio (SSMS) can throw UI errors against it. We are actively working on full compatibility.
+
+**Workaround:** Query with `sqlcmd` (on the host or the copy bundled in the container, via `docker exec`), or with any driver or ORM. These all work today. The MSSQL extension's GitHub Copilot integration also works now, for example opening the schema designer or writing SQL from natural language.
 
 ## Known behavior gaps
 
