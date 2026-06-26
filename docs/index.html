@@ -246,6 +246,15 @@ title: Azure SQL Database container
     </div>
     <div class="grid-3">
       <article class="card">
+        <span class="tag">from sql server</span>
+        <h3>Already using the SQL Server image?</h3>
+        <p>Convert a project on the <code>mcr.microsoft.com/mssql/server</code> box image to the Azure SQL Database engine: swap the image, fix the connection model, and flag box-only features. Azure-faithful local dev.</p>
+        <div class="card-actions">
+          <button class="card-prompt" type="button" data-prompt="{{ '/prompts/from-sql-server.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
+          <a class="card-view" href="{{ '/prompts/from-sql-server.md' | relative_url }}">View</a>
+        </div>
+      </article>
+      <article class="card">
         <span class="tag">local &rarr; cloud</span>
         <h3>Build locally, ship to Azure</h3>
         <p>Develop and test at local-disk speed with no cloud round trip, then deploy the same code to Azure SQL Database. Lift and shift is a connection-string change.</p>
