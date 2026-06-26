@@ -6,8 +6,8 @@ description: "Go from pulling the Azure SQL Database container to your first que
 ## Table of Contents
 
 - [Before you start](#before-you-start)
-- [Option A: set it up with your AI agent](#option-a-set-it-up-with-your-ai-agent)
-- [Option B: set it up yourself](#option-b-set-it-up-yourself)
+- [Fastest: let your AI agent set it up](#fastest-let-your-ai-agent-set-it-up)
+- [Manual: run it yourself](#manual-run-it-yourself)
   - [Step 1: sign in and pull the image](#step-1-sign-in-and-pull-the-image)
   - [Step 2: start the container](#step-2-start-the-container)
   - [Step 3: connect and run your first query](#step-3-connect-and-run-your-first-query)
@@ -25,7 +25,7 @@ You do **not** need sqlcmd or any database tool installed: the container brings 
 
 From here you have two ways to reach your first query. Both end in the same place, a running container you can connect to, so pick one.
 
-## Option A: set it up with your AI agent
+## Fastest: let your AI agent set it up
 
 Your agent does the whole setup for you: it pulls the image, starts the container, provisions the database, and runs your first query. You install the skill once, then ask in plain English.
 
@@ -39,7 +39,7 @@ The skill works across Claude Code, GitHub Copilot (VS Code and CLI), Codex, and
 
 **Why use the skills?** They already know the private preview registry, the x64 image, the connection model (the engine does not auto-create databases, so they provision a database first, named `appdb` in these examples or whatever name you choose), the readiness wait, and the local-to-cloud story. So your agent stands up a real Azure SQL Database the right way the first time, instead of reaching for the SQL Server box image (`mcr.microsoft.com/mssql/server`) or inventing behavior the engine does not have. Browse the [skills on GitHub](https://github.com/microsoft/azure-sql-database-container/tree/main/skills).
 
-## Option B: set it up yourself
+## Manual: run it yourself
 
 Prefer to run it yourself? Three commands take you from pull to query, with Docker or Podman.
 
