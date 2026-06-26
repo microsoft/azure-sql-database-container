@@ -68,12 +68,18 @@ The registry path, image tag, and credentials are provisional during Private Pre
 Start it on port `1433` with one command:
 
 ```bash
-# on a non-x64 host, add --platform linux/amd64
 docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
     -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```
 
-Or use `docker compose`. Create a `docker-compose.yml`, then run `docker compose up -d`.
+On Apple Silicon or any other non-x64 host, copy this version instead. It adds `--platform linux/amd64` so the x64 image runs under emulation:
+
+```bash
+docker run --platform linux/amd64 --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
+    -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+```
+
+Or use `docker compose`. Create a `docker-compose.yml`, then run `docker compose up -d`. On a non-x64 host, add `platform: linux/amd64` under the `sqldb` service.
 
 ```yaml
 services:

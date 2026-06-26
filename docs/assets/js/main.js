@@ -14,6 +14,25 @@
     }, 1600);
   }
 
+  // Make a copied command paste-safe on every shell. The display keeps the
+  // readable multi-line form with a trailing "\", but bash/zsh use "\" for line
+  // continuation while PowerShell uses "`" and cmd uses "^", so a copied
+  // multi-line block breaks on Windows. Joining the continuations into one line
+  // produces a command that runs verbatim in bash, PowerShell, and cmd. We also
+  // drop comment-only lines ("#" is not a comment in cmd or PowerShell either).
+  // Quotes, "!", and every other character are preserved exactly; indentation
+  // on non-continued lines (YAML, code) is left untouched.
+  function normalizeCommand(text) {
+    return text
+      .replace(/[ \t]*\\[ \t]*\r?\n[ \t]*/g, " ") // join "\" line-continuations
+      .split(/\r?\n/)
+      .filter(function (line) { return !/^[ \t]*#/.test(line); }) // drop comment-only lines
+      .join("\n")
+      .replace(/\n{2,}/g, "\n") // collapse blank lines left by removed comments
+      .replace(/^\n+/, "")
+      .replace(/\n+$/, "");
+  }
+
   function copyText(text, btn) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(function () { flash(btn); }, function () {});
@@ -33,7 +52,7 @@
         var target = document.querySelector(btn.getAttribute("data-copy"));
         text = target ? target.innerText : "";
       }
-      copyText(text, btn);
+      copyText(normalizeCommand(text), btn);
     });
   });
 
@@ -46,7 +65,7 @@
     btn.innerHTML = '<span class="copy-label">Copy</span>';
     btn.addEventListener("click", function () {
       var code = pre.querySelector("code") || pre;
-      copyText(code.innerText, btn);
+      copyText(normalizeCommand(code.innerText), btn);
     });
     pre.appendChild(btn);
   });
