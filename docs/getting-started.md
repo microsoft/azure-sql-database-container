@@ -36,7 +36,7 @@ Then ask your agent in plain English, for example:
 
 > Add a local Azure SQL Database to this project, then scaffold the schema, migrations, and data-access layer for my stack.
 
-The skill teaches your agent the registry, image, ports, and connection string, so it can sign in, start the container, and wire your app to it. Browse the skill and more ready-made prompts in [agent skills](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/agent-skills).
+The skill teaches your agent the registry, image, ports, and connection string, so it can sign in, start the container, and wire your app to it. Browse the skill and more ready-made prompts in [agent skills](https://github.com/microsoft/azure-sql-database-container/tree/main/skills).
 
 ## Option B: set it up yourself
 

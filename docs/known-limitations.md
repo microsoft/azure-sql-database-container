@@ -28,7 +28,7 @@ The following four issues are the ones we are actively fixing.
 
 Some PaaS restrictions that are enforced in Azure SQL Database in the cloud are not yet enforced by the container. This means a query that succeeds locally may fail at deployment time against the cloud database.
 
-**Workaround:** Run your queries against an Azure SQL Database instance once before declaring readiness. The [Azure skills collection](https://github.com/microsoft/azure-sql-database-container/tree/main/samples/azure-skills/) provisions a target database you can use for a one-shot validation pass.
+**Workaround:** Run your queries against an Azure SQL Database instance once before declaring readiness. The [local-to-cloud skill](https://github.com/microsoft/azure-sql-database-container/tree/main/skills/azure-sql-local-to-cloud) can provision a target database for a one-shot validation pass.
 
 ### 2. Default value alignment
 
