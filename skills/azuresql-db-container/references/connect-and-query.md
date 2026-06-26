@@ -16,8 +16,10 @@ was already provisioned (see `connection-model.md`).
 
 ## sqlcmd in the container
 
-The image ships sqlcmd at `/opt/mssql-tools18/bin/sqlcmd`. Use `-C` to trust the
-self-signed certificate and `-b` so a SQL error sets the exit code.
+The image ships sqlcmd at `/opt/mssql-tools18/bin/sqlcmd`, so the host does not
+need sqlcmd installed. Prefer this form when sqlcmd is not on the host (or to
+avoid a dependency at all). Use `-C` to trust the self-signed certificate and
+`-b` so a SQL error sets the exit code.
 
 ```bash
 docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
