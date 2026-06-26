@@ -59,14 +59,6 @@ title: Azure SQL Database container
           <li><a href="https://learn.microsoft.com/sql/connect/sql-connection-libraries" rel="noopener">TypeORM</a></li>
         </ul>
       </div>
-      <div class="chip-group">
-        <span class="chip-label">Tools</span>
-        <ul class="chips">
-          <li><a href="https://learn.microsoft.com/sql/tools/sqlcmd/sqlcmd-utility" rel="noopener">sqlcmd</a></li>
-          <li><a href="https://marketplace.visualstudio.com/items?itemName=ms-mssql.mssql" rel="noopener">MSSQL for VS Code</a></li>
-          <li><a href="https://learn.microsoft.com/sql/ssms/sql-server-management-studio-ssms" rel="noopener">SSMS</a></li>
-        </ul>
-      </div>
     </div>
   </div>
 </section>
@@ -76,7 +68,7 @@ title: Azure SQL Database container
   <div class="container">
     <div class="section-head">
       <p class="eyebrow"><span class="eyebrow-dot"></span>Quickstart</p>
-      <h2>Up and running in three commands.</h2>
+      <h2>Up and running in three commands.<a class="head-anchor" href="#quickstart" aria-label="Link to this section">#</a></h2>
       <p class="lead">New to containers? This is all you need: sign in, start the container, and run your first query. Your preview registry credentials arrive in your welcome email.</p>
     </div>
     <div class="qsteps">
@@ -121,11 +113,11 @@ title: Azure SQL Database container
 </section>
 
 <!-- ============ AI AGENTS ============ -->
-<section class="section">
+<section class="section" id="ai-agents">
   <div class="container">
     <div class="section-head">
       <p class="eyebrow"><span class="eyebrow-dot"></span>Built for AI-assisted development</p>
-      <h2>Bring your AI coding agent.</h2>
+      <h2>Bring your AI coding agent.<a class="head-anchor" href="#ai-agents" aria-label="Link to this section">#</a></h2>
       <p class="lead">Point your agent at the container and let it scaffold the schema, write the migrations, and build the data layer against a real local database. The repo ships ready-to-use <a href="{{ site.repo }}/tree/main/samples/agent-skills" rel="noopener">agent skills</a>.</p>
     </div>
     <div class="agents">
@@ -163,11 +155,11 @@ title: Azure SQL Database container
 </section>
 
 <!-- ============ WHY ============ -->
-<section class="section">
+<section class="section" id="why">
   <div class="container">
     <div class="section-head">
       <p class="eyebrow"><span class="eyebrow-dot"></span>Why the container</p>
-      <h2>Cloud parity, in your local environment.</h2>
+      <h2>Cloud parity, in your local environment.<a class="head-anchor" href="#why" aria-label="Link to this section">#</a></h2>
       <p class="lead">This is the Azure SQL Database engine itself, running locally. The database in your local environment behaves like the one in the Microsoft Azure cloud.</p>
     </div>
     <div class="grid-3">
@@ -249,7 +241,7 @@ title: Azure SQL Database container
   <div class="container">
     <div class="section-head">
       <p class="eyebrow"><span class="eyebrow-dot"></span>Use cases</p>
-      <h2>What can you build with it?</h2>
+      <h2>What can you build with it?<a class="head-anchor" href="#build" aria-label="Link to this section">#</a></h2>
       <p class="lead">The everyday jobs a cloud-only database makes slow or expensive. Pick one, copy the prompt, and let your AI agent build it against the container.</p>
     </div>
     <div class="grid-3">
@@ -311,80 +303,13 @@ title: Azure SQL Database container
   </div>
 </section>
 
-<!-- ============ SAMPLES ============ -->
-<section class="section" id="samples" style="display: none;">
-  <div class="container">
-    <div class="section-head">
-      <p class="eyebrow"><span class="eyebrow-dot"></span>Samples</p>
-      <h2>Start from your stack.</h2>
-      <p class="lead">Each sample runs locally against the container and includes a local-to-cloud leg. Working code lands per sample during the preview.</p>
-    </div>
-    <div class="grid-3 samples">
-      <div class="sample">
-        <span class="tag">TypeScript</span>
-        <h3>Node.js + Prisma</h3>
-        <p>JavaScript and TypeScript projects with Prisma migrations.</p>
-        <div class="sample-foot">
-          <button class="card-prompt" type="button" data-copy-text="npx degit microsoft/azure-sql-database-container/samples/nodejs-prisma azure-sql-nodejs-prisma"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Clone</span></button>
-          <a class="sample-go" href="{{ site.repo }}/tree/main/samples/nodejs-prisma" rel="noopener">GitHub &rarr;</a>
-        </div>
-      </div>
-      <div class="sample">
-        <span class="tag">Python</span>
-        <h3>Python + SQLAlchemy</h3>
-        <p>Python apps with SQLAlchemy models and Alembic migrations.</p>
-        <div class="sample-foot">
-          <button class="card-prompt" type="button" data-copy-text="npx degit microsoft/azure-sql-database-container/samples/python-sqlalchemy azure-sql-python-sqlalchemy"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Clone</span></button>
-          <a class="sample-go" href="{{ site.repo }}/tree/main/samples/python-sqlalchemy" rel="noopener">GitHub &rarr;</a>
-        </div>
-      </div>
-      <div class="sample sample-accent">
-        <span class="tag tag-vector">AI / RAG</span>
-        <h3>AI / RAG with vector search</h3>
-        <p>Embeddings and similarity search with the native vector type.</p>
-        <div class="sample-foot">
-          <button class="card-prompt" type="button" data-copy-text="npx degit microsoft/azure-sql-database-container/samples/ai-rag azure-sql-ai-rag"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Clone</span></button>
-          <a class="sample-go" href="{{ site.repo }}/tree/main/samples/ai-rag" rel="noopener">GitHub &rarr;</a>
-        </div>
-      </div>
-      <div class="sample">
-        <span class="tag">.NET</span>
-        <h3>.NET Aspire</h3>
-        <p>SQL Database as a first-class Aspire resource.</p>
-        <div class="sample-foot">
-          <button class="card-prompt" type="button" data-copy-text="npx degit microsoft/azure-sql-database-container/samples/dotnet-aspire azure-sql-dotnet-aspire"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Clone</span></button>
-          <a class="sample-go" href="{{ site.repo }}/tree/main/samples/dotnet-aspire" rel="noopener">GitHub &rarr;</a>
-        </div>
-      </div>
-      <div class="sample">
-        <span class="tag">CLI</span>
-        <h3>CLI quickstart</h3>
-        <p>A docker-compose-only path to a running database.</p>
-        <div class="sample-foot">
-          <button class="card-prompt" type="button" data-copy-text="npx degit microsoft/azure-sql-database-container/samples/cli azure-sql-cli"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Clone</span></button>
-          <a class="sample-go" href="{{ site.repo }}/tree/main/samples/cli" rel="noopener">GitHub &rarr;</a>
-        </div>
-      </div>
-      <div class="sample">
-        <span class="tag">AI agents</span>
-        <h3>Agent skills</h3>
-        <p>Tool-agnostic container skills for Claude and GitHub Copilot.</p>
-        <div class="sample-foot">
-          <button class="card-prompt" type="button" data-copy-text="npx degit microsoft/azure-sql-database-container/samples/agent-skills azure-sql-agent-skills"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Clone</span></button>
-          <a class="sample-go" href="{{ site.repo }}/tree/main/samples/agent-skills" rel="noopener">GitHub &rarr;</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- ============ ENGAGE (dark) ============ -->
-<section class="section section-dark">
+<section class="section section-dark" id="engage">
   <div class="hero-grid-bg" aria-hidden="true"></div>
   <div class="container">
     <div class="section-head section-head-light">
       <p class="eyebrow eyebrow-light"><span class="eyebrow-dot"></span>Get involved</p>
-      <h2>You shape this preview.</h2>
+      <h2>You shape this preview.<a class="head-anchor" href="#engage" aria-label="Link to this section">#</a></h2>
       <p class="lead lead-light">Your bugs and feature requests set the priorities. Reach the team directly, or pick the channel that fits your question.</p>
     </div>
     <div class="engage-cta">
@@ -400,7 +325,7 @@ title: Azure SQL Database container
         <h3>Discussions &rarr;</h3>
         <p>Ask a question, share what you built, or pitch an idea.</p>
       </a>
-      <a class="res" href="{{ site.repo }}/issues/new?template=bug_report.yml" rel="noopener">
+      <a class="res" href="https://aka.ms/azuresqldb-container-bug" rel="noopener">
         <h3>Report a bug &rarr;</h3>
         <p>A reproducible test case is the fastest path to a fix.</p>
       </a>

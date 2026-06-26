@@ -18,7 +18,7 @@ This page lists the limitations we know about as of the version date above. Two 
 - **Active issues we are fixing** are blockers we are working on now. If you hit one, the workaround is listed inline and the fix is tracked.
 - **Known behavior gaps** are functional differences from Azure SQL Database in the cloud. They may close, or they may not, depending on Private Preview feedback.
 
-If you hit a limitation that is not on this page, please file a [GitHub issue](https://github.com/microsoft/azure-sql-database-container/issues/new?template=bug_report.yml) so we can either add it here or fix it.
+If you hit a limitation that is not on this page, please file a [GitHub issue](https://aka.ms/azuresqldb-container-bug) so we can either add it here or fix it.
 
 ## Active issues we are fixing
 
@@ -67,7 +67,7 @@ These are intentional non-goals for the container:
 
 - **Cloud-only management surfaces.** Azure portal, Azure CLI, ARM, Bicep, and Terraform target the cloud service. They are not applicable to the container.
 - **PaaS multi-tenancy controls.** Elastic pools, hyperscale tier, serverless auto-pause, and similar PaaS service-tier features are properties of the cloud service, not the engine.
-- **SQL Server box-product behavior.** Features that exist in SQL Server but not in Azure SQL Database (e.g., SQL Agent, FILESTREAM, full Service Broker, distributed transactions across multiple databases on different servers) are intentionally not present.
+- **SQL Server box-product behavior.** Features that exist in SQL Server but not in Azure SQL Database (e.g., SQL Agent, FILESTREAM, full Service Broker, Windows Authentication / NTLM, distributed transactions across multiple databases on different servers) are intentionally not present.
 
 ## Where to find live status
 

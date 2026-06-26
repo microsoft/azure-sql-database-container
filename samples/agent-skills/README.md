@@ -18,4 +18,4 @@ For GitHub Copilot, drop [copilot-instructions/copilot-instructions.md](copilot-
 
 ## Why this matters
 
-The container is most useful when an AI agent treats it as a first-class local resource. The skill is the contract between the container and the agent. If the agent cannot answer something after loading the skill, please [file an issue](../../../issues/new?template=bug_report.yml) so we can extend it.
+The container is most useful when an AI agent treats it as a first-class local resource. The skill is the contract between the container and the agent. If the agent cannot answer something after loading the skill, please [file an issue](https://aka.ms/azuresqldb-container-bug) so we can extend it.
