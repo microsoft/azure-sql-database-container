@@ -26,6 +26,8 @@ services:
     depends_on:
       sqldb:
         condition: service_healthy
+      sqldb-init:
+        condition: service_completed_successfully
 
   sqldb:
     image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
@@ -39,15 +41,27 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost,1433 -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' || exit 1"]
       interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 30s
+      timeout: 10s
+      retries: 12
+      start_period: 45s
+
+  # One-shot: create the application database once the engine is healthy.
+  # Azure SQL Database does not create databases automatically, so the app's
+  # target database (appdb) must be provisioned before the app starts.
+  sqldb-init:
+    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+    depends_on:
+      sqldb:
+        condition: service_healthy
+    restart: "no"
+    entrypoint: ["/opt/mssql-tools18/bin/sqlcmd", "-S", "sqldb,1433", "-U", "sa",
+      "-P", "YourStrong!Passw0rd", "-C", "-Q", "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"]
 
 volumes:
   sqldb-data:
 ```
 
-Note: inside the compose network the app reaches the database at host `sqldb` (the service name), not `localhost`.
+Note: inside the compose network the app reaches the database at host `sqldb` (the service name), not `localhost`. The app waits for both the database to be healthy and `sqldb-init` to finish creating `appdb`.
 
 ### 2. Mirror it in the Dev Container (if present)
 
@@ -66,6 +80,7 @@ docker compose up
 ## Validation rules
 
 - The app uses `depends_on: condition: service_healthy` so it does not start before the database is ready.
+- The application database (`appdb`) is created by a one-shot init service before the app starts; the engine does not create it automatically.
 - Inside the compose network the connection host is the service name (`sqldb`), not `localhost`.
 - The connection string is provided via the environment, not hardcoded in app code.
 - `ACCEPT_EULA` is set to `Y`; the container requires it.
