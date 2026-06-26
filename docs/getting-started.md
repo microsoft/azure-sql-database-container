@@ -1,17 +1,16 @@
 ---
 title: "Getting started"
-description: "Get the Azure SQL Database container running and run your first query, either by asking an AI coding agent or by hand."
+description: "Go from pulling the Azure SQL Database container to your first query in under a minute, either with your AI agent or by hand. No sqlcmd install required."
 ---
 
 ## Table of Contents
 
 - [Before you start](#before-you-start)
-- [Option A: let an AI coding agent do it](#option-a-let-an-ai-coding-agent-do-it)
+- [Option A: set it up with your AI agent](#option-a-set-it-up-with-your-ai-agent)
 - [Option B: set it up yourself](#option-b-set-it-up-yourself)
   - [Step 1: sign in and pull the image](#step-1-sign-in-and-pull-the-image)
   - [Step 2: start the container](#step-2-start-the-container)
-  - [Step 3: verify it is running](#step-3-verify-it-is-running)
-  - [Step 4: connect and query](#step-4-connect-and-query)
+  - [Step 3: connect and run your first query](#step-3-connect-and-run-your-first-query)
 - [Next: build something](#next-build-something)
 
 ## Before you start
@@ -22,17 +21,19 @@ Confirm you have:
 - Port `1433` available on the host.
 - The registry username and password, requested via the early-access feedback channel (pull-only; may be rotated during the preview).
 
-Everything below works the same on macOS, Linux, and Windows.
+You do **not** need sqlcmd or any database tool installed: the container brings its own. Everything below works the same on macOS, Linux, and Windows.
 
-## Option A: let an AI coding agent do it
+From here you have two ways to reach your first query. Both end in the same place, a running container you can connect to, so pick one.
 
-The fastest path is to let your AI coding agent set everything up. Install the skill collection once. It works across Claude Code, GitHub Copilot (VS Code and CLI), Codex, and Cursor.
+## Option A: set it up with your AI agent
+
+Your agent does the whole setup for you: it pulls the image, starts the container, provisions the database, and runs your first query. You install the skill once, then ask in plain English.
 
 ```bash
 npx skills add microsoft/azure-sql-database-container
 ```
 
-Then ask your agent in plain English, for example:
+The skill works across Claude Code, GitHub Copilot (VS Code and CLI), Codex, and Cursor. Then ask your agent, for example:
 
 > Add a local Azure SQL Database to this project, then scaffold the schema, migrations, and data-access layer for my stack.
 
@@ -40,7 +41,7 @@ Then ask your agent in plain English, for example:
 
 ## Option B: set it up yourself
 
-Prefer to run the commands yourself? Follow the steps below with Docker or Podman. Everything works the same on macOS, Linux, and Windows.
+Prefer to run it yourself? Three commands take you from pull to query, with Docker or Podman.
 
 ### Step 1: sign in and pull the image
 
@@ -48,22 +49,14 @@ The preview image is served from a private registry. Sign in, then pull the imag
 
 > **Note:** the registry username and password are **provided to Private Preview cohort participants**. Request them via the early-access feedback channel. They are shared and pull-only, must be treated as secrets, and may be rotated during the preview.
 
-<div class="engine-block" data-engine="docker" markdown="1">
-
 ```bash
 docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>
 docker pull sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```
 
-With Podman, replace `docker` with `podman`.
-
-</div>
-
-The registry path, image tag, and credentials are provisional during Private Preview. Request the pull-only registry credentials through the early-access feedback channel; they may be rotated during the preview.
+With Podman, replace `docker` with `podman`. The registry path, image tag, and credentials are provisional during Private Preview.
 
 ### Step 2: start the container
-
-<div class="engine-block" data-engine="docker" markdown="1">
 
 Start it on port `1433` with one command:
 
@@ -79,7 +72,11 @@ docker run --platform linux/amd64 --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_P
     -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```
 
-Or use `docker compose`. Create a `docker-compose.yml`, then run `docker compose up -d`. On a non-x64 host, add `platform: linux/amd64` under the `sqldb` service.
+Confirm it is up with `docker ps --filter "name=sqldb"`; you should see `sqldb` in `Up` status. If it exited, run `docker logs sqldb`. The most common cause is a password that does not meet the complexity policy.
+
+> **NOTE:** Replace `YourStr0ng_Passw0rd` with your own. The container enforces the default SQL password complexity policy: at least 8 characters, with a mix of upper, lower, numeric, and non-alphanumeric characters.
+
+Prefer `docker compose`? Create a `docker-compose.yml`, then run `docker compose up -d`. On a non-x64 host, add `platform: linux/amd64` under the `sqldb` service.
 
 ```yaml
 services:
@@ -98,63 +95,30 @@ volumes:
   sqldb-data:
 ```
 
-</div>
+### Step 3: connect and run your first query
 
-> **NOTE:** Replace `YourStr0ng_Passw0rd` with your own. The container enforces the default SQL password complexity policy: at least 8 characters, with a mix of upper, lower, numeric, and non-alphanumeric characters.
-
-### Step 3: verify it is running
-
-<div class="engine-block" data-engine="docker" markdown="1">
+You do not need to install anything: the container bundles sqlcmd, so this works for everyone. The `-C` flag trusts the container's self-signed certificate:
 
 ```bash
-docker ps --filter "name=sqldb"
-```
-
-You should see the `sqldb` container in `Up` status. If it exited, check the logs with `docker logs sqldb`.
-
-</div>
-
-The most common startup failure is a password that does not meet the complexity policy; pick a stronger password and recreate the container.
-
-### Step 4: connect and query
-
-If you have [sqlcmd](https://learn.microsoft.com/sql/tools/sqlcmd/sqlcmd-utility) installed, connect and run your first query in one command (port `1433` is published in both engines). The `-C` flag trusts the container's self-signed certificate:
-
-```bash
-sqlcmd -S localhost,1433 -U sa -P "YourStr0ng_Passw0rd" -C \
-    -Q "SELECT @@VERSION;"
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd \
+    -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -Q "SELECT @@VERSION;"
 ```
 
 You should see `Microsoft SQL Azure`, confirming you are on the Azure SQL Database engine.
 
 **Other ways to query:**
 
-- **Ask your AI agent, no T-SQL required.** With the [container skill](prerequisites.md#agent-skill) installed, ask your agent in plain English, for example: *"Connect to my local Azure SQL Database and show the version and edition."* It already knows the connection details and runs the query for you. This is the fastest path if you would rather not write SQL by hand.
-- **No sqlcmd installed? Use the copy bundled in the container:**
-
-  <div class="engine-block" data-engine="docker" markdown="1">
-
-  ```bash
-  docker exec sqldb /opt/mssql-tools18/bin/sqlcmd \
-      -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -Q "SELECT @@VERSION;"
-  ```
-
-  </div>
-
+- **Already have [sqlcmd](https://learn.microsoft.com/sql/tools/sqlcmd/sqlcmd-utility) on the host?** Connect directly: `sqlcmd -S localhost,1433 -U sa -P "YourStr0ng_Passw0rd" -C -Q "SELECT @@VERSION;"`.
+- **Ask your AI agent, no T-SQL required.** With the [container skill](prerequisites.md#agent-skill) installed, ask in plain English, for example: *"Connect to my local Azure SQL Database and show the version and edition."* It already knows the connection details and runs the query for you.
 - **Use the VS Code MSSQL extension, with Copilot.** Install the [MSSQL extension](https://marketplace.visualstudio.com/items?itemName=ms-mssql.mssql), click **Add Connection**, and connect with server `localhost,1433`, SQL Login, user `sa`, your password, and **Trust server certificate: Yes**. Open a `.sql` file to run queries, and use the extension's inline GitHub Copilot assistance to write SQL from natural language.
-- **Install sqlcmd** from the [sqlcmd utility](https://learn.microsoft.com/sql/tools/sqlcmd/sqlcmd-utility) docs.
 
 ### Stop and clean up
-
-<div class="engine-block" data-engine="docker" markdown="1">
 
 ```bash
 docker rm -f sqldb
 # or, if you used docker compose (add -v to also remove the data volume):
 docker compose down
 ```
-
-</div>
 
 ## Next: build something
 
