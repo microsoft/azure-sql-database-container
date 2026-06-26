@@ -6,12 +6,12 @@ https://microsoft.github.io/azure-sql-database-container/known-limitations.html
 
 ## Backups and recovery
 
-**Can I back up a database?** No. `BACKUP DATABASE` and `RESTORE DATABASE` return
-`Msg 40510` ("not supported in this version of SQL Server") in every session, on the
-container exactly as in Azure SQL Database in the cloud. (Verified live: the statement
-errors from both a `master` and a user-database connection.) The engine does not
-implement those statements, because in Azure SQL Database backups are a managed
-platform service, not something you run with `BACKUP`.
+**Can I back up a database?** No. On the container, `BACKUP DATABASE` and
+`RESTORE DATABASE` return `Msg 40510` ("not supported in this version of SQL Server")
+in every session (verified live: the statement errors from both a `master` and a
+user-database connection). Azure SQL Database in the cloud likewise does not support
+these statements, because backups there are a managed platform service, not something
+you run with `BACKUP`.
 
 **Then how do I keep my data, or recover it?** For local persistence across container
 restarts, mount a Docker named volume: `-v sqldb-data:/var/opt/mssql`. To move a

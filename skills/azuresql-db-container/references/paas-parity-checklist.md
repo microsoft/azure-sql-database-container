@@ -40,8 +40,9 @@ See the `azuresql-db-vectors` task skill for full patterns.
 
 - **`master` is a non-SDS session**: the Azure SQL statement filter (`USE`,
   `SHUTDOWN`, `RECONFIGURE`) is not enforced there, so `USE` works. (`BACKUP` and
-  `RESTORE` are not supported in any session and return `Msg 40510`, matching the
-  cloud.) Never develop or validate against `master`; use it only to
+  `RESTORE` are not supported in any session and return `Msg 40510`; Azure SQL
+  Database in the cloud likewise does not support them.) Never develop or validate
+  against `master`; use it only to
   `CREATE`/`DROP DATABASE`, then connect directly to the user database (SDS),
   which enforces Azure SQL Database semantics.
 - **Two-step provisioning flow**: provisioning via `master`, then reconnecting to
