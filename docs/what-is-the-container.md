@@ -25,7 +25,7 @@ The container is the **Azure SQL Database engine** itself, running locally. Thre
 
 1. **The same engine as the cloud.** The container runs the same engine, the same defaults, and the same T-SQL as Azure SQL Database. Features that are cloud-only in the box SQL Server product (Always Encrypted with secure enclaves, ledger, some DMVs) work locally the same way they work in the cloud.
 2. **No Azure subscription, no credit card required.** The container runs entirely on the developer machine or in CI. No service principal, no credit card, no shared instance. Free for local development and CI.
-3. **Works with the drivers, ORMs, and editors you already use.** Everything that talks to Azure SQL Database talks to the container without changes: node-mssql, mssql-python, pyodbc, and mssql-jdbc; Prisma, SQLAlchemy, EF Core, Django, and TypeORM; sqlcmd, the MSSQL extension for VS Code, and SSMS.
+3. **Works with the drivers, ORMs, and editors you already use.** Everything that talks to Azure SQL Database talks to the container without changes: node-mssql, mssql-python, pyodbc, and mssql-jdbc; Prisma, SQLAlchemy, EF Core, Django, and TypeORM; sqlcmd, and VS Code with the MSSQL extension's GitHub Copilot integration. (Graphical tooling like the full MSSQL extension UI and SSMS is not yet 100% compatible; see [known limitations](known-limitations.md).)
 
 ## Engine surface
 

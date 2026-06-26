@@ -110,7 +110,7 @@ You should see `Microsoft SQL Azure`, confirming you are on the Azure SQL Databa
 
 - **Already have [sqlcmd](https://learn.microsoft.com/sql/tools/sqlcmd/sqlcmd-utility) on the host?** Connect directly: `sqlcmd -S localhost,1433 -U sa -P "YourStr0ng_Passw0rd" -C -Q "SELECT @@VERSION;"`.
 - **Ask your AI agent, no T-SQL required.** With the [container skill](prerequisites.md#agent-skill) installed, ask in plain English, for example: *"Connect to my local Azure SQL Database and show the version and edition."* It already knows the connection details and runs the query for you.
-- **Use the VS Code MSSQL extension with GitHub Copilot.** Its Copilot integration works against the container today, for example writing SQL from natural language or opening the schema designer. Connect with server `localhost,1433`, SQL Login, user `sa`, your password, and **Trust server certificate: Yes**. The extension's graphical UI is not yet fully compatible with the container, so some UI features may error; see [known limitations](known-limitations.md).
+- **Use the VS Code MSSQL extension with GitHub Copilot.** Its [GitHub Copilot integration](https://aka.ms/vscode-mssql-copilot-docs) works against the container today, for example writing SQL from natural language or opening the schema designer. Connect with server `localhost,1433`, SQL Login, user `sa`, your password, and **Trust server certificate: Yes**. The extension's graphical UI is not yet fully compatible with the container, so some UI features may error; see [known limitations](known-limitations.md).
 
 ### Stop and clean up
 

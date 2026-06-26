@@ -70,7 +70,11 @@ exception. For the .NET-style (`User Id=`/`Password=`) and the
 
 ## VS Code MSSQL
 
-In the MSSQL extension, add a connection with:
+The MSSQL extension's GitHub Copilot integration works against the container
+today (for example writing SQL from natural language or opening the schema
+designer): https://aka.ms/vscode-mssql-copilot-docs. The extension's graphical
+UI is not yet fully compatible with the container and some UI features may
+error; prefer sqlcmd or a driver for non-Copilot work. Add a connection with:
 
 - Server: `localhost,1433`
 - Database: `appdb`
