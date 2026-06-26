@@ -19,11 +19,25 @@ Read the entire instruction set before executing.
 ```bash
 # The image is in a private preview registry; sign in with the credentials from the welcome email first
 docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io
-docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
+docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
     -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```
 
+Wait for the engine, then create the `appdb` database. Azure SQL Database does **not** create databases automatically on connect, so `appdb` must exist before `rag.py` connects:
+
+```bash
+# Create appdb, retrying until it succeeds (waits out engine startup; -b makes sqlcmd return a
+# non-zero exit on a SQL error so the loop retries while the engine is still initializing).
+until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd \
+    -S localhost -U sa -P "YourStrong!Passw0rd" -C -b -l 2 \
+    -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do
+  sleep 2
+done
+```
+
 ### 2. Install dependencies and a local embedding model
+
+`mssql-python` requires **Python 3.10 or newer** (there is no distribution for 3.9). Use a 3.10+ interpreter or virtual environment.
 
 ```bash
 pip install mssql-python ollama python-dotenv
@@ -75,21 +89,22 @@ chunks = [
 ]
 for c in chunks:
     cur.execute(
-        "INSERT INTO documents (content, embedding) VALUES (?, CAST(? AS VECTOR(?)));",
-        c, embed(c), DIM,
+        # VECTOR's dimension must be a literal, not a bind parameter, so inline DIM
+        f"INSERT INTO documents (content, embedding) VALUES (?, CAST(? AS VECTOR({DIM})));",
+        c, embed(c),
     )
 conn.commit()
 
 # Retrieve: top-k nearest neighbours by cosine distance
 query = "How do I run vector search locally?"
 cur.execute(
-    """
+    f"""
     SELECT TOP 3 content,
-        VECTOR_DISTANCE('cosine', embedding, CAST(? AS VECTOR(?))) AS distance
+        VECTOR_DISTANCE('cosine', embedding, CAST(? AS VECTOR({DIM}))) AS distance
     FROM documents
     ORDER BY distance;
     """,
-    embed(query), DIM,
+    embed(query),
 )
 print(f"Query: {query}\n")
 for content, distance in cur.fetchall():

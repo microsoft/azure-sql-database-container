@@ -14,7 +14,7 @@ Read the entire instruction set before executing.
 
 ### 1. Add a docker compose service with a persistent volume and a seed script
 
-Create `docker-compose.yml`. The container runs initialization `.sql` files mounted at `/docker-entrypoint-initdb.d/` on first start, which is how the seed data loads with no network.
+Create `docker-compose.yml`. The Azure SQL Database engine does not auto-run mounted `.sql` files, so the seed is mounted into the container and applied with one explicit command in step 3 (still fully offline — no network needed).
 
 ```yaml
 services:
@@ -28,7 +28,7 @@ services:
       - "1433:1433"
     volumes:
       - sqldb-data:/var/opt/mssql
-      - ./db/seed.sql:/docker-entrypoint-initdb.d/seed.sql:ro
+      - ./db/seed.sql:/seed.sql:ro
 volumes:
   sqldb-data:
 ```
@@ -54,11 +54,21 @@ INSERT INTO products (name, price) VALUES
 GO
 ```
 
-### 3. Start it and point the app at it
+### 3. Start it and load the seed
 
 ```bash
 docker compose up -d
+
+# Wait until the engine accepts connections, then apply the seed (it is not auto-run)
+until docker compose exec -T sqldb /opt/mssql-tools18/bin/sqlcmd \
+    -S localhost -U sa -P "YourStrong!Passw0rd" -C -l 2 -Q "SELECT 1" >/dev/null 2>&1; do
+  sleep 2
+done
+docker compose exec -T sqldb /opt/mssql-tools18/bin/sqlcmd \
+    -S localhost -U sa -P "YourStrong!Passw0rd" -C -i /seed.sql
 ```
+
+The seed runs once; the named volume keeps `appdb` and its data across restarts, so later `docker compose up -d` runs need no network and no re-seed.
 
 Set the app connection string (in `.env`, read from the environment, never hardcoded):
 

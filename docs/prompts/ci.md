@@ -34,20 +34,26 @@ jobs:
           MSSQL_SA_PASSWORD: ${{ secrets.SQL_SA_PASSWORD }}
         ports:
           - 1433:1433
+        # The runner has no sqlcmd; let the service report readiness with a health check
+        # that runs sqlcmd INSIDE the container. Actions blocks the job's steps until it passes.
+        options: >-
+          --health-cmd="/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$MSSQL_SA_PASSWORD\" -C -l 2 -Q 'SELECT 1'"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=12
+          --health-start-period=30s
     env:
-      SQL_CONNECTION_STRING: "Server=localhost,1433;Database=master;User Id=sa;Password=${{ secrets.SQL_SA_PASSWORD }};TrustServerCertificate=true"
+      SQL_CONNECTION_STRING: "Server=localhost,1433;Database=appdb;User Id=sa;Password=${{ secrets.SQL_SA_PASSWORD }};TrustServerCertificate=true"
     steps:
       - uses: actions/checkout@v4
 
-      - name: Wait for SQL to accept connections
+      # The engine does not auto-create databases. Provision appdb once (sqlcmd lives in the
+      # service container, so exec into it rather than relying on sqlcmd on the runner).
+      - name: Create the application database
         run: |
-          for i in $(seq 1 30); do
-            if /opt/mssql-tools18/bin/sqlcmd -S localhost,1433 -U sa -P "${{ secrets.SQL_SA_PASSWORD }}" -C -Q "SELECT 1" >/dev/null 2>&1; then
-              echo "ready"; exit 0
-            fi
-            echo "waiting ($i)"; sleep 3
-          done
-          echo "database did not become ready"; exit 1
+          docker exec "${{ job.services.sqldb.id }}" /opt/mssql-tools18/bin/sqlcmd \
+            -S localhost -U sa -P "${{ secrets.SQL_SA_PASSWORD }}" -C \
+            -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
 
       # Replace with your stack's setup and test commands:
       - uses: actions/setup-node@v4
