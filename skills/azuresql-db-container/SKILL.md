@@ -151,8 +151,8 @@ docker volume rm sqldb-data   # only if you created a named volume and want a cl
   See `references/paas-parity-checklist.md`.
 - It does **not** auto-create databases and does **not** auto-run a seed
   directory.
-- arm64/Apple Silicon is not a supported architecture; on a non-x64 host run
-  under emulation by adding `--platform linux/amd64`.
+- The image is x64 only (`linux/amd64`). On a non-x64 host, add
+  `--platform linux/amd64` to run under emulation.
 
 ## Hand off to a task skill
 

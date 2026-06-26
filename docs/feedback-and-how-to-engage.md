@@ -23,8 +23,8 @@ description: "Pick the right channel for your question: GitHub Issues, Discussio
 | Suggest a direction or pitch an idea                       | [GitHub Discussions: Ideas](https://github.com/microsoft/azure-sql-database-container/discussions/categories/ideas) |
 | Email the team directly                                    | [azuresqldb-container@microsoft.com](mailto:azuresqldb-container@microsoft.com) |
 | Book live time with the team                               | [Connect with the team](https://aka.ms/azuresql-container-meet) |
-| Talk to the team in real time                              | Private Teams channel (link in the welcome email) |
-| Demo, ask questions live, hear roadmap updates             | Office hours (calendar invite in the welcome email) |
+| Talk to the team in real time                              | Private Teams channel (link shared via the early-access feedback channel) |
+| Demo, ask questions live, hear roadmap updates             | Office hours (calendar invite shared via the early-access feedback channel) |
 
 ## GitHub Issues
 
