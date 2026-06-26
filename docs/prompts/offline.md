@@ -20,6 +20,9 @@ Create `docker-compose.yml`. The Azure SQL Database engine does not auto-run mou
 services:
   sqldb:
     image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+    # The image is x64-only. platform: linux/amd64 pins it so it runs on a non-x64 host
+    # (Apple Silicon) under emulation; on an x64 host it is a no-op.
+    platform: linux/amd64
     container_name: sqldb
     environment:
       MSSQL_SA_PASSWORD: "YourStr0ng_Passw0rd"

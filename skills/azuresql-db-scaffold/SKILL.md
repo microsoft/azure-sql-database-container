@@ -60,12 +60,12 @@ until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "You
 echo "ready on localhost,$HOST_PORT"
 ```
 
-Required env: `ACCEPT_EULA=Y` and a complex `MSSQL_SA_PASSWORD` (8+ chars, upper/lower/digit/
-symbol). The engine listens on 1433.
+Required env: `ACCEPT_EULA=Y` and a complex `MSSQL_SA_PASSWORD` (at least 8 characters using at
+least three of upper case, lower case, digits, and symbols). The engine listens on 1433.
 
 ## Step 2: the canonical connection string
 
-Apps read **one** env var, `SQL_CONNECTION_STRING`:
+Apps read **one** env var, `SQL_CONNECTION_STRING` (replace `1433` with the `HOST_PORT` Step 1 chose if 1433 was occupied):
 
 ```
 Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true

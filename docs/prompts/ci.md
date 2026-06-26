@@ -29,6 +29,12 @@ jobs:
     services:
       sqldb:
         image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+        # The image is in a private registry, so the service needs pull credentials.
+        # ACR_USERNAME / ACR_PASSWORD are the pull-only registry credentials provided to
+        # Private Preview cohort participants via the early-access feedback channel.
+        credentials:
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
         env:
           ACCEPT_EULA: "Y"
           MSSQL_SA_PASSWORD: ${{ secrets.SQL_SA_PASSWORD }}
@@ -52,7 +58,7 @@ jobs:
       - name: Create the application database
         run: |
           docker exec "${{ job.services.sqldb.id }}" /opt/mssql-tools18/bin/sqlcmd \
-            -S localhost -U sa -P "${{ secrets.SQL_SA_PASSWORD }}" -C \
+            -S localhost -U sa -P "${{ secrets.SQL_SA_PASSWORD }}" -C -b -l 2 \
             -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
 
       # Replace with your stack's setup and test commands:
@@ -62,13 +68,16 @@ jobs:
       - run: npm test    # tests read SQL_CONNECTION_STRING from the environment
 ```
 
-### 2. Add the SA password as a repository secret
+### 2. Add the repository secrets
 
-Add a strong password as the `SQL_SA_PASSWORD` secret under repository Settings → Secrets and variables → Actions. Do not commit it.
+Under repository Settings → Secrets and variables → Actions, add:
+
+- `SQL_SA_PASSWORD`: a strong SA password that meets the complexity policy. Do not commit it.
+- `ACR_USERNAME` and `ACR_PASSWORD`: the pull-only registry credentials provided to Private Preview cohort participants via the early-access feedback channel. The service container uses them to pull the private image.
 
 ### 3. Make the test suite use the environment connection string
 
-Ensure tests read `process.env.SQL_CONNECTION_STRING` (Node) or the equivalent, and create/drop their own schema or a throwaway database so runs are isolated.
+Ensure tests read `process.env.SQL_CONNECTION_STRING` (Node) or the equivalent, and isolate each run with its own schema or a unique table prefix on the `appdb` connection. If you want a throwaway *database* instead, create and drop it on a separate `master` connection: `CREATE DATABASE` / `DROP DATABASE` are not allowed on a user-database (SDS) connection like `appdb`.
 
 ---
 

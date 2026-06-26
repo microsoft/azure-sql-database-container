@@ -31,6 +31,8 @@ services:
 
   sqldb:
     image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+    # x64-only image; platform: linux/amd64 lets it run on a non-x64 host (Apple Silicon), no-op on x64.
+    platform: linux/amd64
     environment:
       MSSQL_SA_PASSWORD: "YourStr0ng_Passw0rd"
       ACCEPT_EULA: "Y"
@@ -50,12 +52,15 @@ services:
   # target database (appdb) must be provisioned before the app starts.
   sqldb-init:
     image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+    platform: linux/amd64
     depends_on:
       sqldb:
         condition: service_healthy
     restart: "no"
+    # -b makes a SQL error set a non-zero exit, so a failed CREATE DATABASE fails the one-shot
+    # instead of reporting service_completed_successfully without provisioning appdb.
     entrypoint: ["/opt/mssql-tools18/bin/sqlcmd", "-S", "sqldb,1433", "-U", "sa",
-      "-P", "YourStr0ng_Passw0rd", "-C", "-Q", "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"]
+      "-P", "YourStr0ng_Passw0rd", "-C", "-b", "-l", "2", "-Q", "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"]
 
 volumes:
   sqldb-data:
