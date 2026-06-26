@@ -86,7 +86,7 @@ The image is x64 only; there is no arm64 image. On a non-x64 host, add `--platfo
 
 ### Connection model (three facts that bite)
 
-1. The engine does **not** auto-create databases on connect. Run `CREATE DATABASE appdb` on a **master** connection before connecting with `Database=appdb`.
+1. The engine does **not** auto-create databases on connect. Run `CREATE DATABASE appdb` on a **master** connection before connecting with `Database=appdb`. `appdb` is just the example name used throughout these skills; the name is yours to choose, so substitute your project's database name in a real project.
 2. Avoid `USE` to switch databases. In a user-database (SDS) session (the Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly as in Azure SQL Database in the cloud. A `master` connection is a non-SDS provisioning session where the Azure statement filter is not enforced, so `USE` (and `BACKUP`/`RESTORE`) appear to work there, but `master` is for provisioning only, not application work. Always select the target database in the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 3. A `master` connection is for provisioning only. Do real work on the user database.
 

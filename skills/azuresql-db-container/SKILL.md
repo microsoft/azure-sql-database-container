@@ -97,7 +97,11 @@ These bite every newcomer. Full workflow in `references/connection-model.md`.
 
 1. **The engine does NOT auto-create databases on connect.** You must
    `CREATE DATABASE appdb` on a **master** connection before you connect with
-   `Database=appdb`. Connecting to a database that does not exist fails.
+   `Database=appdb`. Connecting to a database that does not exist fails. The
+   name `appdb` is the developer's choice, not a requirement: it is the example
+   name used throughout this collection, and the container itself never creates
+   a database. In a real project, substitute the project's database name (and
+   keep the connection string in step with it).
 2. **Select the database in the connection string, not with `USE`.** Avoid
    `USE` to switch databases. In a user-database (SDS) session (the
    Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly
