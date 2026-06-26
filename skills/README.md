@@ -31,7 +31,7 @@ mkdir -p .claude/skills
 cp -R azure-sql-database-container .claude/skills/
 ```
 
-**GitHub Copilot:** the repo-root [`AGENTS.md`](../AGENTS.md) is read by the Copilot coding agent (and by Codex, Cursor, and others). Copy it into your project to give Copilot the same container guidance.
+**GitHub Copilot:** install with the skills CLI above (it supports Copilot), or add the container guidance to your project's `.github/copilot-instructions.md` from the [core skill](azure-sql-database-container/SKILL.md).
 
 ## Accuracy baseline
 

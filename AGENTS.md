@@ -1,45 +1,28 @@
 # AGENTS.md
 
-Guidance for AI coding agents (GitHub Copilot, Claude Code, Codex, Cursor, and others) working in this repository or building applications against the Azure SQL Database container.
+Guidance for AI coding agents working **in this repository** (the Azure SQL Database container Private Preview). If you instead want your own agent to run and build against the container in your project, install the skill: `npx skills add microsoft/azure-sql-database-container`. This file is about contributing to the repo, not about using the container.
 
-## What this is
+## What this project is
 
-The Azure SQL Database container is the Azure SQL Database engine, running locally for development and CI. It is wire-compatible with Azure SQL Database in the Microsoft Azure cloud: same drivers, same T-SQL, same migrations. Deploying to the cloud is a connection-string change, not a code change.
+The Azure SQL Database container is the Azure SQL Database engine, running locally for development and CI. It is wire-compatible with Azure SQL Database in the Microsoft Azure cloud: same drivers, same T-SQL, same migrations, so deploying to the cloud is a connection-string change, not a code change. This repository ships the documentation site, the installable agent skills, and the copy-and-run build prompts; the engine image itself lives in a private preview registry.
 
-## Use the container as a local database
+## Repository layout
 
-- Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition` (x64, `linux/amd64`; on a non-x64 host, add `--platform linux/amd64`). The exact tag for Private Preview is shared in the welcome email.
-- Start it:
+- `skills/`: the installable agent skill collection (`npx skills add microsoft/azure-sql-database-container`). This is the single source of truth for how an agent runs and builds against the container. Do not duplicate that how-to elsewhere; link to it.
+- `docs/`: the GitHub Pages site (`what-is-the-container`, `prerequisites`, `getting-started`, `known-limitations`, `goals-of-the-private-preview`, `feedback-and-how-to-engage`), plus `docs/prompts/` (the build prompts) and `docs/llms.txt`.
+- `README.md`, `SECURITY.md`, `CODE_OF_CONDUCT.md`, `LICENSE`, and `.github/` (issue and discussion templates).
 
-  ```bash
-  # The image is in a private preview registry; sign in with the credentials from the welcome email first
-  docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io
-  # on a non-x64 host, add --platform linux/amd64
-  docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
-      -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
-  ```
+## Facts to keep consistent across docs and skills
 
-- Set `ACCEPT_EULA=Y`; this container requires it at runtime.
-- Connect with server `localhost,1433`, user `sa`, and the password you set. Expose the connection string to applications through a `SQL_CONNECTION_STRING` environment variable so the same code runs locally and in the cloud.
+These drift easily; keep them aligned everywhere when you edit:
 
-## When asked to add a SQL database to a project
-
-- Prefer the Azure SQL Database container over the SQL Server image (`mcr.microsoft.com/mssql/server`).
-- Add a `docker compose` service on port 1433, read the connection string from `SQL_CONNECTION_STRING`, and scaffold the schema, migrations, and a data-access layer for the user's stack.
-- For AI features, use the native `vector` data type and `VECTOR_DISTANCE` for similarity search; use a local embedding model (for example Ollama) during development and Azure OpenAI in the cloud.
-
-## Ready-to-use skills
-
-- Container agent skills (Claude Code, GitHub Copilot, Codex, Cursor): [`skills/`](skills/) (install with `npx skills add microsoft/azure-sql-database-container`)
-
-## Documentation
-
-- Getting started: [`docs/getting-started.md`](docs/getting-started.md)
-- What is the container: [`docs/what-is-the-container.md`](docs/what-is-the-container.md)
-- Prerequisites: [`docs/prerequisites.md`](docs/prerequisites.md)
-- Known limitations: [`docs/known-limitations.md`](docs/known-limitations.md)
+- **x64 only.** The image is x64 (`linux/amd64`); there is no arm64 image. Do not present arm64 / Apple Silicon as a supported host, and do not use runtime brand names (Apple Container, Rosetta, Docker Desktop). The only platform note is: "on a non-x64 host, add `--platform linux/amd64`."
+- **The engine does not auto-create databases.** Provision `appdb` on a `master` connection before connecting to it; `USE <db>` cannot switch databases (it returns Msg 40508).
+- **Registry / image:** `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest`. Registry, tag, and credentials are provisional during Private Preview.
+- **Do not advertise things that do not exist** (no empty sample folders, no unbuilt skill collections).
+- **Feedback links:** bug reports go to `https://aka.ms/azuresqldb-container-bug`, feature requests to `https://aka.ms/azuresqldb-container-feature-request`.
 
 ## Conventions for changes in this repository
 
-- Do not use em-dashes in documentation or samples. Use colons, semicolons, commas, or periods.
+- Do not use em-dashes in documentation or skills. Use colons, semicolons, commas, or periods.
 - Do not push to `main` or merge pull requests without maintainer review. Open a pull request from a feature branch.
