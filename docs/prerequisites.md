@@ -64,8 +64,7 @@ It works across Claude Code, GitHub Copilot, Codex, and Cursor. Browse the skill
 
 Recommended developer tooling for working with the container:
 
-- **VS Code** with the [MSSQL extension](https://marketplace.visualstudio.com/items?itemName=ms-mssql.mssql) for query authoring, schema browsing, and inline AI assistance.
-- **sqlcmd** (the modern Go-based `sqlcmd`) or **mssql-cli** for terminal access.
+- **sqlcmd** (the modern Go-based `sqlcmd`) or **mssql-cli** for terminal access. The container also bundles `sqlcmd`, so you can query it with `docker exec` and no host install.
 - **A driver or ORM for your stack.** Any driver that talks to Azure SQL Database works with the container without changes: `mssql` (Node.js), `mssql-python`, `pyodbc`, EF Core, Prisma, SQLAlchemy, JDBC.
 
 ## Azure account (optional, for local-to-cloud)
