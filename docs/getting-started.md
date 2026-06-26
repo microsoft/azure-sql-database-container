@@ -20,7 +20,7 @@ Confirm you have:
 
 - A supported container engine installed and running (Docker, Podman, containerd, or Rancher Desktop). See [Prerequisites](prerequisites.md).
 - Port `1433` available on the host.
-- The registry username and password from your welcome email.
+- The registry username and password, requested via the early-access feedback channel (pull-only; may be rotated during the preview).
 
 Everything below works the same on macOS, Linux, and Windows.
 
@@ -29,7 +29,7 @@ Everything below works the same on macOS, Linux, and Windows.
 The fastest path is to let your AI coding agent set everything up. Install the container skill once. It works across Claude Code, GitHub Copilot, Codex, and Cursor.
 
 ```bash
-npx skills add azure-sql-database-container
+npx skills add azuresql-db-container
 ```
 
 Then ask your agent in plain English, for example:
@@ -48,7 +48,7 @@ Prefer to run the commands yourself? Pick your container engine and follow the s
 
 ### Step 1: sign in and pull the image
 
-The preview image is served from a private registry. Sign in with the username and password from your welcome email, then pull the image.
+The preview image is served from a private registry. Sign in with the username and password, requested via the early-access feedback channel (pull-only; may be rotated during the preview), then pull the image.
 
 <div class="engine-block" data-engine="docker" markdown="1">
 
@@ -61,7 +61,7 @@ With Podman, replace `docker` with `podman`.
 
 </div>
 
-The registry path, image tag, and credentials are provisional during Private Preview. The exact values you use will be the ones shared with you in the welcome email.
+The registry path, image tag, and credentials are provisional during Private Preview. Request the pull-only registry credentials through the early-access feedback channel; they may be rotated during the preview.
 
 ### Step 2: start the container
 

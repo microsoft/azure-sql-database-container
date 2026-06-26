@@ -36,7 +36,7 @@ This Private Preview is the first time the container is in the hands of real dev
 ## What you get from us
 
 - **Direct engineering channel.** The triage rotation is a named engineer per week. Bugs are acknowledged within one business day; critical issues get an acknowledgement plus a plan within two business days.
-- **Ready-made prompts and an agent skill.** Prompts for the common scenarios (local-to-cloud, AI / RAG, CI, offline, sidecar, scaffolding) plus a skill any AI agent can load so it understands the registry, image, connection, and the local-to-cloud handoff.
+- **Ready-made prompts and an agent skill.** Prompts for the common scenarios (local-to-cloud, AI / RAG, CI, sidecar, scaffolding; offline is now a section of the container hub skill) plus a skill any AI agent can load so it understands the registry, image, connection, and the local-to-cloud handoff.
 - **Container-specialized agent skills.** Loadable by any AI agent (Claude, Codex, GitHub Copilot) so the agent understands prerequisites, parameters, connection, common errors, and the local-to-cloud handoff.
 - **Private Teams channel for real-time conversation.** Customers are under NDA; the channel is private and access-controlled.
 - **Weekly office hours.** Live questions, demos, and roadmap updates. Engineering attends.
