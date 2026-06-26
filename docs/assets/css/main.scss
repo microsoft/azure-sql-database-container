@@ -412,7 +412,7 @@ section[id] { scroll-margin-top: 84px; }
 .install-foot a { color: var(--vector); }
 .install-foot a:hover { text-decoration: none; opacity: .85; }
 
-/* ---------- engine pivot (Docker vs Apple Containers) in docs ---------- */
+/* ---------- engine pivot in docs ---------- */
 .pivot { display: inline-flex; gap: 4px; background: var(--mist); border: 1px solid var(--line); border-radius: 10px; padding: 4px; margin: 0 0 16px; }
 .pivot-btn { font-family: var(--font-display); font-weight: 600; font-size: .88rem; color: var(--muted); background: transparent; border: 0; border-radius: 7px; padding: 7px 16px; cursor: pointer; transition: background .15s ease, color .15s ease, box-shadow .15s ease; }
 .pivot-btn.is-active { background: var(--white); color: var(--ink); box-shadow: var(--shadow); }

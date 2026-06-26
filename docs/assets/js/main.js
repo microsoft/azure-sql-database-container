@@ -37,7 +37,7 @@
     });
   });
 
-  // engine pivot (Docker / Apple Containers), page-level and persisted
+  // engine pivot, page-level and persisted
   (function () {
     var btns = document.querySelectorAll(".pivot-btn");
     if (!btns.length) return;
