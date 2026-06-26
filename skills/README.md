@@ -28,6 +28,7 @@ EngineEdition `5` and Edition `'SQL Azure'` are the cloud engine's fingerprint. 
 | **azuresql-db-ci** | Run the engine in continuous integration: ephemeral container, ready-wait, provision, seed, test, tear down. Fails closed on the wrong image. |
 | **azuresql-db-sidecar** | Run the engine as a sidecar alongside an app (compose-style), with `platform: linux/amd64` on non-x64 hosts and a single `SQL_CONNECTION_STRING` contract. |
 | **azuresql-db-scaffold** | Scaffold a new app wired to the engine: connection string via one `SQL_CONNECTION_STRING` env var, provisioning step, and seed step in the correct order. |
+| **azuresql-db-faq** | Answer questions about what the container can and cannot do, and why it differs from the cloud (backups, `USE`, vector index, arm64, GUI tooling, registry). Sorts each into engine vs. managed-service vs. box-product, and links the live Known limitations. |
 
 ---
 
@@ -41,7 +42,7 @@ The portable way. Works across agents that follow the skills.sh convention:
 npx skills add azuresql-db-container
 npx skills add azuresql-db-from-sql-server azuresql-db-local-to-cloud \
   azuresql-db-schema-migration azuresql-db-import azuresql-db-rag \
-  azuresql-db-ci azuresql-db-sidecar azuresql-db-scaffold
+  azuresql-db-ci azuresql-db-sidecar azuresql-db-scaffold azuresql-db-faq
 ```
 
 ### Claude Code (`.claude/skills/`)
@@ -87,7 +88,7 @@ The image is x64 only; there is no arm64 image. On a non-x64 host, add `--platfo
 ### Connection model (three facts that bite)
 
 1. The engine does **not** auto-create databases on connect. Run `CREATE DATABASE appdb` on a **master** connection before connecting with `Database=appdb`. `appdb` is just the example name used throughout these skills; the name is yours to choose, so substitute your project's database name in a real project.
-2. Avoid `USE` to switch databases. In a user-database (SDS) session (the Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly as in Azure SQL Database in the cloud. A `master` connection is a non-SDS provisioning session where the Azure statement filter is not enforced, so `USE` (and `BACKUP`/`RESTORE`) appear to work there, but `master` is for provisioning only, not application work. Always select the target database in the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
+2. Avoid `USE` to switch databases. In a user-database (SDS) session (the Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly as in Azure SQL Database in the cloud. A `master` connection is a non-SDS provisioning session where the Azure statement filter is not enforced, so `USE` appears to work there, but `master` is for provisioning only, not application work. Always select the target database in the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 3. A `master` connection is for provisioning only. Do real work on the user database.
 
 ### Readiness

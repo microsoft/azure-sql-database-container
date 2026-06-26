@@ -12,15 +12,16 @@ The single most common source of failures. Read this before connecting an app.
    Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly
    as in Azure SQL Database in the cloud. A `master` connection is a non-SDS
    provisioning session where the Azure statement filter is not enforced, so
-   `USE` (and `BACKUP`/`RESTORE`) appear to work there, but `master` is for
+   `USE` appears to work there, but `master` is for
    provisioning only, not application work. Always select the target database in
    the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 3. **A `master` connection is for provisioning only.** `master` is a non-SDS
-   session: the Azure SQL statement filter (`USE`, `BACKUP`, `RESTORE`,
-   `SHUTDOWN`, `RECONFIGURE`) is not enforced there, so those statements appear
-   to work. Never develop or validate against `master`; use it only to
-   `CREATE`/`DROP DATABASE`, then connect directly to the user database (SDS),
-   which enforces Azure SQL Database semantics.
+   session: the Azure SQL statement filter (`USE`, `SHUTDOWN`, `RECONFIGURE`) is
+   not enforced there, so `USE` works. (`BACKUP`/`RESTORE` are a separate case:
+   they are not supported in any session and return `Msg 40510`, matching the
+   cloud, so do not rely on them on `master` either.) Never develop or validate
+   against `master`; use it only to `CREATE`/`DROP DATABASE`, then connect
+   directly to the user database (SDS), which enforces Azure SQL Database semantics.
 
 ## Provision-then-connect workflow
 
@@ -53,8 +54,7 @@ issue `USE`. See `connect-and-query.md` for the full connection string.
 Avoid `USE` to switch databases. In a user-database (SDS) session (the
 Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly as
 in Azure SQL Database in the cloud. A `master` connection is a non-SDS
-provisioning session where the Azure statement filter is not enforced, so `USE`
-(and `BACKUP`/`RESTORE`) appear to work there, but `master` is for provisioning
+provisioning session where the Azure statement filter is not enforced, so `USE` appears to work there, but `master` is for provisioning
 only, not application work. Always select the target database in the connection
 string (`Database=appdb`, or `-d appdb` for sqlcmd). The fix is always to set the
 target database in the connection (string or `-d`), not in a statement.

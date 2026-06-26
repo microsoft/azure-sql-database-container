@@ -18,7 +18,7 @@ before declaring readiness.
   (SDS) session (the Azure-faithful context where you develop), `USE` returns
   `Msg 40508`, exactly as in Azure SQL Database in the cloud. A `master`
   connection is a non-SDS provisioning session where the Azure statement filter
-  is not enforced, so `USE` (and `BACKUP`/`RESTORE`) appear to work there, but
+  is not enforced, so `USE` appears to work there, but
   `master` is for provisioning only, not application work. Always select the
   target database in the connection string (`Database=appdb`, or `-d appdb` for
   sqlcmd). See `connection-model.md`.
@@ -39,10 +39,11 @@ See the `azuresql-db-vectors` task skill for full patterns.
 ## Current preview limitations
 
 - **`master` is a non-SDS session**: the Azure SQL statement filter (`USE`,
-  `BACKUP`, `RESTORE`, `SHUTDOWN`, `RECONFIGURE`) is not enforced there, so those
-  statements appear to work. Never develop or validate against `master`; use it
-  only to `CREATE`/`DROP DATABASE`, then connect directly to the user database
-  (SDS), which enforces Azure SQL Database semantics.
+  `SHUTDOWN`, `RECONFIGURE`) is not enforced there, so `USE` works. (`BACKUP` and
+  `RESTORE` are not supported in any session and return `Msg 40510`, matching the
+  cloud.) Never develop or validate against `master`; use it only to
+  `CREATE`/`DROP DATABASE`, then connect directly to the user database (SDS),
+  which enforces Azure SQL Database semantics.
 - **Two-step provisioning flow**: provisioning via `master`, then reconnecting to
   the user database, is a current preview limitation. Public preview will let the
   container set a default startup database (for example `MSSQL_DB=appdb`) so you
