@@ -19,7 +19,7 @@ set -euo pipefail
 # Config (override via env)
 # ----------------------------------------------------------------------------
 IMAGE="${IMAGE:-sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest}"
-SA_PASSWORD="${MSSQL_SA_PASSWORD:-YourStrong!Passw0rd}"
+SA_PASSWORD="${MSSQL_SA_PASSWORD:-YourStr0ng_Passw0rd}"
 CONTAINER="${CONTAINER:-sqldb-verify}"
 SQLCMD="/opt/mssql-tools18/bin/sqlcmd"
 

@@ -27,7 +27,7 @@ services:
     # platform: linux/amd64
     environment:
       ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
+      MSSQL_SA_PASSWORD: "YourStr0ng_Passw0rd"
     ports:
       - "1433:1433"
     healthcheck:
@@ -43,14 +43,14 @@ services:
         condition: service_healthy
     entrypoint: ["/bin/bash", "-c"]
     command: >
-      "/opt/mssql-tools18/bin/sqlcmd -S sqldb -U sa -P 'YourStrong!Passw0rd' -C -b
+      "/opt/mssql-tools18/bin/sqlcmd -S sqldb -U sa -P 'YourStr0ng_Passw0rd' -C -b
        -Q \"IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;\""
 ```
 
 Connection string the app consumes (host side, port 1433):
 
 ```
-Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true
+Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
 ```
 
 ## .NET Aspire (EF Core)
@@ -58,13 +58,13 @@ Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;Tru
 `.env` / user-secrets:
 
 ```
-SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true
+SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
 ```
 
 Provision appdb (once, on master) before the first migration:
 
 ```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -C -b \
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
 ```
 
@@ -98,13 +98,13 @@ For the migration workflow in depth, see the **azuresql-db-schema-migration** sk
 `.env`:
 
 ```
-SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true
+SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
 ```
 
 Provision appdb on master before the app connects:
 
 ```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -C -b \
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
 ```
 
@@ -153,8 +153,8 @@ Prisma needs a `sqlserver://` URL. Provide both env vars; keep them describing t
 `.env`:
 
 ```
-SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true
-DATABASE_URL=sqlserver://localhost:1433;database=appdb;user=sa;password=YourStrong!Passw0rd;trustServerCertificate=true;encrypt=true
+SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
+DATABASE_URL=sqlserver://localhost:1433;database=appdb;user=sa;password=YourStr0ng_Passw0rd;trustServerCertificate=true;encrypt=true
 ```
 
 Install Prisma (pinned to v6):
@@ -179,7 +179,7 @@ datasource db {
 Provision appdb on master, THEN run the first migration (Prisma will not create the database):
 
 ```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -C -b \
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
 npx prisma migrate dev --name init
 ```
@@ -195,14 +195,14 @@ const widgets = await prisma.widget.findMany({ where: { name } });
 `.env` (same two vars as Next.js):
 
 ```
-SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true
-DATABASE_URL=sqlserver://localhost:1433;database=appdb;user=sa;password=YourStrong!Passw0rd;trustServerCertificate=true;encrypt=true
+SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
+DATABASE_URL=sqlserver://localhost:1433;database=appdb;user=sa;password=YourStr0ng_Passw0rd;trustServerCertificate=true;encrypt=true
 ```
 
 Provision appdb on master before bootstrapping:
 
 ```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -C -b \
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
 ```
 
@@ -219,7 +219,7 @@ export const AppDataSource = new DataSource({
   host: "localhost",
   port: 1433,
   username: "sa",
-  password: process.env.MSSQL_SA_PASSWORD ?? "YourStrong!Passw0rd",
+  password: process.env.MSSQL_SA_PASSWORD ?? "YourStr0ng_Passw0rd",
   database: "appdb",                 // selected here, never via USE
   options: { trustServerCertificate: true },
   entities: [/* ... */],

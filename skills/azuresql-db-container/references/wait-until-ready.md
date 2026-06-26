@@ -11,7 +11,7 @@ Provision `appdb` inside the same loop so readiness and provisioning happen
 together:
 
 ```bash
-until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -C -b -l 2 \
+until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -l 2 \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do sleep 2; done
 echo "ready"
 ```
@@ -36,7 +36,7 @@ wait on `service_healthy`:
 ```yaml
 healthcheck:
   test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa",
-         "-P", "YourStrong!Passw0rd", "-C", "-b", "-l", "2", "-Q", "SELECT 1"]
+         "-P", "YourStr0ng_Passw0rd", "-C", "-b", "-l", "2", "-Q", "SELECT 1"]
   interval: 10s
   timeout: 5s
   retries: 12
@@ -47,7 +47,7 @@ The healthcheck only proves the engine answers; it does not create `appdb`.
 After the service is healthy, run the provisioning command separately:
 
 ```bash
-docker compose exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -C -b \
+docker compose exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
 ```
 

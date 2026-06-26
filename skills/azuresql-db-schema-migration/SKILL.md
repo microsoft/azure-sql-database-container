@@ -43,9 +43,9 @@ docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io   # pull-only creds from t
 HOST_PORT=1433; while lsof -nP -iTCP:"$HOST_PORT" -sTCP:LISTEN >/dev/null 2>&1; do HOST_PORT=$((HOST_PORT+1)); done
 PLATFORM=(); case "$(docker info -f '{{.Architecture}}' 2>/dev/null)" in x86_64|amd64) ;; *) PLATFORM=(--platform linux/amd64);; esac
 docker rm -f sqldb 2>/dev/null
-docker run -d --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
+docker run -d --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
   -p "$HOST_PORT:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
-until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -C -b -l 2 \
+until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -l 2 \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do sleep 2; done
 echo "ready on localhost,$HOST_PORT"
 ```
@@ -60,7 +60,7 @@ poll bare `sqlcmd` without `-l`. For full lifecycle detail, see the
 Standardize on one form and read it from a single `SQL_CONNECTION_STRING` env var:
 
 ```
-Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true
+Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
 ```
 
 - Use `User Id=` / `Password=` / `Database=`, NOT `Uid=` / `Pwd=`.
@@ -76,7 +76,7 @@ troubleshooting per tool are in `references/migration-tools.md`.
 ### EF Core (.NET)
 
 ```bash
-export SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true"
+export SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
 dotnet ef database update
 ```
 
@@ -91,7 +91,7 @@ Prisma needs the `sqlserver://` URL form in `DATABASE_URL`:
 ```bash
 npm install -D prisma@6
 npm install @prisma/client@6
-export DATABASE_URL="sqlserver://localhost:1433;database=appdb;user=sa;password=YourStrong!Passw0rd;trustServerCertificate=true"
+export DATABASE_URL="sqlserver://localhost:1433;database=appdb;user=sa;password=YourStr0ng_Passw0rd;trustServerCertificate=true"
 npx prisma migrate deploy          # apply committed migrations (CI / prod-like)
 npx prisma migrate dev --name init # author + apply a new migration (local dev)
 ```
@@ -102,7 +102,7 @@ requires a driver adapter (@prisma/adapter-mssql). See references for the adapte
 ### Alembic (Python)
 
 ```bash
-export SQL_CONNECTION_STRING="mssql+pyodbc://sa:YourStrong!Passw0rd@localhost,1433/appdb?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+export SQL_CONNECTION_STRING="mssql+pyodbc://sa:YourStr0ng_Passw0rd@localhost,1433/appdb?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
 alembic upgrade head
 ```
 
@@ -111,7 +111,7 @@ alembic upgrade head
 ```bash
 sqlpackage /Action:Publish /SourceFile:./app.dacpac \
   /TargetServerName:"localhost,1433" /TargetDatabaseName:appdb \
-  /TargetUser:sa /TargetPassword:"YourStrong!Passw0rd" \
+  /TargetUser:sa /TargetPassword:"YourStr0ng_Passw0rd" \
   /TargetTrustServerCertificate:true
 ```
 
@@ -133,7 +133,7 @@ migrating:
 
 ```bash
 docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa \
-  -P "YourStrong!Passw0rd" -C -b -d appdb -i seed.sql
+  -P "YourStr0ng_Passw0rd" -C -b -d appdb -i seed.sql
 ```
 
 ## Validation rules

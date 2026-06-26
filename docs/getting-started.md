@@ -68,14 +68,14 @@ The registry path, image tag, and credentials are provisional during Private Pre
 Start it on port `1433` with one command:
 
 ```bash
-docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
+docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
     -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```
 
 On Apple Silicon or any other non-x64 host, copy this version instead. It adds `--platform linux/amd64` so the x64 image runs under emulation:
 
 ```bash
-docker run --platform linux/amd64 --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
+docker run --platform linux/amd64 --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
     -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```
 
@@ -89,7 +89,7 @@ services:
     ports:
       - "1433:1433"
     environment:
-      MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
+      MSSQL_SA_PASSWORD: "YourStr0ng_Passw0rd"
       ACCEPT_EULA: "Y"
     volumes:
       - sqldb-data:/var/opt/mssql
@@ -100,7 +100,7 @@ volumes:
 
 </div>
 
-> **NOTE:** Replace `YourStrong!Passw0rd` with your own. The container enforces the default SQL password complexity policy: at least 8 characters, with a mix of upper, lower, numeric, and non-alphanumeric characters.
+> **NOTE:** Replace `YourStr0ng_Passw0rd` with your own. The container enforces the default SQL password complexity policy: at least 8 characters, with a mix of upper, lower, numeric, and non-alphanumeric characters.
 
 ### Step 3: verify it is running
 
@@ -121,7 +121,7 @@ The most common startup failure is a password that does not meet the complexity 
 If you have [sqlcmd](https://learn.microsoft.com/sql/tools/sqlcmd/sqlcmd-utility) installed, connect and run your first query in one command (port `1433` is published in both engines). The `-C` flag trusts the container's self-signed certificate:
 
 ```bash
-sqlcmd -S localhost,1433 -U sa -P "YourStrong!Passw0rd" -C \
+sqlcmd -S localhost,1433 -U sa -P "YourStr0ng_Passw0rd" -C \
     -Q "SELECT @@VERSION;"
 ```
 
@@ -136,7 +136,7 @@ You should see `Microsoft SQL Azure`, confirming you are on the Azure SQL Databa
 
   ```bash
   docker exec sqldb /opt/mssql-tools18/bin/sqlcmd \
-      -S localhost -U sa -P "YourStrong!Passw0rd" -C -Q "SELECT @@VERSION;"
+      -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -Q "SELECT @@VERSION;"
   ```
 
   </div>

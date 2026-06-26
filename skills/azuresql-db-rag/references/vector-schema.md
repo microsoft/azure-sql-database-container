@@ -147,7 +147,7 @@ provisioning `appdb`:
 
 ```bash
 docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd \
-  -S localhost -U sa -P "YourStrong!Passw0rd" -C -b -d appdb -i seed.sql
+  -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -d appdb -i seed.sql
 ```
 
 For programmatic seeding, loop over your documents in application code calling

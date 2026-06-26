@@ -27,7 +27,7 @@ the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 - Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest`
   (x64 / linux/amd64 only; on a non-x64 host add `--platform linux/amd64`).
 - Canonical ADO.NET / sqlcmd connection string:
-  `Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true`
+  `Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true`
 - One env var holds it: `SQL_CONNECTION_STRING`. Apps and most tools read it.
 - Use `User Id=`/`Password=`/`Database=`, not `Uid=`/`Pwd=`.
 - If you started on a non-default host port, replace `localhost,1433` with `localhost,<HOST_PORT>`.
@@ -37,7 +37,7 @@ the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 Point EF Core at `appdb` and apply migrations:
 
 ```bash
-export SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true"
+export SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
 dotnet ef database update
 ```
 
@@ -83,7 +83,7 @@ Prisma uses a URL-form connection string, not the ADO.NET form. Install Prisma
 ```bash
 npm install -D prisma@6
 npm install @prisma/client@6
-export DATABASE_URL="sqlserver://localhost:1433;database=appdb;user=sa;password=YourStrong!Passw0rd;trustServerCertificate=true"
+export DATABASE_URL="sqlserver://localhost:1433;database=appdb;user=sa;password=YourStr0ng_Passw0rd;trustServerCertificate=true"
 ```
 
 Pinned to Prisma 6; Prisma 7 moved the datasource `url` into a prisma.config.ts and
@@ -141,7 +141,7 @@ the runtime client.
 Alembic uses a SQLAlchemy URL. With pyodbc and ODBC Driver 18:
 
 ```bash
-export SQL_CONNECTION_STRING="mssql+pyodbc://sa:YourStrong!Passw0rd@localhost,1433/appdb?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
+export SQL_CONNECTION_STRING="mssql+pyodbc://sa:YourStr0ng_Passw0rd@localhost,1433/appdb?driver=ODBC+Driver+18+for+SQL+Server&TrustServerCertificate=yes"
 alembic upgrade head
 ```
 
@@ -166,7 +166,7 @@ Publish a DACPAC to `appdb`:
 ```bash
 sqlpackage /Action:Publish /SourceFile:./app.dacpac \
   /TargetServerName:"localhost,1433" /TargetDatabaseName:appdb \
-  /TargetUser:sa /TargetPassword:"YourStrong!Passw0rd" \
+  /TargetUser:sa /TargetPassword:"YourStr0ng_Passw0rd" \
   /TargetTrustServerCertificate:true
 ```
 
@@ -177,7 +177,7 @@ Notes:
 - Extract the current schema for diffing:
   ```bash
   sqlpackage /Action:Extract /SourceServerName:"localhost,1433" \
-    /SourceDatabaseName:appdb /SourceUser:sa /SourcePassword:"YourStrong!Passw0rd" \
+    /SourceDatabaseName:appdb /SourceUser:sa /SourcePassword:"YourStr0ng_Passw0rd" \
     /SourceTrustServerCertificate:true /TargetFile:./app.dacpac
   ```
 
