@@ -18,7 +18,7 @@ description: "Get the Azure SQL Database container running and run your first qu
 
 Confirm you have:
 
-- A supported container engine installed and running (Docker, Podman, containerd, Rancher Desktop, or Apple Container). See [Prerequisites](prerequisites.md).
+- A supported container engine installed and running (Docker, Podman, containerd, or Rancher Desktop). See [Prerequisites](prerequisites.md).
 - Port `1433` available on the host.
 - The registry username and password from your welcome email.
 
@@ -44,7 +44,6 @@ Prefer to run the commands yourself? Pick your container engine and follow the s
 
 <div class="pivot" role="tablist" aria-label="Container engine">
   <button class="pivot-btn" type="button" data-engine="docker" role="tab">Docker / Podman</button>
-  <button class="pivot-btn" type="button" data-engine="apple" role="tab">Apple Containers</button>
 </div>
 
 ### Step 1: sign in and pull the image
@@ -62,18 +61,6 @@ With Podman, replace `docker` with `podman`.
 
 </div>
 
-<div class="engine-block" data-engine="apple" markdown="1">
-
-Start the container system once per boot, then sign in and pull:
-
-```bash
-container system start
-container registry login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>
-container image pull sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
-```
-
-</div>
-
 The registry path, image tag, and credentials are provisional during Private Preview. The exact values you use will be the ones shared with you in the welcome email.
 
 ### Step 2: start the container
@@ -83,6 +70,7 @@ The registry path, image tag, and credentials are provisional during Private Pre
 Start it on port `1433` with one command:
 
 ```bash
+# on a non-x64 host, add --platform linux/amd64
 docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
     -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```
@@ -108,20 +96,6 @@ volumes:
 
 </div>
 
-<div class="engine-block" data-engine="apple" markdown="1">
-
-Start it on port `1433`. The image is x64, so on Apple Silicon pass `--arch amd64 --rosetta` to run it under emulation. Apple Containers also defaults to 1 GB of memory, but the engine needs at least 2 GB, so pass `--memory 4g`.
-
-```bash
-container run -d --name sqldb --arch amd64 --rosetta --memory 4g --cpus 4 \
-    -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
-    -p 1433:1433 sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
-```
-
-Apple Containers has no `docker compose` equivalent; use `container run`.
-
-</div>
-
 > **NOTE:** Replace `YourStrong!Passw0rd` with your own. The container enforces the default SQL password complexity policy: at least 8 characters, with a mix of upper, lower, numeric, and non-alphanumeric characters.
 
 ### Step 3: verify it is running
@@ -133,16 +107,6 @@ docker ps --filter "name=sqldb"
 ```
 
 You should see the `sqldb` container in `Up` status. If it exited, check the logs with `docker logs sqldb`.
-
-</div>
-
-<div class="engine-block" data-engine="apple" markdown="1">
-
-```bash
-container ls
-```
-
-You should see `sqldb` in `running` status. If it exited, check the logs with `container logs sqldb`.
 
 </div>
 
@@ -173,15 +137,6 @@ You should see `Microsoft SQL Azure`, confirming you are on the Azure SQL Databa
 
   </div>
 
-  <div class="engine-block" data-engine="apple" markdown="1">
-
-  ```bash
-  container exec sqldb /opt/mssql-tools18/bin/sqlcmd \
-      -S localhost -U sa -P "YourStrong!Passw0rd" -C -Q "SELECT @@VERSION;"
-  ```
-
-  </div>
-
 - **Use the VS Code MSSQL extension, with Copilot.** Install the [MSSQL extension](https://marketplace.visualstudio.com/items?itemName=ms-mssql.mssql), click **Add Connection**, and connect with server `localhost,1433`, SQL Login, user `sa`, your password, and **Trust server certificate: Yes**. Open a `.sql` file to run queries, and use the extension's inline GitHub Copilot assistance to write SQL from natural language.
 - **Install sqlcmd** from the [sqlcmd utility](https://learn.microsoft.com/sql/tools/sqlcmd/sqlcmd-utility) docs.
 
@@ -193,14 +148,6 @@ You should see `Microsoft SQL Azure`, confirming you are on the Azure SQL Databa
 docker rm -f sqldb
 # or, if you used docker compose (add -v to also remove the data volume):
 docker compose down
-```
-
-</div>
-
-<div class="engine-block" data-engine="apple" markdown="1">
-
-```bash
-container rm -f sqldb
 ```
 
 </div>

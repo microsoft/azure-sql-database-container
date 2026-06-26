@@ -8,7 +8,7 @@ The Azure SQL Database container is the Azure SQL Database engine, running local
 
 ## Use the container as a local database
 
-- Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition` (x64, linux/amd64; on Apple Silicon and arm64 Linux it runs under emulation with `--platform linux/amd64`). The exact tag for Private Preview is shared in the welcome email.
+- Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition` (x64, `linux/amd64`; on a non-x64 host, add `--platform linux/amd64`). The exact tag for Private Preview is shared in the welcome email.
 - Start it:
 
   ```bash

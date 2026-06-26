@@ -1,6 +1,6 @@
 ---
 name: azure-sql-database-container
-description: Use this skill whenever the user wants to run, start, stop, connect to, query, or troubleshoot the Azure SQL Database container, or build an application against a local Azure SQL Database. Triggers include "run Azure SQL Database locally", "add a local SQL database to my project", "start the SQL container", "write a docker-compose for SQL Database", "connect with sqlcmd", "use Apple Containers or Podman for SQL", "fix the SQL container not starting", "what is the connection string", or moving from the local container to Azure SQL Database in the cloud. Use it even when the user does not name the container, as long as the task involves a local Azure SQL Database engine. This is the entry-point skill for the container and hands off to the task skills for application scenarios.
+description: Use this skill whenever the user wants to run, start, stop, connect to, query, or troubleshoot the Azure SQL Database container, or build an application against a local Azure SQL Database. Triggers include "run Azure SQL Database locally", "add a local SQL database to my project", "start the SQL container", "write a docker-compose for SQL Database", "connect with sqlcmd", "use Podman for SQL", "fix the SQL container not starting", "what is the connection string", or moving from the local container to Azure SQL Database in the cloud. Use it even when the user does not name the container, as long as the task involves a local Azure SQL Database engine. This is the entry-point skill for the container and hands off to the task skills for application scenarios.
 ---
 
 # Azure SQL Database container
@@ -11,7 +11,7 @@ It is not the SQL Server box product. `SELECT SERVERPROPERTY('EngineEdition')` r
 
 ## The lifecycle, end to end
 
-1. **Confirm prerequisites.** A container engine is installed and running (Docker, Podman, or Apple Containers), port `1433` is free, and the runtime has at least 2 CPUs and 4 GB of memory.
+1. **Confirm prerequisites.** A container engine is installed and running (Docker or Podman), port `1433` is free, and the runtime has at least 2 CPUs and 4 GB of memory.
 2. **Sign in to the preview registry.** The image is private; the user has a username and password from the welcome email.
 3. **Start the container** with `ACCEPT_EULA=Y` and a strong `MSSQL_SA_PASSWORD`, publishing port `1433`.
 4. **Connect and verify** with `sqlcmd` (or a driver / the VS Code MSSQL extension). Confirm `EngineEdition = 5`.
@@ -24,20 +24,18 @@ The image lives in a private preview registry. Sign in first; the credentials co
 ```bash
 # Docker or Podman
 docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>
-
-# Apple Containers (run `container system start` once per boot first)
-container registry login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>
 ```
 
-Image reference: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest` (x64, `linux/amd64`). On Apple Silicon and arm64 Linux it runs under emulation (`--platform linux/amd64`). The exact registry, tag, and credentials are provisional during Private Preview and arrive in the welcome email.
+Image reference: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest` (x64, `linux/amd64`); on a non-x64 host, add `--platform linux/amd64`. The exact registry, tag, and credentials are provisional during Private Preview and arrive in the welcome email.
 
 ## 2. Start the container
 
-Pick the engine the user has. Both `ACCEPT_EULA=Y` and `MSSQL_SA_PASSWORD` are required, and the engine refuses to start without 2 GB of memory. For the full matrix (Podman, Apple Containers `--memory`, persistent volumes, port remap), read `references/run-the-container.md`.
+Pick the engine the user has. Both `ACCEPT_EULA=Y` and `MSSQL_SA_PASSWORD` are required, and the engine refuses to start without 2 GB of memory. For the full matrix (Podman, persistent volumes, port remap), read `references/run-the-container.md`.
 
 **Docker or Podman (single command):**
 
 ```bash
+# on a non-x64 host, add --platform linux/amd64
 docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
     -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```
@@ -58,14 +56,6 @@ services:
       - sqldb-data:/var/opt/mssql
 volumes:
   sqldb-data:
-```
-
-**Apple Containers (Apple Silicon):** the image is x64, so pass `--arch amd64 --rosetta` to run under emulation. It also defaults to 1 GB of memory, which is below the engine minimum, so always pass `--memory 4g`.
-
-```bash
-container run -d --name sqldb --arch amd64 --rosetta --memory 4g --cpus 4 \
-    -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
-    -p 1433:1433 sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```
 
 ## 3. Environment variables
@@ -103,13 +93,11 @@ Workflow: connect to `master` to `CREATE DATABASE appdb;`, then open a new conne
 ```bash
 docker rm -f sqldb            # docker / podman
 docker compose down           # if started with compose (add -v to drop the data volume)
-container rm -f sqldb         # Apple Containers
 ```
 
 ## Known limitations (apply automatically)
 
-- **The image is x64 (`linux/amd64`); arm64 runs under emulation.** There is no native arm64 image. On Apple Silicon or arm64 Linux, run with `--platform linux/amd64` (Docker), or `--arch amd64 --rosetta` (Apple Containers). The engine, T-SQL, and `VECTOR_DISTANCE` work under emulation; enable Rosetta in Docker Desktop for speed.
-- **Windows on ARM is the one unsupported host.** Use a native x64 Windows host. Apple Silicon and arm64 Linux are supported under emulation (see the bullet above).
+- **The image is x64 (`linux/amd64`).** On a non-x64 host, add `--platform linux/amd64`.
 - **Restriction parity is still landing.** Some PaaS restrictions are not yet enforced locally, and a few session-level defaults differ. Validate against an Azure SQL Database instance once before declaring production readiness, and set defaults explicitly in the connection string when they matter.
 
 More symptoms and fixes (password complexity, port in use, TLS) are in `references/troubleshooting.md`.

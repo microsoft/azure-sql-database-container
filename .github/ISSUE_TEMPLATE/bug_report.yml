@@ -24,12 +24,9 @@ body:
     attributes:
       label: Host OS
       options:
-        - macOS (arm64 / Apple Silicon)
         - macOS (x86_64 / Intel)
         - Linux (x86_64)
-        - Linux (arm64)
         - Windows 11 (x86_64)
-        - Windows 11 (arm64)
         - Other (describe in repro)
     validations:
       required: true
@@ -39,11 +36,10 @@ body:
     attributes:
       label: Container runtime
       options:
-        - Docker Desktop
+        - Docker
         - Podman
         - Rancher Desktop
         - containerd / nerdctl
-        - Apple Container
         - Other (describe in repro)
     validations:
       required: true
@@ -52,7 +48,7 @@ body:
     id: runtime-version
     attributes:
       label: Runtime version
-      placeholder: "Docker Desktop 4.34.2"
+      placeholder: "Docker 27.0.3"
     validations:
       required: true
 

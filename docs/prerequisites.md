@@ -7,7 +7,6 @@ description: "Supported host platforms, container runtimes, system resources, an
 
 - [Supported host platforms](#supported-host-platforms)
 - [Supported container runtimes](#supported-container-runtimes)
-- [Apple Silicon and arm64 (emulation)](#apple-silicon-and-arm64-emulation)
 - [System resources](#system-resources)
 - [Network and connectivity](#network-and-connectivity)
 - [Agent skill](#agent-skill)
@@ -16,38 +15,24 @@ description: "Supported host platforms, container runtimes, system resources, an
 
 ## Supported host platforms
 
-The image is x64 (`linux/amd64`). On arm64 hosts it runs under emulation (see the notes below).
+The image is x64 (`linux/amd64`); on a non-x64 host, add `--platform linux/amd64`.
 
 | Host OS                        | Architecture | Status                                       |
 | ------------------------------ | ------------ | -------------------------------------------- |
 | macOS 14 or later              | x86_64       | Supported (native)                           |
-| macOS 14 or later              | arm64        | Supported under emulation (see notes)        |
 | Linux (Ubuntu, Debian, Fedora) | x86_64       | Supported (native)                           |
-| Linux (Ubuntu, Debian, Fedora) | arm64        | Supported under emulation                    |
-| Windows 11                     | x86_64       | Supported (Docker Desktop or WSL2)           |
-| Windows 11                     | arm64        | Not supported                                |
+| Windows 11                     | x86_64       | Supported (WSL2)                             |
 
 ## Supported container runtimes
 
 The container is OCI-compliant and runs on any modern runtime. Tested runtimes:
 
-- **Docker Desktop** 4.30 or later
+- **Docker** 24 or later
 - **Podman** 5.0 or later
 - **Rancher Desktop** 1.13 or later
 - **containerd** (via `nerdctl` or Kubernetes)
-- **Apple Container** (macOS)
 
 Pick the runtime that already works on your machine. The container image and the connection behavior are the same across runtimes.
-
-## Apple Silicon and arm64 (emulation)
-
-The image is x64 (`linux/amd64`), so on Apple Silicon and arm64 Linux it runs under emulation. Pass `--platform linux/amd64` so the runtime selects the x64 image:
-
-```bash
-docker run --platform linux/amd64 ...
-```
-
-On Apple Silicon, enable "Use Rosetta for x86/amd64 emulation" in Docker Desktop (Settings, General) for a large speedup. The engine, T-SQL, and `VECTOR_DISTANCE` similarity search all work under emulation; expect some overhead compared with a native x64 host. See [Known limitations](known-limitations.md).
 
 ## System resources
 
@@ -57,7 +42,7 @@ Minimum allocation for the container runtime:
 - **Memory:** 4 GB available to the runtime VM
 - **Disk:** 10 GB free for the image and a small database; more for larger datasets
 
-If your Docker Desktop or Rancher Desktop VM is set lower than this, the container may fail to start or may run with reduced performance.
+If your container runtime's VM is set lower than this, the container may fail to start or may run with reduced performance.
 
 ## Network and connectivity
 
