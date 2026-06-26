@@ -20,7 +20,7 @@ The image ships sqlcmd at `/opt/mssql-tools18/bin/sqlcmd`. Use `-C` to trust the
 self-signed certificate and `-b` so a SQL error sets the exit code.
 
 ```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -C -b \
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
   -d appdb -Q "SELECT DB_NAME() AS db, SERVERPROPERTY('EngineEdition') AS EngineEdition;"
 ```
 
@@ -30,7 +30,7 @@ Use the host port chosen by the free-port loop (here shown as `1433`). The
 comma form `localhost,PORT` selects the port.
 
 ```bash
-sqlcmd -S localhost,1433 -U sa -P "YourStrong!Passw0rd" -C -b \
+sqlcmd -S localhost,1433 -U sa -P "YourStr0ng_Passw0rd" -C -b \
   -d appdb -Q "SELECT SERVERPROPERTY('Edition') AS Edition;"
 ```
 
@@ -43,7 +43,7 @@ Standardize on this shape everywhere. Use `Server=`, `Database=`, `User Id=`,
 short forms.
 
 ```
-Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true
+Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
 ```
 
 Apps read this from a single `SQL_CONNECTION_STRING` env var (see
@@ -55,12 +55,12 @@ All target `appdb`, which must already exist.
 
 | Stack | Connection string / config |
 | --- | --- |
-| ADO.NET / EF Core (SqlClient) | `Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true` |
-| Go (microsoft/go-mssqldb) | `sqlserver://sa:YourStrong!Passw0rd@localhost:1433?database=appdb&TrustServerCertificate=true` |
-| Python (pyodbc, ODBC 18) | `Driver={ODBC Driver 18 for SQL Server};Server=localhost,1433;Database=appdb;Uid=sa;Pwd=YourStrong!Passw0rd;TrustServerCertificate=yes` |
-| Python (pymssql) | `pymssql.connect(server="localhost", port=1433, user="sa", password="YourStrong!Passw0rd", database="appdb")` |
-| Node.js (mssql / tedious) | `{ server: "localhost", port: 1433, user: "sa", password: "YourStrong!Passw0rd", database: "appdb", options: { trustServerCertificate: true } }` |
-| JDBC | `jdbc:sqlserver://localhost:1433;databaseName=appdb;user=sa;password=YourStrong!Passw0rd;trustServerCertificate=true` |
+| ADO.NET / EF Core (SqlClient) | `Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true` |
+| Go (microsoft/go-mssqldb) | `sqlserver://sa:YourStr0ng_Passw0rd@localhost:1433?database=appdb&TrustServerCertificate=true` |
+| Python (pyodbc, ODBC 18) | `Driver={ODBC Driver 18 for SQL Server};Server=localhost,1433;Database=appdb;Uid=sa;Pwd=YourStr0ng_Passw0rd;TrustServerCertificate=yes` |
+| Python (pymssql) | `pymssql.connect(server="localhost", port=1433, user="sa", password="YourStr0ng_Passw0rd", database="appdb")` |
+| Node.js (mssql / tedious) | `{ server: "localhost", port: 1433, user: "sa", password: "YourStr0ng_Passw0rd", database: "appdb", options: { trustServerCertificate: true } }` |
+| JDBC | `jdbc:sqlserver://localhost:1433;databaseName=appdb;user=sa;password=YourStr0ng_Passw0rd;trustServerCertificate=true` |
 
 Note: the ODBC keyword form genuinely uses `Uid`/`Pwd`; that is an ODBC-specific
 exception. For the .NET-style (`User Id=`/`Password=`) and the
@@ -74,7 +74,7 @@ In the MSSQL extension, add a connection with:
 - Database: `appdb`
 - Authentication: SQL Login
 - User: `sa`
-- Password: `YourStrong!Passw0rd`
+- Password: `YourStr0ng_Passw0rd`
 - Trust server certificate: enabled
 
 ## Validation rules

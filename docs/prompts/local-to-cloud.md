@@ -23,7 +23,7 @@ Run the container locally on port 1433 with a strong SA password. Set `ACCEPT_EU
 ```bash
 # The image is in a private preview registry; sign in with the credentials requested via the early-access feedback channel (pull-only; may be rotated during the preview) first
 docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io
-docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
+docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
     -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```
 
@@ -36,7 +36,7 @@ The engine is not ready the instant `docker run` returns. Wait for it to accept 
 # brief window where the engine accepts connections but is still bringing databases online.
 # -b makes sqlcmd return a non-zero exit code on a SQL error (otherwise the loop would not retry).
 until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd \
-    -S localhost -U sa -P "YourStrong!Passw0rd" -C -b -l 2 \
+    -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -l 2 \
     -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do
   sleep 2
 done
@@ -56,7 +56,7 @@ Create `.env` at the project root if it does not exist. Use a single `SQL_CONNEC
 
 ```dotenv
 # Local: the Azure SQL Database container
-SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true"
+SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
 
 # Cloud (for later): Azure SQL Database. Only the server and auth change; the application does not.
 # SQL_CONNECTION_STRING="Server=tcp:<your-server>.database.windows.net,1433;Database=appdb;Authentication=Active Directory Default;Encrypt=true"

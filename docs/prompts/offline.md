@@ -22,7 +22,7 @@ services:
     image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
     container_name: sqldb
     environment:
-      MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
+      MSSQL_SA_PASSWORD: "YourStr0ng_Passw0rd"
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
@@ -58,13 +58,13 @@ docker compose up -d
 # Wait until the engine is ready and create appdb (it is not auto-created). The -b makes a SQL
 # error set the exit code, so transient startup errors are retried, not masked.
 until docker compose exec -T sqldb /opt/mssql-tools18/bin/sqlcmd \
-    -S localhost -U sa -P "YourStrong!Passw0rd" -C -b -l 2 \
+    -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -l 2 \
     -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do
   sleep 2
 done
 # Apply the schema and data to appdb. Select the database with -d; do not USE.
 docker compose exec -T sqldb /opt/mssql-tools18/bin/sqlcmd \
-    -S localhost -U sa -P "YourStrong!Passw0rd" -C -b -d appdb -i /seed.sql
+    -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -d appdb -i /seed.sql
 ```
 
 The seed runs once; the named volume keeps `appdb` and its data across restarts, so later `docker compose up -d` runs need no network and no re-seed.
@@ -72,7 +72,7 @@ The seed runs once; the named volume keeps `appdb` and its data across restarts,
 Set the app connection string (in `.env`, read from the environment, never hardcoded):
 
 ```dotenv
-SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true"
+SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
 ```
 
 Verify offline operation by disabling the network and confirming the app still reads and writes data.

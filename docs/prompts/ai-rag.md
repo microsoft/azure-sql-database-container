@@ -19,7 +19,7 @@ Read the entire instruction set before executing.
 ```bash
 # The image is in a private preview registry; sign in with the credentials requested via the early-access feedback channel (pull-only; may be rotated during the preview) first
 docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io
-docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
+docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
     -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```
 
@@ -29,7 +29,7 @@ Wait for the engine, then create the `appdb` database. Azure SQL Database does *
 # Create appdb, retrying until it succeeds (waits out engine startup; -b makes sqlcmd return a
 # non-zero exit on a SQL error so the loop retries while the engine is still initializing).
 until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd \
-    -S localhost -U sa -P "YourStrong!Passw0rd" -C -b -l 2 \
+    -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -l 2 \
     -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do
   sleep 2
 done
@@ -49,7 +49,7 @@ ollama pull nomic-embed-text   # 768-dimensional embeddings, runs locally
 Create `.env` with a single connection string (swap only this value for the cloud later):
 
 ```dotenv
-SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;Uid=sa;Pwd=YourStrong!Passw0rd;TrustServerCertificate=yes;"
+SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;Uid=sa;Pwd=YourStr0ng_Passw0rd;TrustServerCertificate=yes;"
 ```
 
 ### 4. Create the RAG script

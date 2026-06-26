@@ -29,7 +29,7 @@ services:
   sqldb:
     image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
     environment:
-      MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
+      MSSQL_SA_PASSWORD: "YourStr0ng_Passw0rd"
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
@@ -42,16 +42,16 @@ volumes:
 Add a `.env` (gitignored) with a single connection string the app reads from the environment:
 
 ```dotenv
-SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true"
+SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
 ```
 
 Some ORMs read their own variable in their own format, not the ADO string above. For the **Prisma** `sqlserver` provider (Next.js / NestJS), also add a `DATABASE_URL` in Prisma's URL form. Prisma reads `DATABASE_URL`, not `SQL_CONNECTION_STRING`:
 
 ```dotenv
-DATABASE_URL="sqlserver://localhost:1433;database=appdb;user=sa;password=YourStrong!Passw0rd;trustServerCertificate=true"
+DATABASE_URL="sqlserver://localhost:1433;database=appdb;user=sa;password=YourStr0ng_Passw0rd;trustServerCertificate=true"
 ```
 
-On Prisma 7+, the runtime client also needs a driver adapter: `npm i @prisma/adapter-mssql` and construct `PrismaClient` with the matching `PrismaMSSQL` adapter. `prisma migrate dev` creates the `appdb` database if it does not exist; for stacks whose migration tool does not (for example EF Core), first create it with `docker compose exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -C -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"`.
+On Prisma 7+, the runtime client also needs a driver adapter: `npm i @prisma/adapter-mssql` and construct `PrismaClient` with the matching `PrismaMSSQL` adapter. `prisma migrate dev` creates the `appdb` database if it does not exist; for stacks whose migration tool does not (for example EF Core), first create it with `docker compose exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"`.
 
 ### 3. Scaffold schema, migration, and data-access layer
 

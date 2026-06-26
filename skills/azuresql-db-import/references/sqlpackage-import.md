@@ -49,7 +49,7 @@ Always provision `appdb` on a master connection first (see SKILL.md Step 0), the
 ```bash
 SqlPackage /Action:Import \
   /SourceFile:"./mydatabase.bacpac" \
-  /TargetConnectionString:"Server=localhost,$HOST_PORT;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true" \
+  /TargetConnectionString:"Server=localhost,$HOST_PORT;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true" \
   /p:CommandTimeout=0
 ```
 

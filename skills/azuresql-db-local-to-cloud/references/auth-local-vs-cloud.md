@@ -34,7 +34,7 @@ local choice is username/password over a trusted self-signed certificate.
 Local string:
 
 ```
-Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true
+Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
 ```
 
 `TrustServerCertificate=true` accepts the container's self-signed cert. This is
@@ -118,7 +118,7 @@ For pyodbc, set `SQL_CONNECTION_STRING` in ODBC keyword form.
 Local:
 
 ```
-Driver={ODBC Driver 18 for SQL Server};Server=localhost,1433;Database=appdb;Uid=sa;Pwd=YourStrong!Passw0rd;TrustServerCertificate=yes
+Driver={ODBC Driver 18 for SQL Server};Server=localhost,1433;Database=appdb;Uid=sa;Pwd=YourStr0ng_Passw0rd;TrustServerCertificate=yes
 ```
 
 Cloud:

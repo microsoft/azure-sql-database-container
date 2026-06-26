@@ -12,13 +12,13 @@ What the container requires at start, and the app-side convention.
 `MSSQL_SA_PASSWORD` policy: at least 8 characters and at least three of upper
 case, lower case, digits, and symbols. A weak password makes the engine fail to
 initialize (see `troubleshooting.md`). Example used throughout these docs:
-`YourStrong!Passw0rd`.
+`YourStr0ng_Passw0rd`.
 
 The engine listens on container port `1433`. Map it to a host port at run time
 (`-p HOST_PORT:1433`); see `run-the-container.md`.
 
 ```bash
-docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
+docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
   -p "1433:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```
 
@@ -29,7 +29,7 @@ their connection. Standardize its value on the canonical string (note `appdb`
 must already exist):
 
 ```bash
-export SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true"
+export SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
 ```
 
 In compose, pass it to the app service:
@@ -38,7 +38,7 @@ In compose, pass it to the app service:
 services:
   app:
     environment:
-      SQL_CONNECTION_STRING: "Server=sqldb,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true"
+      SQL_CONNECTION_STRING: "Server=sqldb,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
 ```
 
 Inside a compose network, use the service name (`sqldb`) as the host; from the

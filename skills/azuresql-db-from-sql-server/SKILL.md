@@ -77,9 +77,9 @@ flags make a SQL error set the exit code so transient startup errors (e.g.
 HOST_PORT=1433; while lsof -nP -iTCP:"$HOST_PORT" -sTCP:LISTEN >/dev/null 2>&1; do HOST_PORT=$((HOST_PORT+1)); done
 PLATFORM=(); case "$(docker info -f '{{.Architecture}}' 2>/dev/null)" in x86_64|amd64) ;; *) PLATFORM=(--platform linux/amd64);; esac
 docker rm -f sqldb 2>/dev/null
-docker run -d --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
+docker run -d --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
   -p "$HOST_PORT:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
-until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -C -b -l 2 \
+until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -l 2 \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do sleep 2; done
 echo "ready on localhost,$HOST_PORT"
 ```
@@ -101,7 +101,7 @@ string (`Database=appdb`, or `-d appdb` for sqlcmd). Standardize on one
 `SQL_CONNECTION_STRING` env var:
 
 ```
-Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true
+Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
 ```
 
 Use `User Id=` / `Password=` / `Database=`, not `Uid=` / `Pwd=`. For sqlcmd use
@@ -114,7 +114,7 @@ Postgres/MySQL convention and is not honored here; do not rely on it. Seed by
 running your script against the provisioned database:
 
 ```bash
-docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -C -d appdb -i /dev/stdin < seed.sql
+docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -d appdb -i /dev/stdin < seed.sql
 ```
 
 ### 7. Remove box-only features
@@ -133,7 +133,7 @@ Flag and fix every hit. Full table in `references/box-vs-azure-feature-matrix.md
 Confirm you are on the Azure SQL Database engine:
 
 ```bash
-docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -C -d appdb \
+docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -d appdb \
   -Q "SELECT SERVERPROPERTY('EngineEdition') AS EngineEdition, SERVERPROPERTY('Edition') AS Edition;"
 ```
 

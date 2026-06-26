@@ -22,7 +22,7 @@ services:
   app:
     # ... existing config ...
     environment:
-      SQL_CONNECTION_STRING: "Server=sqldb,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true"
+      SQL_CONNECTION_STRING: "Server=sqldb,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
     depends_on:
       sqldb:
         condition: service_healthy
@@ -32,7 +32,7 @@ services:
   sqldb:
     image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
     environment:
-      MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
+      MSSQL_SA_PASSWORD: "YourStr0ng_Passw0rd"
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
@@ -55,7 +55,7 @@ services:
         condition: service_healthy
     restart: "no"
     entrypoint: ["/opt/mssql-tools18/bin/sqlcmd", "-S", "sqldb,1433", "-U", "sa",
-      "-P", "YourStrong!Passw0rd", "-C", "-Q", "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"]
+      "-P", "YourStr0ng_Passw0rd", "-C", "-Q", "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"]
 
 volumes:
   sqldb-data:
