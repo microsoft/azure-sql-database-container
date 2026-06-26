@@ -45,8 +45,12 @@ docker run -d --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASS
 The Azure SQL Database engine does **not** auto-create databases, and the connection model differs from the box product. Provision the application database on a `master` connection, then point the app at that database:
 
 ```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
-    -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
+# The engine is not ready the instant docker run returns; retry until it accepts connections.
+# -b makes a SQL error set the exit code so a transient startup error (Msg 913) is retried, not masked.
+until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -l 2 \
+    -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do
+  sleep 2
+done
 ```
 
 Re-point connection strings from `Database=master` to `Database=appdb`. Do not switch databases with `USE`: in a user-database (SDS) session `USE` returns `Msg 40508`, exactly as in Azure SQL Database in the cloud (a `master` connection is a non-SDS provisioning session where it appears to work, but `master` is for provisioning only). Select the database in the connection string.

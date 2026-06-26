@@ -71,8 +71,8 @@ echo "ready on localhost,$HOST_PORT"
 ### 3. Required environment variables
 
 - `ACCEPT_EULA=Y` (required).
-- `MSSQL_SA_PASSWORD` (required, complex: 8+ chars with upper, lower, digit, and
-  symbol). The engine listens on container port `1433`.
+- `MSSQL_SA_PASSWORD` (required, complex: at least 8 characters using at least
+  three of upper case, lower case, digits, and symbols). The engine listens on container port `1433`.
 - App convention: apps read one `SQL_CONNECTION_STRING` env var.
 
 Details: `references/environment-variables.md`.

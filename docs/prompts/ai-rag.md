@@ -19,7 +19,9 @@ Read the entire instruction set before executing.
 ```bash
 # The image is in a private preview registry; sign in with the credentials requested via the early-access feedback channel (pull-only; may be rotated during the preview) first
 docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io
-docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
+# The image is x64-only; on a non-x64 host (Apple Silicon) this adds --platform linux/amd64 to run it under emulation.
+PLATFORM=(); case "$(docker info -f '{{.Architecture}}' 2>/dev/null)" in x86_64|amd64) ;; *) PLATFORM=(--platform linux/amd64);; esac
+docker run --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
     -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```
 
@@ -89,8 +91,10 @@ chunks = [
 ]
 for c in chunks:
     cur.execute(
-        # VECTOR's dimension must be a literal, not a bind parameter, so inline DIM
-        f"INSERT INTO documents (content, embedding) VALUES (?, CAST(? AS VECTOR({DIM})));",
+        # VECTOR's dimension must be a literal (inline DIM), not a bind parameter. The bound JSON
+        # string must be cast to NVARCHAR(MAX) first: a long embedding is otherwise sent as ntext
+        # and fails with "Explicit conversion from data type ntext to vector is not allowed" (529).
+        f"INSERT INTO documents (content, embedding) VALUES (?, CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR({DIM})));",
         c, embed(c),
     )
 conn.commit()
@@ -100,7 +104,7 @@ query = "How do I run vector search locally?"
 cur.execute(
     f"""
     SELECT TOP 3 content,
-        VECTOR_DISTANCE('cosine', embedding, CAST(? AS VECTOR({DIM}))) AS distance
+        VECTOR_DISTANCE('cosine', embedding, CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR({DIM}))) AS distance
     FROM documents
     ORDER BY distance;
     """,
@@ -124,7 +128,7 @@ python rag.py
 
 ## Validation rules
 
-- The `embedding` column is a native `VECTOR(768)`; vectors are inserted as JSON arrays cast with `CAST(? AS VECTOR(768))`.
+- The `embedding` column is a native `VECTOR(768)`; vectors are inserted as JSON arrays with `CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(768))` (the inner `NVARCHAR(MAX)` keeps a long embedding from being sent as ntext, which fails with error 529).
 - Retrieval uses `VECTOR_DISTANCE('cosine', ...)` and orders ascending (smaller distance = closer match).
 - The embedding dimension is consistent between insert and query.
 - The connection string is read from the environment; queries are parameterized with `?`.

@@ -192,11 +192,12 @@ const widgets = await prisma.widget.findMany({ where: { name } });
 
 ## NestJS (Prisma or TypeORM)
 
-`.env` (same two vars as Next.js):
+`.env` (the same vars as Next.js; the TypeORM DataSource below also reads `MSSQL_SA_PASSWORD`):
 
 ```
 SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
 DATABASE_URL=sqlserver://localhost:1433;database=appdb;user=sa;password=YourStr0ng_Passw0rd;trustServerCertificate=true;encrypt=true
+MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd
 ```
 
 Provision appdb on master before bootstrapping:
@@ -230,8 +231,10 @@ export const AppDataSource = new DataSource({
 First migration:
 
 ```bash
-npm run typeorm migration:generate -- -n Init
-npm run typeorm migration:run
+# TypeORM 0.3+: the name is a positional path and the data source is passed with -d
+# (the legacy -n flag was removed). Adjust paths to your project layout.
+npm run typeorm -- migration:generate ./src/migrations/Init -d ./src/AppDataSource.ts
+npm run typeorm -- migration:run -d ./src/AppDataSource.ts
 ```
 
 Typed, parameterized data access (TypeORM binds parameters):

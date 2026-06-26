@@ -121,10 +121,10 @@ until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "You
 echo "ready on localhost,$HOST_PORT"
 ```
 
-Then point the app at it (assuming the loop above settled on 1433):
+Then point the app at it, using the `HOST_PORT` the loop settled on:
 
 ```bash
-export SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
+export SQL_CONNECTION_STRING="Server=localhost,$HOST_PORT;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
 ```
 
 To run against the cloud later, change only this variable; do not touch the app.
@@ -139,7 +139,7 @@ then again with the cloud string: identical code, identical result.
 ### Node (mssql)
 
 ```js
-// app.js  ->  node app.js
+// app.mjs  ->  node app.mjs  (ESM: use the .mjs extension, or set "type":"module" in package.json)
 import sql from 'mssql';
 
 const pool = await sql.connect(process.env.SQL_CONNECTION_STRING);
