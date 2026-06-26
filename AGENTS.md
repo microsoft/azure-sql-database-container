@@ -14,6 +14,7 @@ The Azure SQL Database container is the Azure SQL Database engine, running local
   ```bash
   # The image is in a private preview registry; sign in with the credentials from the welcome email first
   docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io
+  # on a non-x64 host, add --platform linux/amd64
   docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" \
       -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
   ```

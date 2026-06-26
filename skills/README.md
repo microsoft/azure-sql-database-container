@@ -31,7 +31,7 @@ mkdir -p .claude/skills
 cp -R azure-sql-database-container .claude/skills/
 ```
 
-**GitHub Copilot:** drop [`../samples/agent-skills/copilot-instructions/copilot-instructions.md`](../samples/agent-skills/copilot-instructions/copilot-instructions.md) into your repo as `.github/copilot-instructions.md`. The repo root [`AGENTS.md`](../AGENTS.md) is also picked up by the Copilot coding agent.
+**GitHub Copilot:** the repo-root [`AGENTS.md`](../AGENTS.md) is read by the Copilot coding agent (and by Codex, Cursor, and others). Copy it into your project to give Copilot the same container guidance.
 
 ## Accuracy baseline
 
