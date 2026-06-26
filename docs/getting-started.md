@@ -26,29 +26,27 @@ Everything below works the same on macOS, Linux, and Windows.
 
 ## Option A: let an AI coding agent do it
 
-The fastest path is to let your AI coding agent set everything up. Install the container skill once. It works across Claude Code, GitHub Copilot, Codex, and Cursor.
+The fastest path is to let your AI coding agent set everything up. Install the skill collection once. It works across Claude Code, GitHub Copilot (VS Code and CLI), Codex, and Cursor.
 
 ```bash
-npx skills add azuresql-db-container
+npx skills add microsoft/azure-sql-database-container
 ```
 
 Then ask your agent in plain English, for example:
 
 > Add a local Azure SQL Database to this project, then scaffold the schema, migrations, and data-access layer for my stack.
 
-The skill teaches your agent the registry, image, ports, and connection string, so it can sign in, start the container, and wire your app to it. Browse the skill and more ready-made prompts in [agent skills](https://github.com/microsoft/azure-sql-database-container/tree/main/skills).
+**Why use the skills?** They already know the private preview registry, the x64 image, the connection model (the engine does not auto-create databases, so they provision `appdb` first), the readiness wait, and the local-to-cloud story. So your agent stands up a real Azure SQL Database the right way the first time, instead of reaching for the SQL Server box image (`mcr.microsoft.com/mssql/server`) or inventing behavior the engine does not have. Browse the [skills on GitHub](https://github.com/microsoft/azure-sql-database-container/tree/main/skills).
 
 ## Option B: set it up yourself
 
-Prefer to run the commands yourself? Pick your container engine and follow the steps. Everything works the same on macOS, Linux, and Windows.
-
-<div class="pivot" role="tablist" aria-label="Container engine">
-  <button class="pivot-btn" type="button" data-engine="docker" role="tab">Docker / Podman</button>
-</div>
+Prefer to run the commands yourself? Follow the steps below with Docker or Podman. Everything works the same on macOS, Linux, and Windows.
 
 ### Step 1: sign in and pull the image
 
-The preview image is served from a private registry. Sign in with the username and password, requested via the early-access feedback channel (pull-only; may be rotated during the preview), then pull the image.
+The preview image is served from a private registry. Sign in, then pull the image.
+
+> **Note:** the registry username and password are **provided to Private Preview cohort participants**. Request them via the early-access feedback channel. They are shared and pull-only, must be treated as secrets, and may be rotated during the preview.
 
 <div class="engine-block" data-engine="docker" markdown="1">
 

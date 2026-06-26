@@ -37,29 +37,6 @@
     });
   });
 
-  // engine pivot, page-level and persisted
-  (function () {
-    var btns = document.querySelectorAll(".pivot-btn");
-    if (!btns.length) return;
-    function setEngine(engine) {
-      document.querySelectorAll(".pivot-btn").forEach(function (b) {
-        var on = b.getAttribute("data-engine") === engine;
-        b.classList.toggle("is-active", on);
-        b.setAttribute("aria-selected", on ? "true" : "false");
-      });
-      document.querySelectorAll(".engine-block").forEach(function (el) {
-        el.hidden = el.getAttribute("data-engine") !== engine;
-      });
-      try { localStorage.setItem("asdb-engine", engine); } catch (e) {}
-    }
-    btns.forEach(function (b) {
-      b.addEventListener("click", function () { setEngine(b.getAttribute("data-engine")); });
-    });
-    var saved = "docker";
-    try { saved = localStorage.getItem("asdb-engine") || "docker"; } catch (e) {}
-    setEngine(saved);
-  })();
-
   // add a copy button to every code block in the docs
   document.querySelectorAll(".prose pre").forEach(function (pre) {
     var btn = document.createElement("button");

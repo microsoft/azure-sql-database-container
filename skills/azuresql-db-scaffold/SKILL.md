@@ -19,7 +19,9 @@ local database. This is the **Azure SQL engine**, not the SQL Server box image.
 - Image is x64 only. On a non-x64 host add `--platform linux/amd64` (Docker) or
   `platform: linux/amd64` (compose).
 - Registry is private (Private Preview): sign in first with
-  `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io` using your welcome-email credentials.
+  `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io` using the shared pull-only credentials
+  provided to the Private Preview cohort (request them via the early-access feedback channel; they
+  may rotate).
   Registry and tag are provisional during Private Preview.
 
 For full engine detail (readiness, vectors, troubleshooting) see the **azuresql-db-container** skill.
@@ -97,7 +99,7 @@ docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourSt
 ## Vectors (if your app uses embeddings)
 
 Native `VECTOR(n)` column type and `VECTOR_DISTANCE('cosine', a, b)`. Insert with
-`CAST(? AS VECTOR(n))` where **n is a LITERAL, never a bind parameter** (a parameter dimension
+`CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n))` where **n is a LITERAL, never a bind parameter** (a parameter dimension
 fails with "Incorrect syntax near '@P3'"). `CREATE VECTOR INDEX` (DiskANN) is still in
 development; use full-scan top-k for now.
 

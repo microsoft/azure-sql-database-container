@@ -8,7 +8,7 @@ description: >-
   documents", chatbot memory, or semantic lookup against a local SQL database.
   Use this instead of pgvector, FAISS, Chroma, Pinecone, or a separate vector
   store when the data already lives in (or can live in) Azure SQL. Covers the
-  VECTOR(n) column type, inserting embeddings with CAST(? AS VECTOR(n)) where the
+  VECTOR(n) column type, inserting embeddings with CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n)) where the
   dimension is a literal, a pluggable embed() so only the endpoint changes for
   cloud, and the honest current state of CREATE VECTOR INDEX. Provisions appdb on
   master first so every script runs on a fresh container.
@@ -124,7 +124,7 @@ def embed(text: str) -> list[float]:
 
 ## Step 4: insert embeddings (dimension is a LITERAL)
 
-Critical: in `CAST(? AS VECTOR(n))`, `n` must be a **literal** baked into the SQL
+Critical: in `CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n))`, `n` must be a **literal** baked into the SQL
 string. Passing the dimension as a bind parameter fails with
 `Incorrect syntax near '@P3'`. Bind the embedding **value** (as a JSON array
 string), never the dimension.
@@ -196,7 +196,7 @@ the same; you just add the index.
 - `SERVERPROPERTY('EngineEdition')` returns `5`. If not, you are on the wrong
   image.
 - `appdb` exists before any vector script connects (Step 1 guarantees this).
-- The dimension in `VECTOR(n)` and `CAST(? AS VECTOR(n))` is a literal integer,
+- The dimension in `VECTOR(n)` and `CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n))` is a literal integer,
   identical to `len(embed(text))`.
 - Smaller cosine distance means more similar; results are `ORDER BY distance ASC`.
 

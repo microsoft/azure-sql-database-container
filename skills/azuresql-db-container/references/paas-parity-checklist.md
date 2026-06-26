@@ -26,9 +26,11 @@ before declaring readiness.
 ## Vectors: present, with one caveat
 
 - `VECTOR(n)` column type and `VECTOR_DISTANCE('cosine', a, b)` are available.
-- Insert with `CAST(? AS VECTOR(n))` where **n is a literal dimension, never a
-  bind parameter**. A parameterized dimension fails with "Incorrect syntax near
-  '@P3'".
+- Insert with `CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n))` where **n is a
+  literal dimension, never a bind parameter**. A parameterized dimension fails
+  with "Incorrect syntax near '@P3'". The inner `CAST(? AS NVARCHAR(MAX))` keeps
+  a real embedding's JSON (which exceeds the driver's 4000-char threshold) from
+  being sent as ntext, which the engine rejects (error 529).
 - `CREATE VECTOR INDEX` (DiskANN) is still in development. For now, use a
   full-scan top-k query with `VECTOR_DISTANCE` instead of an index.
 

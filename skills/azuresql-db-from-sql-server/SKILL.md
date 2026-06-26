@@ -142,7 +142,7 @@ Expect `EngineEdition = 5` and `Edition = SQL Azure`.
 ## Vectors (if the project uses embeddings)
 
 The Azure SQL Database engine has a native `VECTOR(n)` type and
-`VECTOR_DISTANCE('cosine', a, b)`. Insert with `CAST(? AS VECTOR(n))` where **n
+`VECTOR_DISTANCE('cosine', a, b)`. Insert with `CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n))` where **n
 is a LITERAL, never a bind parameter** (a parameter dimension fails with
 "Incorrect syntax near '@P3'"). `CREATE VECTOR INDEX` (DiskANN) is still in
 development; use a full-scan top-k query for now.

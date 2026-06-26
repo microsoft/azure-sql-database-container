@@ -141,7 +141,7 @@ Vector insert (dimension is a LITERAL in the SQL text, value is bound):
 
 ```python
 cx.execute(
-    text("INSERT INTO dbo.docs (embedding) VALUES (CAST(:v AS VECTOR(1536)))"),
+    text("INSERT INTO dbo.docs (embedding) VALUES (CAST(CAST(:v AS NVARCHAR(MAX)) AS VECTOR(1536)))"),
     {"v": "[0.1, 0.2, 0.3]"},   # 1536 is literal; do NOT bind it as a parameter
 )
 ```

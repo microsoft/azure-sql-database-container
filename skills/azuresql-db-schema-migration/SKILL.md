@@ -37,7 +37,7 @@ recipe adds `--platform linux/amd64` automatically. The registry is private duri
 Private Preview, so sign in first.
 
 ```bash
-docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io   # welcome-email credentials
+docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io   # pull-only creds from the Private Preview cohort (feedback channel)
 
 # Pick a free host port and add the platform flag only on a non-x64 host (works in bash and zsh).
 HOST_PORT=1433; while lsof -nP -iTCP:"$HOST_PORT" -sTCP:LISTEN >/dev/null 2>&1; do HOST_PORT=$((HOST_PORT+1)); done
@@ -119,8 +119,10 @@ sqlpackage /Action:Publish /SourceFile:./app.dacpac \
 
 The engine has a native `VECTOR(n)` column type and `VECTOR_DISTANCE('cosine', a, b)`.
 In a migration, the dimension `n` is a **literal** in DDL (`embedding VECTOR(1536)`).
-When inserting via `CAST(? AS VECTOR(n))`, `n` must be a literal, never a bind
-parameter (a parameter dimension fails with "Incorrect syntax near '@P3'").
+When inserting via `CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n))`, `n` must be a
+literal, never a bind parameter (a parameter dimension fails with "Incorrect
+syntax near '@P3'"); the inner `NVARCHAR(MAX)` cast keeps a real embedding's
+JSON from being sent as ntext, which the engine rejects (error 529).
 `CREATE VECTOR INDEX` (DiskANN) is still in development; use full-scan top-k for now.
 
 ## Seeding after migration
