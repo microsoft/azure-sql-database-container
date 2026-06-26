@@ -54,7 +54,7 @@ Two-step provisioning is a current limitation: you provision a database on a mas
 
 Graphical tools are not yet 100% compatible with the container. The [VS Code MSSQL extension](https://marketplace.visualstudio.com/items?itemName=ms-mssql.mssql) and SQL Server Management Studio (SSMS) can throw UI errors against it. We are actively working on full compatibility.
 
-**Workaround:** Query with `sqlcmd` (on the host or the copy bundled in the container, via `docker exec`), or with any driver or ORM. These all work today. The MSSQL extension's GitHub Copilot integration also works now, for example opening the schema designer or writing SQL from natural language.
+**Workaround:** Query with `sqlcmd` (on the host or the copy bundled in the container, via `docker exec`), or with any driver or ORM. These all work today. The MSSQL extension's [GitHub Copilot integration](https://aka.ms/vscode-mssql-copilot-docs) also works now, for example opening the schema designer or writing SQL from natural language.
 
 ## Known behavior gaps
 
