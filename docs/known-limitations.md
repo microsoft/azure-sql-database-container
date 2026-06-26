@@ -18,7 +18,7 @@ This page lists the limitations we know about as of the version date above. Two 
 - **Active issues we are fixing** are blockers we are working on now. If you hit one, the workaround is listed inline and the fix is tracked.
 - **Known behavior gaps** are functional differences from Azure SQL Database in the cloud. They may close, or they may not, depending on Private Preview feedback.
 
-If you hit a limitation that is not on this page, please file a [GitHub issue](https://github.com/microsoft/azure-sql-database-container/issues/new?template=bug_report.yml) so we can either add it here or fix it.
+If you hit a limitation that is not on this page, please file a [GitHub issue](https://aka.ms/azuresqldb-container-bug) so we can either add it here or fix it.
 
 ## Active issues we are fixing
 

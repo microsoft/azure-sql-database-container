@@ -16,8 +16,8 @@ description: "Pick the right channel for your question: GitHub Issues, Discussio
 
 | You want to                                                | Use                                            |
 | ---------------------------------------------------------- | ---------------------------------------------- |
-| Report a bug, regression, or unexpected behavior           | [GitHub Issues: Bug report](https://github.com/microsoft/azure-sql-database-container/issues/new?template=bug_report.yml) |
-| Request a feature or capability                            | [GitHub Issues: Feature request](https://github.com/microsoft/azure-sql-database-container/issues/new?template=feature_request.yml) |
+| Report a bug, regression, or unexpected behavior           | [GitHub Issues: Bug report](https://aka.ms/azuresqldb-container-bug) |
+| Request a feature or capability                            | [GitHub Issues: Feature request](https://aka.ms/azuresqldb-container-feature-request) |
 | Ask a "how do I" question                                  | [GitHub Discussions: Q&A](https://github.com/microsoft/azure-sql-database-container/discussions/categories/q-a) |
 | Share what you built                                       | [GitHub Discussions: Show & Tell](https://github.com/microsoft/azure-sql-database-container/discussions/categories/show-and-tell) |
 | Suggest a direction or pitch an idea                       | [GitHub Discussions: Ideas](https://github.com/microsoft/azure-sql-database-container/discussions/categories/ideas) |

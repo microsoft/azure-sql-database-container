@@ -21,4 +21,4 @@ container logs sqldb | tail -20                    # Apple Containers
 sqlcmd -S localhost,1433 -U sa -P "<pw>" -C -Q "SELECT 1"   # connectivity
 ```
 
-If a question is not answered here or in the other references, file an issue: https://github.com/microsoft/azure-sql-database-container/issues/new?template=bug_report.yml
+If a question is not answered here or in the other references, file an issue: https://aka.ms/azuresqldb-container-bug
