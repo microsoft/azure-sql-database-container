@@ -14,7 +14,7 @@ Read the entire instruction set before executing.
 
 ### 1. Add a docker compose service with a persistent volume and a seed script
 
-Create `docker-compose.yml`. The Azure SQL Database engine does not auto-run mounted `.sql` files, so the seed is mounted into the container and applied with one explicit command in step 3 (still fully offline — no network needed).
+Create `docker-compose.yml`. The Azure SQL Database engine does not auto-run mounted `.sql` files, so the seed is mounted into the container and applied with one explicit command in step 3 (still fully offline, no network needed).
 
 ```yaml
 services:

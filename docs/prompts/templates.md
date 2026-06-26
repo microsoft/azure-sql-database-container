@@ -45,7 +45,7 @@ Add a `.env` (gitignored) with a single connection string the app reads from the
 SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=true"
 ```
 
-Some ORMs read their own variable in their own format, not the ADO string above. For the **Prisma** `sqlserver` provider (Next.js / NestJS), also add a `DATABASE_URL` in Prisma's URL form — Prisma reads `DATABASE_URL`, not `SQL_CONNECTION_STRING`:
+Some ORMs read their own variable in their own format, not the ADO string above. For the **Prisma** `sqlserver` provider (Next.js / NestJS), also add a `DATABASE_URL` in Prisma's URL form. Prisma reads `DATABASE_URL`, not `SQL_CONNECTION_STRING`:
 
 ```dotenv
 DATABASE_URL="sqlserver://localhost:1433;database=appdb;user=sa;password=YourStrong!Passw0rd;trustServerCertificate=true"

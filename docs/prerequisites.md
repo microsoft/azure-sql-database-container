@@ -55,7 +55,7 @@ If your container runtime's VM is set lower than this, the container may fail to
 If you are driving the container with an AI coding agent (Claude Code, Codex, GitHub Copilot, or Cursor) or from the CLI, install the container skill first. For that workflow it is a hard requirement, more important than any individual tool below: the skill teaches your agent the registry sign-in, image name, ports, connection string, and the local-to-cloud handoff, so a single plain-English prompt is enough.
 
 ```bash
-npx skills add azure-sql-database-container
+npx skills add azuresql-db-container
 ```
 
 It works across Claude Code, GitHub Copilot, Codex, and Cursor. Browse the skill and ready-made prompts in [agent skills](https://github.com/microsoft/azure-sql-database-container/tree/main/skills). Without it, the agent will not know how to sign in to the registry, which image to run, or how to connect.
@@ -75,4 +75,4 @@ The container itself does not require an Azure subscription. The local-to-cloud 
 - An Azure SQL Database server and database
 - A target compute resource for the application: Azure App Service, Azure Container Apps, or Azure Functions, depending on the stack
 
-See the [local-to-cloud skill](https://github.com/microsoft/azure-sql-database-container/tree/main/skills/azure-sql-local-to-cloud) for the deploy flow. If you do not have an Azure subscription, you can still do all local development and exercise the full inner loop.
+See the [local-to-cloud skill](https://github.com/microsoft/azure-sql-database-container/tree/main/skills/azuresql-db-local-to-cloud) for the deploy flow. If you do not have an Azure subscription, you can still do all local development and exercise the full inner loop.
