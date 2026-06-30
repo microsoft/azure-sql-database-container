@@ -105,7 +105,7 @@ volumes:
 
 ### Step 3: connect and run your first query
 
-You do not need to install anything: the container bundles sqlcmd, so this works for everyone. Start with the bundled client and a short login timeout. If you started the container only seconds ago and see a transient startup failure such as `EOF`, wait a few seconds and rerun the same command. The `-C` flag trusts the container's self-signed certificate:
+You do not need to install anything: the container bundles sqlcmd, so this works for everyone. Start with the bundled client and a short login timeout. If you started the container only seconds ago and see a transient startup failure such as `EOF`, wait a few seconds and rerun the same command. The `-C` flag trusts the container's self-signed certificate.
 
 ```bash
 docker exec sqldb /opt/mssql-tools18/bin/sqlcmd \
@@ -116,7 +116,8 @@ You should see `Microsoft SQL Azure`, confirming you are on the Azure SQL Databa
 
 **Other ways to query:**
 
-- **Already have [sqlcmd](https://learn.microsoft.com/sql/tools/sqlcmd/sqlcmd-utility) on the host?** First wait for the in-container command above to succeed, then connect directly: `sqlcmd -S localhost,1433 -U sa -P "YourStr0ng_Passw0rd" -C -b -l 2 -Q "SELECT @@VERSION;"`. In PowerShell, retype the password quotes as plain ASCII `"` characters and do not include a leading space inside the password string. A pasted smart quote or extra space can cause an immediate `EOF`.
+- **Already have [sqlcmd](https://learn.microsoft.com/sql/tools/sqlcmd/sqlcmd-utility) on the host?** First wait for the in-container command above to succeed, then connect directly: `sqlcmd -S localhost,1433 -U sa -P "YourStr0ng_Passw0rd" -C -b -l 2 -Q "SELECT @@VERSION;"`.
+  In PowerShell, retype the password quotes as plain ASCII `"` characters and do not include a leading space inside the password string. A pasted smart quote or extra space can cause an immediate `EOF`.
 - **Ask your AI agent, no T-SQL required.** With the [container skill](prerequisites.md#agent-skill) installed, ask in plain English, for example: *"Connect to my local Azure SQL Database and show the version and edition."* It already knows the connection details and runs the query for you.
 - **Use the VS Code MSSQL extension with GitHub Copilot.** Its [GitHub Copilot integration](https://aka.ms/vscode-mssql-copilot-docs) works against the container today, for example writing SQL from natural language or opening the schema designer. Connect with server `localhost,1433`, SQL Login, user `sa`, your password, and **Trust server certificate: Yes**. The extension's graphical UI is not yet fully compatible with the container, so some UI features may error; see [known limitations](known-limitations.md).
 

@@ -107,8 +107,8 @@ sqlcmd -S localhost,1433 -U sa -P "YourStr0ng_Passw0rd" -C -b -l 2 -Q "SELECT 1;
 ```
 
 In PowerShell, retype the password quotes as plain ASCII `"` characters and
-make sure the password starts immediately after the opening quote. A pasted
-smart quote or a leading space inside the password string can trigger `EOF`.
+make sure there is no leading space inside the password string. A pasted smart
+quote or a leading space inside the password string can trigger `EOF`.
 
 ## Wrong image (EngineEdition is not 5)
 
