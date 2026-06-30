@@ -259,20 +259,6 @@ section[id] { scroll-margin-top: 84px; }
 .card code { font-family: var(--font-mono); font-size: .86em; background: var(--mist); padding: 1px 6px; border-radius: 5px; color: var(--ink); }
 .card-accent { border-color: rgba(24,199,199,.4); box-shadow: var(--shadow), 0 0 0 1px rgba(24,199,199,.12); }
 
-/* inner/outer loop diagram */
-.loop { display: grid; grid-template-columns: 1fr auto 1fr; align-items: stretch; gap: 18px; margin: 30px 0 14px; }
-.loop-stage { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); }
-.loop-stage h3 { font-size: 1.05rem; margin: 8px 0 6px; }
-.loop-stage p { color: var(--muted); font-size: .92rem; }
-.loop-stage-cloud { border-color: rgba(19,102,224,.35); box-shadow: var(--shadow), 0 0 0 1px rgba(19,102,224,.1); }
-.loop-tag { display: inline-block; font-family: var(--font-mono); font-size: .72rem; letter-spacing: .03em; text-transform: uppercase; color: #0a8f8f; background: rgba(24,199,199,.1); border: 1px solid rgba(24,199,199,.28); border-radius: 6px; padding: 2px 8px; }
-.loop-tag-cloud { color: var(--azure); background: rgba(19,102,224,.09); border-color: rgba(19,102,224,.28); }
-.loop-arrow { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; min-width: 110px; }
-.loop-arrow::before { content: ""; flex: 1; width: 2px; background: linear-gradient(var(--vector), var(--azure)); border-radius: 2px; }
-.loop-arrow::after { content: ""; flex: 1; width: 2px; background: linear-gradient(var(--vector), var(--azure)); border-radius: 2px; }
-.loop-arrow-label { font-family: var(--font-mono); font-size: .72rem; color: var(--muted); text-align: center; line-height: 1.5; }
-.loop { margin-bottom: 8px; }
-
 /* personas */
 .persona { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; border-top: 3px solid var(--azure); }
 .persona:nth-child(2) { border-top-color: var(--vector); }
@@ -482,9 +468,6 @@ section[id] { scroll-margin-top: 84px; }
   .agents { grid-template-columns: repeat(2, 1fr); }
   .skill-cards { grid-template-columns: repeat(2, 1fr); }
   .codeflow { grid-template-columns: 1fr; }
-  .loop { grid-template-columns: 1fr; }
-  .loop-arrow { flex-direction: row; min-width: 0; min-height: 44px; }
-  .loop-arrow::before, .loop-arrow::after { height: 2px; width: auto; }
   .footer-grid { grid-template-columns: 1fr 1fr; }
 
   .nav-burger { display: flex; flex-direction: column; justify-content: center; gap: 5px; width: 42px; height: 42px; cursor: pointer; }
