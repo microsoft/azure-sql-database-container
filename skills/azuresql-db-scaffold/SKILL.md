@@ -20,7 +20,7 @@ local database. This is the **Azure SQL engine**, not the SQL Server box image.
   `platform: linux/amd64` (compose).
 - Registry is private (Private Preview): sign in first with
   `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io` using the shared pull-only credentials
-  provided to the Private Preview cohort (request them via the early-access feedback channel; they
+  provided to the Private Preview cohort (get them by signing up at https://aka.ms/sqldbcontainerpreview-signup; they
   may rotate).
   Registry and tag are provisional during Private Preview.
 

@@ -16,6 +16,7 @@ title: Azure SQL Database container
         <a class="btn btn-primary" href="https://youtu.be/{{ site.youtube_id }}" rel="noopener">
           <span class="play-glyph" aria-hidden="true"></span>Watch the demo
         </a>
+        <a class="btn btn-ghost-light" href="https://aka.ms/sqldbcontainerpreview-signup" rel="noopener">Sign up</a>
         <a class="btn btn-ghost-light" href="{{ '/getting-started.html' | relative_url }}">Get started</a>
       </div>
     </div>
@@ -63,20 +64,127 @@ title: Azure SQL Database container
   </div>
 </section>
 
+<!-- ============ WHY ============ -->
+<section class="section" id="why">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow"><span class="eyebrow-dot"></span>Why the container</p>
+      <h2>Cloud parity, in your local environment.<a class="head-anchor" href="#why" aria-label="Link to this section">#</a></h2>
+      <p class="lead">This is the Azure SQL Database engine itself, running locally, for <strong>development</strong>. Build in your local inner loop, then deploy the same code to Azure SQL Database in the Microsoft Azure cloud for production.</p>
+    </div>
+
+    <div class="loop">
+      <div class="loop-stage">
+        <span class="loop-tag">Inner loop &middot; local</span>
+        <h3>Develop on your machine</h3>
+        <p>Write, run, test, and debug against the <strong>container</strong>, the Azure SQL Database engine running locally. Fast iteration, no Azure subscription.</p>
+      </div>
+      <div class="loop-arrow" aria-hidden="true">
+        <span class="loop-arrow-label">same code<br>connection string changes</span>
+      </div>
+      <div class="loop-stage loop-stage-cloud">
+        <span class="loop-tag loop-tag-cloud">Outer loop &middot; Azure</span>
+        <h3>Deploy to Azure SQL Database</h3>
+        <p>Push to your repo, let CI/CD (GitHub Actions) deploy, and run the same app against <strong>Azure SQL Database</strong> in the Microsoft Azure cloud: the managed, production database.</p>
+      </div>
+    </div>
+    <p class="loop-note"><strong>The container is for development.</strong> It is your local inner loop (development, testing, CI, and demos). Production is Azure SQL Database in the cloud: you deploy the same code there. You do not run this container in Azure as a production database.</p>
+
+    <div class="grid-3">
+      <article class="card">
+        <span class="tag">Same engine</span>
+        <h3>What runs locally runs in Azure</h3>
+        <p>It is the Azure SQL Database engine itself, with the same defaults, the same T-SQL, and the same error messages. When you deploy to the Microsoft Azure cloud, there are no behavior surprises.</p>
+      </article>
+      <article class="card card-accent">
+        <span class="tag tag-vector">AI-ready</span>
+        <h3>AI-ready, like Azure SQL Database</h3>
+        <p>Native <code>vector</code> type, <code>VECTOR_DISTANCE</code> search, <code>AI_GENERATE_EMBEDDINGS</code>, and <code>CREATE EXTERNAL MODEL</code> (DiskANN vector indexes are in development). Build RAG locally with a local model, then switch to Azure OpenAI in the cloud.</p>
+      </article>
+      <article class="card">
+        <span class="tag">Lift and shift</span>
+        <h3>One codebase, two endpoints</h3>
+        <p>Same drivers, same T-SQL, same migrations. When you are ready, point the connection at Azure SQL Database and deploy the same app to the Microsoft Azure cloud. The application does not change.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SAME CODE (signature) ============ -->
+<section class="section section-rail">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow"><span class="eyebrow-dot"></span>Inner loop to the cloud</p>
+      <h2>Same code. Only the connection string changes.</h2>
+      <p class="lead">Write your app once against the container. Ship it to Azure SQL Database in the cloud without touching the code.</p>
+    </div>
+
+    <div class="split">
+      <div class="split-cols">
+        <div class="codeblock">
+          <div class="codeblock-bar">
+            <span class="codeblock-badge badge-local">Local environment</span>
+            <span class="codeblock-name">.env</span>
+          </div>
+          <pre class="codeblock-body"><code id="env-local">SQL_CONNECTION_STRING=
+  Server=<span class="hl">localhost,1433</span>;
+  Database=appdb;
+  User Id=sa;TrustServerCertificate=true</code></pre>
+        </div>
+
+        <div class="codeblock">
+          <div class="codeblock-bar">
+            <span class="codeblock-badge badge-cloud">In Azure</span>
+            <span class="codeblock-name">.env</span>
+          </div>
+          <pre class="codeblock-body"><code id="env-cloud">SQL_CONNECTION_STRING=
+  Server=<span class="hl">app.database.windows.net</span>;
+  Database=appdb;
+  Authentication=Active Directory Default</code></pre>
+        </div>
+      </div>
+
+      <div class="codeblock codeblock-app">
+        <div class="codeblock-bar">
+          <span class="codeblock-name">app.js</span>
+          <span class="codeblock-badge">identical in both</span>
+        </div>
+        <pre class="codeblock-body"><code id="app-code"><span class="c-kw">import</span> sql <span class="c-kw">from</span> <span class="c-str">'mssql'</span>
+
+<span class="c-com">// reads the connection string from the environment</span>
+<span class="c-kw">const</span> pool = <span class="c-kw">await</span> sql.<span class="c-fn">connect</span>(process.env.<span class="c-var">SQL_CONNECTION_STRING</span>)
+
+<span class="c-kw">const</span> { recordset } = <span class="c-kw">await</span> pool.<span class="c-fn">query</span>`
+  <span class="c-sql">SELECT TOP 5</span> name,
+    <span class="c-sql">VECTOR_DISTANCE</span>(<span class="c-str">'cosine'</span>, embedding, <span class="c-var">@q</span>) <span class="c-sql">AS</span> score
+  <span class="c-sql">FROM</span> products <span class="c-sql">ORDER BY</span> score`</code></pre>
+      </div>
+    </div>
+    <p class="rail-foot">Two connection strings, side by side. The highlighted server is all that changes. Your <code>app.js</code> is identical in both.</p>
+  </div>
+</section>
+
 <!-- ============ QUICKSTART ============ -->
 <section class="section section-tint" id="quickstart">
   <div class="container">
     <div class="section-head">
       <p class="eyebrow"><span class="eyebrow-dot"></span>Quickstart</p>
       <h2>Up and running in three commands.<a class="head-anchor" href="#quickstart" aria-label="Link to this section">#</a></h2>
-      <p class="lead">New to containers? This is all you need: sign in, start the container, and run your first query. Your preview registry credentials are requested via the early-access feedback channel (pull-only; may be rotated during the preview).</p>
+      <p class="lead">New to containers? Sign up for the Private Preview to get your registry credentials, then sign in, start the container, and run your first query. The credentials are pull-only and may be rotated during the preview.</p>
     </div>
     <div class="qsteps">
+      <div class="qstep">
+        <span class="qstep-num">0</span>
+        <div class="qstep-body">
+          <h3>Sign up for the Private Preview</h3>
+          <p class="qstep-desc">Signing up is how you get the registry username and password. <a href="https://aka.ms/sqldbcontainerpreview-signup" rel="noopener">Sign up &rarr;</a></p>
+        </div>
+      </div>
       <div class="qstep">
         <span class="qstep-num">1</span>
         <div class="qstep-body">
           <h3>Sign in to the preview registry</h3>
-          <p class="qstep-desc">Use the username and password from your preview cohort.</p>
+          <p class="qstep-desc">Use the username and password you received when you signed up.</p>
           <div class="qstep-cmd">
             <code><span class="cmd-p">$</span> docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u &lt;username&gt;</code>
             <button class="copy-btn" type="button" data-copy-text="docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>"><span class="copy-label">Copy</span></button>
@@ -196,88 +304,6 @@ title: Azure SQL Database container
         <p>What the container can and can't do, and why it differs from the cloud: backups, <code>USE</code>, vector index, arm64, tooling.</p>
       </a>
     </div>
-  </div>
-</section>
-
-<!-- ============ WHY ============ -->
-<section class="section" id="why">
-  <div class="container">
-    <div class="section-head">
-      <p class="eyebrow"><span class="eyebrow-dot"></span>Why the container</p>
-      <h2>Cloud parity, in your local environment.<a class="head-anchor" href="#why" aria-label="Link to this section">#</a></h2>
-      <p class="lead">This is the Azure SQL Database engine itself, running locally. The database in your local environment behaves like the one in the Microsoft Azure cloud.</p>
-    </div>
-    <div class="grid-3">
-      <article class="card">
-        <span class="tag">Same engine</span>
-        <h3>What runs locally runs in Azure</h3>
-        <p>It is the Azure SQL Database engine itself, with the same defaults, the same T-SQL, and the same error messages. When you deploy to the Microsoft Azure cloud, there are no behavior surprises.</p>
-      </article>
-      <article class="card card-accent">
-        <span class="tag tag-vector">AI-ready</span>
-        <h3>AI-ready, like Azure SQL Database</h3>
-        <p>Native <code>vector</code> type, DiskANN vector indexes, <code>VECTOR_DISTANCE</code> search, <code>AI_GENERATE_EMBEDDINGS</code>, and <code>CREATE EXTERNAL MODEL</code>. Build RAG locally with a local model, then switch to Azure OpenAI in the cloud.</p>
-      </article>
-      <article class="card">
-        <span class="tag">Lift and shift</span>
-        <h3>One codebase, two endpoints</h3>
-        <p>Same drivers, same T-SQL, same migrations. When you are ready, point the connection at Azure SQL Database and deploy the same app to the Microsoft Azure cloud. The application does not change.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- ============ SAME CODE (signature) ============ -->
-<section class="section section-rail" style="display: none;">
-  <div class="container">
-    <div class="section-head">
-      <p class="eyebrow"><span class="eyebrow-dot"></span>Inner loop to the cloud</p>
-      <h2>Same code. Only the connection string changes.</h2>
-      <p class="lead">Write your app once against the container. Ship it to Azure SQL Database in the cloud without touching the code.</p>
-    </div>
-
-    <div class="split">
-      <div class="split-cols">
-        <div class="codeblock">
-          <div class="codeblock-bar">
-            <span class="codeblock-badge badge-local">Local environment</span>
-            <span class="codeblock-name">.env</span>
-          </div>
-          <pre class="codeblock-body"><code id="env-local">SQL_CONNECTION_STRING=
-  Server=<span class="hl">localhost,1433</span>;
-  Database=appdb;
-  User Id=sa;TrustServerCertificate=true</code></pre>
-        </div>
-
-        <div class="codeblock">
-          <div class="codeblock-bar">
-            <span class="codeblock-badge badge-cloud">In Azure</span>
-            <span class="codeblock-name">.env</span>
-          </div>
-          <pre class="codeblock-body"><code id="env-cloud">SQL_CONNECTION_STRING=
-  Server=<span class="hl">app.database.windows.net</span>;
-  Database=appdb;
-  Authentication=Active Directory Default</code></pre>
-        </div>
-      </div>
-
-      <div class="codeblock codeblock-app">
-        <div class="codeblock-bar">
-          <span class="codeblock-name">app.js</span>
-          <span class="codeblock-badge">identical in both</span>
-        </div>
-        <pre class="codeblock-body"><code id="app-code"><span class="c-kw">import</span> sql <span class="c-kw">from</span> <span class="c-str">'mssql'</span>
-
-<span class="c-com">// reads the connection string from the environment</span>
-<span class="c-kw">const</span> pool = <span class="c-kw">await</span> sql.<span class="c-fn">connect</span>(process.env.<span class="c-var">SQL_CONNECTION_STRING</span>)
-
-<span class="c-kw">const</span> { recordset } = <span class="c-kw">await</span> pool.<span class="c-fn">query</span>`
-  <span class="c-sql">SELECT TOP 5</span> name,
-    <span class="c-sql">VECTOR_DISTANCE</span>(<span class="c-str">'cosine'</span>, embedding, <span class="c-var">@q</span>) <span class="c-sql">AS</span> score
-  <span class="c-sql">FROM</span> products <span class="c-sql">ORDER BY</span> score`</code></pre>
-      </div>
-    </div>
-    <p class="rail-foot">Two connection strings, side by side. The highlighted server is all that changes. Your <code>app.js</code> is identical in both.</p>
   </div>
 </section>
 

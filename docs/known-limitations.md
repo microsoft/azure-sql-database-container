@@ -5,11 +5,16 @@ description: "Current gaps and rough edges in the Private Preview, with workarou
 
 ## Table of Contents
 
+- [Development use only](#development-use-only)
 - [How to read this page](#how-to-read-this-page)
 - [Active issues we are fixing](#active-issues-we-are-fixing)
 - [Known behavior gaps](#known-behavior-gaps)
 - [Out of scope by design](#out-of-scope-by-design)
 - [Where to find live status](#where-to-find-live-status)
+
+## Development use only
+
+The Azure SQL Database container is for **local development**: development, testing, CI, and demos (the inner loop). It is **not a production database**, and it is not meant to be deployed to Azure or run as a production service. For production, deploy the same code to **Azure SQL Database** in the Microsoft Azure cloud (the outer loop), where backups, high availability, scaling, and security are managed for you. The Private Preview license is scoped to development, testing, CI, and demos.
 
 ## How to read this page
 

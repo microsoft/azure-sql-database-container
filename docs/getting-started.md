@@ -6,6 +6,7 @@ description: "Go from pulling the Azure SQL Database container to your first que
 ## Table of Contents
 
 - [Before you start](#before-you-start)
+- [Step 0: sign up for the Private Preview](#step-0-sign-up-for-the-private-preview)
 - [Fastest: let your AI agent set it up](#fastest-let-your-ai-agent-set-it-up)
 - [Manual: run it yourself](#manual-run-it-yourself)
   - [Step 1: sign in and pull the image](#step-1-sign-in-and-pull-the-image)
@@ -19,9 +20,15 @@ Confirm you have:
 
 - A supported container engine installed and running (Docker, Podman, containerd, or Rancher Desktop). See [Prerequisites](prerequisites.md).
 - Port `1433` available on the host.
-- The registry username and password, requested via the early-access feedback channel (pull-only; may be rotated during the preview).
+- The registry username and password, provided when you sign up at https://aka.ms/sqldbcontainerpreview-signup (pull-only; may be rotated during the preview).
 
 You do **not** need sqlcmd or any database tool installed: the container brings its own. Everything below works the same on macOS, Linux, and Windows.
+
+## Step 0: sign up for the Private Preview
+
+The image is in a private registry, so **[sign up for the Private Preview](https://aka.ms/sqldbcontainerpreview-signup)** first. Signing up is the only way to get the registry username and password (pull-only; may rotate) that you need to pull the image.
+
+The container is for **local development**, your inner loop. When you are ready for production, deploy the same code to Azure SQL Database in the Microsoft Azure cloud (the outer loop); you do not run this container in Azure. See the [local-to-cloud skill](https://github.com/microsoft/azure-sql-database-container/tree/main/skills/azuresql-db-local-to-cloud).
 
 From here you have two ways to reach your first query. Both end in the same place, a running container you can connect to, so pick one.
 
@@ -47,7 +54,7 @@ Prefer to run it yourself? Three commands take you from pull to query, with Dock
 
 The preview image is served from a private registry. Sign in, then pull the image.
 
-> **Note:** the registry username and password are **provided to Private Preview cohort participants**. Request them via the early-access feedback channel. They are shared and pull-only, must be treated as secrets, and may be rotated during the preview.
+> **Note:** the registry username and password are **provided when you sign up for the Private Preview** at https://aka.ms/sqldbcontainerpreview-signup. They are shared and pull-only, must be treated as secrets, and may be rotated during the preview.
 
 ```bash
 docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>

@@ -123,7 +123,7 @@ jobs:
 
 | Secret | Purpose |
 | --- | --- |
-| `ACR_USERNAME` | Private preview registry sign-in (using the shared pull-only credentials provided to the Private Preview cohort; request them via the early-access feedback channel; they may rotate) |
+| `ACR_USERNAME` | Private preview registry sign-in (using the shared pull-only credentials provided to the Private Preview cohort; get them by signing up at https://aka.ms/sqldbcontainerpreview-signup; they may rotate) |
 | `ACR_PASSWORD` | Private preview registry sign-in |
 | `MSSQL_SA_PASSWORD` | sa password for the engine; complex, 8+ chars |
 

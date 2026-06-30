@@ -41,7 +41,7 @@ Self-check: a correct engine returns `5` for
 
 The image lives in a private Private Preview registry. Sign in once with the
 shared, pull-only username and password. The credentials are not in any doc:
-request them through the early-access feedback channel. They are pull-only and
+get them by signing up at https://aka.ms/sqldbcontainerpreview-signup. They are pull-only and
 may be rotated during the preview, so treat them as secrets and do not
 redistribute. See `references/image-and-registry.md`.
 

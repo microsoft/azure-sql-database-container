@@ -44,5 +44,5 @@ This Private Preview is the first time the container is in the hands of real dev
 ## What this Private Preview is not
 
 - **It is not a SQL Server replacement.** This is the Azure SQL Database engine. PaaS-only behavior applies. If your workload depends on SQL Server features not present in Azure SQL Database, the container will not help you.
-- **It is not a production database.** The license is a Private Preview license, scoped to development, testing, CI, and demos. Read the license you accepted at sign-up.
+- **It is not a production database.** The container is for your local inner loop; for production, deploy the same code to Azure SQL Database in the Microsoft Azure cloud. The license is a Private Preview license, scoped to development, testing, CI, and demos. Read the license you accepted when you [signed up](https://aka.ms/sqldbcontainerpreview-signup).
 - **It is not feature-complete.** See [Known limitations](known-limitations.md) for the current gap list. Some features are still in active development.

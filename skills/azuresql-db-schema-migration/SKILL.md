@@ -37,7 +37,7 @@ recipe adds `--platform linux/amd64` automatically. The registry is private duri
 Private Preview, so sign in first.
 
 ```bash
-docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io   # pull-only creds from the Private Preview cohort (feedback channel)
+docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io   # pull-only creds by signing up at https://aka.ms/sqldbcontainerpreview-signup
 
 # Pick a free host port and add the platform flag only on a non-x64 host (works in bash and zsh).
 HOST_PORT=1433; while lsof -nP -iTCP:"$HOST_PORT" -sTCP:LISTEN >/dev/null 2>&1; do HOST_PORT=$((HOST_PORT+1)); done

@@ -4,6 +4,16 @@ Grouped by the four buckets from `SKILL.md`. When a question is not here, fall b
 to the bucket model and the live Known limitations page:
 https://microsoft.github.io/azure-sql-database-container/known-limitations.html
 
+## Development vs production
+
+**Can I run this container in Azure, or use it as my production database?** No. The container is
+for **local development** (your inner loop): development, testing, CI, and demos. It is not a
+production database and is not meant to be deployed to Azure or run as a production service. For
+production, deploy the same application code to **Azure SQL Database** in the Microsoft Azure cloud
+(the outer loop), typically by changing only the connection string; the cloud service provides
+managed backups, high availability, scaling, and security. You connect your app to Azure SQL
+Database in the cloud; you do not run this container there.
+
 ## Backups and recovery
 
 **Can I back up a database?** No. On the container, `BACKUP DATABASE` and
@@ -56,7 +66,7 @@ non-x64 host it runs under emulation when you add `--platform linux/amd64` (Dock
 
 **Why isn't the image on Docker Hub or MCR?** This is a container-only Private Preview.
 The image is in a private registry; the shared, pull-only username and password are
-provided to Private Preview cohort participants via the early-access feedback channel
+provided when you sign up for the Private Preview at https://aka.ms/sqldbcontainerpreview-signup
 and may be rotated during the preview.
 
 ## Tooling

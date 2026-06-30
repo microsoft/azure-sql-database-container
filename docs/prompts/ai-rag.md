@@ -17,7 +17,7 @@ Read the entire instruction set before executing.
 ### 1. Start the container
 
 ```bash
-# The image is in a private preview registry; sign in with the credentials requested via the early-access feedback channel (pull-only; may be rotated during the preview) first
+# The image is in a private preview registry; sign in with the credentials provided when you sign up at https://aka.ms/sqldbcontainerpreview-signup (pull-only; may be rotated during the preview) first
 docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io
 # The image is x64-only; on a non-x64 host (Apple Silicon) this adds --platform linux/amd64 to run it under emulation.
 PLATFORM=(); case "$(docker info -f '{{.Architecture}}' 2>/dev/null)" in x86_64|amd64) ;; *) PLATFORM=(--platform linux/amd64);; esac
