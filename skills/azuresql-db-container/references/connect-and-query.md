@@ -29,14 +29,17 @@ docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0n
 ## sqlcmd from the host
 
 Use the host port chosen by the free-port loop (here shown as `1433`). The
-comma form `localhost,PORT` selects the port.
+comma form `localhost,PORT` selects the port. If the container just started,
+wait for the in-container command above to succeed before using the host client.
 
 ```bash
-sqlcmd -S localhost,1433 -U sa -P "YourStr0ng_Passw0rd" -C -b \
+sqlcmd -S localhost,1433 -U sa -P "YourStr0ng_Passw0rd" -C -b -l 2 \
   -d appdb -Q "SELECT SERVERPROPERTY('Edition') AS Edition;"
 ```
 
-Expect `SQL Azure`.
+Expect `SQL Azure`. In PowerShell, retype the password quotes as plain ASCII `"`
+characters and make sure there is no leading space inside the password string.
+A pasted smart quote or extra space can cause an immediate `EOF`.
 
 ## Standard connection string
 

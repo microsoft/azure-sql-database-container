@@ -11,6 +11,7 @@ Common failures and their fixes. Symptoms first.
 - Msg 40508 on USE
 - Cannot open database / database does not exist
 - Connecting too early (Msg 913 and friends)
+- EOF from host sqlcmd
 - Wrong image (EngineEdition is not 5)
 
 ## Container won't start / exits immediately
@@ -86,6 +87,28 @@ docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0n
 Errors right after `docker run` usually mean the engine is still initializing.
 Use the readiness retry loop with `-b -l 2` so transient errors are retried
 rather than masked. See `wait-until-ready.md`.
+
+## EOF from host sqlcmd
+
+An immediate `EOF` from host `sqlcmd` usually means either the engine is still
+starting or the shell changed the `-P` password argument while pasting it.
+
+First verify the container with the bundled client:
+
+```bash
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -l 2 \
+  -Q "SELECT 1;"
+```
+
+If that succeeds, retry from the host with the same short timeout:
+
+```bash
+sqlcmd -S localhost,1433 -U sa -P "YourStr0ng_Passw0rd" -C -b -l 2 -Q "SELECT 1;"
+```
+
+In PowerShell, retype the password quotes as plain ASCII `"` characters and
+make sure the password starts immediately after the opening quote. A pasted
+smart quote or a leading space inside the password string can trigger `EOF`.
 
 ## Wrong image (EngineEdition is not 5)
 
