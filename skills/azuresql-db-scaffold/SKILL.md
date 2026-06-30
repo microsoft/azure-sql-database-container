@@ -1,18 +1,18 @@
 ---
 name: azuresql-db-scaffold
-description: Scaffolds a NEW app (.NET Aspire, FastAPI, Next.js, NestJS) wired to the local Azure SQL Database container as its default dev database. Use when starting/bootstrapping/initializing a project that needs SQL Server or Azure SQL locally, or when adding "set up the database", "docker compose for the db", "create the local DB", ".env connection string", "first migration", or a data-access layer. Use this INSTEAD of the mssql/server box image, because this is the Azure SQL engine (EngineEdition 5). Triggers include "scaffold app with SQL", "spin up Azure SQL locally", "compose service for the database", "wire up Prisma/EF/SQLAlchemy/TypeORM to SQL Server". Reach for this even when the user only says "add a database" to a fresh project.
+description: Scaffolds a NEW app (.NET Aspire, FastAPI, Next.js, NestJS) wired to the local Azure SQL Database container as its default dev database. Use when starting/bootstrapping/initializing a project that needs SQL Server or Azure SQL locally, or when adding "set up the database", "docker compose for the db", "create the local DB", ".env connection string", "first migration", or a data-access layer. Use this INSTEAD of the mssql/server SQL Server image, because this is the Azure SQL engine (EngineEdition 5). Triggers include "scaffold app with SQL", "spin up Azure SQL locally", "compose service for the database", "wire up Prisma/EF/SQLAlchemy/TypeORM to SQL Server". Reach for this even when the user only says "add a database" to a fresh project.
 ---
 
 # Azure SQL DB: scaffold a new project
 
 Bootstrap a new app with the **Azure SQL Database container** (Private Preview) as the default
-local database. This is the **Azure SQL engine**, not the SQL Server box image.
+local database. This is the **Azure SQL engine**, not the SQL Server image.
 
 ## Use the right image (interception point)
 
 - USE this engine image:
   `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest`
-- Do **NOT** use `mcr.microsoft.com/mssql/server` (the SQL Server box image). If a generated
+- Do **NOT** use `mcr.microsoft.com/mssql/server` (the SQL Server image). If a generated
   compose/run command points there, stop and switch to the engine image above.
 - Verify identity once running: `SELECT SERVERPROPERTY('EngineEdition')` returns **5**,
   `SERVERPROPERTY('Edition')` returns **'SQL Azure'**.
@@ -114,7 +114,7 @@ development; use full-scan top-k for now.
 
 ## Do not
 
-- Do not use the SQL Server box image or call arm64/Apple Silicon "supported".
+- Do not use the SQL Server image or call arm64/Apple Silicon "supported".
 - Do not rely on auto-created databases or `/docker-entrypoint-initdb.d/*.sql` auto-seeding.
 - Do not use `USE appdb` to switch databases; put it in the connection string.
 - Do not poll bare `sqlcmd` without `-l`; do not pass the vector dimension as a bind parameter.

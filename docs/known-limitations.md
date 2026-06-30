@@ -11,6 +11,7 @@ description: "Current gaps and rough edges in the Private Preview, with workarou
 - [Known behavior gaps](#known-behavior-gaps)
 - [Out of scope by design](#out-of-scope-by-design)
 - [Where to find live status](#where-to-find-live-status)
+- [Related content](#related-content)
 
 ## Development use only
 
@@ -78,9 +79,16 @@ These are intentional non-goals for the container:
 
 - **Cloud-only management surfaces.** Azure portal, Azure CLI, ARM, Bicep, and Terraform target the cloud service. They are not applicable to the container.
 - **PaaS multi-tenancy controls.** Elastic pools, hyperscale tier, serverless auto-pause, and similar PaaS service-tier features are properties of the cloud service, not the engine.
-- **SQL Server box-product behavior.** Features that exist in SQL Server but not in Azure SQL Database (e.g., SQL Agent, FILESTREAM, full Service Broker, Windows Authentication / NTLM, distributed transactions across multiple databases on different servers) are intentionally not present.
+- **SQL Server behavior.** Features that exist in SQL Server but not in Azure SQL Database (e.g., SQL Agent, FILESTREAM, full Service Broker, Windows Authentication / NTLM, distributed transactions across multiple databases on different servers) are intentionally not present.
 
 ## Where to find live status
 
 - **Open issues:** [GitHub Issues](https://github.com/microsoft/azure-sql-database-container/issues)
 - **Roadmap discussion:** [GitHub Discussions](https://github.com/microsoft/azure-sql-database-container/discussions)
+
+## Related content
+
+- [What is the Azure SQL Database container](what-is-the-container.md)
+- [Get started](getting-started.md)
+- [Prerequisites](prerequisites.md)
+- [Feedback and how to engage](feedback-and-how-to-engage.md)

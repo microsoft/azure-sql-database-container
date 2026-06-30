@@ -12,6 +12,7 @@ description: "The Azure SQL Database engine, running locally for development and
 - [How it fits a developer workflow](#how-it-fits-a-developer-workflow)
 - [Container runtimes and platforms](#container-runtimes-and-platforms)
 - [About this Private Preview](#about-this-private-preview)
+- [Related content](#related-content)
 
 ## Overview
 
@@ -23,7 +24,7 @@ The container runs the same engine that powers Azure SQL Database in the cloud. 
 
 The container is the **Azure SQL Database engine** itself, running locally. Three things follow from that:
 
-1. **The same engine as the cloud.** The container runs the same engine, the same defaults, and the same T-SQL as Azure SQL Database. Features that are cloud-only in the box SQL Server product (Always Encrypted with secure enclaves, ledger, some DMVs) work locally the same way they work in the cloud.
+1. **The same engine as the cloud.** The container runs the same engine, the same defaults, and the same T-SQL as Azure SQL Database. Features that are cloud-only in SQL Server (Always Encrypted with secure enclaves, ledger, some DMVs) work locally the same way they work in the cloud.
 2. **No Azure subscription, no credit card required.** The container runs entirely on the developer machine or in CI. No service principal, no credit card, no shared instance. Free for local development and CI.
 3. **Works with the drivers, ORMs, and editors you already use.** Everything that talks to Azure SQL Database talks to the container without changes: node-mssql, mssql-python, pyodbc, and mssql-jdbc; Prisma, SQLAlchemy, EF Core, Django, and TypeORM; sqlcmd, and VS Code with the MSSQL extension's GitHub Copilot integration. (Graphical tooling like the full MSSQL extension UI and SSMS is not yet 100% compatible; see [known limitations](known-limitations.md).)
 
@@ -31,7 +32,7 @@ The container is the **Azure SQL Database engine** itself, running locally. Thre
 
 The container exposes the same engine surface as Azure SQL Database:
 
-- T-SQL dialect aligned to the cloud engine, not to SQL Server box product behavior.
+- T-SQL dialect aligned to the cloud engine, not to SQL Server behavior.
 - `EngineEdition = 5` so application code that checks the edition behaves the same locally and in the cloud.
 - System views and DMVs that are available in Azure SQL Database PaaS, including the ones that are not present in SQL Server.
 - Wire protocol (TDS) compatible with every driver and ORM that connects to Azure SQL Database in the cloud.
@@ -114,3 +115,10 @@ This is the first time the container is in the hands of developers building real
 - **It is not a SQL Server replacement.** This is the Azure SQL Database engine. PaaS-only behavior applies. If your workload depends on SQL Server features not present in Azure SQL Database, the container will not help you.
 - **It is not a production database.** The container is for your local inner loop; for production, deploy the same code to Azure SQL Database in the Microsoft Azure cloud. The license is a Private Preview license, scoped to development, testing, CI, and demos. Read the license you accepted when you [signed up](https://aka.ms/sqldbcontainerpreview-signup).
 - **It is not feature-complete.** See [Known limitations](known-limitations.md) for the current gap list. Some features are still in active development.
+
+## Related content
+
+- [Prerequisites](prerequisites.md)
+- [Get started](getting-started.md)
+- [Known limitations](known-limitations.md)
+- [Feedback and how to engage](feedback-and-how-to-engage.md)

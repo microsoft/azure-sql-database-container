@@ -8,6 +8,9 @@ description: >-
 baseurl: "/azure-sql-database-container"
 url: "https://microsoft.github.io"
 repo: "https://github.com/microsoft/azure-sql-database-container"
+# Public repo the nav "GitHub repo" button opens. Update this to the public repo URL
+# once it exists (the current repo is private and 404s for external users).
+public_repo: "https://github.com/microsoft/azure-sql-database-container"
 youtube_id: "S6PWxUAUspY"
 
 markdown: kramdown

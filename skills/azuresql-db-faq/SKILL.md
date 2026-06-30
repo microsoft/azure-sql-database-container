@@ -19,10 +19,10 @@ from the cloud" questions accurately, instead of guessing from general SQL Serve
 or Azure SQL Database knowledge. A base model does not know this preview product's
 specifics, and the honest answers are often nuanced.
 
-## The mental model: engine vs. managed service vs. box product
+## The mental model: engine vs. managed service vs. SQL Server
 
 The container is the **Azure SQL Database engine, running locally**. It is not the
-managed cloud service, and it is not the SQL Server box product. Sort almost any
+managed cloud service, and it is not the SQL Server. Sort almost any
 "is X supported" question into one of four buckets and the answer follows:
 
 1. **Engine features -> present.** T-SQL dialect, system views, `VECTOR` type and
@@ -32,7 +32,7 @@ managed cloud service, and it is not the SQL Server box product. Sort almost any
    restore, geo-replication, elastic pools, hyperscale, serverless auto-pause,
    per-database DTU/vCore caps, audit-to-cloud, and Azure portal / CLI / ARM
    management. These wrap the engine in the cloud; the container is only the engine.
-3. **SQL Server box-only features -> intentionally absent** (they are not in Azure
+3. **SQL Server-only features -> intentionally absent** (they are not in Azure
    SQL Database either): SQL Agent jobs, FILESTREAM / FileTable, full cross-instance
    Service Broker, linked servers, cross-server distributed transactions, Windows
    Authentication / NTLM.
@@ -61,7 +61,7 @@ limitations list (kept in step with the docs) is in [references/limitations.md](
 - When the question is about a current gap, give the workaround and point to the
   live, always-current list: https://microsoft.github.io/azure-sql-database-container/known-limitations.html
 - Distinguish "the engine does not do this" (a real gap) from "the managed cloud
-  service does this, the engine does not" (by design) from "the box product does
+  service does this, the engine does not" (by design) from "the SQL Server does
   this, Azure SQL Database does not" (intentionally absent).
 
 ## Never do

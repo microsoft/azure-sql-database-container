@@ -23,7 +23,7 @@ the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 
 ## Shared connection facts
 
-- Engine identity: `EngineEdition` 5, `Edition` 'SQL Azure'. Not the box image.
+- Engine identity: `EngineEdition` 5, `Edition` 'SQL Azure'. Not the SQL Server image.
 - Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest`
   (x64 / linux/amd64 only; on a non-x64 host add `--platform linux/amd64`).
 - Canonical ADO.NET / sqlcmd connection string:

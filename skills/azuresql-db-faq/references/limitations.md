@@ -28,4 +28,4 @@ https://aka.ms/azuresqldb-container-bug to file an issue.
 
 - **Cloud-only management surfaces** (Azure portal, CLI, ARM, Bicep, Terraform) target the cloud service, not the container.
 - **PaaS multi-tenancy controls** (elastic pools, hyperscale, serverless auto-pause) are cloud service-tier features, not engine features.
-- **SQL Server box-product behavior** not in Azure SQL Database (SQL Agent, FILESTREAM, full Service Broker, Windows Authentication / NTLM, cross-server distributed transactions) is intentionally absent.
+- **SQL Server behavior** not in Azure SQL Database (SQL Agent, FILESTREAM, full Service Broker, Windows Authentication / NTLM, cross-server distributed transactions) is intentionally absent.

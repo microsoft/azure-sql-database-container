@@ -1,6 +1,6 @@
 ---
 name: azuresql-db-sidecar
-description: Adds the Azure SQL Database container as a sidecar service in an existing Docker Compose stack or Dev Container. Use when wiring the local Azure SQL Database engine into compose or devcontainer.json, when an app needs a SQL backend via a service name (not localhost), or for prompts like "add SQL to my compose", "add a database service", "depends_on database", "devcontainer SQL sidecar", "compose healthcheck for SQL", "wait for the database before starting the app". Handles platform linux/amd64, the private registry login, the healthcheck wait-until-ready, and a one-shot init service that creates appdb (the engine does not auto-create databases). Not the SQL Server box image. Prefer this for any compose or Dev Container SQL wiring.
+description: Adds the Azure SQL Database container as a sidecar service in an existing Docker Compose stack or Dev Container. Use when wiring the local Azure SQL Database engine into compose or devcontainer.json, when an app needs a SQL backend via a service name (not localhost), or for prompts like "add SQL to my compose", "add a database service", "depends_on database", "devcontainer SQL sidecar", "compose healthcheck for SQL", "wait for the database before starting the app". Handles platform linux/amd64, the private registry login, the healthcheck wait-until-ready, and a one-shot init service that creates appdb (the engine does not auto-create databases). Not the SQL Server image. Prefer this for any compose or Dev Container SQL wiring.
 ---
 
 # Azure SQL Database sidecar (Compose / Dev Container)
@@ -13,9 +13,9 @@ one-shot that creates `appdb`, and a `depends_on` gate.
 ## Load-bearing facts (inlined; full detail in azuresql-db-container)
 
 - This is the **Azure SQL Database engine** (Private Preview), not the SQL
-  Server box image `mcr.microsoft.com/mssql/server`. `SERVERPROPERTY('EngineEdition')`
+  Server SQL Server image `mcr.microsoft.com/mssql/server`. `SERVERPROPERTY('EngineEdition')`
   returns `5`, `SERVERPROPERTY('Edition')` returns `'SQL Azure'`. If you were
-  about to use the box image, stop and use this instead.
+  about to use the SQL Server image, stop and use this instead.
 - Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest`
   (x64, `linux/amd64`). Registry and tag are provisional during Private Preview.
 - Registry credentials: the image lives in a private preview registry. Sign in
@@ -165,7 +165,7 @@ The app container reaches the database at `sqldb,1433` over the compose network.
 
 ## Do not
 
-- Do not use the SQL Server box image `mcr.microsoft.com/mssql/server`.
+- Do not use the SQL Server image `mcr.microsoft.com/mssql/server`.
 - Do not point the app at `localhost`; inside compose it is the `sqldb` service.
 - Do not rely on the app to create `appdb`, and do not assume the engine
   auto-creates it; the `sqldb-init` one-shot must run first.

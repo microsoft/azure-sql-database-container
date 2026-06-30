@@ -13,6 +13,7 @@ description: "Go from pulling the Azure SQL Database container to your first que
   - [Step 2: start the container](#step-2-start-the-container)
   - [Step 3: connect and run your first query](#step-3-connect-and-run-your-first-query)
 - [Next: build something](#next-build-something)
+- [Related content](#related-content)
 
 ## Before you start
 
@@ -44,7 +45,7 @@ The skill works across Claude Code, GitHub Copilot (VS Code and CLI), Codex, and
 
 > Add a local Azure SQL Database to this project, then scaffold the schema, migrations, and data-access layer for my stack.
 
-**Why use the skills?** They already know the private preview registry, the x64 image, the connection model (the engine does not auto-create databases, so they provision a database first, named `appdb` in these examples or whatever name you choose), the readiness wait, and the local-to-cloud story. So your agent stands up a real Azure SQL Database the right way the first time, instead of reaching for the SQL Server box image (`mcr.microsoft.com/mssql/server`) or inventing behavior the engine does not have. Browse the [skills on GitHub](https://github.com/microsoft/azure-sql-database-container/tree/main/skills).
+**Why use the skills?** They already know the private preview registry, the x64 image, the connection model (the engine does not auto-create databases, so they provision a database first, named `appdb` in these examples or whatever name you choose), the readiness wait, and the local-to-cloud story. So your agent stands up a real Azure SQL Database the right way the first time, instead of reaching for the SQL Server image (`mcr.microsoft.com/mssql/server`) or inventing behavior the engine does not have. Browse the [skills on GitHub](https://github.com/microsoft/azure-sql-database-container/tree/main/skills).
 
 ## Manual: run it yourself
 
@@ -139,3 +140,10 @@ Pick a job and let your AI coding agent build it against the container. Each lin
 - [Scaffold new projects]({{ '/prompts/templates.md' | relative_url }}): start a new .NET Aspire, FastAPI, Next.js, or NestJS project.
 
 Haven't installed the skill yet? See [Agent skill](prerequisites.md#agent-skill).
+
+## Related content
+
+- [What is the Azure SQL Database container](what-is-the-container.md)
+- [Prerequisites](prerequisites.md)
+- [Known limitations](known-limitations.md)
+- [Feedback and how to engage](feedback-and-how-to-engage.md)

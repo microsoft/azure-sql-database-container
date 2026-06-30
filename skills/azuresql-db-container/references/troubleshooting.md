@@ -90,8 +90,7 @@ rather than masked. See `wait-until-ready.md`.
 ## Wrong image (EngineEdition is not 5)
 
 If `SELECT SERVERPROPERTY('EngineEdition')` does not return `5`, or
-`SERVERPROPERTY('Edition')` is not `'SQL Azure'`, you started the SQL Server box
-image. Stop it and start the Azure SQL Database image from
+`SERVERPROPERTY('Edition')` is not `'SQL Azure'`, you started the SQL Server image. Stop it and start the Azure SQL Database image from
 `image-and-registry.md`:
 
 ```bash

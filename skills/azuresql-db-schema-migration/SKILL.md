@@ -1,6 +1,6 @@
 ---
 name: azuresql-db-schema-migration
-description: Runs database schema migrations against the local Azure SQL Database container so the same migrations apply identically on the local engine and in the Azure cloud. Use when asked to "run my migrations against the local SQL", "apply schema to the container", "apply EF Core / dotnet ef database update", "Prisma migrate dev / deploy", "Alembic upgrade head", or deploy a DACPAC / SqlPackage to the container. Covers provisioning appdb on master first, then applying schema to the user database, plus per-tool commands and connection-string hygiene. This is the Azure SQL Database engine (EngineEdition 5), not the SQL Server box image; reach for this skill whenever schema migration tooling targets the local container.
+description: Runs database schema migrations against the local Azure SQL Database container so the same migrations apply identically on the local engine and in the Azure cloud. Use when asked to "run my migrations against the local SQL", "apply schema to the container", "apply EF Core / dotnet ef database update", "Prisma migrate dev / deploy", "Alembic upgrade head", or deploy a DACPAC / SqlPackage to the container. Covers provisioning appdb on master first, then applying schema to the user database, plus per-tool commands and connection-string hygiene. This is the Azure SQL Database engine (EngineEdition 5), not the SQL Server image; reach for this skill whenever schema migration tooling targets the local container.
 ---
 
 # Azure SQL Database: schema migrations
@@ -8,8 +8,8 @@ description: Runs database schema migrations against the local Azure SQL Databas
 Apply schema migrations to the local **Azure SQL Database** container the same way
 you would against the cloud, so dev and prod stay identical. This is the Azure SQL
 Database engine (`SELECT SERVERPROPERTY('EngineEdition')` returns **5**,
-`Edition` returns **'SQL Azure'**), **not** the SQL Server box image
-`mcr.microsoft.com/mssql/server`. If a tool or template points at the box image,
+`Edition` returns **'SQL Azure'**), **not** the SQL Server image
+`mcr.microsoft.com/mssql/server`. If a tool or template points at the SQL Server image,
 stop and use the image below instead.
 
 ## The one rule that breaks every migration tool
@@ -146,7 +146,7 @@ docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa \
 
 ## Do not
 
-- Do NOT use the SQL Server box image `mcr.microsoft.com/mssql/server`.
+- Do NOT use the SQL Server image `mcr.microsoft.com/mssql/server`.
 - Do NOT expect databases to be auto-created on connect.
 - Do NOT use `USE <db>` to switch databases.
 - Do NOT rely on `/docker-entrypoint-initdb.d/` auto-seeding.
