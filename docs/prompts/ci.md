@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       sqldb:
-        image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+        image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
         # The image is in a private registry, so the service needs pull credentials.
         # ACR_USERNAME / ACR_PASSWORD are the pull-only registry credentials provided when
         # you sign up for the Private Preview at https://aka.ms/sqldbcontainerpreview-signup.

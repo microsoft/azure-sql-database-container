@@ -6,7 +6,7 @@ link here instead of repeating the tag.
 ## The image
 
 ```
-sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
 - This is the **Azure SQL Database engine** (Private Preview), EngineEdition 5,
@@ -25,7 +25,7 @@ stop and switch to the image above.
 
 The external access path pulls from the preview registry
 `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io` (image
-`mssql-server/sqldb-dev-edition`, rolling tag `latest`) using a shared,
+`azure-sql/db-dev`, rolling tag `latest`) using a shared,
 pull-only username and password.
 
 The credentials are provided when you sign up for the Private Preview at
@@ -52,14 +52,14 @@ sign-up, which may have been rotated.
 ## Pull explicitly (optional)
 
 ```bash
-docker pull sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+docker pull sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
 On a non-x64 host:
 
 ```bash
 docker pull --platform linux/amd64 \
-  sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+  sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
 ## Do not

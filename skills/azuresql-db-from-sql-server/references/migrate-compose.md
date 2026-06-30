@@ -34,7 +34,7 @@ Problems carried over from the SQL Server image:
 ```yaml
 services:
   db:
-    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
     # On a non-x64 host, uncomment the next line (the image is x64 only):
     # platform: linux/amd64
     environment:
@@ -48,7 +48,7 @@ services:
       timeout: 5s
       retries: 30
   provision:
-    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
     # platform: linux/amd64
     depends_on:
       db:

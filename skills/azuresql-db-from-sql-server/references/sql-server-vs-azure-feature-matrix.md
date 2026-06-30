@@ -15,7 +15,7 @@ Database container. Use this when auditing a project for migration.
 
 | Aspect | Box image | Azure SQL Database container |
 |---|---|---|
-| Image | `mcr.microsoft.com/mssql/server` | `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest` |
+| Image | `mcr.microsoft.com/mssql/server` | `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest` |
 | Registry | public (mcr) | private preview; `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io` first |
 | `EngineEdition` | 2/3/4/8 | 5 |
 | `Edition` | e.g. 'Developer Edition' | 'SQL Azure' |

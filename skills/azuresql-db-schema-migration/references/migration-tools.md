@@ -24,7 +24,7 @@ the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 ## Shared connection facts
 
 - Engine identity: `EngineEdition` 5, `Edition` 'SQL Azure'. Not the SQL Server image.
-- Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest`
+- Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`
   (x64 / linux/amd64 only; on a non-x64 host add `--platform linux/amd64`).
 - Canonical ADO.NET / sqlcmd connection string:
   `Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true`
@@ -197,4 +197,4 @@ Notes:
 - Login/cert errors with ODBC Driver 18 or sqlcmd: add `TrustServerCertificate`
   (`=yes` for ODBC URLs, `=true` for ADO.NET, `-C` for sqlcmd).
 - Tool points at `mcr.microsoft.com/mssql/server`: wrong image. Use
-  `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest`.
+  `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`.

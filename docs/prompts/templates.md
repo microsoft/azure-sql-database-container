@@ -27,7 +27,7 @@ Add a `docker-compose.yml` with the container so the database starts with one co
 ```yaml
 services:
   sqldb:
-    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
     # x64-only image; platform: linux/amd64 lets it run on a non-x64 host (Apple Silicon), no-op on x64.
     platform: linux/amd64
     environment:
