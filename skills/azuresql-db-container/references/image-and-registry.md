@@ -29,8 +29,8 @@ The external access path pulls from the preview registry
 `mssql-server/sqldb-dev-edition`, rolling tag `latest`) using a shared,
 pull-only username and password.
 
-The credentials are provided to Private Preview cohort participants: request
-them through the early-access feedback channel. They are pull-only and may be
+The credentials are provided when you sign up for the Private Preview at
+https://aka.ms/sqldbcontainerpreview-signup. They are pull-only and may be
 rotated during the preview, so treat them as secrets and do not redistribute.
 Sign in and enter the password
 when prompted:
@@ -47,8 +47,8 @@ podman login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>
 
 After a successful login, `docker pull` (or the `docker run` in the canonical
 recipe) can fetch the image. If a pull returns "unauthorized" or "manifest
-unknown", re-run the login above with the shared pull-only credentials from the
-feedback channel, which may have been rotated.
+unknown", re-run the login above with the shared pull-only credentials from your
+sign-up, which may have been rotated.
 
 ## Pull explicitly (optional)
 

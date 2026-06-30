@@ -18,7 +18,7 @@ Search the repo for `mcr.microsoft.com/mssql/server` (and `mssql/server`) in `do
 
 ### 2. Sign in to the preview registry (Path B)
 
-The engine image is in a private preview registry. Sign in with the shared, pull-only username and password requested through the early-access feedback channel (they may be rotated during the preview):
+The engine image is in a private preview registry. Sign in with the shared, pull-only username and password provided when you sign up at https://aka.ms/sqldbcontainerpreview-signup (they may be rotated during the preview):
 
 ```bash
 docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>

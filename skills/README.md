@@ -75,7 +75,7 @@ Every skill in this collection holds these facts true. If a generated workflow c
 
 - **Image:** `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest` (x64 / linux/amd64, private preview registry). Sign in first: `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>` (enter the password when prompted). It is **not** `mcr.microsoft.com/mssql/server`.
 
-  > **Note:** the registry username and password are **provided to Private Preview cohort participants**. Request them via the early-access feedback channel. They are shared and pull-only, must be treated as secrets (do not redistribute), and may be rotated during the preview.
+  > **Note:** the registry username and password are **provided when you sign up for the Private Preview** at https://aka.ms/sqldbcontainerpreview-signup. They are shared and pull-only, must be treated as secrets (do not redistribute), and may be rotated during the preview.
 - **EULA:** `ACCEPT_EULA=Y` is required.
 - **Password:** a complex `MSSQL_SA_PASSWORD` (8+ chars, upper/lower/digit/symbol) is required.
 - **Port:** the engine listens on **1433**.

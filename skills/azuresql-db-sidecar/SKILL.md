@@ -20,8 +20,8 @@ one-shot that creates `appdb`, and a `depends_on` gate.
   (x64, `linux/amd64`). Registry and tag are provisional during Private Preview.
 - Registry credentials: the image lives in a private preview registry. Sign in
   first with `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io` using the
-  shared pull-only credentials provided to the Private Preview cohort (request
-  them via the early-access feedback channel; they may rotate) before
+  shared pull-only credentials provided when you sign up for the Private Preview
+  at https://aka.ms/sqldbcontainerpreview-signup (they may rotate) before
   `docker compose up` or building the Dev Container.
 - Platform: x64 only; there is no arm64 image. The compose snippets below set
   `platform: linux/amd64` so the service starts on a non-x64 host.
@@ -107,7 +107,7 @@ services:
 Bring it up (after `docker login`, see above):
 
 ```bash
-docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io   # pull-only creds from the Private Preview cohort (feedback channel)
+docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io   # pull-only creds by signing up at https://aka.ms/sqldbcontainerpreview-signup
 docker compose up -d
 ```
 
@@ -146,7 +146,7 @@ Use Docker Compose as the Dev Container backend so the same `sqldb` +
 Sign in to the registry on the host before "Reopen in Container":
 
 ```bash
-docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io   # pull-only creds from the Private Preview cohort (feedback channel)
+docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io   # pull-only creds by signing up at https://aka.ms/sqldbcontainerpreview-signup
 ```
 
 The app container reaches the database at `sqldb,1433` over the compose network.

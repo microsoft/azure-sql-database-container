@@ -30,8 +30,8 @@ jobs:
       sqldb:
         image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
         # The image is in a private registry, so the service needs pull credentials.
-        # ACR_USERNAME / ACR_PASSWORD are the pull-only registry credentials provided to
-        # Private Preview cohort participants via the early-access feedback channel.
+        # ACR_USERNAME / ACR_PASSWORD are the pull-only registry credentials provided when
+        # you sign up for the Private Preview at https://aka.ms/sqldbcontainerpreview-signup.
         credentials:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
@@ -73,7 +73,7 @@ jobs:
 Under repository Settings → Secrets and variables → Actions, add:
 
 - `SQL_SA_PASSWORD`: a strong SA password that meets the complexity policy. Do not commit it.
-- `ACR_USERNAME` and `ACR_PASSWORD`: the pull-only registry credentials provided to Private Preview cohort participants via the early-access feedback channel. The service container uses them to pull the private image.
+- `ACR_USERNAME` and `ACR_PASSWORD`: the pull-only registry credentials provided when you sign up for the Private Preview at https://aka.ms/sqldbcontainerpreview-signup. The service container uses them to pull the private image.
 
 ### 3. Make the test suite use the environment connection string
 

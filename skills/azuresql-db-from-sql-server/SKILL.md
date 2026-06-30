@@ -43,7 +43,7 @@ Anything that hits is a candidate for rewrite below.
 ### 2. Sign in to the preview registry
 
 The image is in a private preview registry; sign in once with the shared
-pull-only credentials requested via the early-access feedback channel (they may
+pull-only credentials provided when you sign up at https://aka.ms/sqldbcontainerpreview-signup (they may
 be rotated during the preview):
 
 ```bash

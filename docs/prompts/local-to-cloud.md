@@ -21,7 +21,7 @@ Identify the project's package manager (`npm`, `yarn`, `pnpm`, `bun`) and use it
 Run the container locally on port 1433 with a strong SA password. Set `ACCEPT_EULA=Y`; this container requires it.
 
 ```bash
-# The image is in a private preview registry; sign in with the credentials requested via the early-access feedback channel (pull-only; may be rotated during the preview) first
+# The image is in a private preview registry; sign in with the credentials provided when you sign up at https://aka.ms/sqldbcontainerpreview-signup (pull-only; may be rotated during the preview) first
 docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io
 # The image is x64-only; on a non-x64 host (Apple Silicon) this adds --platform linux/amd64 to run it under emulation.
 PLATFORM=(); case "$(docker info -f '{{.Architecture}}' 2>/dev/null)" in x86_64|amd64) ;; *) PLATFORM=(--platform linux/amd64);; esac
@@ -29,7 +29,7 @@ docker run --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWOR
     -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 ```
 
-The registry path and image tag are provisional during Private Preview; use the exact values requested via the early-access feedback channel (pull-only; may be rotated during the preview) if different.
+The registry path and image tag are provisional during Private Preview; use the exact values provided when you sign up at https://aka.ms/sqldbcontainerpreview-signup (pull-only; may be rotated during the preview) if different.
 
 The engine is not ready the instant `docker run` returns. Wait for it to accept connections, then create the `appdb` database. Azure SQL Database does **not** create databases automatically on connect, so the application database must exist before the app connects:
 

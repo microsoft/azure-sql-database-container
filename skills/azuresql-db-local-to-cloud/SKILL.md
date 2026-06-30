@@ -84,8 +84,7 @@ Just enough to run the examples on a fresh container. For full detail see the
 - Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest`
   (x64, `linux/amd64`). Private preview registry: run
   `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io` first using the shared
-  pull-only credentials provided to the Private Preview cohort (request them via
-  the early-access feedback channel; they may rotate). Registry and tag are
+  pull-only credentials provided to the Private Preview cohort (get them by signing up at https://aka.ms/sqldbcontainerpreview-signup; they may rotate). Registry and tag are
   provisional during Private Preview.
 - On a non-x64 host, add `--platform linux/amd64`.
 - Required env: `ACCEPT_EULA=Y` and a complex `MSSQL_SA_PASSWORD`

@@ -5,6 +5,7 @@ description: "Supported host platforms, container runtimes, system resources, an
 
 ## Table of Contents
 
+- [Private Preview access](#private-preview-access)
 - [Supported host platforms](#supported-host-platforms)
 - [Supported container runtimes](#supported-container-runtimes)
 - [System resources](#system-resources)
@@ -12,6 +13,12 @@ description: "Supported host platforms, container runtimes, system resources, an
 - [Agent skill](#agent-skill)
 - [Tooling](#tooling)
 - [Azure account (optional, for local-to-cloud)](#azure-account-optional-for-local-to-cloud)
+
+## Private Preview access
+
+The container image is in a private registry, so you must be in the Private Preview to pull it. **[Sign up for the Private Preview](https://aka.ms/sqldbcontainerpreview-signup)** to get the registry username and password (pull-only; may be rotated during the preview). Signing up is the only way to get these credentials, so do this first.
+
+The container is for **local development** (your inner loop). It is not a production database; for production, deploy the same code to Azure SQL Database in the Microsoft Azure cloud (the outer loop).
 
 ## Supported host platforms
 
