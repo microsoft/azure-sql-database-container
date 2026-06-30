@@ -28,7 +28,7 @@ You do **not** need sqlcmd or any database tool installed: the container brings 
 
 The image is in a private registry, so **[sign up for the Private Preview](https://aka.ms/sqldbcontainerpreview-signup)** first. Signing up is the only way to get the registry username and password (pull-only; may rotate) that you need to pull the image.
 
-The container is for **local development**, your inner loop. When you are ready for production, deploy the same code to Azure SQL Database in the Microsoft Azure cloud (the outer loop); you do not run this container in Azure. See the [local-to-cloud skill](https://github.com/microsoft/azure-sql-database-container/tree/main/skills/azuresql-db-local-to-cloud).
+> **The container is for development.** It is your local inner loop (development, testing, CI, and demos). For production, deploy the same code to Azure SQL Database in the Microsoft Azure cloud (the outer loop); you do not run this container in Azure. See the [local-to-cloud skill](https://github.com/microsoft/azure-sql-database-container/tree/main/skills/azuresql-db-local-to-cloud).
 
 From here you have two ways to reach your first query. Both end in the same place, a running container you can connect to, so pick one.
 
