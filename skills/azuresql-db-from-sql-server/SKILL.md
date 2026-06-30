@@ -55,7 +55,7 @@ Registry and tag are provisional during Private Preview.
 ### 3. Rewrite the image and add --platform
 
 Replace the SQL Server image with the Azure SQL Database image. The Azure image is x64
-only; there is no arm64 image, so on a non-x64 host add `--platform linux/amd64`
+only, so on a non-x64 host add `--platform linux/amd64`
 (Docker) or `platform: linux/amd64` (compose).
 
 - Old: `mcr.microsoft.com/mssql/server:2022-latest`
@@ -159,7 +159,7 @@ development; use a full-scan top-k query for now.
 - Do not keep `mcr.microsoft.com/mssql/server`; it is a different engine.
 - Do not rely on database auto-creation or on `/docker-entrypoint-initdb.d/*.sql`.
 - Do not use `USE appdb`; select the database in the connection string.
-- Do not call arm64 / Apple Silicon "supported"; just add `--platform linux/amd64` on non-x64 hosts.
+- Do not call a non-x64 host "supported"; just add `--platform linux/amd64` on non-x64 hosts.
 - Do not use `Uid=` / `Pwd=`; use `User Id=` / `Password=`.
 - Do not pass the vector dimension as a bind parameter.
 - Do not keep SQL Agent, FILESTREAM, full Service Broker, cross-server distributed transactions, or Windows Auth.

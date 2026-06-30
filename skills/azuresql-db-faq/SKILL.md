@@ -46,7 +46,7 @@ managed cloud service, and it is not the SQL Server. Sort almost any
 - **"Can I take a backup?"** No: `BACKUP DATABASE` and `RESTORE DATABASE` return **Msg 40510 ("not supported in this version")** on the container, in every session. Azure SQL Database in the cloud likewise does not support them, because backups there are managed by the platform (not run with the `BACKUP` statement). For local data persistence, use a Docker named volume (`-v sqldb-data:/var/opt/mssql`); for managed backups, point-in-time restore, or geo-replication, use Azure SQL Database in the cloud.
 - **"Why does `USE otherdb` fail with Msg 40508?"** Because a connection to a user database is an Azure-faithful (SDS) session that enforces the same restriction as Azure SQL Database in the cloud. Select the database in the connection string (`Database=appdb`), do not switch with `USE`. (`USE` "works" only on a `master` connection, which is a non-SDS provisioning session.)
 - **"Why does connecting fail until I create the database?"** The engine does **not** auto-create databases on connect. Provision once on a `master` connection (`CREATE DATABASE appdb`), then connect with `Database=appdb`.
-- **"Is Apple Silicon / arm64 supported?"** The image is x64 only. On a non-x64 host it runs under emulation by adding `--platform linux/amd64` (Docker) or `platform: linux/amd64` (compose). Treat arm64 as "runs under emulation", not "supported".
+- **"Is a non-x64 host supported?"** The image is x64 only. On a non-x64 host it runs under emulation by adding `--platform linux/amd64` (Docker) or `platform: linux/amd64` (compose). Treat that as "runs under emulation", not "supported".
 - **"Why can't I `CREATE VECTOR INDEX`?"** That DDL is still in development. The `VECTOR` type and `VECTOR_DISTANCE` work today; use a full-scan top-k query for now (fine for prototype-sized corpora).
 - **"Why does SSMS / the MSSQL extension throw errors?"** Graphical tooling is not yet 100% compatible; it is being fixed. Use `sqlcmd` or a driver, which work today. The MSSQL extension's GitHub Copilot integration also works (https://aka.ms/vscode-mssql-copilot-docs).
 - **"Why isn't the image on Docker Hub / MCR?"** This is a container-only Private Preview; the image is in a private registry with shared pull-only credentials provided when you sign up for the Private Preview at https://aka.ms/sqldbcontainerpreview-signup (they may rotate).
@@ -68,5 +68,5 @@ limitations list (kept in step with the docs) is in [references/limitations.md](
 
 - Never claim a managed-service feature (automated backup, PITR, geo-replication,
   elastic pools, portal management) exists on the container.
-- Never tell a user arm64/Apple Silicon is "supported"; it runs under emulation.
+- Never tell a user a non-x64 host is "supported"; it runs under emulation.
 - Never claim `BACKUP DATABASE` / `RESTORE DATABASE` work on the container; they return Msg 40510. (Azure SQL Database in the cloud likewise does not support them.) Use a Docker named volume for local persistence.

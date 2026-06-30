@@ -114,7 +114,7 @@ development; use full-scan top-k for now.
 
 ## Do not
 
-- Do not use the SQL Server image or call arm64/Apple Silicon "supported".
+- Do not use the SQL Server image or call a non-x64 host "supported".
 - Do not rely on auto-created databases or `/docker-entrypoint-initdb.d/*.sql` auto-seeding.
 - Do not use `USE appdb` to switch databases; put it in the connection string.
 - Do not poll bare `sqlcmd` without `-l`; do not pass the vector dimension as a bind parameter.

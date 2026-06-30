@@ -231,5 +231,5 @@ A third stack and the deployment checklist live in
 - Do not put a password or secret in the cloud connection string; use Entra
   auth and let the driver fetch a token.
 - Do not branch app logic on environment; keep auth in configuration.
-- Do not call arm64 / Apple Silicon "supported"; on a non-x64 host just add
+- Do not call a non-x64 host "supported"; on a non-x64 host just add
   `--platform linux/amd64`.

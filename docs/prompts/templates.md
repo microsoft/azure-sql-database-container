@@ -28,7 +28,7 @@ Add a `docker-compose.yml` with the container so the database starts with one co
 services:
   sqldb:
     image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
-    # x64-only image; platform: linux/amd64 lets it run on a non-x64 host (Apple Silicon), no-op on x64.
+    # x64-only image; platform: linux/amd64 lets it run on a non-x64 host, no-op on x64.
     platform: linux/amd64
     environment:
       MSSQL_SA_PASSWORD: "YourStr0ng_Passw0rd"

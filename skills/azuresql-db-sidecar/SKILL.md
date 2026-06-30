@@ -23,7 +23,7 @@ one-shot that creates `appdb`, and a `depends_on` gate.
   shared pull-only credentials provided when you sign up for the Private Preview
   at https://aka.ms/sqldbcontainerpreview-signup (they may rotate) before
   `docker compose up` or building the Dev Container.
-- Platform: x64 only; there is no arm64 image. The compose snippets below set
+- Platform: x64 only. The compose snippets below set
   `platform: linux/amd64` so the service starts on a non-x64 host.
 - Required env: `ACCEPT_EULA=Y` and a complex `MSSQL_SA_PASSWORD` (8+ chars,
   upper/lower/digit/symbol). Engine listens on 1433.
@@ -178,4 +178,4 @@ The app container reaches the database at `sqldb,1433` over the compose network.
   the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 - Do not drop `--platform` / `platform: linux/amd64`; the image is x64 only.
 - Do not depend on `/docker-entrypoint-initdb.d/*.sql`; it is not honored here.
-- Do not call arm64/Apple Silicon "supported"; it runs under emulation only.
+- Do not call a non-x64 host "supported"; it runs under emulation only.

@@ -28,7 +28,7 @@ EngineEdition `5` and Edition `'SQL Azure'` are the cloud engine's fingerprint. 
 | **azuresql-db-ci** | Run the engine in continuous integration: ephemeral container, ready-wait, provision, seed, test, tear down. Fails closed on the wrong image. |
 | **azuresql-db-sidecar** | Run the engine as a sidecar alongside an app (compose-style), with `platform: linux/amd64` on non-x64 hosts and a single `SQL_CONNECTION_STRING` contract. |
 | **azuresql-db-scaffold** | Scaffold a new app wired to the engine: connection string via one `SQL_CONNECTION_STRING` env var, provisioning step, and seed step in the correct order. |
-| **azuresql-db-faq** | Answer questions about what the container can and cannot do, and why it differs from the cloud (backups, `USE`, vector index, arm64, GUI tooling, registry). Sorts each into engine vs. managed-service vs. SQL Server, and links the live Known limitations. |
+| **azuresql-db-faq** | Answer questions about what the container can and cannot do, and why it differs from the cloud (backups, `USE`, vector index, GUI tooling, registry). Sorts each into engine vs. managed-service vs. SQL Server, and links the live Known limitations. |
 
 ---
 
@@ -83,7 +83,7 @@ Every skill in this collection holds these facts true. If a generated workflow c
 
 ### Platform
 
-The image is x64 only; there is no arm64 image. On a non-x64 host, add `--platform linux/amd64` (Docker) or `platform: linux/amd64` (compose) to run it under x64 emulation.
+The image is x64 only. On a non-x64 host, add `--platform linux/amd64` (Docker) or `platform: linux/amd64` (compose) to run it under x64 emulation.
 
 ### Connection model (three facts that bite)
 

@@ -21,7 +21,7 @@ services:
   sqldb:
     image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
     # The image is x64-only. platform: linux/amd64 pins it so it runs on a non-x64 host
-    # (Apple Silicon) under emulation; on an x64 host it is a no-op.
+    # under emulation; on an x64 host it is a no-op.
     platform: linux/amd64
     container_name: sqldb
     environment:

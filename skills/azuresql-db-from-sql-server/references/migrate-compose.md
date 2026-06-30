@@ -70,7 +70,7 @@ services:
 1. **Image** rewritten to the Azure SQL Database container. Sign in first:
    `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io`.
 2. **`platform: linux/amd64`** added (commented) for non-x64 hosts; the image is
-   x64 only and there is no arm64 image.
+   x64 only.
 3. **Healthcheck** uses `sqlcmd -C -b -l 2` so a SQL error sets the exit code and
    transient startup errors (e.g. `Msg 913`) are retried, not masked.
 4. **`provision` one-shot service** runs `CREATE DATABASE appdb` on a master
