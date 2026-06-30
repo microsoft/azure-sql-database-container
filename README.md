@@ -2,7 +2,8 @@
 
 Run and build against Azure SQL Database, right on your local environment. Try it before you deploy, run your tests in CI, and ship with no code change. Free for development, with no Azure subscription and no credit card required.
 
-[![Private Preview](https://img.shields.io/badge/Private%20Preview-green?logo=github)](https://microsoft.github.io/azure-sql-database-container/)
+[![Sign Up](https://img.shields.io/badge/Sign%20Up-brightgreen?logo=github)](https://aka.ms/sqldbcontainerpreview-signup)
+[![Documentation](https://img.shields.io/badge/Documentation-blue?logo=github)](https://microsoft.github.io/azure-sql-database-container/)
 [![Report Bug](https://img.shields.io/badge/Report%20Bug-red?logo=github)](https://aka.ms/azuresqldb-container-bug)
 [![Request Feature](https://img.shields.io/badge/Request%20Feature-blue?logo=github)](https://aka.ms/azuresqldb-container-feature-request)
 [![Discussions](https://img.shields.io/badge/Discussions-blueviolet?logo=github)](../../discussions)
@@ -13,9 +14,12 @@ Run and build against Azure SQL Database, right on your local environment. Try i
 
 **▶ Watch the demo**
 
-The Azure SQL Database container is the Azure SQL Database engine, running locally. It runs on any modern container runtime (Docker, Podman, containerd, Rancher Desktop) on macOS, Linux, and Windows, and works with the drivers, ORMs, and editors developers already use. It supports the same AI-native capabilities as Azure SQL Database in the Microsoft Azure cloud: the native vector type, DiskANN vector indexes, vector search with `VECTOR_DISTANCE`, and in-database embeddings.
+The Azure SQL Database container is the Azure SQL Database engine, running locally. It runs on any modern container runtime (Docker, Podman, containerd, Rancher Desktop) on macOS, Linux, and Windows, and works with the drivers, ORMs, and editors developers already use. It supports the same AI-native capabilities as Azure SQL Database in the Microsoft Azure cloud: the native vector type, vector search with `VECTOR_DISTANCE`, and in-database embeddings (DiskANN vector indexes are in development).
 
 For the first time, developers can build, test, and ship applications against the Azure SQL Database engine without an Azure subscription and without a shared cloud instance. When you deploy to Azure SQL Database in the Microsoft Azure cloud, it is a connection-string change, not a code change.
+
+> [!IMPORTANT]
+> The container image is in a private registry. **[Sign up for the Private Preview](https://aka.ms/sqldbcontainerpreview-signup)** to get the registry username and password you need to pull it. Signing up is the only way to get access.
 
 ## Global Table of Contents
 
@@ -32,7 +36,7 @@ For the first time, developers can build, test, and ship applications against th
 - Request a feature: [GitHub Issues](https://aka.ms/azuresqldb-container-feature-request)
 - Ask a question, share a build, suggest an idea: [GitHub Discussions](../../discussions)
 - Connect with the team: [book a session](https://aka.ms/azuresql-container-meet) or email [azuresqldb-container@microsoft.com](mailto:azuresqldb-container@microsoft.com)
-- Real-time conversation: the private Teams channel shared with you in the welcome email
+- Real-time conversation: the private Teams channel shared via the early-access feedback channel
 
 See [Feedback and how to engage](docs/feedback-and-how-to-engage.md) for the full guide on which channel fits which question.
 
