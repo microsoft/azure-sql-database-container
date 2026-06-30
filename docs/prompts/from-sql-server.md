@@ -86,6 +86,6 @@ Expect `EngineEdition = 5` and `Edition = SQL Azure`. The SQL Server image retur
 
 ## Do not
 
-- Do not keep the SQL Server image or call arm64 / Apple Silicon "supported".
+- Do not keep the SQL Server image or call a non-x64 host "supported".
 - Do not develop against `master`; do real work on the user database.
 - Do not commit the SA password or the registry credentials.

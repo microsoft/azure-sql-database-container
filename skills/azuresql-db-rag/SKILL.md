@@ -215,5 +215,5 @@ the same; you just add the index.
 - Do not rely on `CREATE VECTOR INDEX` yet; use full-scan top-k.
 - Do not expect `/docker-entrypoint-initdb.d/*.sql` to auto-run; seed by running
   `sqlcmd -d appdb -i seed.sql` after provisioning appdb.
-- Do not call arm64/Apple Silicon "supported"; just add `--platform linux/amd64`
+- Do not call a non-x64 host "supported"; just add `--platform linux/amd64`
   on a non-x64 host.

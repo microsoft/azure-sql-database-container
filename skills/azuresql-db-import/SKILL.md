@@ -142,7 +142,7 @@ Read SqlPackage output for skipped/blocking items. See
   string instead.
 - Do not rely on `/docker-entrypoint-initdb.d/*.sql` auto-seeding; it is NOT
   honored by this image.
-- Do not call arm64/Apple Silicon "supported"; just add `--platform linux/amd64`
+- Do not call a non-x64 host "supported"; just add `--platform linux/amd64`
   on a non-x64 host.
 - Do not treat a clean `docker run` as "ready"; provision inside the retry loop.
 

@@ -73,7 +73,7 @@ docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Pass
     -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
-On Apple Silicon or any other non-x64 host, copy this version instead. It adds `--platform linux/amd64` so the x64 image runs under emulation:
+On a non-x64 host, copy this version instead. It adds `--platform linux/amd64` so the x64 image runs under emulation:
 
 ```bash
 docker run --platform linux/amd64 --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \

@@ -150,6 +150,6 @@ docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa \
 - Do NOT expect databases to be auto-created on connect.
 - Do NOT use `USE <db>` to switch databases.
 - Do NOT rely on `/docker-entrypoint-initdb.d/` auto-seeding.
-- Do NOT call arm64/Apple Silicon "supported"; just add `--platform linux/amd64` on a non-x64 host.
+- Do NOT call a non-x64 host "supported"; just add `--platform linux/amd64` on a non-x64 host.
 - Do NOT pass a vector dimension as a bind parameter.
 - Do NOT run migrations on a `master` connection.

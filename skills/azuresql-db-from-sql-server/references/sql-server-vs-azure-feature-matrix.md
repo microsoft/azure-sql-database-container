@@ -19,7 +19,7 @@ Database container. Use this when auditing a project for migration.
 | Registry | public (mcr) | private preview; `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io` first |
 | `EngineEdition` | 2/3/4/8 | 5 |
 | `Edition` | e.g. 'Developer Edition' | 'SQL Azure' |
-| Architecture | x64 and arm64 | x64 only; add `--platform linux/amd64` on non-x64 hosts |
+| Architecture | Multi-arch | x64 only; add `--platform linux/amd64` on non-x64 hosts |
 | Port | 1433 | 1433 |
 | Login | SA / SQL auth | SA / SQL auth (same) |
 

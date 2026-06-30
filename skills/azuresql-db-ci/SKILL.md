@@ -18,7 +18,7 @@ For full container detail (readiness loop, connection model, vectors, seeding), 
 - **Image:** `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`
   (x64, linux/amd64). It lives in a private preview registry; the runner must sign in with
   `ACR_USERNAME` / `ACR_PASSWORD` secrets. Registry and tag are provisional during Private Preview.
-- **Platform:** the image is x64 only; there is no arm64 image. CI hosted runners are x64, so no
+- **Platform:** the image is x64 only. CI hosted runners are x64, so no
   `--platform` flag is needed there. On a non-x64 self-hosted runner, add `--platform linux/amd64`.
 - **Required env:** `ACCEPT_EULA=Y` and a complex `MSSQL_SA_PASSWORD` (8+ chars, upper/lower/digit/
   symbol), kept in a secret. Engine listens on 1433.
@@ -173,4 +173,4 @@ echo "ready on localhost,$HOST_PORT"
 - Do not run tests against master; master is for provisioning only.
 - Do not rely on `/docker-entrypoint-initdb.d/*.sql`; it is not honored. Seed with `sqlcmd -d appdb -i`.
 - Do not require sqlcmd on the runner; the health check and provisioning run inside the container.
-- Do not call arm64 "supported"; on a non-x64 self-hosted runner just add `--platform linux/amd64`.
+- Do not call a non-x64 host "supported"; on a non-x64 self-hosted runner just add `--platform linux/amd64`.

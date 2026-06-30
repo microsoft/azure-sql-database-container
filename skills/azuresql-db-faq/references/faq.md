@@ -60,7 +60,7 @@ first: `CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n))`, with `n` a literal dimensi
 
 ## Platform / image / access
 
-**Is Apple Silicon / arm64 supported?** The image is x64 only (`linux/amd64`). On a
+**Is a non-x64 host supported?** The image is x64 only (`linux/amd64`). On a
 non-x64 host it runs under emulation when you add `--platform linux/amd64` (Docker) or
 `platform: linux/amd64` (compose). Treat that as "runs under emulation", not "supported".
 
