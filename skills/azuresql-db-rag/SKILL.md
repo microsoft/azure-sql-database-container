@@ -23,7 +23,7 @@ vector store needed.
 ## Identity (read this first)
 
 This targets the **Azure SQL Database engine** running locally in a container,
-NOT the SQL Server box image. Confirm with:
+NOT the SQL Server image. Confirm with:
 
 ```sql
 SELECT SERVERPROPERTY('EngineEdition');  -- 5
@@ -202,7 +202,7 @@ the same; you just add the index.
 
 ## Do not
 
-- Do not use `mcr.microsoft.com/mssql/server`; that is the SQL Server box image,
+- Do not use `mcr.microsoft.com/mssql/server`; that is the SQL Server image,
   not this engine.
 - Do not pass the vector dimension as a bind parameter; it fails with
   `Incorrect syntax near '@P3'`. Interpolate it as a literal.

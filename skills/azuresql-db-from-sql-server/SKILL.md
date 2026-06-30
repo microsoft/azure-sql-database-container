@@ -1,22 +1,22 @@
 ---
 name: azuresql-db-from-sql-server
-description: Migrates a local SQL Server box-image setup to the Azure SQL Database container for Azure-faithful local development. Use when a project already uses mcr.microsoft.com/mssql/server, mssql/server, an sqlcmd plus SA password docker setup, a "SQL Server in docker" or "local mssql container", or a docker-compose with the mssql/server image; and use when the user asks for "SQL Server locally", "run mssql in Docker", "spin up a local SQL database", or "test against SQL Server" but actually wants the Azure SQL Database engine (EngineEdition 5). Detects the box image, rewrites it to the Azure SQL Database container, adds --platform on non-x64 hosts, keeps the SA login, flags box-only features (SQL Agent, FILESTREAM, full Service Broker, cross-server distributed transactions, Windows Auth), and re-points connection strings from master to a provisioned user database.
+description: Migrates a local SQL Server setup to the Azure SQL Database container for Azure-faithful local development. Use when a project already uses mcr.microsoft.com/mssql/server, mssql/server, an sqlcmd plus SA password docker setup, a "SQL Server in docker" or "local mssql container", or a docker-compose with the mssql/server image; and use when the user asks for "SQL Server locally", "run mssql in Docker", "spin up a local SQL database", or "test against SQL Server" but actually wants the Azure SQL Database engine (EngineEdition 5). Detects the SQL Server image, rewrites it to the Azure SQL Database container, adds --platform on non-x64 hosts, keeps the SA login, flags SQL Server-only features (SQL Agent, FILESTREAM, full Service Broker, cross-server distributed transactions, Windows Auth), and re-points connection strings from master to a provisioned user database.
 ---
 
-# Migrate from the SQL Server box image to the Azure SQL Database container
+# Migrate from the SQL Server image to the Azure SQL Database container
 
-This skill converts an existing local SQL Server setup (the box image
+This skill converts an existing local SQL Server setup (the SQL Server image
 `mcr.microsoft.com/mssql/server`) into the **Azure SQL Database** container so
 local dev matches Azure SQL Database behavior. The two are not the same engine:
 
-| | SQL Server box image | Azure SQL Database container |
+| | SQL Server image | Azure SQL Database container |
 |---|---|---|
 | Image | `mcr.microsoft.com/mssql/server` | `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest` |
 | `SERVERPROPERTY('EngineEdition')` | 2/3/4/8 | **5** |
 | `SERVERPROPERTY('Edition')` | e.g. 'Developer Edition' | **'SQL Azure'** |
 | DB model | one instance, many DBs, `USE` works | master for provisioning only; user DB for work; a user-database (SDS) session returns `Msg 40508` on `USE`, exactly as in the cloud; a `master` connection is a non-SDS provisioning session where the filter is not enforced |
 
-If a project is using the box image but wants Azure-faithful local dev, **stop
+If a project is using the SQL Server image but wants Azure-faithful local dev, **stop
 and switch to the Azure SQL Database container.** This skill is self-contained;
 for full container detail see the **azuresql-db-container** skill.
 
@@ -30,9 +30,9 @@ for full container detail see the **azuresql-db-container** skill.
 
 ## Migration steps
 
-### 1. Detect box-image usage
+### 1. Detect SQL Server usage
 
-Search the repo for the box image and the patterns that move with it:
+Search the repo for the SQL Server image and the patterns that move with it:
 
 ```bash
 grep -rniE 'mcr\.microsoft\.com/mssql/server|mssql/server|ACCEPT_EULA|MSSQL_SA_PASSWORD|SA_PASSWORD|sqlcmd|Server=localhost,1433|Database=master' . 2>/dev/null
@@ -54,7 +54,7 @@ Registry and tag are provisional during Private Preview.
 
 ### 3. Rewrite the image and add --platform
 
-Replace the box image with the Azure SQL Database image. The Azure image is x64
+Replace the SQL Server image with the Azure SQL Database image. The Azure image is x64
 only; there is no arm64 image, so on a non-x64 host add `--platform linux/amd64`
 (Docker) or `platform: linux/amd64` (compose).
 
@@ -88,8 +88,7 @@ A `master` connection is for provisioning only; do real work on `appdb`.
 
 ### 5. Re-point connection strings from master to the user DB
 
-Box-image projects often connect straight to `master` (or rely on a DB that the
-box auto-creates). Azure SQL Database will not auto-create a database. Select the
+SQL Server projects often connect straight to `master` (or rely on a DB that SQL Server auto-creates). Azure SQL Database will not auto-create a database. Select the
 target database in the connection string (`Database=appdb`, or `-d appdb` for
 sqlcmd). Avoid `USE` to switch databases. In a user-database (SDS) session (the
 Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly as
@@ -116,10 +115,10 @@ running your script against the provisioned database:
 docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -d appdb -i /dev/stdin < seed.sql
 ```
 
-### 7. Remove box-only features
+### 7. Remove SQL Server-only features
 
-Some features exist only in the box image and must be removed or replaced.
-Flag and fix every hit. Full table in `references/box-vs-azure-feature-matrix.md`.
+Some features exist only in the SQL Server image and must be removed or replaced.
+Flag and fix every hit. Full table in `references/sql-server-vs-azure-feature-matrix.md`.
 
 - **SQL Server Agent** jobs: not available; use an external scheduler.
 - **FILESTREAM / FileTable**: not supported; store blobs in columns or external storage.
@@ -167,5 +166,5 @@ development; use a full-scan top-k query for now.
 
 ## References
 
-- `references/box-vs-azure-feature-matrix.md`: what carries over, what changes, what is gone.
+- `references/sql-server-vs-azure-feature-matrix.md`: what carries over, what changes, what is gone.
 - `references/migrate-compose.md`: before/after docker-compose with a provision step.

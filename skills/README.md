@@ -9,7 +9,7 @@ SELECT SERVERPROPERTY('EngineEdition');  -- 5
 SELECT SERVERPROPERTY('Edition');        -- 'SQL Azure'
 ```
 
-EngineEdition `5` and Edition `'SQL Azure'` are the cloud engine's fingerprint. The SQL Server box image (`mcr.microsoft.com/mssql/server`) returns different values and is **not** the same product. If an agent was about to reach for that box image, it should stop and use this instead.
+EngineEdition `5` and Edition `'SQL Azure'` are the cloud engine's fingerprint. The SQL Server image (`mcr.microsoft.com/mssql/server`) returns different values and is **not** the same product. If an agent was about to reach for that SQL Server image, it should stop and use this instead.
 
 > Status: **Private Preview.** Registry, image tag, and credentials are provisional and may change.
 
@@ -20,7 +20,7 @@ EngineEdition `5` and Edition `'SQL Azure'` are the cloud engine's fingerprint. 
 | Skill | What it does |
 | --- | --- |
 | **azuresql-db-container** | Start the Azure SQL Database engine locally the correct way: free-port selection, conditional `--platform linux/amd64` on non-x64 hosts, ready-wait retry loop, and `CREATE DATABASE appdb` provisioning. The foundation every other skill builds on. |
-| **azuresql-db-from-sql-server** | Migrate a workflow off the SQL Server box image (`mcr.microsoft.com/mssql/server`) onto the real cloud engine. Swaps the image, fixes the connection model, and verifies EngineEdition=5 / Edition='SQL Azure'. |
+| **azuresql-db-from-sql-server** | Migrate a workflow off the SQL Server image (`mcr.microsoft.com/mssql/server`) onto the real cloud engine. Swaps the image, fixes the connection model, and verifies EngineEdition=5 / Edition='SQL Azure'. |
 | **azuresql-db-local-to-cloud** | Take a database that works against the local engine and move it to Azure SQL Database in the cloud. Because it is the same engine, parity is the default, not a porting exercise. |
 | **azuresql-db-schema-migration** | Apply and version schema changes against the engine: idempotent DDL, ordered migration scripts, run against `appdb` (never `master`). |
 | **azuresql-db-import** | Load data into `appdb` after provisioning: bulk and script-based import. Does **not** rely on auto-run init directories (that convention is not honored here). |
@@ -28,7 +28,7 @@ EngineEdition `5` and Edition `'SQL Azure'` are the cloud engine's fingerprint. 
 | **azuresql-db-ci** | Run the engine in continuous integration: ephemeral container, ready-wait, provision, seed, test, tear down. Fails closed on the wrong image. |
 | **azuresql-db-sidecar** | Run the engine as a sidecar alongside an app (compose-style), with `platform: linux/amd64` on non-x64 hosts and a single `SQL_CONNECTION_STRING` contract. |
 | **azuresql-db-scaffold** | Scaffold a new app wired to the engine: connection string via one `SQL_CONNECTION_STRING` env var, provisioning step, and seed step in the correct order. |
-| **azuresql-db-faq** | Answer questions about what the container can and cannot do, and why it differs from the cloud (backups, `USE`, vector index, arm64, GUI tooling, registry). Sorts each into engine vs. managed-service vs. box-product, and links the live Known limitations. |
+| **azuresql-db-faq** | Answer questions about what the container can and cannot do, and why it differs from the cloud (backups, `USE`, vector index, arm64, GUI tooling, registry). Sorts each into engine vs. managed-service vs. SQL Server, and links the live Known limitations. |
 
 ---
 

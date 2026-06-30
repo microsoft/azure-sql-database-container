@@ -12,8 +12,8 @@ Bring an existing database INTO the local Azure SQL Database container from a
 
 This is the **Azure SQL Database engine** running locally (Private Preview):
 `SELECT SERVERPROPERTY('EngineEdition')` returns **5** and `Edition` returns
-**'SQL Azure'**. It is **NOT** the SQL Server box image
-`mcr.microsoft.com/mssql/server`. If you were about to use that box image, stop
+**'SQL Azure'**. It is **NOT** the SQL Server image
+`mcr.microsoft.com/mssql/server`. If you were about to use that SQL Server image, stop
 and use this instead.
 
 - Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest`
@@ -107,7 +107,7 @@ the source.
 
 ## What may not transfer (PaaS restrictions)
 
-This engine is Azure SQL Database (Engine Edition 5), so SQL Server box features
+This engine is Azure SQL Database (Engine Edition 5), so SQL Server features
 that Azure SQL DB does not support will fail or be skipped on import:
 
 - Cross-database three-part-name references and most cross-DB queries.
@@ -136,7 +136,7 @@ Read SqlPackage output for skipped/blocking items. See
 
 ## Do not
 
-- Do not use the `mcr.microsoft.com/mssql/server` box image.
+- Do not use the `mcr.microsoft.com/mssql/server` SQL Server image.
 - Do not import into `master`; import into the provisioned user database.
 - Do not put `USE appdb` in any pre/post script; select the DB in the connection
   string instead.

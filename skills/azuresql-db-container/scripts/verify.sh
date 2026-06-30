@@ -6,7 +6,7 @@
 # Steps:
 #   1. Pick a free host port starting at 1433.
 #   2. Add --platform linux/amd64 only on a non-x64 host.
-#   3. docker run the engine image (FAIL CLOSED on the SQL Server box image).
+#   3. docker run the engine image (FAIL CLOSED on the SQL Server image).
 #   4. Wait-until-ready with the sqlcmd -C -b -l 2 retry loop.
 #   5. Assert EngineEdition=5 AND Edition='SQL Azure' (non-zero exit otherwise).
 #   6. CREATE DATABASE appdb.
@@ -32,11 +32,11 @@ for arg in "$@"; do
 done
 
 # ----------------------------------------------------------------------------
-# FAIL CLOSED: the SQL Server box image is NOT the Azure SQL Database engine.
+# FAIL CLOSED: the SQL Server image is NOT the Azure SQL Database engine.
 # ----------------------------------------------------------------------------
 case "$IMAGE" in
   *mcr.microsoft.com/mssql/server*)
-    echo "ERROR: '$IMAGE' is the SQL Server box image, NOT the Azure SQL Database engine." >&2
+    echo "ERROR: '$IMAGE' is the SQL Server image, NOT the Azure SQL Database engine." >&2
     echo "       Use sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest" >&2
     echo "       (returns EngineEdition=5 / Edition='SQL Azure'). Aborting." >&2
     exit 1

@@ -5,7 +5,7 @@ container is running and **appdb is already provisioned on a master connection**
 canonical start recipe in SKILL.md). Apps read `SQL_CONNECTION_STRING`; ORMs that need a URL
 also read `DATABASE_URL`. Image is
 `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest` (NOT the
-`mcr.microsoft.com/mssql/server` box image). On a non-x64 host add `platform: linux/amd64`.
+`mcr.microsoft.com/mssql/server` SQL Server image). On a non-x64 host add `platform: linux/amd64`.
 
 ## Contents
 

@@ -1,15 +1,15 @@
 # PaaS parity checklist
 
 This container is the Azure SQL Database engine (EngineEdition 5), not the SQL
-Server box product. Some box-product features are intentionally absent because
+Server SQL Server. Some SQL Server features are intentionally absent because
 they are not part of the PaaS surface. Validate features against the cloud
 before declaring readiness.
 
-## Not present (vs the SQL Server box product)
+## Not present (vs the SQL Server)
 
 - **SQL Server Agent**: no Agent jobs/schedules. Use an external scheduler.
 - **FILESTREAM / FileTable**: not available.
-- **Full Service Broker**: not the full box-product Service Broker surface; do
+- **Full Service Broker**: not the full SQL Server Service Broker surface; do
   not assume cross-instance broker messaging.
 - **Cross-server DTC / distributed transactions**: no cross-server MSDTC.
 - **Windows Authentication / NTLM**: not available; use SQL authentication
@@ -69,7 +69,7 @@ source of truth:
 
 ## Do not
 
-- Do not assume box-product features (Agent, FILESTREAM, full Service Broker,
+- Do not assume SQL Server features (Agent, FILESTREAM, full Service Broker,
   cross-server DTC, Windows Auth) are available.
 - Do not declare readiness without validating the feature against Azure SQL
   Database in the cloud.

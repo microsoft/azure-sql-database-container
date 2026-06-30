@@ -1,8 +1,8 @@
-# AI Prompt: Convert a SQL Server box-image setup to the Azure SQL Database container
+# AI Prompt: Convert a SQL Server setup to the Azure SQL Database container
 
-**Role:** You are an expert agent converting the current project from the SQL Server box image (`mcr.microsoft.com/mssql/server`) to the Azure SQL Database container, so local development is Azure-faithful (the same engine you run in Azure SQL Database in the cloud).
+**Role:** You are an expert agent converting the current project from the SQL Server image (`mcr.microsoft.com/mssql/server`) to the Azure SQL Database container, so local development is Azure-faithful (the same engine you run in Azure SQL Database in the cloud).
 
-**Purpose:** Detect the box image, swap it for the Azure SQL Database engine image, fix the connection model, flag features that exist only in the box product, and verify you are on the real engine.
+**Purpose:** Detect the SQL Server image, swap it for the Azure SQL Database engine image, fix the connection model, flag features that exist only in the SQL Server, and verify you are on the real engine.
 
 **Scope:** A project that already runs `mcr.microsoft.com/mssql/server` (a `docker run`, a `docker-compose.yml`, a Dockerfile, or a Dev Container) with an `sa` login.
 
@@ -12,7 +12,7 @@ Read the entire instruction set before executing.
 
 ## Instructions
 
-### 1. Detect the box image
+### 1. Detect the SQL Server image
 
 Search the repo for `mcr.microsoft.com/mssql/server` (and `mssql/server`) in `docker-compose*.yml`, Dockerfiles, run scripts, CI, and `.devcontainer/`. Note where the image, the `ACCEPT_EULA`/`MSSQL_SA_PASSWORD` env, and the connection string live.
 
@@ -42,7 +42,7 @@ docker run -d --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASS
 
 ### 4. Fix the connection model
 
-The Azure SQL Database engine does **not** auto-create databases, and the connection model differs from the box product. Provision the application database on a `master` connection, then point the app at that database:
+The Azure SQL Database engine does **not** auto-create databases, and the connection model differs from the SQL Server. Provision the application database on a `master` connection, then point the app at that database:
 
 ```bash
 # The engine is not ready the instant docker run returns; retry until it accepts connections.
@@ -55,9 +55,9 @@ done
 
 Re-point connection strings from `Database=master` to `Database=appdb`. Do not switch databases with `USE`: in a user-database (SDS) session `USE` returns `Msg 40508`, exactly as in Azure SQL Database in the cloud (a `master` connection is a non-SDS provisioning session where it appears to work, but `master` is for provisioning only). Select the database in the connection string.
 
-### 5. Flag box-only features to remove
+### 5. Flag SQL Server-only features to remove
 
-These exist in the SQL Server box product but **not** in Azure SQL Database; remove or replace any usage so the app works against the engine and the cloud:
+These exist in the SQL Server but **not** in Azure SQL Database; remove or replace any usage so the app works against the engine and the cloud:
 
 - SQL Server Agent jobs (`msdb.dbo.sp_add_job`, etc.)
 - FILESTREAM / FileTable
@@ -72,7 +72,7 @@ docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0n
     -d appdb -Q "SELECT SERVERPROPERTY('EngineEdition') AS EngineEdition, SERVERPROPERTY('Edition') AS Edition;"
 ```
 
-Expect `EngineEdition = 5` and `Edition = SQL Azure`. The box image returns different values; if you see those, the image was not swapped.
+Expect `EngineEdition = 5` and `Edition = SQL Azure`. The SQL Server image returns different values; if you see those, the image was not swapped.
 
 ---
 
@@ -81,11 +81,11 @@ Expect `EngineEdition = 5` and `Edition = SQL Azure`. The box image returns diff
 - No `mcr.microsoft.com/mssql/server` remains in compose, Dockerfiles, run scripts, CI, or Dev Container.
 - `--platform linux/amd64` is added on non-x64 hosts (compose `platform:` or the array-form shell snippet).
 - `appdb` is created on a `master` connection before the app connects with `Database=appdb`; no `USE` to switch databases.
-- At least one box-only feature is flagged (or the app confirmed not to use any).
+- At least one SQL Server-only feature is flagged (or the app confirmed not to use any).
 - `EngineEdition = 5` against the running container.
 
 ## Do not
 
-- Do not keep the box image or call arm64 / Apple Silicon "supported".
+- Do not keep the SQL Server image or call arm64 / Apple Silicon "supported".
 - Do not develop against `master`; do real work on the user database.
 - Do not commit the SA password or the registry credentials.

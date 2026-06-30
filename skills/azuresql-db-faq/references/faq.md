@@ -92,8 +92,7 @@ can cause subtle edge-case differences. Set the ones you depend on explicitly.
 ## Box-product features (intentionally absent, like the cloud)
 
 **Why are SQL Agent jobs / FILESTREAM / linked servers / Windows Authentication /
-cross-server distributed transactions missing?** These exist in the SQL Server box
-product but not in Azure SQL Database, so they are intentionally absent here too.
+cross-server distributed transactions missing?** These exist in SQL Server but not in Azure SQL Database, so they are intentionally absent here too.
 Removing a dependency on them is part of being cloud-ready. Use the `sa` login locally
 and Microsoft Entra in the cloud instead of Windows Authentication.
 

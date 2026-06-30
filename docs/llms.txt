@@ -15,14 +15,14 @@ Copy-and-run prompts to hand your AI coding agent, each building a scenario agai
 - [Build locally, ship to Azure (Node.js)](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/local-to-cloud.md)
 - [Prototype AI / RAG with vector search (Python + Ollama)](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/ai-rag.md)
 - [Run integration tests in CI](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/ci.md)
-- [Convert from the SQL Server box image](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/from-sql-server.md)
+- [Convert from the SQL Server image](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/from-sql-server.md)
 - [Develop offline](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/offline.md)
 - [Drop in as a sidecar](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/sidecar.md)
 - [Scaffold a new project](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/templates.md)
 - [Agent skills for Claude Code, GitHub Copilot, Codex, and Cursor](https://github.com/microsoft/azure-sql-database-container/tree/main/skills)
 
 ## Key facts
-- Image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition, x64 (linux/amd64); on a non-x64 host, add --platform linux/amd64. It is the Azure SQL Database engine (SERVERPROPERTY('EngineEdition')=5, Edition='SQL Azure'), not the SQL Server box image. The shared pull-only registry credentials are provided when you sign up for the Private Preview at https://aka.ms/sqldbcontainerpreview-signup and may rotate.
+- Image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition, x64 (linux/amd64); on a non-x64 host, add --platform linux/amd64. It is the Azure SQL Database engine (SERVERPROPERTY('EngineEdition')=5, Edition='SQL Azure'), not the SQL Server image. The shared pull-only registry credentials are provided when you sign up for the Private Preview at https://aka.ms/sqldbcontainerpreview-signup and may rotate.
 - Connection: TCP port 1433; SQL login (sa) locally, Microsoft Entra in the cloud. Apps read the connection string from the SQL_CONNECTION_STRING environment variable.
 - AI-native: native vector data type, DiskANN vector indexes, VECTOR_DISTANCE similarity search, AI_GENERATE_EMBEDDINGS, CREATE EXTERNAL MODEL, native JSON, and RegEx.
 - Parity: same engine, defaults, T-SQL, and error messages as Azure SQL Database in the cloud.

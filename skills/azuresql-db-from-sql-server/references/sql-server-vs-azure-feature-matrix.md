@@ -1,6 +1,6 @@
-# Box image vs Azure SQL Database container: feature matrix
+# SQL Server image vs Azure SQL Database container: feature matrix
 
-How a `mcr.microsoft.com/mssql/server` (box) setup maps to the Azure SQL
+How a `mcr.microsoft.com/mssql/server` setup maps to the Azure SQL
 Database container. Use this when auditing a project for migration.
 
 ## Contents
@@ -44,7 +44,7 @@ Database container. Use this when auditing a project for migration.
 
 ## Gone: remove or replace
 
-These exist in the box image but not in the Azure SQL Database engine. Find and
+These exist in the SQL Server image but not in the Azure SQL Database engine. Find and
 remove or replace every usage.
 
 | Feature | Why it is gone | Replacement |

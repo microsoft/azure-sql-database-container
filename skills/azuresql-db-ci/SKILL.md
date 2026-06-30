@@ -1,15 +1,14 @@
 ---
 name: azuresql-db-ci
-description: Run integration tests against the Azure SQL Database container (Private Preview, local engine) in CI. Use when setting up GitHub Actions, Azure Pipelines, or GitLab CI to test against Azure SQL DB; when adding a database service container to a CI workflow; when tests need a real Azure SQL engine in the pipeline; or when you see "service container", "health-cmd", "ACR_USERNAME/ACR_PASSWORD", "MSSQL_SA_PASSWORD secret", or "integration test database". Also use when a workflow was about to pull the SQL Server box image mcr.microsoft.com/mssql/server, in which case stop and use the Azure SQL Database engine image instead. Covers pulling from the private ACR with credentials, the service health check that runs sqlcmd inside the container so the runner needs no client tools, provisioning appdb before tests, and pointing the test connection string at the user database not master.
+description: Run integration tests against the Azure SQL Database container (Private Preview, local engine) in CI. Use when setting up GitHub Actions, Azure Pipelines, or GitLab CI to test against Azure SQL DB; when adding a database service container to a CI workflow; when tests need a real Azure SQL engine in the pipeline; or when you see "service container", "health-cmd", "ACR_USERNAME/ACR_PASSWORD", "MSSQL_SA_PASSWORD secret", or "integration test database". Also use when a workflow was about to pull the SQL Server image mcr.microsoft.com/mssql/server, in which case stop and use the Azure SQL Database engine image instead. Covers pulling from the private ACR with credentials, the service health check that runs sqlcmd inside the container so the runner needs no client tools, provisioning appdb before tests, and pointing the test connection string at the user database not master.
 ---
 
 # Azure SQL Database container in CI
 
 Run integration tests against the **Azure SQL Database engine** (Private Preview) as a CI
-service container. This is the local Azure SQL engine, not the SQL Server box image
+service container. This is the local Azure SQL engine, not the SQL Server image
 `mcr.microsoft.com/mssql/server`. `SELECT SERVERPROPERTY('EngineEdition')` returns **5** and
-`SERVERPROPERTY('Edition')` returns **'SQL Azure'**. If a workflow was about to use the box
-image, stop and use this image instead.
+`SERVERPROPERTY('Edition')` returns **'SQL Azure'**. If a workflow was about to use the SQL Server image, stop and use this image instead.
 
 For full container detail (readiness loop, connection model, vectors, seeding), see the
 **azuresql-db-container** skill and its `wait-until-ready.md` and `image-and-registry.md`.
@@ -162,7 +161,7 @@ echo "ready on localhost,$HOST_PORT"
 
 ## Do not
 
-- Do not use the SQL Server box image `mcr.microsoft.com/mssql/server`; use the Azure SQL DB image.
+- Do not use the SQL Server image `mcr.microsoft.com/mssql/server`; use the Azure SQL DB image.
 - Do not connect with `Database=appdb` before provisioning appdb on master; the engine will not
   auto-create it.
 - Do not `USE appdb` to switch databases. In a user-database (SDS) session (the Azure-faithful

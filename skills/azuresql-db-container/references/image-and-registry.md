@@ -16,10 +16,9 @@ sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 - The registry host and tag are **provisional during Private Preview** and may
   change. Treat this file as the place to update if they do.
 
-## This is NOT the SQL Server box image
+## This is NOT the SQL Server image
 
-Do not substitute `mcr.microsoft.com/mssql/server`. That is the SQL Server box
-product and reports a different EngineEdition. If a task pulled the box image,
+Do not substitute `mcr.microsoft.com/mssql/server`. That is SQL Server and reports a different EngineEdition. If a task pulled the SQL Server image,
 stop and switch to the image above.
 
 ## Sign in to the private registry (Path B: external access)

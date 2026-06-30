@@ -95,7 +95,7 @@ Then run SqlPackage from a machine that has it, targeting `localhost,$HOST_PORT`
   only, not application work. Always select the target database in the connection
   string (`Database=appdb`, or `-d appdb` for sqlcmd).
 - **"Element ... is not supported in Microsoft Azure SQL Database v12"**: the
-  source uses a SQL Server box feature Azure SQL DB (Engine Edition 5) does not
+  source uses a SQL Server feature Azure SQL DB (Engine Edition 5) does not
   support. Remove or refactor that object, or extract a filtered dacpac.
 - **Blocking on possible data loss (Publish)**: expected on a populated target;
   use a fresh empty `appdb` or accept the override flag deliberately.
@@ -103,7 +103,7 @@ Then run SqlPackage from a machine that has it, targeting `localhost,$HOST_PORT`
 ## PaaS restriction details
 
 Because this is the Azure SQL Database engine (`EngineEdition = 5`,
-`Edition = 'SQL Azure'`), box-only features will not import:
+`Edition = 'SQL Azure'`), SQL Server-only features will not import:
 
 - Cross-database three-part-name references and most cross-DB queries.
 - `USE <db>`: avoid `USE` to switch databases. In a user-database (SDS) session

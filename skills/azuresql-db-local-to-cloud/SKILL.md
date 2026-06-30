@@ -21,7 +21,7 @@ Build and test against the local Azure SQL Database container, then deploy the
 connection string changes. Nothing else.
 
 This works because the local container is the **Azure SQL Database engine**, not
-the SQL Server box image. `SELECT SERVERPROPERTY('EngineEdition')` returns `5`
+the SQL Server image. `SELECT SERVERPROPERTY('EngineEdition')` returns `5`
 and `SERVERPROPERTY('Edition')` returns `'SQL Azure'`, the same as the cloud. So
 the SQL surface your code depends on is the same in both places.
 
@@ -216,7 +216,7 @@ A third stack and the deployment checklist live in
 
 ## Do not
 
-- Do not use the SQL Server box image `mcr.microsoft.com/mssql/server`. If you
+- Do not use the SQL Server image `mcr.microsoft.com/mssql/server`. If you
   were about to, stop and use the image above; this is the Azure SQL engine.
 - Do not connect to `Database=appdb` before creating it on `master`.
 - Do not use `USE appdb` to switch databases; set the database in the connection

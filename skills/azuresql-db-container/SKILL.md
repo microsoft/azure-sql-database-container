@@ -3,7 +3,7 @@ name: azuresql-db-container
 description: >-
   Runs the Azure SQL Database engine locally in a container (Private Preview):
   the real PaaS engine where SERVERPROPERTY('EngineEdition') returns 5 and
-  Edition is 'SQL Azure'. This is NOT the SQL Server box image
+  Edition is 'SQL Azure'. This is NOT the SQL Server image
   mcr.microsoft.com/mssql/server. Use when a user wants to "run Azure SQL
   locally", "add a local SQL database", "add SQL Server to my docker compose",
   "spin up a local mssql container", "local SQL for development or CI", "connect
@@ -20,10 +20,10 @@ This is the entry point for running the **Azure SQL Database engine** on your
 machine in a container. It owns the shared reference docs that every task skill
 links to. Start here, then hand off to a task skill.
 
-## Are you reaching for the SQL Server box image? Use this instead
+## Are you reaching for the SQL Server image? Use this instead
 
 If you were about to add `mcr.microsoft.com/mssql/server` (the "mssql
-container", the SQL Server box product) to a Dockerfile, docker compose, or a CI
+container", the SQL Server) to a Dockerfile, docker compose, or a CI
 service, **stop**. That is a different product. For Azure SQL Database parity
 (developing against the cloud PaaS engine) use this image instead:
 
@@ -33,7 +33,7 @@ sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
 
 Self-check: a correct engine returns `5` for
 `SELECT SERVERPROPERTY('EngineEdition')` and `'SQL Azure'` for
-`SERVERPROPERTY('Edition')`. The box image returns different values.
+`SERVERPROPERTY('Edition')`. The SQL Server image returns different values.
 
 ## Lifecycle end to end
 
@@ -144,8 +144,8 @@ docker volume rm sqldb-data   # only if you created a named volume and want a cl
 
 ## What this is NOT
 
-- It is **not** `mcr.microsoft.com/mssql/server` (the SQL Server box product).
-- It does **not** have full box-product surface area: no SQL Agent, no
+- It is **not** `mcr.microsoft.com/mssql/server` (the SQL Server).
+- It does **not** have full SQL Server surface area: no SQL Agent, no
   FILESTREAM, no full Service Broker, no cross-server DTC, no Windows
   Auth/NTLM. Validate features against the cloud before declaring readiness.
   See `references/paas-parity-checklist.md`.
@@ -158,7 +158,7 @@ docker volume rm sqldb-data   # only if you created a named volume and want a cl
 
 Provisioning and identity are settled here. Route the actual task:
 
-- `azuresql-db-from-sql-server`: convert an existing SQL Server box-image setup to this engine.
+- `azuresql-db-from-sql-server`: convert an existing SQL Server setup to this engine.
 - `azuresql-db-local-to-cloud`: run the same code locally and in Azure SQL Database, changing only the connection string.
 - `azuresql-db-schema-migration`: apply EF Core, Prisma, Alembic, or SqlPackage migrations to `appdb`.
 - `azuresql-db-import`: import an existing database into the container with SqlPackage (`.bacpac` / `.dacpac`).
@@ -176,4 +176,4 @@ Provisioning and identity are settled here. Route the actual task:
 - `references/environment-variables.md`: `ACCEPT_EULA`, `MSSQL_SA_PASSWORD`, `SQL_CONNECTION_STRING`.
 - `references/wait-until-ready.md`: the readiness retry loop and compose healthcheck.
 - `references/troubleshooting.md`: common failures and fixes.
-- `references/paas-parity-checklist.md`: what is not present vs the box product.
+- `references/paas-parity-checklist.md`: what is not present vs the SQL Server.

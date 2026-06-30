@@ -1,8 +1,8 @@
-# Migrate docker-compose: box image to Azure SQL Database container
+# Migrate docker-compose: SQL Server image to Azure SQL Database container
 
-Before/after for a `docker-compose.yml` that used the SQL Server box image.
+Before/after for a `docker-compose.yml` that used the SQL Server image.
 
-## Before (box image)
+## Before (SQL Server image)
 
 ```yaml
 services:
@@ -21,7 +21,7 @@ services:
       - db
 ```
 
-Problems carried over from the box image:
+Problems carried over from the SQL Server image:
 
 - Wrong image (different engine; `EngineEdition` is not 5).
 - App connects to `master`; the Azure engine will not auto-create a user DB and
@@ -91,8 +91,8 @@ docker compose run --rm provision \
   /opt/mssql-tools18/bin/sqlcmd -S db,1433 -U sa -P "YourStr0ng_Passw0rd" -C -d appdb -i /seed.sql
 ```
 
-## Box-only features to remove first
+## SQL Server-only features to remove first
 
 Before migrating, strip any SQL Server Agent jobs, FILESTREAM/FileTable, full
 Service Broker, cross-server distributed transactions, and Windows Auth from the
-schema and app config. See `box-vs-azure-feature-matrix.md` for replacements.
+schema and app config. See `sql-server-vs-azure-feature-matrix.md` for replacements.
