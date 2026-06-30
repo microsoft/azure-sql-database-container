@@ -18,7 +18,7 @@ set -euo pipefail
 # ----------------------------------------------------------------------------
 # Config (override via env)
 # ----------------------------------------------------------------------------
-IMAGE="${IMAGE:-sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest}"
+IMAGE="${IMAGE:-sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest}"
 SA_PASSWORD="${MSSQL_SA_PASSWORD:-YourStr0ng_Passw0rd}"
 CONTAINER="${CONTAINER:-sqldb-verify}"
 SQLCMD="/opt/mssql-tools18/bin/sqlcmd"
@@ -37,7 +37,7 @@ done
 case "$IMAGE" in
   *mcr.microsoft.com/mssql/server*)
     echo "ERROR: '$IMAGE' is the SQL Server image, NOT the Azure SQL Database engine." >&2
-    echo "       Use sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest" >&2
+    echo "       Use sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest" >&2
     echo "       (returns EngineEdition=5 / Edition='SQL Azure'). Aborting." >&2
     exit 1
     ;;

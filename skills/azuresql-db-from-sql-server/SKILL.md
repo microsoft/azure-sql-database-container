@@ -11,7 +11,7 @@ local dev matches Azure SQL Database behavior. The two are not the same engine:
 
 | | SQL Server image | Azure SQL Database container |
 |---|---|---|
-| Image | `mcr.microsoft.com/mssql/server` | `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest` |
+| Image | `mcr.microsoft.com/mssql/server` | `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest` |
 | `SERVERPROPERTY('EngineEdition')` | 2/3/4/8 | **5** |
 | `SERVERPROPERTY('Edition')` | e.g. 'Developer Edition' | **'SQL Azure'** |
 | DB model | one instance, many DBs, `USE` works | master for provisioning only; user DB for work; a user-database (SDS) session returns `Msg 40508` on `USE`, exactly as in the cloud; a `master` connection is a non-SDS provisioning session where the filter is not enforced |
@@ -59,7 +59,7 @@ only; there is no arm64 image, so on a non-x64 host add `--platform linux/amd64`
 (Docker) or `platform: linux/amd64` (compose).
 
 - Old: `mcr.microsoft.com/mssql/server:2022-latest`
-- New: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest`
+- New: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`
 
 Keep `ACCEPT_EULA=Y`, keep the complex `MSSQL_SA_PASSWORD`, keep the SA login,
 keep port 1433. See `references/migrate-compose.md` for a before/after compose.
@@ -78,7 +78,7 @@ HOST_PORT=1433; while lsof -nP -iTCP:"$HOST_PORT" -sTCP:LISTEN >/dev/null 2>&1; 
 PLATFORM=(); case "$(docker info -f '{{.Architecture}}' 2>/dev/null)" in x86_64|amd64) ;; *) PLATFORM=(--platform linux/amd64);; esac
 docker rm -f sqldb 2>/dev/null
 docker run -d --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
-  -p "$HOST_PORT:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+  -p "$HOST_PORT:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -l 2 \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do sleep 2; done
 echo "ready on localhost,$HOST_PORT"
@@ -147,7 +147,7 @@ development; use a full-scan top-k query for now.
 
 ## Validation rules
 
-- Image is `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest`, not `mcr.microsoft.com/mssql/server`.
+- Image is `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`, not `mcr.microsoft.com/mssql/server`.
 - `appdb` is created on a master connection before any app connects to it.
 - App connection strings use `Database=appdb`, never `Database=master` for real work.
 - No `USE <db>` statements: in a user-database (SDS) session, `USE` returns `Msg 40508`, exactly as in Azure SQL Database in the cloud; a `master` connection is a non-SDS provisioning session where the filter is not enforced, but `master` is for provisioning only. Select the database in the connection string.

@@ -30,7 +30,7 @@ services:
         condition: service_completed_successfully
 
   sqldb:
-    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
     # x64-only image; platform: linux/amd64 lets it run on a non-x64 host (Apple Silicon), no-op on x64.
     platform: linux/amd64
     environment:
@@ -51,7 +51,7 @@ services:
   # Azure SQL Database does not create databases automatically, so the app's
   # target database (appdb) must be provisioned before the app starts.
   sqldb-init:
-    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
     platform: linux/amd64
     depends_on:
       sqldb:

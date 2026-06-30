@@ -15,7 +15,7 @@ For full container detail (readiness loop, connection model, vectors, seeding), 
 
 ## Load-bearing facts (inlined)
 
-- **Image:** `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest`
+- **Image:** `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`
   (x64, linux/amd64). It lives in a private preview registry; the runner must sign in with
   `ACR_USERNAME` / `ACR_PASSWORD` secrets. Registry and tag are provisional during Private Preview.
 - **Platform:** the image is x64 only; there is no arm64 image. CI hosted runners are x64, so no
@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       sqldb:
-        image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+        image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
         credentials:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
@@ -83,7 +83,7 @@ jobs:
       # via docker exec into the service container (runner needs no sqlcmd).
       - name: Provision appdb
         run: |
-          CID=$(docker ps --filter "ancestor=sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest" --format '{{.ID}}')
+          CID=$(docker ps --filter "ancestor=sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest" --format '{{.ID}}')
           docker exec "$CID" /opt/mssql-tools18/bin/sqlcmd \
             -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b \
             -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
@@ -93,7 +93,7 @@ jobs:
       # Optional: seed appdb (no auto-seed). Copy the file in, then run it against appdb.
       - name: Seed appdb
         run: |
-          CID=$(docker ps --filter "ancestor=sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest" --format '{{.ID}}')
+          CID=$(docker ps --filter "ancestor=sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest" --format '{{.ID}}')
           docker cp seed.sql "$CID:/tmp/seed.sql"
           docker exec "$CID" /opt/mssql-tools18/bin/sqlcmd \
             -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b -d appdb -i /tmp/seed.sql
@@ -145,7 +145,7 @@ HOST_PORT=1433; while lsof -nP -iTCP:"$HOST_PORT" -sTCP:LISTEN >/dev/null 2>&1; 
 PLATFORM=(); case "$(docker info -f '{{.Architecture}}' 2>/dev/null)" in x86_64|amd64) ;; *) PLATFORM=(--platform linux/amd64);; esac
 docker rm -f sqldb 2>/dev/null
 docker run -d --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
-  -p "$HOST_PORT:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+  -p "$HOST_PORT:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -l 2 \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do sleep 2; done
 echo "ready on localhost,$HOST_PORT"

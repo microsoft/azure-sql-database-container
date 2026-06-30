@@ -13,7 +13,7 @@ body:
     id: image-tag
     attributes:
       label: Container image tag
-      placeholder: "sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest"
+      placeholder: "sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest"
     validations:
       required: true
 

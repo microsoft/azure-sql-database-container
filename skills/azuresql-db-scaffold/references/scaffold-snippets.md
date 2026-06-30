@@ -4,7 +4,7 @@ Per-stack skeletons wired to the Azure SQL Database container. Every snippet ass
 container is running and **appdb is already provisioned on a master connection** (see the
 canonical start recipe in SKILL.md). Apps read `SQL_CONNECTION_STRING`; ORMs that need a URL
 also read `DATABASE_URL`. Image is
-`sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest` (NOT the
+`sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest` (NOT the
 `mcr.microsoft.com/mssql/server` SQL Server image). On a non-x64 host add `platform: linux/amd64`.
 
 ## Contents
@@ -22,7 +22,7 @@ also read `DATABASE_URL`. Image is
 ```yaml
 services:
   sqldb:
-    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
     # On a non-x64 host, uncomment:
     # platform: linux/amd64
     environment:
@@ -36,7 +36,7 @@ services:
       timeout: 5s
       retries: 30
   provision:
-    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
     # platform: linux/amd64
     depends_on:
       sqldb:

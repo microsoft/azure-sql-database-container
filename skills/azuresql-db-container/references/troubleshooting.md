@@ -27,7 +27,7 @@ the env vars and recreate:
 ```bash
 docker rm -f sqldb 2>/dev/null
 docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
-  -p "1433:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+  -p "1433:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
 ## Password policy rejection
@@ -55,7 +55,7 @@ manifest. Add the platform flag to run under emulation:
 ```bash
 docker run -d --name sqldb --platform linux/amd64 -e "ACCEPT_EULA=Y" \
   -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" -p "1433:1433" \
-  sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+  sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
 This is emulation, not native support. On an x64 host, omit `--platform`.
@@ -96,7 +96,7 @@ If `SELECT SERVERPROPERTY('EngineEdition')` does not return `5`, or
 ```bash
 docker rm -f sqldb 2>/dev/null
 docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
-  -p "1433:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+  -p "1433:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
 ## Do not

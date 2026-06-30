@@ -29,7 +29,7 @@ docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>
 Replace `mcr.microsoft.com/mssql/server:<tag>` with the engine image:
 
 ```
-sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
 Keep `ACCEPT_EULA=Y` and the `sa` password. The image is x64 only; on a non-x64 host add `--platform linux/amd64` (Docker) or `platform: linux/amd64` (compose). In a shell snippet that adds the flag conditionally, build it as an array so it is safe in both bash and zsh:
@@ -37,7 +37,7 @@ Keep `ACCEPT_EULA=Y` and the `sa` password. The image is x64 only; on a non-x64 
 ```bash
 PLATFORM=(); case "$(docker info -f '{{.Architecture}}' 2>/dev/null)" in x86_64|amd64) ;; *) PLATFORM=(--platform linux/amd64);; esac
 docker run -d --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
-    -p 1433:1433 sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+    -p 1433:1433 sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
 ### 4. Fix the connection model

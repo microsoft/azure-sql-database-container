@@ -16,7 +16,7 @@ one-shot that creates `appdb`, and a `depends_on` gate.
   Server SQL Server image `mcr.microsoft.com/mssql/server`. `SERVERPROPERTY('EngineEdition')`
   returns `5`, `SERVERPROPERTY('Edition')` returns `'SQL Azure'`. If you were
   about to use the SQL Server image, stop and use this instead.
-- Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest`
+- Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`
   (x64, `linux/amd64`). Registry and tag are provisional during Private Preview.
 - Registry credentials: the image lives in a private preview registry. Sign in
   first with `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io` using the
@@ -56,7 +56,7 @@ services:
   # ---- existing services stay exactly as they are ----
 
   sqldb:
-    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
     platform: linux/amd64        # x64-only image; required on a non-x64 host
     environment:
       ACCEPT_EULA: "Y"
@@ -75,7 +75,7 @@ services:
   # One-shot: the engine does NOT auto-create databases, so create appdb
   # (and seed it) before the app starts. Exits 0 when done.
   sqldb-init:
-    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest
+    image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
     platform: linux/amd64
     depends_on:
       sqldb:

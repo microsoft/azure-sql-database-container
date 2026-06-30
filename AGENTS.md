@@ -18,7 +18,7 @@ These drift easily; keep them aligned everywhere when you edit:
 
 - **x64 only.** The image is x64 (`linux/amd64`); there is no arm64 image. Do not present arm64 / Apple Silicon as a supported host, and do not use runtime brand names (Apple Container, Rosetta, Docker Desktop). The only platform note is: "on a non-x64 host, add `--platform linux/amd64`."
 - **The engine does not auto-create databases.** Provision `appdb` on a `master` connection before connecting to it. In a user-database (SDS) session USE returns Msg 40508 (Azure-faithful); a master connection is a non-SDS provisioning session where USE is not blocked. Select the database in the connection string and develop in the user database.
-- **Registry / image:** `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/mssql-server/sqldb-dev-edition:latest`. Registry, tag, and credentials are provisional during Private Preview.
+- **Registry / image:** `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`. Registry, tag, and credentials are provisional during Private Preview.
 - **Do not advertise things that do not exist** (no empty sample folders, no unbuilt skill collections).
 - **Feedback links:** bug reports go to `https://aka.ms/azuresqldb-container-bug`, feature requests to `https://aka.ms/azuresqldb-container-feature-request`.
 
