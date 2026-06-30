@@ -271,8 +271,7 @@ section[id] { scroll-margin-top: 84px; }
 .loop-arrow::before { content: ""; flex: 1; width: 2px; background: linear-gradient(var(--vector), var(--azure)); border-radius: 2px; }
 .loop-arrow::after { content: ""; flex: 1; width: 2px; background: linear-gradient(var(--vector), var(--azure)); border-radius: 2px; }
 .loop-arrow-label { font-family: var(--font-mono); font-size: .72rem; color: var(--muted); text-align: center; line-height: 1.5; }
-.loop-note { max-width: 720px; margin: 10px auto 0; text-align: center; font-size: .95rem; line-height: 1.6; color: var(--muted); }
-.loop-note strong { display: block; margin-bottom: 3px; color: var(--ink); font-family: var(--font-display); font-weight: 600; font-size: 1.06rem; }
+.loop { margin-bottom: 8px; }
 
 /* personas */
 .persona { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 26px; border-top: 3px solid var(--azure); }
