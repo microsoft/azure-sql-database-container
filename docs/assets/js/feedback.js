@@ -72,13 +72,18 @@
     return nm + " is required.";
   }
 
-  // Preselect from ?type=
+  // Preselect from the URL hash (#bug / #feature) or the ?type= query param.
   var params = new URLSearchParams(window.location.search);
-  var initial = (params.get("type") || "").toLowerCase();
+  var hash = (window.location.hash || "").replace(/^#/, "").toLowerCase();
+  var initial = hash || (params.get("type") || "").toLowerCase();
   setType(initial === "feature" ? "feature" : "bug");
 
   typeRadios.forEach(function (r) {
-    r.addEventListener("change", function () { setType(r.value); });
+    r.addEventListener("change", function () {
+      setType(r.value);
+      // Keep the URL in sync (shareable) without scrolling.
+      try { history.replaceState(null, "", "#" + r.value); } catch (e) { /* ignore */ }
+    });
   });
 
   form.addEventListener("submit", function (e) {
