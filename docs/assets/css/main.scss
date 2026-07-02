@@ -510,6 +510,13 @@ section[id] { scroll-margin-top: 84px; }
   .hero-cta .btn { flex: 1; justify-content: center; }
 }
 
+/* call-to-action button row (in prose pages) */
+.cta-row { display: flex; flex-wrap: wrap; gap: 12px; margin: 22px 0 30px; }
+.prose .cta-row a.btn { text-decoration: none; }
+.prose .cta-row a.btn-primary { color: #fff; }
+.prose .cta-row a.btn-primary:hover { color: #fff; }
+.prose .cta-row a.btn-ghost { color: var(--ink); }
+
 /* feedback form (feedback.html) */
 #feedback-app { margin-top: 24px; }
 
