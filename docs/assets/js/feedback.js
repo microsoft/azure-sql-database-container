@@ -72,13 +72,18 @@
     return nm + " is required.";
   }
 
-  // Preselect from ?type=
+  // Preselect from the URL hash (#bug / #feature) or the ?type= query param.
   var params = new URLSearchParams(window.location.search);
-  var initial = (params.get("type") || "").toLowerCase();
+  var hash = (window.location.hash || "").replace(/^#/, "").toLowerCase();
+  var initial = hash || (params.get("type") || "").toLowerCase();
   setType(initial === "feature" ? "feature" : "bug");
 
   typeRadios.forEach(function (r) {
-    r.addEventListener("change", function () { setType(r.value); });
+    r.addEventListener("change", function () {
+      setType(r.value);
+      // Keep the URL in sync (shareable) without scrolling.
+      try { history.replaceState(null, "", "#" + r.value); } catch (e) { /* ignore */ }
+    });
   });
 
   form.addEventListener("submit", function (e) {
@@ -155,7 +160,26 @@
       });
   });
 
+  // "Send more feedback": clear the form for a new submission, but keep the
+  // contact info (GitHub username + email) the user already provided.
+  function resetForm() {
+    var ghField = form.querySelector('input[name="github-username"]');
+    var emField = form.querySelector('input[name="email"]');
+    var gh = ghField ? ghField.value : "";
+    var em = emField ? emField.value : "";
+    form.reset(); // clears all fields back to their defaults
+    if (ghField) ghField.value = gh;
+    if (emField) emField.value = em;
+    success.hidden = true;
+    form.hidden = false;
+    var tabs = document.querySelector(".fb-tabs");
+    if (tabs) tabs.hidden = false;
+    setType(currentType()); // re-apply the active tab's field visibility
+    resetTurnstile();
+    if (form.scrollIntoView) form.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   if (again) {
-    again.addEventListener("click", function () { window.location.reload(); });
+    again.addEventListener("click", resetForm);
   }
 })();
