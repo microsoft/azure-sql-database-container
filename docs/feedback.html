@@ -1,0 +1,155 @@
+---
+layout: page
+title: Send feedback
+description: File a bug or request a feature for the Azure SQL Database container Private Preview.
+---
+
+<p>
+  Use this form to report a bug or request a feature during the Private Preview. It goes straight to the
+  team. For questions, sharing what you built, or ideas, see
+  <a href="{{ '/feedback-and-how-to-engage.html' | relative_url }}">Feedback and how to engage</a>.
+</p>
+
+<div id="feedback-app"
+     data-fn="{{ site.feedback_function_url }}"
+     data-sitekey="{{ site.turnstile_sitekey }}">
+
+  <div class="fb-tabs" role="tablist" aria-label="Feedback type">
+    <label class="fb-tab">
+      <input type="radio" name="type" value="bug" checked>
+      <span>Bug report</span>
+    </label>
+    <label class="fb-tab">
+      <input type="radio" name="type" value="feature">
+      <span>Feature request</span>
+    </label>
+  </div>
+
+  <form id="fb-form" novalidate>
+
+    <!-- BUG -->
+    <fieldset class="fb-group" data-group="bug">
+      <label class="fb-field">
+        <span class="fb-label">Container image tag <em>*</em></span>
+        <input type="text" name="image-tag" required
+               value="sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest">
+      </label>
+
+      <label class="fb-field">
+        <span class="fb-label">Host OS <em>*</em></span>
+        <select name="host-os" required>
+          <option value="" disabled selected>Select…</option>
+          <option>macOS (x86_64 / Intel)</option>
+          <option>Linux (x86_64)</option>
+          <option>Windows 11 (x86_64)</option>
+          <option>Other (describe below)</option>
+        </select>
+      </label>
+
+      <label class="fb-field">
+        <span class="fb-label">Container runtime and version <em>*</em></span>
+        <input type="text" name="runtime" required
+               placeholder="Docker 27.0.3 / Podman 5.0 / Rancher Desktop 1.13">
+      </label>
+
+      <label class="fb-field">
+        <span class="fb-label">What happened <em>*</em></span>
+        <span class="fb-help">What you expected versus what actually happened. Include error messages and <code>docker logs sqldb</code>.</span>
+        <textarea name="description" rows="4" required></textarea>
+      </label>
+
+      <label class="fb-field">
+        <span class="fb-label">Steps to reproduce <em>*</em></span>
+        <span class="fb-help">Include the <code>docker run</code> command or <code>docker-compose.yml</code> if relevant.</span>
+        <textarea name="repro" rows="4" required
+                  placeholder="1. Start the container with ...&#10;2. Connect with sqlcmd ...&#10;3. Run query / observe ..."></textarea>
+      </label>
+
+      <label class="fb-field">
+        <span class="fb-label">Additional context</span>
+        <span class="fb-help">Driver/ORM and version, related issues. Optional.</span>
+        <textarea name="additional" rows="3"></textarea>
+      </label>
+
+      <label class="fb-check">
+        <input type="checkbox" name="confirm" required>
+        <span>I checked the <a href="{{ '/known-limitations.html' | relative_url }}" target="_blank" rel="noopener">Known limitations</a> page for a duplicate. <em>*</em></span>
+      </label>
+    </fieldset>
+
+    <!-- FEATURE -->
+    <fieldset class="fb-group" data-group="feature" disabled>
+      <label class="fb-field">
+        <span class="fb-label">Use case <em>*</em></span>
+        <span class="fb-help">What are you trying to do? Describe the developer workflow or scenario.</span>
+        <textarea name="use-case" rows="4" placeholder="I am building ... and I need ..."></textarea>
+      </label>
+
+      <label class="fb-field">
+        <span class="fb-label">Current workaround</span>
+        <span class="fb-help">How are you handling this today? "No workaround" is a valid answer. Optional.</span>
+        <textarea name="current-workaround" rows="3"></textarea>
+      </label>
+
+      <label class="fb-field">
+        <span class="fb-label">Proposed behavior <em>*</em></span>
+        <span class="fb-help">What would the ideal solution look like?</span>
+        <textarea name="proposed" rows="4"></textarea>
+      </label>
+
+      <fieldset class="fb-checkset" data-name="who-benefits">
+        <legend class="fb-label">Who benefits <em>*</em></legend>
+        <label class="fb-check"><input type="checkbox" name="who-benefits" value="Modern Application Developers (Next.js, NestJS, FastAPI, Hono, etc.)"><span>Modern Application Developers (Next.js, NestJS, FastAPI, Hono, etc.)</span></label>
+        <label class="fb-check"><input type="checkbox" name="who-benefits" value="AI / Cloud-Native Developers (RAG, agents, AI features)"><span>AI / Cloud-Native Developers (RAG, agents, AI features)</span></label>
+        <label class="fb-check"><input type="checkbox" name="who-benefits" value="Platform Engineers (Dev Containers, docker compose, CI / CD)"><span>Platform Engineers (Dev Containers, docker compose, CI / CD)</span></label>
+        <label class="fb-check"><input type="checkbox" name="who-benefits" value="Database Developers (T-SQL, schema, migrations)"><span>Database Developers (T-SQL, schema, migrations)</span></label>
+        <label class="fb-check"><input type="checkbox" name="who-benefits" value="All developers"><span>All developers</span></label>
+      </fieldset>
+
+      <label class="fb-field">
+        <span class="fb-label">Urgency <em>*</em></span>
+        <select name="urgency">
+          <option value="" disabled selected>Select…</option>
+          <option>Blocks my evaluation of the Private Preview</option>
+          <option>Important for my Public Preview adoption</option>
+          <option>Nice to have</option>
+        </select>
+      </label>
+
+      <label class="fb-field">
+        <span class="fb-label">Additional context</span>
+        <span class="fb-help">Links to related issues, prior art in other databases, spec references. Optional.</span>
+        <textarea name="additional" rows="3"></textarea>
+      </label>
+    </fieldset>
+
+    <!-- SHARED -->
+    <label class="fb-field">
+      <span class="fb-label">Your email</span>
+      <span class="fb-help">So the team can follow up. Optional but recommended (issues are private, so we can't @-mention you).</span>
+      <input type="email" name="email" placeholder="you@example.com">
+    </label>
+
+    <label class="fb-field">
+      <span class="fb-label">Attachments</span>
+      <span class="fb-help">Optional. Screenshots or logs (PNG/JPG/GIF/WEBP/TXT, up to 3 files, 5 MB each).</span>
+      <input type="file" name="attachment" multiple accept=".png,.jpg,.jpeg,.gif,.webp,.txt,.log,image/*,text/plain">
+    </label>
+
+    <div class="cf-turnstile" data-sitekey="{{ site.turnstile_sitekey }}"></div>
+
+    <div class="fb-actions">
+      <button type="submit" class="btn btn-primary" id="fb-submit">Send feedback</button>
+      <p class="fb-status" id="fb-status" role="status" aria-live="polite"></p>
+    </div>
+  </form>
+
+  <div class="fb-success" id="fb-success" hidden>
+    <h2>Thanks — we got it.</h2>
+    <p id="fb-success-msg">Your feedback was sent to the team.</p>
+    <p><button type="button" class="btn btn-ghost" id="fb-again">Send more feedback</button></p>
+  </div>
+</div>
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script src="{{ '/assets/js/feedback.js' | relative_url }}" defer></script>
