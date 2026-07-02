@@ -125,8 +125,14 @@ description: File a bug or request a feature for the Azure SQL Database containe
 
     <!-- SHARED -->
     <label class="fb-field">
-      <span class="fb-label">Your email</span>
-      <span class="fb-help">So the team can follow up. Optional but recommended (issues are private, so we can't @-mention you).</span>
+      <span class="fb-label">GitHub username <em>*</em></span>
+      <span class="fb-help">Your GitHub handle so the team can follow up (e.g. octocat). If you don't have one, use email below.</span>
+      <input type="text" name="github-username" placeholder="octocat" autocapitalize="off" autocorrect="off" spellcheck="false">
+    </label>
+
+    <label class="fb-field">
+      <span class="fb-label">Email</span>
+      <span class="fb-help">Required only if you don't have a GitHub account.</span>
       <input type="email" name="email" placeholder="you@example.com">
     </label>
 

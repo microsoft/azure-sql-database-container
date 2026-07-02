@@ -13,7 +13,8 @@
   var successMsg = document.getElementById("fb-success-msg");
   var again = document.getElementById("fb-again");
   var groups = form.querySelectorAll(".fb-group");
-  var typeRadios = form.querySelectorAll('input[name="type"]');
+  // The type radios live in .fb-tabs, a sibling of the form — query from the app container, not the form.
+  var typeRadios = app.querySelectorAll('input[name="type"]');
 
   function setType(type) {
     groups.forEach(function (g) {
@@ -27,7 +28,7 @@
   }
 
   function currentType() {
-    var checked = form.querySelector('input[name="type"]:checked');
+    var checked = app.querySelector('input[name="type"]:checked');
     return checked ? checked.value : "bug";
   }
 
@@ -78,7 +79,18 @@
       }
     }
 
+    // Require a way to follow up: GitHub username or email.
+    var ghField = form.querySelector('input[name="github-username"]');
+    var emField = form.querySelector('input[name="email"]');
+    var gh = ghField ? ghField.value.trim() : "";
+    var em = emField ? emField.value.trim() : "";
+    if (!gh && !em) {
+      setStatus("Please provide your GitHub username or an email so we can follow up.", true);
+      return;
+    }
+
     var data = new FormData(form); // disabled fieldset => inactive branch excluded automatically
+    data.set("type", currentType()); // type radios live outside the form, so set it explicitly
 
     submit.disabled = true;
     var original = submit.textContent;
