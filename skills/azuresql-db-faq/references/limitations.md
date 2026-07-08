@@ -4,7 +4,7 @@ This is a snapshot for offline use. The **live, always-current list is the sourc
 truth**: https://microsoft.github.io/azure-sql-database-container/known-limitations.html
 (repo: `docs/known-limitations.md`). If they disagree, trust the live page and report
 the drift. When a user hits something not listed, point them to
-https://aka.ms/azuresqldb-container-bug to file an issue.
+https://aka.ms/azuresql-developer-bug to file an issue.
 
 ## Active issues being fixed
 

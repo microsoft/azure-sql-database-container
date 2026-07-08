@@ -5,8 +5,8 @@ Run and build against Azure SQL Database, right on your local environment. Try i
 [![Sign Up](https://img.shields.io/badge/Sign%20Up-brightgreen?logo=github)](https://aka.ms/sqldbcontainerpreview-signup)
 [![Documentation](https://img.shields.io/badge/Documentation-blue?logo=github)](https://aka.ms/azuresql-developer)
 [![Agent skills](https://skills.sh/b/microsoft/azure-sql-database-container)](https://skills.sh/microsoft/azure-sql-database-container)
-[![Report Bug](https://img.shields.io/badge/Report%20Bug-red?logo=github)](https://aka.ms/azuresqldb-container-bug)
-[![Request Feature](https://img.shields.io/badge/Request%20Feature-blue?logo=github)](https://aka.ms/azuresqldb-container-feature-request)
+[![Report Bug](https://img.shields.io/badge/Report%20Bug-red?logo=github)](https://aka.ms/azuresql-developer-bug)
+[![Request Feature](https://img.shields.io/badge/Request%20Feature-blue?logo=github)](https://aka.ms/azuresql-developer-feature-request)
 [![Discussions](https://img.shields.io/badge/Discussions-blueviolet?logo=github)](../../discussions)
 
 <a href="https://youtu.be/S6PWxUAUspY">
@@ -33,8 +33,8 @@ For the first time, developers can build, test, and ship applications against th
 
 ## Feedback
 
-- File a bug: [GitHub Issues](https://aka.ms/azuresqldb-container-bug)
-- Request a feature: [GitHub Issues](https://aka.ms/azuresqldb-container-feature-request)
+- File a bug: [GitHub Issues](https://aka.ms/azuresql-developer-bug)
+- Request a feature: [GitHub Issues](https://aka.ms/azuresql-developer-feature-request)
 - Ask a question, share a build, suggest an idea: [GitHub Discussions](../../discussions)
 - Connect with the team: [book a session](https://aka.ms/azuresql-container-meet) or email [azuresqldb-container@microsoft.com](mailto:azuresqldb-container@microsoft.com)
 - Real-time conversation: the private Teams channel shared via the early-access feedback channel

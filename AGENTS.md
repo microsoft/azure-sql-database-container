@@ -20,7 +20,7 @@ These drift easily; keep them aligned everywhere when you edit:
 - **The engine does not auto-create databases.** Provision `appdb` on a `master` connection before connecting to it. In a user-database (SDS) session USE returns Msg 40508 (Azure-faithful); a master connection is a non-SDS provisioning session where USE is not blocked. Select the database in the connection string and develop in the user database.
 - **Registry / image:** `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`. Registry, tag, and credentials are provisional during Private Preview.
 - **Do not advertise things that do not exist** (no empty sample folders, no unbuilt skill collections).
-- **Feedback links:** bug reports go to `https://aka.ms/azuresqldb-container-bug`, feature requests to `https://aka.ms/azuresqldb-container-feature-request`.
+- **Feedback links:** bug reports go to `https://aka.ms/azuresql-developer-bug`, feature requests to `https://aka.ms/azuresql-developer-feature-request`.
 
 ## Conventions for changes in this repository
 
