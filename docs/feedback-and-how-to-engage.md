@@ -3,11 +3,11 @@ title: "Feedback and how to engage"
 description: "Pick the right channel for your question: GitHub Issues, Discussions, the team email, the private Teams channel, and weekly office hours."
 ---
 
-Filing a bug or requesting a feature? Go straight to the form:
+Filing a bug or requesting a feature?
 
 <div class="cta-row">
-  <a class="btn btn-primary" href="feedback.html#bug">Report a bug</a>
-  <a class="btn btn-ghost" href="feedback.html#feature">Request a feature</a>
+  <a class="btn btn-primary" href="https://aka.ms/azuresql-developer-bug">Report a bug</a>
+  <a class="btn btn-ghost" href="https://aka.ms/azuresql-developer-feature-request">Request a feature</a>
 </div>
 
 ## Table of Contents

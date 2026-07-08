@@ -92,5 +92,5 @@ These are intentional non-goals for the container:
 - [Get started](getting-started.md)
 - [Prerequisites](prerequisites.md)
 - [Feedback and how to engage](feedback-and-how-to-engage.md)
-- [Report a bug](feedback.html#bug)
-- [Request a feature](feedback.html#feature)
+- [Report a bug](https://aka.ms/azuresql-developer-bug)
+- [Request a feature](https://aka.ms/azuresql-developer-feature-request)
