@@ -1,6 +1,6 @@
 ---
 title: "Getting started"
-description: "Go from pulling the Azure SQL Database container to your first query in under a minute, either with your AI agent or by hand. No sqlcmd install required."
+description: "Go from pulling the Azure SQL Developer image to your first query in under a minute, either with your AI agent or by hand. No sqlcmd install required."
 ---
 
 ## Table of Contents
@@ -130,7 +130,7 @@ docker compose down
 
 ## Next: build something
 
-Pick a job and let your AI coding agent build it against the container. Each links to a ready-made prompt you can copy.
+Pick a job and let your AI coding agent build it against Azure SQL Developer. Each links to a ready-made prompt you can copy.
 
 - [Build locally, ship to Azure]({{ '/prompts/local-to-cloud.md' | relative_url }}): develop and test locally, then deploy the same code to Azure SQL Database with a connection-string change.
 - [Prototype AI and RAG apps]({{ '/prompts/ai-rag.md' | relative_url }}): vector search and embeddings with a local model, then Azure OpenAI in the cloud.
@@ -143,7 +143,7 @@ Haven't installed the skill yet? See [Agent skill](prerequisites.md#agent-skill)
 
 ## Related content
 
-- [What is the Azure SQL Database container](what-is-the-container.md)
+- [What is Azure SQL Developer](what-is-the-container.md)
 - [Prerequisites](prerequisites.md)
 - [Known limitations](known-limitations.md)
 - [Feedback and how to engage](feedback-and-how-to-engage.md)

@@ -1,6 +1,6 @@
 # Auth: local SA vs cloud Microsoft Entra
 
-How authentication differs between the local Azure SQL Database container and
+How authentication differs between the local Azure SQL Developer and
 Azure SQL Database in the cloud, why the application code stays the same, plus a
 third stack (Python) and a deployment checklist.
 

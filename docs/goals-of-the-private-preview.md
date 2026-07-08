@@ -13,7 +13,7 @@ description: "What this Private Preview sets out to learn and validate, and what
 
 ## Why we are running this Private Preview
 
-The Azure SQL Database container is a new local-development surface for the Azure SQL Database engine. Before opening it to a public audience, we want to validate that it meets the bar for the modern application developer building data-driven and AI-driven applications: the inner loop is fast, the outer loop is the same engine, and the path from a local prototype to a production cloud database is real and not a slideware promise.
+Azure SQL Developer is a new local-development surface for the Azure SQL Database engine, running it locally in a container. Before opening it to a public audience, we want to validate that it meets the bar for the modern application developer building data-driven and AI-driven applications: the inner loop is fast, the outer loop is the same engine, and the path from a local prototype to a production cloud database is real and not a slideware promise.
 
 This Private Preview is the first time the container is in the hands of real developers building real applications. Your feedback drives what graduates to Public Preview, and what gets cut.
 
@@ -28,7 +28,7 @@ This Private Preview is the first time the container is in the hands of real dev
 
 ## What we are asking from you
 
-- **Try the ready-made prompts.** Point your AI agent at the container with the [agent skill](https://github.com/microsoft/azure-sql-database-container/tree/main/skills) and a prompt from [docs/prompts](https://github.com/microsoft/azure-sql-database-container/tree/main/docs/prompts), and tell us where the seams are.
+- **Try the ready-made prompts.** Point your AI agent at Azure SQL Developer with the [agent skill](https://github.com/microsoft/azure-sql-database-container/tree/main/skills) and a prompt from [docs/prompts](https://github.com/microsoft/azure-sql-database-container/tree/main/docs/prompts), and tell us where the seams are.
 - **Build something real, however small.** A demo, a learning project, a feature in an existing application. The closer to your actual workflow, the better the feedback.
 - **File issues for everything that surprises you.** Performance, behavior, ergonomics, documentation. Use [GitHub Issues](https://github.com/microsoft/azure-sql-database-container/issues) for bugs and feature requests.
 - **Show up to office hours.** A weekly slot for live questions, demos, and feedback. The calendar invite is shared via the early-access feedback channel.

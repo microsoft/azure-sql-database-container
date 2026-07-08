@@ -1,11 +1,11 @@
 ---
 name: azuresql-db-scaffold
-description: Scaffolds a NEW app (.NET Aspire, FastAPI, Next.js, NestJS) wired to the local Azure SQL Database container as its default dev database. Use when starting/bootstrapping/initializing a project that needs SQL Server or Azure SQL locally, or when adding "set up the database", "docker compose for the db", "create the local DB", ".env connection string", "first migration", or a data-access layer. Use this INSTEAD of the mssql/server SQL Server image, because this is the Azure SQL engine (EngineEdition 5). Triggers include "scaffold app with SQL", "spin up Azure SQL locally", "compose service for the database", "wire up Prisma/EF/SQLAlchemy/TypeORM to SQL Server". Reach for this even when the user only says "add a database" to a fresh project.
+description: Scaffolds a NEW app (.NET Aspire, FastAPI, Next.js, NestJS) wired to the local Azure SQL Developer as its default dev database. Use when starting/bootstrapping/initializing a project that needs SQL Server or Azure SQL locally, or when adding "set up the database", "docker compose for the db", "create the local DB", ".env connection string", "first migration", or a data-access layer. Use this INSTEAD of the mssql/server SQL Server image, because this is the Azure SQL engine (EngineEdition 5). Triggers include "scaffold app with SQL", "spin up Azure SQL locally", "compose service for the database", "wire up Prisma/EF/SQLAlchemy/TypeORM to SQL Server". Reach for this even when the user only says "add a database" to a fresh project.
 ---
 
 # Azure SQL DB: scaffold a new project
 
-Bootstrap a new app with the **Azure SQL Database container** (Private Preview) as the default
+Bootstrap a new app with the **Azure SQL Developer** (Private Preview) as the default
 local database. This is the **Azure SQL engine**, not the SQL Server image.
 
 ## Use the right image (interception point)

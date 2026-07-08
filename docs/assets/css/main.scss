@@ -3,7 +3,7 @@
 ---
 
 /* ============================================================
-   Azure SQL Database container - Private Preview
+   Azure SQL Developer - Private Preview
    Design tokens: light "paper" page, deep navy "ink" bands,
    Azure-blue actions, sparing vector-cyan accent.
    Space Grotesk (display) / Inter (body) / JetBrains Mono (data).
@@ -456,6 +456,12 @@ section[id] { scroll-margin-top: 84px; }
 .skill-cmd .copy-btn { flex-shrink: 0; }
 .skill-link { display: inline-block; margin-top: 14px; font-family: var(--font-mono); font-size: .78rem; color: var(--azure); }
 .skill-link:hover { text-decoration: none; opacity: .85; }
+/* skills.sh + browse, one concise centered line */
+.skill-links { display: flex; justify-content: center; align-items: center; gap: 14px; margin-top: 14px; flex-wrap: wrap; }
+.skill-links .skill-link { margin-top: 0; }
+.skill-sep { color: var(--line); }
+/* skill-name label on the agent-skill cards */
+.skill-tag { display: inline-block; font-family: var(--font-mono); font-size: .68rem; color: var(--azure); background: rgba(19,102,224,.07); border: 1px solid rgba(19,102,224,.18); border-radius: 5px; padding: 2px 7px; margin-bottom: 10px; }
 
 /* ---------- sample card footer (clone + GitHub) ---------- */
 .sample-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; align-self: stretch; padding-top: 18px; }

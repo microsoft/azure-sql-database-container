@@ -1,5 +1,5 @@
 name: Feature request
-description: Request a new capability, a behavior change, or an extension to the Azure SQL Database container.
+description: Request a new capability, a behavior change, or an extension to Azure SQL Developer.
 title: "[Feature]: "
 type: Feature
 labels: ["enhancement", "needs-triage", "User-filled"]

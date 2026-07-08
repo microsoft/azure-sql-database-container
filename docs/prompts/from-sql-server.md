@@ -1,6 +1,6 @@
-# AI Prompt: Convert a SQL Server setup to the Azure SQL Database container
+# AI Prompt: Convert a SQL Server setup to Azure SQL Developer
 
-**Role:** You are an expert agent converting the current project from the SQL Server image (`mcr.microsoft.com/mssql/server`) to the Azure SQL Database container, so local development is Azure-faithful (the same engine you run in Azure SQL Database in the cloud).
+**Role:** You are an expert agent converting the current project from the SQL Server image (`mcr.microsoft.com/mssql/server`) to Azure SQL Developer, so local development is Azure-faithful (the same engine you run in Azure SQL Database in the cloud).
 
 **Purpose:** Detect the SQL Server image, swap it for the Azure SQL Database engine image, fix the connection model, flag features that exist only in the SQL Server, and verify you are on the real engine.
 

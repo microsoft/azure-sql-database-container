@@ -1,6 +1,6 @@
 ---
 layout: home
-title: Azure SQL Database container
+title: Azure SQL Developer
 ---
 
 <!-- ============ HERO ============ -->
@@ -23,7 +23,7 @@ title: Azure SQL Database container
 
     <div class="hero-visual">
       <a class="video" href="https://youtu.be/{{ site.youtube_id }}" rel="noopener" aria-label="Play the demo video on YouTube">
-        <img src="{{ '/assets/img/azuresqldb-thumbnail.png' | relative_url }}" alt="Azure SQL Database container demo" loading="eager" width="1280" height="720">
+        <img src="{{ '/assets/img/azuresqldb-thumbnail.png' | relative_url }}" alt="Azure SQL Developer demo" loading="eager" width="1280" height="720">
         <span class="video-play" aria-hidden="true"></span>
         <span class="video-cap">Watch the 3-minute demo</span>
       </a>
@@ -209,7 +209,7 @@ title: Azure SQL Database container
     <div class="section-head">
       <p class="eyebrow"><span class="eyebrow-dot"></span>Built for AI-assisted development</p>
       <h2>Bring your AI coding agent.<a class="head-anchor" href="#ai-agents" aria-label="Link to this section">#</a></h2>
-      <p class="lead">Point your agent at the container and let it scaffold the schema, write the migrations, and build the data layer against a real local database. The repo ships ready-to-use <a href="{{ site.repo }}/tree/main/skills" rel="noopener">agent skills</a>.</p>
+      <p class="lead">Point your agent at Azure SQL Developer and let it scaffold the schema, write the migrations, and build the data layer against a real local database. The repo ships ready-to-use <a href="{{ site.repo }}/tree/main/skills" rel="noopener">agent skills</a>.</p>
     </div>
     <div class="agents">
       <a class="agent" href="https://docs.github.com/copilot/get-started/quickstart" rel="noopener">
@@ -240,51 +240,85 @@ title: Azure SQL Database container
         <code><span class="cmd-p">$</span> npx skills add microsoft/azure-sql-database-container</code>
         <button class="copy-btn" type="button" data-copy-text="npx skills add microsoft/azure-sql-database-container"><span class="copy-label">Copy</span></button>
       </div>
-      <a class="skill-link" href="{{ site.repo }}/tree/main/skills" rel="noopener">Browse the agent skills on GitHub &rarr;</a>
+      <div class="skill-links">
+        <a class="skill-link" href="{{ site.repo }}/tree/main/skills" rel="noopener">Browse on GitHub &rarr;</a>
+        <span class="skill-sep" aria-hidden="true">&middot;</span>
+        <a class="skill-link" href="https://skills.sh/microsoft/azure-sql-database-container" rel="noopener">Open on skills.sh &rarr;</a>
+      </div>
     </div>
 
     <h3 class="skill-cards-title">Agent skills</h3>
     <p class="skill-lead">A collection of skills your agent loads on demand. Each one teaches it to use the engine the right way, so it does not reach for the SQL Server image or invent behavior the engine does not have.</p>
     <div class="skill-cards">
       <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-container" rel="noopener">
+
+        <span class="skill-tag">azuresql-db-container</span>
+
         <h4>Start the engine <span class="arrow">&rarr;</span></h4>
         <p>Free host port, <code>--platform linux/amd64</code> on non-x64 hosts, a ready-wait loop, and <code>CREATE DATABASE appdb</code> (the engine does not auto-create databases).</p>
       </a>
       <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-from-sql-server" rel="noopener">
+
+        <span class="skill-tag">azuresql-db-from-sql-server</span>
+
         <h4>Convert from SQL Server <span class="arrow">&rarr;</span></h4>
         <p>Move a project off the <code>mcr.microsoft.com/mssql/server</code> SQL Server image to the real Azure SQL Database engine.</p>
       </a>
       <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-local-to-cloud" rel="noopener">
+
+        <span class="skill-tag">azuresql-db-local-to-cloud</span>
+
         <h4>Local to cloud <span class="arrow">&rarr;</span></h4>
         <p>Ship the same code to Azure SQL Database in the cloud; only the connection string changes.</p>
       </a>
       <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-schema-migration" rel="noopener">
+
+        <span class="skill-tag">azuresql-db-schema-migration</span>
+
         <h4>Schema migrations <span class="arrow">&rarr;</span></h4>
         <p>Apply EF Core, Prisma, Alembic, or SqlPackage migrations against the user database.</p>
       </a>
       <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-import" rel="noopener">
+
+        <span class="skill-tag">azuresql-db-import</span>
+
         <h4>Import a database <span class="arrow">&rarr;</span></h4>
         <p>Load an existing <code>.bacpac</code> / <code>.dacpac</code> into the container with SqlPackage.</p>
       </a>
       <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-rag" rel="noopener">
+
+        <span class="skill-tag">azuresql-db-rag</span>
+
         <h4>RAG and vector search <span class="arrow">&rarr;</span></h4>
         <p>Native <code>VECTOR</code> type and <code>VECTOR_DISTANCE</code>, with a local embedding model.</p>
       </a>
       <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-ci" rel="noopener">
+
+        <span class="skill-tag">azuresql-db-ci</span>
+
         <h4>CI <span class="arrow">&rarr;</span></h4>
         <p>Run the engine as a service in GitHub Actions, with the right readiness and provisioning.</p>
       </a>
       <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-sidecar" rel="noopener">
+
+        <span class="skill-tag">azuresql-db-sidecar</span>
+
         <h4>Sidecar <span class="arrow">&rarr;</span></h4>
         <p>Add it to a docker compose stack or Dev Container, wired by service name.</p>
       </a>
       <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-scaffold" rel="noopener">
+
+        <span class="skill-tag">azuresql-db-scaffold</span>
+
         <h4>Scaffold <span class="arrow">&rarr;</span></h4>
-        <p>Bootstrap a new app with the container as the default local database.</p>
+        <p>Bootstrap a new app with Azure SQL Developer as the default local database.</p>
       </a>
       <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-faq" rel="noopener">
+
+        <span class="skill-tag">azuresql-db-faq</span>
+
         <h4>Answer questions <span class="arrow">&rarr;</span></h4>
-        <p>What the container can and can't do, and why it differs from the cloud: backups, <code>USE</code>, vector index, x64-only, tooling.</p>
+        <p>What Azure SQL Developer can and can't do, and why it differs from the cloud: backups, <code>USE</code>, vector index, x64-only, tooling.</p>
       </a>
     </div>
   </div>
@@ -296,7 +330,7 @@ title: Azure SQL Database container
     <div class="section-head">
       <p class="eyebrow"><span class="eyebrow-dot"></span>Use cases</p>
       <h2>What can you build with it?<a class="head-anchor" href="#build" aria-label="Link to this section">#</a></h2>
-      <p class="lead">The everyday jobs a cloud-only database makes slow or expensive. Pick one, copy the prompt, and let your AI agent build it against the container.</p>
+      <p class="lead">The everyday jobs a cloud-only database makes slow or expensive. Pick one, copy the prompt, and let your AI agent build it against Azure SQL Developer.</p>
     </div>
     <div class="grid-3">
       <article class="card">
@@ -305,7 +339,7 @@ title: Azure SQL Database container
         <p>Convert a project on the <code>mcr.microsoft.com/mssql/server</code> SQL Server image to the Azure SQL Database engine: swap the image, fix the connection model, and flag SQL Server-only features. Azure-faithful local dev.</p>
         <div class="card-actions">
           <button class="card-prompt" type="button" data-prompt="{{ '/prompts/from-sql-server.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
-          <a class="card-view" href="{{ '/prompts/from-sql-server.md' | relative_url }}">View</a>
+          <a class="card-view" href="{{ site.repo }}/blob/main/docs/prompts/from-sql-server.md" rel="noopener">View</a>
         </div>
       </article>
       <article class="card">
@@ -314,7 +348,7 @@ title: Azure SQL Database container
         <p>Develop and test at local-disk speed with no cloud round trip, then deploy the same code to Azure SQL Database. Lift and shift is a connection-string change.</p>
         <div class="card-actions">
           <button class="card-prompt" type="button" data-prompt="{{ '/prompts/local-to-cloud.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
-          <a class="card-view" href="{{ '/prompts/local-to-cloud.md' | relative_url }}">View</a>
+          <a class="card-view" href="{{ site.repo }}/blob/main/docs/prompts/local-to-cloud.md" rel="noopener">View</a>
         </div>
       </article>
       <article class="card">
@@ -323,7 +357,7 @@ title: Azure SQL Database container
         <p>Build vector search and embeddings against a local database with a local model like Ollama, then switch to Azure OpenAI in the cloud. No cloud spend while you experiment.</p>
         <div class="card-actions">
           <button class="card-prompt" type="button" data-prompt="{{ '/prompts/ai-rag.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
-          <a class="card-view" href="{{ '/prompts/ai-rag.md' | relative_url }}">View</a>
+          <a class="card-view" href="{{ site.repo }}/blob/main/docs/prompts/ai-rag.md" rel="noopener">View</a>
         </div>
       </article>
       <article class="card">
@@ -332,7 +366,7 @@ title: Azure SQL Database container
         <p>Spin the container up as a service in GitHub Actions or Azure Pipelines. Real end-to-end tests, with no Azure subscription and no shared-instance flakiness.</p>
         <div class="card-actions">
           <button class="card-prompt" type="button" data-prompt="{{ '/prompts/ci.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
-          <a class="card-view" href="{{ '/prompts/ci.md' | relative_url }}">View</a>
+          <a class="card-view" href="{{ site.repo }}/blob/main/docs/prompts/ci.md" rel="noopener">View</a>
         </div>
       </article>
       <article class="card">
@@ -341,7 +375,7 @@ title: Azure SQL Database container
         <p>Run demos, classes, and workshops with no internet. After the first pull, the container runs fully offline on a laptop.</p>
         <div class="card-actions">
           <button class="card-prompt" type="button" data-prompt="{{ '/prompts/offline.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
-          <a class="card-view" href="{{ '/prompts/offline.md' | relative_url }}">View</a>
+          <a class="card-view" href="{{ site.repo }}/blob/main/docs/prompts/offline.md" rel="noopener">View</a>
         </div>
       </article>
       <article class="card">
@@ -350,7 +384,7 @@ title: Azure SQL Database container
         <p>Add SQL Database to a docker compose stack or a Dev Container as a sidecar service, wire-compatible with the drivers and ORMs you already use.</p>
         <div class="card-actions">
           <button class="card-prompt" type="button" data-prompt="{{ '/prompts/sidecar.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
-          <a class="card-view" href="{{ '/prompts/sidecar.md' | relative_url }}">View</a>
+          <a class="card-view" href="{{ site.repo }}/blob/main/docs/prompts/sidecar.md" rel="noopener">View</a>
         </div>
       </article>
       <article class="card">
@@ -359,7 +393,7 @@ title: Azure SQL Database container
         <p>Start a new .NET Aspire, FastAPI, Next.js, or NestJS project with Azure SQL Database as the default local development resource.</p>
         <div class="card-actions">
           <button class="card-prompt" type="button" data-prompt="{{ '/prompts/templates.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
-          <a class="card-view" href="{{ '/prompts/templates.md' | relative_url }}">View</a>
+          <a class="card-view" href="{{ site.repo }}/blob/main/docs/prompts/templates.md" rel="noopener">View</a>
         </div>
       </article>
     </div>

@@ -1,6 +1,6 @@
 # Scaffold snippets
 
-Per-stack skeletons wired to the Azure SQL Database container. Every snippet assumes the
+Per-stack skeletons wired to Azure SQL Developer. Every snippet assumes the
 container is running and **appdb is already provisioned on a master connection** (see the
 canonical start recipe in SKILL.md). Apps read `SQL_CONNECTION_STRING`; ORMs that need a URL
 also read `DATABASE_URL`. Image is

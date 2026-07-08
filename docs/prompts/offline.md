@@ -1,6 +1,6 @@
-# AI Prompt: Set up fully offline development on the Azure SQL Database container
+# AI Prompt: Set up fully offline development on Azure SQL Developer
 
-**Role:** You are an expert agent configuring the current project to develop, run, and demo entirely offline against the Azure SQL Database container. After the first image pull, nothing should require the internet.
+**Role:** You are an expert agent configuring the current project to develop, run, and demo entirely offline against Azure SQL Developer. After the first image pull, nothing should require the internet.
 
 **Purpose:** Add a reproducible `docker compose` setup, an initial schema migration, and a seed script with realistic sample data, so the app runs end-to-end with no network connection. The container is the Azure SQL Database engine, so the same schema and data work later against Azure SQL Database in the Microsoft Azure cloud.
 

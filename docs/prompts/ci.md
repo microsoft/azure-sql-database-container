@@ -1,8 +1,8 @@
-# AI Prompt: Run integration tests against the Azure SQL Database container in CI
+# AI Prompt: Run integration tests against Azure SQL Developer in CI
 
 **Role:** You are an expert DevOps agent adding a real database to the current project's CI so integration tests run against the Azure SQL Database engine on every pull request, with no Azure subscription and no shared-instance flakiness.
 
-**Purpose:** Add the Azure SQL Database container as a service to the CI workflow, wait until it is ready, run the integration test suite against it, and tear it down. The same database the tests run against in CI is the same engine that runs in Azure SQL Database in the Microsoft Azure cloud.
+**Purpose:** Add Azure SQL Developer as a service to the CI workflow, wait until it is ready, run the integration test suite against it, and tear it down. The same database the tests run against in CI is the same engine that runs in Azure SQL Database in the Microsoft Azure cloud.
 
 **Scope:** Assumes a GitHub Actions project. Adapt the same pattern to Azure Pipelines or GitLab CI if needed.
 

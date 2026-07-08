@@ -1,8 +1,8 @@
 ---
 name: azuresql-db-rag
 description: >-
-  Build local vector search, RAG, embeddings, and semantic search on the Azure
-  SQL Database container using the native VECTOR type and VECTOR_DISTANCE. Use
+  Build local vector search, RAG, embeddings, and semantic search on Azure SQL
+  Developer using the native VECTOR type and VECTOR_DISTANCE. Use
   when you need to store embeddings, do similarity search, top-k nearest
   neighbor, cosine distance, retrieval-augmented generation, "find similar
   documents", chatbot memory, or semantic lookup against a local SQL database.
@@ -14,7 +14,7 @@ description: >-
   master first so every script runs on a fresh container.
 ---
 
-# Azure SQL Database container: local vector search and RAG
+# Azure SQL Developer: local vector search and RAG
 
 Store embeddings and run similarity search directly in the Azure SQL Database
 engine using the native `VECTOR(n)` type and `VECTOR_DISTANCE`. No separate

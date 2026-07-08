@@ -1,4 +1,4 @@
-# SQL Server image vs Azure SQL Database container: feature matrix
+# SQL Server image vs Azure SQL Developer: feature matrix
 
 How a `mcr.microsoft.com/mssql/server` setup maps to the Azure SQL
 Database container. Use this when auditing a project for migration.
@@ -13,7 +13,7 @@ Database container. Use this when auditing a project for migration.
 
 ## Identity and connection
 
-| Aspect | Box image | Azure SQL Database container |
+| Aspect | Box image | Azure SQL Developer |
 |---|---|---|
 | Image | `mcr.microsoft.com/mssql/server` | `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest` |
 | Registry | public (mcr) | private preview; `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io` first |
@@ -34,7 +34,7 @@ Database container. Use this when auditing a project for migration.
 
 ## Changes behavior
 
-| Behavior | Box image | Azure SQL Database container | What to do |
+| Behavior | Box image | Azure SQL Developer | What to do |
 |---|---|---|---|
 | Database creation | apps often auto-create or use a pre-created DB | engine does NOT auto-create on connect | `CREATE DATABASE appdb` on a master connection first |
 | Switching DBs | `USE appdb` works | a user-database (SDS) session returns `Msg 40508` on `USE`, exactly as in the cloud; a `master` connection is a non-SDS provisioning session where the filter is not enforced, so `USE` appears to work there | select DB in the connection string (`Database=appdb` / `-d appdb`); avoid `USE`; use `master` for provisioning only |

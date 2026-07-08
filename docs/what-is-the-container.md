@@ -1,5 +1,5 @@
 ---
-title: "What is the Azure SQL Database container?"
+title: "What is Azure SQL Developer?"
 description: "The Azure SQL Database engine, running locally for development and CI: the same engine, defaults, and T-SQL as the Microsoft Azure cloud, with AI-ready capabilities."
 ---
 
@@ -16,7 +16,7 @@ description: "The Azure SQL Database engine, running locally for development and
 
 ## Overview
 
-The Azure SQL Database container is the Azure SQL Database engine, running locally. It is for the developer who wants a local database that behaves like Azure SQL Database in the Microsoft Azure cloud, with no Azure subscription, no shared instance and no credit card required.
+Azure SQL Developer is the Azure SQL Database engine, running locally in a container. It is for the developer who wants a local database that behaves like Azure SQL Database in the Microsoft Azure cloud, with no Azure subscription, no shared instance and no credit card required.
 
 The container runs the same engine that powers Azure SQL Database in the cloud. That means the T-SQL dialect, the system views, the connection protocol, the driver behavior, and the AI-native capabilities are the same as in the cloud. The connection string changes; the application does not.
 
@@ -56,11 +56,11 @@ The container supports seven user scenarios drawn from the functional specificat
 
 1. **Inner-loop to outer-loop transition.** Build and test locally against the container; point the same connection string at Azure SQL Database in the cloud and ship. No code changes.
 2. **Build AI-ready applications locally.** Prototype RAG or vector-search applications using vector data types, vector search, and embeddings. Use Ollama or Foundry Local for embeddings during development; switch to Azure OpenAI in production.
-3. **Leverage AI coding agents.** Hand the project to an AI coding agent (Claude, Codex, GitHub Copilot) with the container as the local database. Let the agent scaffold the schema, write the migrations, and write the data access layer.
+3. **Leverage AI coding agents.** Hand the project to an AI coding agent (Claude, Codex, GitHub Copilot) with Azure SQL Developer as the local database. Let the agent scaffold the schema, write the migrations, and write the data access layer.
 4. **CI / CD integration tests.** Run end-to-end integration tests in GitHub Actions, Azure Pipelines, or any CI runner using the container as a service. No Azure subscription required, no rate limiting from a shared cloud database.
 5. **Offline development for demos, classes, and labs.** Build and run a demo, teach a class, or run a workshop with no internet connectivity.
 6. **Sidecar database in an application stack.** Use the container as a sidecar database in a `docker compose.yml` or a Dev Container. Wire-compatible with every driver and ORM the developer already uses.
-7. **First-class option in cloud-native framework templates.** Select Azure SQL Database when scaffolding a new .NET Aspire, FastAPI, Next.js, NestJS, or Hono project, with the container as the default local-development resource.
+7. **First-class option in cloud-native framework templates.** Select Azure SQL Database when scaffolding a new .NET Aspire, FastAPI, Next.js, NestJS, or Hono project, with Azure SQL Developer as the default local-development resource.
 
 ## Container runtimes and platforms
 
@@ -98,7 +98,7 @@ This is the first time the container is in the hands of developers building real
 
 ### What we are asking from you
 
-- **Try the ready-made prompts.** Point your AI agent at the container with the [agent skill](https://github.com/microsoft/azure-sql-database-container/tree/main/skills) and a prompt from [docs/prompts](https://github.com/microsoft/azure-sql-database-container/tree/main/docs/prompts), and tell us where the seams are.
+- **Try the ready-made prompts.** Point your AI agent at Azure SQL Developer with the [agent skill](https://github.com/microsoft/azure-sql-database-container/tree/main/skills) and a prompt from [docs/prompts](https://github.com/microsoft/azure-sql-database-container/tree/main/docs/prompts), and tell us where the seams are.
 - **Build something real, however small.** A demo, a learning project, or a feature in an existing application. The closer to your actual workflow, the better the feedback.
 - **File issues for everything that surprises you.** Performance, behavior, ergonomics, documentation. Use [GitHub Issues](https://github.com/microsoft/azure-sql-database-container/issues) for bugs and feature requests.
 - **Show up to office hours.** A weekly slot for live questions, demos, and feedback. The calendar invite is shared via the early-access feedback channel.

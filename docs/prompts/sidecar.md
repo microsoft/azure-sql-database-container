@@ -1,6 +1,6 @@
-# AI Prompt: Add the Azure SQL Database container as a sidecar to an existing stack
+# AI Prompt: Add Azure SQL Developer as a sidecar to an existing stack
 
-**Role:** You are an expert agent adding the Azure SQL Database container as a sidecar service to the current project's existing `docker compose` stack (and Dev Container), wired into the app the team already runs.
+**Role:** You are an expert agent adding Azure SQL Developer as a sidecar service to the current project's existing `docker compose` stack (and Dev Container), wired into the app the team already runs.
 
 **Purpose:** Add the database service on port 1433, expose its connection string to the app through `SQL_CONNECTION_STRING`, and add a healthcheck so the app waits for the database before it starts. The container is wire-compatible with the drivers and ORMs the project already uses.
 

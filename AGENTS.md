@@ -1,10 +1,10 @@
 # AGENTS.md
 
-Guidance for AI coding agents working **in this repository** (the Azure SQL Database container Private Preview). If you instead want your own agent to run and build against the container in your project, install the skill: `npx skills add microsoft/azure-sql-database-container`. This file is about contributing to the repo, not about using the container.
+Guidance for AI coding agents working **in this repository** (the Azure SQL Developer Private Preview). If you instead want your own agent to run and build against the container in your project, install the skill: `npx skills add microsoft/azure-sql-database-container`. This file is about contributing to the repo, not about using the container.
 
 ## What this project is
 
-The Azure SQL Database container is the Azure SQL Database engine, running locally for development and CI. It is wire-compatible with Azure SQL Database in the Microsoft Azure cloud: same drivers, same T-SQL, same migrations, so deploying to the cloud is a connection-string change, not a code change. This repository ships the documentation site, the installable agent skills, and the copy-and-run build prompts; the engine image itself lives in a private preview registry.
+Azure SQL Developer is the Azure SQL Database engine, running locally in a container for development and CI. It is wire-compatible with Azure SQL Database in the Microsoft Azure cloud: same drivers, same T-SQL, same migrations, so deploying to the cloud is a connection-string change, not a code change. This repository ships the documentation site, the installable agent skills, and the copy-and-run build prompts; the engine image itself lives in a private preview registry.
 
 ## Repository layout
 
