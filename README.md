@@ -3,7 +3,7 @@
 Run and build against Azure SQL Database, right on your local environment. Try it before you deploy, run your tests in CI, and ship with no code change. Free for development, with no Azure subscription and no credit card required.
 
 [![Sign Up](https://img.shields.io/badge/Sign%20Up-brightgreen?logo=github)](https://aka.ms/sqldbcontainerpreview-signup)
-[![Documentation](https://img.shields.io/badge/Documentation-blue?logo=github)](https://microsoft.github.io/azure-sql-database-container/)
+[![Documentation](https://img.shields.io/badge/Documentation-blue?logo=github)](https://aka.ms/azuresql-developer)
 [![Agent skills](https://skills.sh/b/microsoft/azure-sql-database-container)](https://skills.sh/microsoft/azure-sql-database-container)
 [![Report Bug](https://img.shields.io/badge/Report%20Bug-red?logo=github)](https://aka.ms/azuresqldb-container-bug)
 [![Request Feature](https://img.shields.io/badge/Request%20Feature-blue?logo=github)](https://aka.ms/azuresqldb-container-feature-request)
