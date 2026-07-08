@@ -4,7 +4,6 @@ Run and build against Azure SQL Database, right on your local environment. Try i
 
 [![Sign Up](https://img.shields.io/badge/Sign%20Up-brightgreen?logo=github)](https://aka.ms/sqldbcontainerpreview-signup)
 [![Documentation](https://img.shields.io/badge/Documentation-blue?logo=github)](https://aka.ms/azuresql-developer)
-[![Agent skills](https://skills.sh/b/microsoft/azure-sql-database-container)](https://skills.sh/microsoft/azure-sql-database-container)
 [![Report Bug](https://img.shields.io/badge/Report%20Bug-red?logo=github)](https://aka.ms/azuresql-developer-bug)
 [![Request Feature](https://img.shields.io/badge/Request%20Feature-blue?logo=github)](https://aka.ms/azuresql-developer-feature-request)
 [![Discussions](https://img.shields.io/badge/Discussions-blueviolet?logo=github)](../../discussions)
