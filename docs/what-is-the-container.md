@@ -122,5 +122,5 @@ This is the first time the container is in the hands of developers building real
 - [Get started](getting-started.md)
 - [Known limitations](known-limitations.md)
 - [Feedback and how to engage](feedback-and-how-to-engage.md)
-- [Report a bug](feedback.html#bug)
-- [Request a feature](feedback.html#feature)
+- [Report a bug](https://aka.ms/azuresql-developer-bug)
+- [Request a feature](https://aka.ms/azuresql-developer-feature-request)

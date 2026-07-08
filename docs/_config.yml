@@ -13,11 +13,6 @@ repo: "https://github.com/microsoft/azure-sql-database-container"
 public_repo: "https://github.com/microsoft/azure-sql-database-container"
 youtube_id: "S6PWxUAUspY"
 
-# Feedback intake (feedback.html). Set these after deploying the Azure Function
-# (see the azuresqldb-feedback-intake folder). Leave blank until then — the form
-# shows a "not configured" message rather than failing silently.
-feedback_function_url: "https://sqldbfback-func-7qsfrn6fzaz5y.azurewebsites.net/api/feedback"
-turnstile_sitekey: ""       # Cloudflare Turnstile site key (public)
 
 markdown: kramdown
 kramdown:
