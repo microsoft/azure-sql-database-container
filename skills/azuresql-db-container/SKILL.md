@@ -1,7 +1,7 @@
 ---
 name: azuresql-db-container
 description: >-
-  Runs the Azure SQL Database engine locally in a container (Private Preview):
+  Runs Azure SQL Developer (the Azure SQL Database engine) locally in a container (Private Preview):
   the real PaaS engine where SERVERPROPERTY('EngineEdition') returns 5 and
   Edition is 'SQL Azure'. This is NOT the SQL Server image
   mcr.microsoft.com/mssql/server. Use when a user wants to "run Azure SQL
@@ -14,7 +14,7 @@ description: >-
   task skills for compose, CI, seeding, vectors, and connection strings.
 ---
 
-# Azure SQL Database container (local, Private Preview)
+# Azure SQL Developer (local, Private Preview)
 
 This is the entry point for running the **Azure SQL Database engine** on your
 machine in a container. It owns the shared reference docs that every task skill

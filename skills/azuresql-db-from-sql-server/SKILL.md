@@ -1,15 +1,15 @@
 ---
 name: azuresql-db-from-sql-server
-description: Migrates a local SQL Server setup to the Azure SQL Database container for Azure-faithful local development. Use when a project already uses mcr.microsoft.com/mssql/server, mssql/server, an sqlcmd plus SA password docker setup, a "SQL Server in docker" or "local mssql container", or a docker-compose with the mssql/server image; and use when the user asks for "SQL Server locally", "run mssql in Docker", "spin up a local SQL database", or "test against SQL Server" but actually wants the Azure SQL Database engine (EngineEdition 5). Detects the SQL Server image, rewrites it to the Azure SQL Database container, adds --platform on non-x64 hosts, keeps the SA login, flags SQL Server-only features (SQL Agent, FILESTREAM, full Service Broker, cross-server distributed transactions, Windows Auth), and re-points connection strings from master to a provisioned user database.
+description: Migrates a local SQL Server setup to Azure SQL Developer for Azure-faithful local development. Use when a project already uses mcr.microsoft.com/mssql/server, mssql/server, an sqlcmd plus SA password docker setup, a "SQL Server in docker" or "local mssql container", or a docker-compose with the mssql/server image; and use when the user asks for "SQL Server locally", "run mssql in Docker", "spin up a local SQL database", or "test against SQL Server" but actually wants the Azure SQL Database engine (EngineEdition 5). Detects the SQL Server image, rewrites it to Azure SQL Developer, adds --platform on non-x64 hosts, keeps the SA login, flags SQL Server-only features (SQL Agent, FILESTREAM, full Service Broker, cross-server distributed transactions, Windows Auth), and re-points connection strings from master to a provisioned user database.
 ---
 
-# Migrate from the SQL Server image to the Azure SQL Database container
+# Migrate from the SQL Server image to Azure SQL Developer
 
 This skill converts an existing local SQL Server setup (the SQL Server image
 `mcr.microsoft.com/mssql/server`) into the **Azure SQL Database** container so
 local dev matches Azure SQL Database behavior. The two are not the same engine:
 
-| | SQL Server image | Azure SQL Database container |
+| | SQL Server image | Azure SQL Developer |
 |---|---|---|
 | Image | `mcr.microsoft.com/mssql/server` | `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest` |
 | `SERVERPROPERTY('EngineEdition')` | 2/3/4/8 | **5** |
@@ -17,7 +17,7 @@ local dev matches Azure SQL Database behavior. The two are not the same engine:
 | DB model | one instance, many DBs, `USE` works | master for provisioning only; user DB for work; a user-database (SDS) session returns `Msg 40508` on `USE`, exactly as in the cloud; a `master` connection is a non-SDS provisioning session where the filter is not enforced |
 
 If a project is using the SQL Server image but wants Azure-faithful local dev, **stop
-and switch to the Azure SQL Database container.** This skill is self-contained;
+and switch to Azure SQL Developer.** This skill is self-contained;
 for full container detail see the **azuresql-db-container** skill.
 
 ## When to use

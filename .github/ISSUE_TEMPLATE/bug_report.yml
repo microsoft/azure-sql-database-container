@@ -1,5 +1,5 @@
 name: Bug report
-description: Report a bug, regression, or unexpected behavior in the Azure SQL Database container.
+description: Report a bug, regression, or unexpected behavior in Azure SQL Developer.
 title: "[Bug]: "
 type: Bug
 labels: ["bug", "needs-triage", "User-filled"]

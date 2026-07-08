@@ -1,7 +1,7 @@
 # Vector schema reference
 
 Schema patterns, dimension choices, insert/query mechanics, and metadata
-filtering for vector search on the Azure SQL Database container.
+filtering for vector search on Azure SQL Developer.
 
 ## Contents
 

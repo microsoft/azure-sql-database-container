@@ -1,6 +1,6 @@
-# AI Prompt: Build a local RAG pipeline on the Azure SQL Database container
+# AI Prompt: Build a local RAG pipeline on Azure SQL Developer
 
-**Role:** You are an expert AI engineer building a retrieval-augmented-generation (RAG) data layer in the current project, using the Azure SQL Database container as a local vector store.
+**Role:** You are an expert AI engineer building a retrieval-augmented-generation (RAG) data layer in the current project, using Azure SQL Developer as a local vector store.
 
 **Purpose:** Stand up the container, create a table with a native `VECTOR` column, embed text locally with a free model, store the vectors, and run top-k similarity search with `VECTOR_DISTANCE`. The same schema and queries run unchanged against Azure SQL Database in the Microsoft Azure cloud; only the embedding endpoint changes (local model now, Azure OpenAI in production).
 
@@ -85,7 +85,7 @@ cur.execute(f"""
 
 # Index for embeddings: store each chunk with its vector
 chunks = [
-    "The Azure SQL Database container runs the Azure SQL Database engine locally.",
+    "Azure SQL Developer runs the Azure SQL Database engine locally.",
     "It supports a native vector type and VECTOR_DISTANCE similarity search.",
     "Build and test locally, then deploy to Azure SQL Database with a connection-string change.",
 ]

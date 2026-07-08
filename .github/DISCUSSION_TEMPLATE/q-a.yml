@@ -4,7 +4,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Ask a "how do I" question about the Azure SQL Database container. Before posting, scan the existing Q&A and the docs:
+        Ask a "how do I" question about Azure SQL Developer. Before posting, scan the existing Q&A and the docs:
 
         - [Prerequisites](https://microsoft.github.io/azure-sql-database-container/prerequisites.html)
         - [Getting Started](https://microsoft.github.io/azure-sql-database-container/getting-started.html)

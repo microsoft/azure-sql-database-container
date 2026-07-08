@@ -1,6 +1,6 @@
-# AI Prompt: Scaffold a new project with the Azure SQL Database container as the default database
+# AI Prompt: Scaffold a new project with Azure SQL Developer as the default database
 
-**Role:** You are an expert agent scaffolding a new project that uses the Azure SQL Database container as its default local database from the first commit.
+**Role:** You are an expert agent scaffolding a new project that uses Azure SQL Developer as its default local database from the first commit.
 
 **Purpose:** Create a new project for the user's chosen stack (.NET Aspire, FastAPI, Next.js, or NestJS), with the container wired in as the local database, an initial schema with one example entity, the first migration, and a typed data-access layer. The same code targets Azure SQL Database in the Microsoft Azure cloud by changing only the connection string.
 
@@ -15,7 +15,7 @@ Read the entire instruction set before executing.
 ### 1. Ask which stack to scaffold
 
 Ask the user to choose one and proceed accordingly:
-1. **.NET Aspire** (use the Azure SQL Database container as the default resource and `Microsoft.Data.SqlClient` / EF Core).
+1. **.NET Aspire** (use Azure SQL Developer as the default resource and `Microsoft.Data.SqlClient` / EF Core).
 2. **FastAPI** (Python, `mssql-python` or SQLAlchemy).
 3. **Next.js** (TypeScript, `mssql` or Prisma with the `sqlserver` provider).
 4. **NestJS** (TypeScript, TypeORM or Prisma).
@@ -93,6 +93,6 @@ docker compose up -d
 
 ## Do not
 
-- Do not default the project to the SQL Server image (`mcr.microsoft.com/mssql/server`); use the Azure SQL Database container.
+- Do not default the project to the SQL Server image (`mcr.microsoft.com/mssql/server`); use Azure SQL Developer.
 - Do not commit secrets; keep the SA password in `.env` or a compose `.env` file.
 - Do not assume cloud-only features; for parity, validate against Azure SQL Database before declaring production readiness.

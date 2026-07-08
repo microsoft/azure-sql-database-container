@@ -1,6 +1,6 @@
 ---
 name: azuresql-db-schema-migration
-description: Runs database schema migrations against the local Azure SQL Database container so the same migrations apply identically on the local engine and in the Azure cloud. Use when asked to "run my migrations against the local SQL", "apply schema to the container", "apply EF Core / dotnet ef database update", "Prisma migrate dev / deploy", "Alembic upgrade head", or deploy a DACPAC / SqlPackage to the container. Covers provisioning appdb on master first, then applying schema to the user database, plus per-tool commands and connection-string hygiene. This is the Azure SQL Database engine (EngineEdition 5), not the SQL Server image; reach for this skill whenever schema migration tooling targets the local container.
+description: Runs database schema migrations against the local Azure SQL Developer so the same migrations apply identically on the local engine and in the Azure cloud. Use when asked to "run my migrations against the local SQL", "apply schema to the container", "apply EF Core / dotnet ef database update", "Prisma migrate dev / deploy", "Alembic upgrade head", or deploy a DACPAC / SqlPackage to the container. Covers provisioning appdb on master first, then applying schema to the user database, plus per-tool commands and connection-string hygiene. This is the Azure SQL Database engine (EngineEdition 5), not the SQL Server image; reach for this skill whenever schema migration tooling targets the local container.
 ---
 
 # Azure SQL Database: schema migrations

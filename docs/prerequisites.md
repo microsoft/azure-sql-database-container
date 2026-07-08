@@ -1,6 +1,6 @@
 ---
 title: "Prerequisites"
-description: "Supported host platforms, container runtimes, system resources, and tooling for running the Azure SQL Database container."
+description: "Supported host platforms, container runtimes, system resources, and tooling for running Azure SQL Developer."
 ---
 
 ## Table of Contents
@@ -86,7 +86,7 @@ See the [local-to-cloud skill](https://github.com/microsoft/azure-sql-database-c
 
 ## Related content
 
-- [What is the Azure SQL Database container](what-is-the-container.md)
+- [What is Azure SQL Developer](what-is-the-container.md)
 - [Get started](getting-started.md)
 - [Known limitations](known-limitations.md)
 - [Feedback and how to engage](feedback-and-how-to-engage.md)

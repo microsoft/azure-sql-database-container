@@ -1,7 +1,7 @@
 ---
 name: azuresql-db-faq
 description: >-
-  Answers questions about what the Azure SQL Database container (Private Preview)
+  Answers questions about what Azure SQL Developer (Private Preview)
   can and cannot do, and WHY it differs from Azure SQL Database in the Microsoft
   Azure cloud. Use when a user asks "can I take a backup", "why does USE fail",
   "is X supported", "why can't I create a vector index", "why does SSMS error",
@@ -12,7 +12,7 @@ description: >-
   and link the user to the live Known limitations page for the current full list.
 ---
 
-# Azure SQL Database container: capabilities, limits, and why
+# Azure SQL Developer: capabilities, limits, and why
 
 Use this skill to answer "can I / why can't I / is X supported / what's different
 from the cloud" questions accurately, instead of guessing from general SQL Server

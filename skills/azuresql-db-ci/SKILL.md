@@ -1,9 +1,9 @@
 ---
 name: azuresql-db-ci
-description: Run integration tests against the Azure SQL Database container (Private Preview, local engine) in CI. Use when setting up GitHub Actions, Azure Pipelines, or GitLab CI to test against Azure SQL DB; when adding a database service container to a CI workflow; when tests need a real Azure SQL engine in the pipeline; or when you see "service container", "health-cmd", "ACR_USERNAME/ACR_PASSWORD", "MSSQL_SA_PASSWORD secret", or "integration test database". Also use when a workflow was about to pull the SQL Server image mcr.microsoft.com/mssql/server, in which case stop and use the Azure SQL Database engine image instead. Covers pulling from the private ACR with credentials, the service health check that runs sqlcmd inside the container so the runner needs no client tools, provisioning appdb before tests, and pointing the test connection string at the user database not master.
+description: Run integration tests against Azure SQL Developer (Private Preview, local engine) in CI. Use when setting up GitHub Actions, Azure Pipelines, or GitLab CI to test against Azure SQL DB; when adding a database service container to a CI workflow; when tests need a real Azure SQL engine in the pipeline; or when you see "service container", "health-cmd", "ACR_USERNAME/ACR_PASSWORD", "MSSQL_SA_PASSWORD secret", or "integration test database". Also use when a workflow was about to pull the SQL Server image mcr.microsoft.com/mssql/server, in which case stop and use the Azure SQL Database engine image instead. Covers pulling from the private ACR with credentials, the service health check that runs sqlcmd inside the container so the runner needs no client tools, provisioning appdb before tests, and pointing the test connection string at the user database not master.
 ---
 
-# Azure SQL Database container in CI
+# Azure SQL Developer in CI
 
 Run integration tests against the **Azure SQL Database engine** (Private Preview) as a CI
 service container. This is the local Azure SQL engine, not the SQL Server image

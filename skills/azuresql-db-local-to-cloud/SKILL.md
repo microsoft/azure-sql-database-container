@@ -16,7 +16,7 @@ description: >-
 
 # Azure SQL Database: local to cloud, same code
 
-Build and test against the local Azure SQL Database container, then deploy the
+Build and test against the local Azure SQL Developer, then deploy the
 **same application code** to Azure SQL Database in the cloud. Only the
 connection string changes. Nothing else.
 

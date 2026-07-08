@@ -1,4 +1,4 @@
-# Migrate docker-compose: SQL Server image to Azure SQL Database container
+# Migrate docker-compose: SQL Server image to Azure SQL Developer
 
 Before/after for a `docker-compose.yml` that used the SQL Server image.
 
@@ -29,7 +29,7 @@ Problems carried over from the SQL Server image:
 - No readiness wait; the engine is not ready when the container starts.
 - No `--platform`; the Azure image is x64 only.
 
-## After (Azure SQL Database container)
+## After (Azure SQL Developer)
 
 ```yaml
 services:
@@ -67,7 +67,7 @@ services:
 
 ## What changed and why
 
-1. **Image** rewritten to the Azure SQL Database container. Sign in first:
+1. **Image** rewritten to Azure SQL Developer. Sign in first:
    `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io`.
 2. **`platform: linux/amd64`** added (commented) for non-x64 hosts; the image is
    x64 only.

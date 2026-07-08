@@ -1,12 +1,12 @@
 # AI Prompt: Add a local Azure SQL Database to a Node.js project, ready for the cloud
 
-**Role:** You are an expert software agent configuring the current Node.js project to develop against the Azure SQL Database container locally and deploy unchanged to Azure SQL Database in the Microsoft Azure cloud.
+**Role:** You are an expert software agent configuring the current Node.js project to develop against Azure SQL Developer locally and deploy unchanged to Azure SQL Database in the Microsoft Azure cloud.
 
 **Purpose:** Install the right driver, stand up the container, wire the connection string through an environment variable, and provide a complete, working script that runs a full CRUD lifecycle inside a transaction. The same code must run against Azure SQL Database in the cloud with no changes other than the connection string.
 
 **Scope:**
 - Assumes the user is in a Node.js project directory with Docker (or Podman) available.
-- The Azure SQL Database container is the Azure SQL Database engine running locally. It is wire-compatible with Azure SQL Database in the cloud: same drivers, same T-SQL, same migrations.
+- Azure SQL Developer is the Azure SQL Database engine running locally. It is wire-compatible with Azure SQL Database in the cloud: same drivers, same T-SQL, same migrations.
 
 Read and understand the entire instruction set before executing.
 
@@ -16,7 +16,7 @@ Read and understand the entire instruction set before executing.
 
 Identify the project's package manager (`npm`, `yarn`, `pnpm`, `bun`) and use it for all commands. Examples below use `npm`.
 
-### 1. Start the Azure SQL Database container
+### 1. Start Azure SQL Developer
 
 Run the container locally on port 1433 with a strong SA password. Set `ACCEPT_EULA=Y`; this container requires it.
 
@@ -57,7 +57,7 @@ Ensure `package.json` has `"type": "module"`.
 Create `.env` at the project root if it does not exist. Use a single `SQL_CONNECTION_STRING` so the same code points at local or cloud by swapping only this value.
 
 ```dotenv
-# Local: the Azure SQL Database container
+# Local: Azure SQL Developer
 SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
 
 # Cloud (for later): Azure SQL Database. Only the server and auth change; the application does not.

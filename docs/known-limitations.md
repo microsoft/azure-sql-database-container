@@ -15,7 +15,7 @@ description: "Current gaps and rough edges in the Private Preview, with workarou
 
 ## Development use only
 
-The Azure SQL Database container is for **local development**: development, testing, CI, and demos (the inner loop). It is **not a production database**, and it is not meant to be deployed to Azure or run as a production service. For production, deploy the same code to **Azure SQL Database** in the Microsoft Azure cloud (the outer loop), where backups, high availability, scaling, and security are managed for you. The Private Preview license is scoped to development, testing, CI, and demos.
+Azure SQL Developer, the Azure SQL Database engine running locally in a container, is for **local development**: development, testing, CI, and demos (the inner loop). It is **not a production database**, and it is not meant to be deployed to Azure or run as a production service. For production, deploy the same code to **Azure SQL Database** in the Microsoft Azure cloud (the outer loop), where backups, high availability, scaling, and security are managed for you. The Private Preview license is scoped to development, testing, CI, and demos.
 
 ## How to read this page
 
@@ -88,7 +88,7 @@ These are intentional non-goals for the container:
 
 ## Related content
 
-- [What is the Azure SQL Database container](what-is-the-container.md)
+- [What is Azure SQL Developer](what-is-the-container.md)
 - [Get started](getting-started.md)
 - [Prerequisites](prerequisites.md)
 - [Feedback and how to engage](feedback-and-how-to-engage.md)
