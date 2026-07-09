@@ -8,11 +8,11 @@ Run and build against Azure SQL Database, right on your local environment. Try i
 [![Request Feature](https://img.shields.io/badge/Request%20Feature-blue?logo=github)](https://aka.ms/azuresql-developer-feature-request)
 [![Discussions](https://img.shields.io/badge/Discussions-blueviolet?logo=github)](../../discussions)
 
-<a href="https://microsoft-my.sharepoint.com/:v:/r/personal/vamahtani_microsoft_com/_layouts/15/stream.aspx?id=%2Fpersonal%2Fvamahtani_microsoft_com%2FDocuments%2FVideos%2FClipchamp%2FVideo%20Project%2FExports%2FAzure%20SQL%20Developer%20Demo.mp4&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&share=cQoaPe67kOrBRoTABRpz48AxEgUCcpkZYZZBjCdZywjjAwG09w">
+<a href="https://aka.ms/azuresql-developer-demo">
   <img src="docs/assets/img/Azure SQL Developer cover page.png" alt="Watch the Azure SQL Developer demo" width="760">
 </a>
 
-**▶ Watch the demo**
+<a href="https://aka.ms/azuresql-developer-demo">**▶ Watch the demo**</a>
 
 Azure SQL Developer is the Azure SQL Database engine, running locally in a container. It runs on any modern container runtime (Docker, Podman, containerd, Rancher Desktop) on macOS, Linux, and Windows, and works with the drivers, ORMs, and editors developers already use. It supports the same AI-native capabilities as Azure SQL Database in the Microsoft Azure cloud: the native vector type, vector search with `VECTOR_DISTANCE`, and in-database embeddings (DiskANN vector indexes are in development).
 
