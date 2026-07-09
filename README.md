@@ -8,7 +8,7 @@ Run and build against Azure SQL Database, right on your local environment. Try i
 [![Request Feature](https://img.shields.io/badge/Request%20Feature-blue?logo=github)](https://aka.ms/azuresql-developer-feature-request)
 [![Discussions](https://img.shields.io/badge/Discussions-blueviolet?logo=github)](../../discussions)
 
-<a href="https://youtu.be/S6PWxUAUspY">
+<a href="https://microsoft-my.sharepoint.com/:v:/r/personal/vamahtani_microsoft_com/_layouts/15/stream.aspx?id=%2Fpersonal%2Fvamahtani_microsoft_com%2FDocuments%2FVideos%2FClipchamp%2FVideo%20Project%2FExports%2FAzure%20SQL%20Developer%20Demo.mp4&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&share=cQoaPe67kOrBRoTABRpz48AxEgUCcpkZYZZBjCdZywjjAwG09w">
   <img src="docs/assets/img/azuresqldb-thumbnail.png" alt="Watch the Azure SQL Developer demo" width="760">
 </a>
 
