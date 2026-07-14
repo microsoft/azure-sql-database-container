@@ -47,13 +47,27 @@ Install the whole collection unless you have a reason not to: the hub skill rout
 
 ### Install just one
 
-Name the skill you want. This is the exception, not the default:
+Name the skill you want:
 
 ```bash
-npx skills add microsoft/azure-sql-database-container --skill azuresql-db-rag
+npx skills add microsoft/azure-sql-database-container --skill <skill-name>
 ```
 
-Any skill name from the table above works. Each skill stands alone (the load-bearing facts are deliberately repeated in every one), so a single-skill install is functional; you just lose the routing between them.
+| Skill | Install |
+| --- | --- |
+| **azuresql-db-container** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-container` |
+| **azuresql-db-from-sql-server** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-from-sql-server` |
+| **azuresql-db-local-to-cloud** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-local-to-cloud` |
+| **azuresql-db-schema-migration** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-schema-migration` |
+| **azuresql-db-import** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-import` |
+| **azuresql-db-rag** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-rag` |
+| **azuresql-db-ci** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-ci` |
+| **azuresql-db-sidecar** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-sidecar` |
+| **azuresql-db-scaffold** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-scaffold` |
+| **azuresql-db-faq** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-faq` |
+| **azuresql-db-feedback** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-feedback` |
+
+Each skill stands alone: the load-bearing facts are deliberately repeated in every one, so a single-skill install is fully functional. What you lose is the routing, since the hub hands off to the others. Install the whole collection unless you have a reason not to.
 
 ### Then verify the skills actually loaded
 

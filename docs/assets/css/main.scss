@@ -463,6 +463,26 @@ section[id] { scroll-margin-top: 84px; }
 /* skill-name label on the agent-skill cards */
 .skill-tag { display: inline-block; font-family: var(--font-mono); font-size: .68rem; color: var(--azure); background: rgba(19,102,224,.07); border: 1px solid rgba(19,102,224,.18); border-radius: 5px; padding: 2px 7px; margin-bottom: 10px; }
 
+/* ---------- install a single skill (compact table, copy per skill) ---------- */
+.skill-install-title { font-size: 1.1rem; margin: 40px 0 6px; }
+.skill-install-lead { color: var(--muted); font-size: .95rem; max-width: 640px; margin: 0 0 16px; }
+.skill-install { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+.skill-install-table { width: 100%; border-collapse: collapse; }
+.skill-install-table td { padding: 10px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.skill-install-table tr:last-child td { border-bottom: 0; }
+.skill-install-table tr:hover { background: rgba(19,102,224,.03); }
+.skill-install-table .si-name code { font-family: var(--font-mono); font-size: .8rem; color: var(--azure); white-space: nowrap; }
+.skill-install-table .si-what { color: var(--muted); font-size: .88rem; width: 100%; }
+.skill-install-table .si-act { text-align: right; white-space: nowrap; }
+/* the default copy-btn is styled for the dark command bar; this is its light-surface twin */
+.copy-btn.copy-light { color: var(--azure); background: rgba(19,102,224,.07); border-color: rgba(19,102,224,.18); }
+.copy-btn.copy-light:hover { background: rgba(19,102,224,.14); }
+.copy-btn.copy-light.is-copied { color: #0a7a3d; border-color: rgba(10,122,61,.45); background: rgba(10,122,61,.1); }
+
+@media (max-width: 640px) {
+  .skill-install-table .si-what { display: none; }
+}
+
 /* ---------- sample card footer (clone + GitHub) ---------- */
 .sample-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; align-self: stretch; padding-top: 18px; }
 .sample-foot .card-prompt { margin-top: 0; align-self: center; }
