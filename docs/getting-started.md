@@ -13,7 +13,12 @@ description: "Go from pulling the Azure SQL Developer image to your first query 
   - [Step 2: start the container](#step-2-start-the-container)
   - [Step 3: connect and run your first query](#step-3-connect-and-run-your-first-query)
 - [Troubleshooting](#troubleshooting)
+  - [Start here: check your container engine](#start-here-check-your-container-engine)
+  - [The container exits immediately](#the-container-exits-immediately)
+  - [Platform and port problems](#no-matching-manifest-or-exec-format-error)
+  - [Connection and database problems](#connection-fails-right-after-the-container-starts)
   - [Skills did not load](#skills-did-not-load)
+  - [Still stuck?](#still-stuck)
 - [Next: build something](#next-build-something)
 - [Related content](#related-content)
 
@@ -143,6 +148,78 @@ docker compose down
 
 ## Troubleshooting
 
+### Start here: check your container engine
+
+Most first-run failures are not the database. They are the container engine, and you have to check it yourself: unlike the [VS Code MSSQL extension](https://aka.ms/vscode-mssql-container-docs), which verifies Docker on your behalf before it deploys anything, running the container by hand means nothing checks these for you.
+
+Confirm all four:
+
+1. **A container engine is installed.** Docker 24+, Podman 5.0+, Rancher Desktop 1.13+, or containerd. Install docs: [Docker Desktop](https://docs.docker.com/desktop/), [Podman](https://podman.io/docs/installation), [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/).
+2. **It is actually running.** `docker info` (or `podman info`) must return without an error. On Docker Desktop, the whale icon must show "running"; a fresh install does not start it for you.
+3. **It is in Linux container mode.** This image is a Linux container. On **Windows**, Docker Desktop must be in Linux containers mode, not Windows containers: right-click the Docker tray icon and choose **Switch to Linux containers** if the option is offered. See [Docker: switch between Windows and Linux containers](https://docs.docker.com/desktop/setup/install/windows-install/#switch-between-windows-and-linux-containers). This is the single most common Windows failure.
+4. **It has enough memory.** The engine needs **at least 2 GB** to start and will use most of what the container is given; give the runtime VM **4 GB** and 2 CPUs. Docker Desktop → **Settings → Resources**. Too little memory shows up as a container that starts and then dies with no obvious error.
+
+```bash
+docker info    # must succeed. If this fails, nothing below will work.
+```
+
+Full requirements are on the [Prerequisites](prerequisites.md) page. Check them before anything else here.
+
+### The container exits immediately
+
+Read the logs first. They almost always name the cause:
+
+```bash
+docker logs sqldb
+```
+
+- **`ACCEPT_EULA` not set.** The container refuses to start without `ACCEPT_EULA=Y`.
+- **Password rejected.** `MSSQL_SA_PASSWORD` needs 8+ characters with at least three of: upper case, lower case, digits, symbols. This is the most common cause.
+- **The container starts, then dies with nothing useful in the log.** Usually not enough memory. See step 4 above.
+
+Fix the cause, then recreate it: `docker rm -f sqldb` and run again.
+
+### "no matching manifest" or "exec format error"
+
+The image is **x64 only** (`linux/amd64`). On Apple Silicon or any other non-x64 host, add `--platform linux/amd64` to run it under emulation:
+
+```bash
+docker run --platform linux/amd64 --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
+    -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
+```
+
+### Port 1433 is already in use
+
+Something else is bound to the port, often an existing SQL Server. Map a different host port and connect to that one instead:
+
+```bash
+docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
+    -p 1434:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
+```
+
+Then connect to `localhost,1434`.
+
+### Connection fails right after the container starts
+
+The engine is not ready the instant `docker run` returns; it takes a few seconds to recover its databases. Retry the connection rather than treating the first failure as fatal. If you script it, use `sqlcmd -C -b -l 2` in a retry loop so transient startup errors are retried instead of masked.
+
+### "Cannot open database" or the database does not exist
+
+The engine **does not auto-create databases**, exactly like Azure SQL Database in the cloud. Create yours on a `master` connection before connecting to it:
+
+```bash
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
+    -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
+```
+
+### `USE appdb` fails with Msg 40508
+
+Expected, and it matches the cloud. Select the database in the connection string (`Database=appdb`, or `-d appdb` for sqlcmd) instead of switching with `USE`. See [Known limitations](known-limitations.md).
+
+### It is not the Azure SQL engine
+
+If `SELECT SERVERPROPERTY('EngineEdition')` does not return `5` and `Edition` is not `SQL Azure`, you are running the SQL Server image (`mcr.microsoft.com/mssql/server`) rather than this one. They are different products. Recreate the container with the image from [Step 1](#step-1-sign-in-and-pull-the-image).
+
 ### Skills did not load
 
 Your agent reads skills from its own folder, and `npx skills add` writes them to `.agents/skills/` first and then links them across. If that second step does not happen, you are left with skills your agent never sees, and **the installer can still report success**.
@@ -165,7 +242,16 @@ Still nothing? Copy them across yourself, which always works:
 mkdir -p .claude/skills && cp -R .agents/skills/azuresql-db-* .claude/skills/
 ```
 
-This is a known issue in the installer ([vercel-labs/skills#1355](https://github.com/vercel-labs/skills/issues/1355)), not a problem with the skills. If you hit it, [tell us](https://aka.ms/sql-agent-skills-feedback): we want to know which agent and which install method.
+This is a known issue in the installer ([vercel-labs/skills#1355](https://github.com/vercel-labs/skills/issues/1355)), not a problem with the skills.
+
+### Still stuck?
+
+Check [Known limitations](known-limitations.md) first: the behavior may be a documented gap rather than a bug.
+
+If it is not there, tell us. We would rather hear about it than have you work around it in silence.
+
+- **Something wrong with the container:** [report a bug](https://aka.ms/azuresql-developer-bug). Include the image tag, your host OS, your container runtime and version, and the output of `docker logs sqldb`.
+- **Something wrong with an agent skill** (it told your agent the wrong thing, or no skill loaded): [report it here](https://aka.ms/sql-agent-skills-feedback). Tell us which skill, which agent, and what you had to do instead.
 
 ## Next: build something
 
