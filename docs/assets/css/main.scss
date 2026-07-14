@@ -441,7 +441,13 @@ section[id] { scroll-margin-top: 84px; }
 .qstep-body { flex: 1; min-width: 0; }
 .qstep-body h3 { font-size: 1.1rem; margin-bottom: 2px; }
 .qstep-desc { color: var(--muted); font-size: .92rem; margin-bottom: 11px; }
+.qstep-cmd-group { display: flex; flex-direction: column; gap: 8px; }
+.runtime-tabs { display: inline-flex; align-self: flex-start; gap: 2px; background: var(--mist); border: 1px solid var(--line); border-radius: 8px; padding: 3px; }
+.runtime-tab { font-family: var(--font-mono); font-weight: 600; font-size: .72rem; color: var(--muted); background: transparent; border: 0; border-radius: 6px; padding: 5px 12px; cursor: pointer; transition: color .15s ease, background .15s ease, box-shadow .15s ease; }
+.runtime-tab.is-active { background: var(--white); color: var(--ink); box-shadow: var(--shadow); }
+.runtime-tab:hover:not(.is-active) { color: var(--ink); }
 .qstep-cmd { display: flex; align-items: flex-start; gap: 12px; background: var(--ink); border: 1px solid var(--ink-3); border-radius: 10px; padding: 12px 11px 12px 15px; box-shadow: var(--shadow); }
+.qstep-cmd[hidden] { display: none; }
 .qstep-cmd code { flex: 1; min-width: 0; font-family: var(--font-mono); font-size: .82rem; line-height: 1.65; color: #e7eefc; white-space: pre; overflow-x: auto; }
 .qstep-cmd .copy-btn { flex-shrink: 0; }
 .steps-foot { margin-top: 26px; color: var(--muted); font-size: .96rem; }

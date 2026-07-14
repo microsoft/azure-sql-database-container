@@ -168,9 +168,24 @@ title: Azure SQL Developer
         <div class="qstep-body">
           <h3>Sign in to the preview registry</h3>
           <p class="qstep-desc">Use the username and password you received when you signed up.</p>
-          <div class="qstep-cmd">
-            <code><span class="cmd-p">$</span> docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u &lt;username&gt;</code>
-            <button class="copy-btn" type="button" data-copy-text="docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>"><span class="copy-label">Copy</span></button>
+          <div class="qstep-cmd-group" data-runtime-tabs>
+            <div class="runtime-tabs" role="tablist" aria-label="Container runtime">
+              <button class="runtime-tab is-active" type="button" role="tab" aria-selected="true" data-runtime="docker">Docker</button>
+              <button class="runtime-tab" type="button" role="tab" aria-selected="false" data-runtime="podman">Podman</button>
+              <button class="runtime-tab" type="button" role="tab" aria-selected="false" data-runtime="containerd">containerd</button>
+            </div>
+            <div class="qstep-cmd" data-runtime-panel="docker">
+              <code><span class="cmd-p">$</span> docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u &lt;username&gt;</code>
+              <button class="copy-btn" type="button" data-copy-text="docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>"><span class="copy-label">Copy</span></button>
+            </div>
+            <div class="qstep-cmd" data-runtime-panel="podman" hidden>
+              <code><span class="cmd-p">$</span> podman login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u &lt;username&gt;</code>
+              <button class="copy-btn" type="button" data-copy-text="podman login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>"><span class="copy-label">Copy</span></button>
+            </div>
+            <div class="qstep-cmd" data-runtime-panel="containerd" hidden>
+              <code><span class="cmd-p">$</span> nerdctl login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u &lt;username&gt;</code>
+              <button class="copy-btn" type="button" data-copy-text="nerdctl login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>"><span class="copy-label">Copy</span></button>
+            </div>
           </div>
         </div>
       </div>
@@ -179,10 +194,27 @@ title: Azure SQL Developer
         <div class="qstep-body">
           <h3>Start the container</h3>
           <p class="qstep-desc">Run it on port 1433 with a strong SA password.</p>
-          <div class="qstep-cmd">
-            <code><span class="cmd-p">$</span> docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
+          <div class="qstep-cmd-group" data-runtime-tabs>
+            <div class="runtime-tabs" role="tablist" aria-label="Container runtime">
+              <button class="runtime-tab is-active" type="button" role="tab" aria-selected="true" data-runtime="docker">Docker</button>
+              <button class="runtime-tab" type="button" role="tab" aria-selected="false" data-runtime="podman">Podman</button>
+              <button class="runtime-tab" type="button" role="tab" aria-selected="false" data-runtime="containerd">containerd</button>
+            </div>
+            <div class="qstep-cmd" data-runtime-panel="docker">
+              <code><span class="cmd-p">$</span> docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
     -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest</code>
-            <button class="copy-btn" type="button" data-copy-text="docker run -e &quot;ACCEPT_EULA=Y&quot; -e &quot;MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd&quot; \&#10;    -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest"><span class="copy-label">Copy</span></button>
+              <button class="copy-btn" type="button" data-copy-text="docker run --name sqldb -e &quot;ACCEPT_EULA=Y&quot; -e &quot;MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd&quot; \&#10;    -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest"><span class="copy-label">Copy</span></button>
+            </div>
+            <div class="qstep-cmd" data-runtime-panel="podman" hidden>
+              <code><span class="cmd-p">$</span> podman run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
+    -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest</code>
+              <button class="copy-btn" type="button" data-copy-text="podman run --name sqldb -e &quot;ACCEPT_EULA=Y&quot; -e &quot;MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd&quot; \&#10;    -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest"><span class="copy-label">Copy</span></button>
+            </div>
+            <div class="qstep-cmd" data-runtime-panel="containerd" hidden>
+              <code><span class="cmd-p">$</span> nerdctl run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
+    -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest</code>
+              <button class="copy-btn" type="button" data-copy-text="nerdctl run --name sqldb -e &quot;ACCEPT_EULA=Y&quot; -e &quot;MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd&quot; \&#10;    -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest"><span class="copy-label">Copy</span></button>
+            </div>
           </div>
         </div>
       </div>
@@ -190,11 +222,28 @@ title: Azure SQL Developer
         <span class="qstep-num">3</span>
         <div class="qstep-body">
           <h3>Connect and query</h3>
-          <p class="qstep-desc">Open a session with <a href="https://learn.microsoft.com/sql/tools/sqlcmd/sqlcmd-utility" rel="noopener">sqlcmd</a> and run your first query.</p>
-          <div class="qstep-cmd">
-            <code><span class="cmd-p">$</span> sqlcmd -S localhost,1433 -U sa -C -h-1 \
-    -Q "SET NOCOUNT ON; SELECT @@VERSION AS Version;"</code>
-            <button class="copy-btn" type="button" data-copy-text="sqlcmd -S localhost,1433 -U sa -C -h-1 \&#10;    -Q &quot;SET NOCOUNT ON; SELECT @@VERSION AS Version;&quot;"><span class="copy-label">Copy</span></button>
+          <p class="qstep-desc">No host install needed: the container bundles <a href="https://learn.microsoft.com/sql/tools/sqlcmd/sqlcmd-utility" rel="noopener">sqlcmd</a>. Run your first query with exec.</p>
+          <div class="qstep-cmd-group" data-runtime-tabs>
+            <div class="runtime-tabs" role="tablist" aria-label="Container runtime">
+              <button class="runtime-tab is-active" type="button" role="tab" aria-selected="true" data-runtime="docker">Docker</button>
+              <button class="runtime-tab" type="button" role="tab" aria-selected="false" data-runtime="podman">Podman</button>
+              <button class="runtime-tab" type="button" role="tab" aria-selected="false" data-runtime="containerd">containerd</button>
+            </div>
+            <div class="qstep-cmd" data-runtime-panel="docker">
+              <code><span class="cmd-p">$</span> docker exec sqldb /opt/mssql-tools18/bin/sqlcmd \
+    -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -Q "SELECT @@VERSION;"</code>
+              <button class="copy-btn" type="button" data-copy-text="docker exec sqldb /opt/mssql-tools18/bin/sqlcmd \&#10;    -S localhost -U sa -P &quot;YourStr0ng_Passw0rd&quot; -C -Q &quot;SELECT @@VERSION;&quot;"><span class="copy-label">Copy</span></button>
+            </div>
+            <div class="qstep-cmd" data-runtime-panel="podman" hidden>
+              <code><span class="cmd-p">$</span> podman exec sqldb /opt/mssql-tools18/bin/sqlcmd \
+    -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -Q "SELECT @@VERSION;"</code>
+              <button class="copy-btn" type="button" data-copy-text="podman exec sqldb /opt/mssql-tools18/bin/sqlcmd \&#10;    -S localhost -U sa -P &quot;YourStr0ng_Passw0rd&quot; -C -Q &quot;SELECT @@VERSION;&quot;"><span class="copy-label">Copy</span></button>
+            </div>
+            <div class="qstep-cmd" data-runtime-panel="containerd" hidden>
+              <code><span class="cmd-p">$</span> nerdctl exec sqldb /opt/mssql-tools18/bin/sqlcmd \
+    -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -Q "SELECT @@VERSION;"</code>
+              <button class="copy-btn" type="button" data-copy-text="nerdctl exec sqldb /opt/mssql-tools18/bin/sqlcmd \&#10;    -S localhost -U sa -P &quot;YourStr0ng_Passw0rd&quot; -C -Q &quot;SELECT @@VERSION;&quot;"><span class="copy-label">Copy</span></button>
+            </div>
           </div>
         </div>
       </div>
