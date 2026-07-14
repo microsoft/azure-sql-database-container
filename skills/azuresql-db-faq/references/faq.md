@@ -91,6 +91,20 @@ example the schema designer or natural-language SQL): https://aka.ms/vscode-mssq
 
 ## Parity with the cloud
 
+**Is Microsoft Entra ID (Azure AD) authentication supported?** No, not on the container
+today. Use SQL authentication locally: the `sa` login, or a contained user you create.
+This is the one place people expect parity and do not get it, because the SQL Server
+image (`mcr.microsoft.com/mssql/server`) *does* support Entra through the
+`MSSQL_AAD_CLIENT_ID`, `MSSQL_AAD_PRIMARY_TENANT`, and `MSSQL_AAD_CERTIFICATE_FILE_PATH`
+environment variables. **Those variables have no effect on this image**, and setting them
+will not enable Entra authentication; the container log will show the login failing.
+
+It does not break the local-to-cloud story. Azure SQL Database in the cloud supports
+Entra, so the intended pattern is SQL auth locally and Entra in the cloud, with only the
+connection string changing (see the `azuresql-db-local-to-cloud` skill). Do not promise a
+date for local Entra support: say it is not supported today and point at the live Known
+limitations page.
+
 **My query works locally but fails when I deploy to Azure SQL Database.** Some PaaS
 restrictions enforced in the cloud are not yet enforced by the container, so an
 invalid statement can succeed locally. Validate against a real Azure SQL Database
