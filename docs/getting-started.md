@@ -23,7 +23,7 @@ Confirm you have:
 
 - A supported container engine installed and running (Docker, Podman, containerd, or Rancher Desktop). See [Prerequisites](prerequisites.md).
 - Port `1433` available on the host.
-- The registry username and password, provided when you sign up at https://aka.ms/sqldbcontainerpreview-signup (pull-only; may be rotated during the preview).
+- The registry username and password, provided when you sign up at [aka.ms/sqldbcontainerpreview-signup](https://aka.ms/sqldbcontainerpreview-signup) (pull-only; may be rotated during the preview).
 
 You do **not** need sqlcmd or any database tool installed: the container brings its own. Everything below works the same on macOS, Linux, and Windows.
 
@@ -61,12 +61,17 @@ Prefer to run it yourself? Three commands take you from pull to query, with Dock
 
 ### Step 1: sign in and pull the image
 
-The preview image is served from a private registry. Sign in, then pull the image.
-
-> **Note:** the registry username and password are **provided when you sign up for the Private Preview** at https://aka.ms/sqldbcontainerpreview-signup. They are shared and pull-only, must be treated as secrets, and may be rotated during the preview.
+The preview image is served from a private registry. Sign in first. This prompts for your password, so run it on its own:
 
 ```bash
 docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>
+```
+
+> **Note:** the registry username and password are **provided when you sign up for the Private Preview** at [aka.ms/sqldbcontainerpreview-signup](https://aka.ms/sqldbcontainerpreview-signup). They are shared and pull-only, must be treated as secrets, and may be rotated during the preview.
+
+Once you are signed in, pull the image:
+
+```bash
 docker pull sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
