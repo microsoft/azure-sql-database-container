@@ -13,7 +13,8 @@ description: "Go from pulling the Azure SQL Developer image to your first query 
   - [Step 2: start the container](#step-2-start-the-container)
   - [Step 3: connect and run your first query](#step-3-connect-and-run-your-first-query)
 - [Troubleshooting](#troubleshooting)
-  - [Start here: check your container engine](#start-here-check-your-container-engine)
+  - [Let your AI agent diagnose it](#let-your-ai-agent-diagnose-it)
+  - [Start here: check your container runtime](#start-here-check-your-container-runtime)
   - [The container exits immediately](#the-container-exits-immediately)
   - [Platform and port problems](#no-matching-manifest-or-exec-format-error)
   - [Connection and database problems](#connection-fails-right-after-the-container-starts)
@@ -148,36 +149,53 @@ docker compose down
 
 ## Troubleshooting
 
-### Start here: check your container engine
+The commands below use `docker`. If you run Podman, containerd, or Rancher Desktop, substitute your own CLI (`podman`, `nerdctl`): the behavior is the same on every runtime.
 
-Most first-run failures are not the database. They are the container engine, and you have to check it yourself: unlike the [VS Code MSSQL extension](https://aka.ms/vscode-mssql-container-docs), which verifies Docker on your behalf before it deploys anything, running the container by hand means nothing checks these for you.
+### Let your AI agent diagnose it
 
-Confirm all four:
+Fastest path if you are stuck. Copy this and paste it into your agent (Claude Code, GitHub Copilot, Codex, or Cursor). It knows your machine and your runtime, and it can read the logs itself:
 
-1. **A container engine is installed.** Docker 24+, Podman 5.0+, Rancher Desktop 1.13+, or containerd. Install docs: [Docker Desktop](https://docs.docker.com/desktop/), [Podman](https://podman.io/docs/installation), [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/).
-2. **It is actually running.** `docker info` (or `podman info`) must return without an error. On Docker Desktop, the whale icon must show "running"; a fresh install does not start it for you.
-3. **It is in Linux container mode.** This image is a Linux container. On **Windows**, Docker Desktop must be in Linux containers mode, not Windows containers: right-click the Docker tray icon and choose **Switch to Linux containers** if the option is offered. See [Docker: switch between Windows and Linux containers](https://docs.docker.com/desktop/setup/install/windows-install/#switch-between-windows-and-linux-containers). This is the single most common Windows failure.
-4. **It has enough memory.** The engine needs **at least 2 GB** to start and will use most of what the container is given; give the runtime VM **4 GB** and 2 CPUs. Docker Desktop → **Settings → Resources**. Too little memory shows up as a container that starts and then dies with no obvious error.
-
-```bash
-docker info    # must succeed. If this fails, nothing below will work.
+```text
+My local Azure SQL Database container is not working. Diagnose it. Check my container runtime is installed, running, and set to Linux containers; check it has enough memory (the engine needs at least 2 GB); check port 1433 is free; check the image is running under linux/amd64 on this host; then read the container logs and tell me the actual cause and the fix.
 ```
 
-Full requirements are on the [Prerequisites](prerequisites.md) page. Check them before anything else here.
+With the [agent skills](#fastest-let-your-ai-agent-set-it-up) installed it already knows the image, the connection model, and the known failure modes, so it will usually name the cause on the first try. If it cannot fix it, it will offer to file a report for you.
 
-### The container exits immediately
+Prefer to work through it yourself? Start below.
 
-Read the logs first. They almost always name the cause:
+### Start here: check your container runtime
+
+Most first-run failures are not the database, they are the runtime. Nothing checks these for you, so check all four:
+
+1. **A container runtime is installed and up to date.** Any modern OCI runtime works: Docker 24+, Podman 5.0+, Rancher Desktop 1.13+, or containerd. Install and setup docs: [Docker](https://docs.docker.com/desktop/), [Podman](https://podman.io/docs/installation), [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/), [containerd](https://github.com/containerd/nerdctl).
+2. **It is actually running.** `docker info` (or `podman info`) must return without an error. A fresh install does not always start the engine for you.
+3. **It is set to run Linux containers.** This is a Linux container. On **Windows**, a runtime set to Windows containers cannot run it: switch it to Linux containers ([Docker](https://docs.docker.com/desktop/setup/install/windows-install/#switch-between-windows-and-linux-containers), [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/)). This is the most common Windows failure.
+4. **It has enough memory.** The engine needs **at least 2 GB** to start, and will use most of what it is given. Allocate **4 GB and 2 CPUs** to the runtime (in Docker Desktop and Rancher Desktop this is under Settings, Resources; Podman machines are sized with `podman machine set --memory`). Too little memory shows up as a container that starts and then dies with no obvious error, which is the hardest failure to diagnose.
+
+```bash
+docker info    # or: podman info. If this fails, nothing below will work.
+```
+
+If any of these is wrong, fix it with your runtime's own documentation above; those problems are not specific to this container. Full requirements are on the [Prerequisites](prerequisites.md) page.
+
+### The container will not start, or starts but will not accept connections
+
+**Read the logs first.** They name the cause in almost every case, and the container status alone will mislead you:
 
 ```bash
 docker logs sqldb
 ```
 
-- **`ACCEPT_EULA` not set.** The container refuses to start without `ACCEPT_EULA=Y`.
-- **Password rejected.** `MSSQL_SA_PASSWORD` needs 8+ characters with at least three of: upper case, lower case, digits, symbols. This is the most common cause.
-- **The container starts, then dies with nothing useful in the log.** Usually not enough memory. See step 4 above.
+Two different symptoms, and it matters which one you have:
 
-Fix the cause, then recreate it: `docker rm -f sqldb` and run again.
+**The container exits.** Check for a missing `ACCEPT_EULA=Y`. The container refuses to start without it.
+
+**The container says `Up`, but every connection fails** with a login timeout or "server is not found". The container is running; the database engine inside it is not. The usual causes:
+
+- **The SA password does not meet the policy.** This is the most common cause, and it is the one that fools people, because the container stays `Up` while the engine refuses to start. `MSSQL_SA_PASSWORD` needs 8+ characters with at least three of: upper case, lower case, digits, symbols. The log says so; the container status does not.
+- **Not enough memory.** The engine needs at least 2 GB. See the runtime check above.
+
+Either way: fix the cause, remove the container (`docker rm -f sqldb`), and run it again. Changing the environment variable on a container that already exists does nothing; you have to recreate it.
 
 ### "no matching manifest" or "exec format error"
 
@@ -246,11 +264,11 @@ This is a known issue in the installer ([vercel-labs/skills#1355](https://github
 
 ### Still stuck?
 
-Check [Known limitations](known-limitations.md) first: the behavior may be a documented gap rather than a bug.
+1. **Is it a known gap?** Check [Known limitations](known-limitations.md) first. The behavior may be documented rather than broken.
+2. **Is it your runtime, not the container?** If the container never starts, if `docker info` fails, or if the runtime cannot pull any image at all, it is a runtime problem and their documentation will fix it faster than we can: [Docker](https://docs.docker.com/desktop/troubleshoot-and-support/troubleshoot/), [Podman](https://podman.io/docs), [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/).
+3. **Still nothing? Tell us.** We would rather hear about it than have you work around it in silence.
 
-If it is not there, tell us. We would rather hear about it than have you work around it in silence.
-
-- **Something wrong with the container:** [report a bug](https://aka.ms/azuresql-developer-bug). Include the image tag, your host OS, your container runtime and version, and the output of `docker logs sqldb`.
+- **Something wrong with the container:** [report a bug](https://aka.ms/azuresql-developer-bug). Include the image tag, your host OS, your container runtime and version, and the container logs.
 - **Something wrong with an agent skill** (it told your agent the wrong thing, or no skill loaded): [report it here](https://aka.ms/sql-agent-skills-feedback). Tell us which skill, which agent, and what you had to do instead.
 
 ## Next: build something
