@@ -5,7 +5,7 @@ Common failures and their fixes. Symptoms first.
 ## Contents
 
 - Container won't start / exits immediately
-- Password policy rejection
+- Password policy rejection (the container stays "Up" but nothing connects)
 - Port already in use
 - "no matching manifest" on a non-x64 host
 - Msg 40508 on USE
@@ -21,8 +21,10 @@ Check the logs:
 docker logs sqldb
 ```
 
-Most often this is a missing `ACCEPT_EULA=Y` or a weak `MSSQL_SA_PASSWORD`. Fix
-the env vars and recreate:
+A container that actually **exits** is usually a missing `ACCEPT_EULA=Y`. A weak
+`MSSQL_SA_PASSWORD` does NOT exit the container: it stays `Up` while the engine
+refuses to start, so read the next section before assuming the container is fine
+just because `docker ps` says it is running. Fix the env vars and recreate:
 
 ```bash
 docker rm -f sqldb 2>/dev/null
@@ -30,11 +32,23 @@ docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_P
   -p "1433:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
-## Password policy rejection
+## Password policy rejection (the container stays "Up" but nothing connects)
 
-The log shows a password validation failure. `MSSQL_SA_PASSWORD` needs 8+
-characters with at least three of: upper case, lower case, digits, symbols. Pick
-a stronger value and recreate the container.
+**Do not trust the container status here.** With a password that fails the policy,
+the container reports `Up` while the engine inside it never starts. Every
+connection then fails with a login timeout or "server is not found", which looks
+like a networking problem and is not one. Verified on the preview image.
+
+The log is the source of truth:
+
+```bash
+docker logs sqldb 2>&1 | grep -i password
+```
+
+`MSSQL_SA_PASSWORD` needs 8+ characters with at least three of: upper case, lower
+case, digits, symbols. Pick a stronger value and **recreate** the container
+(`docker rm -f sqldb`, then run again). Setting the variable on an existing
+container has no effect.
 
 ## Port already in use
 
