@@ -463,13 +463,21 @@ section[id] { scroll-margin-top: 84px; }
 /* skill-name label on the agent-skill cards */
 .skill-tag { display: inline-block; font-family: var(--font-mono); font-size: .68rem; color: var(--azure); background: rgba(19,102,224,.07); border: 1px solid rgba(19,102,224,.18); border-radius: 5px; padding: 2px 7px; margin-bottom: 10px; }
 
-/* ---------- "install a single skill" card: a button that reads as a card ----------
-   .skill-card is styled for <a>. A <button> brings its own font, alignment and
-   intrinsic width, so reset those or it spans the grid instead of sitting in a cell. */
-.skill-card-action { font: inherit; text-align: left; cursor: pointer; width: 100%; min-width: 0; margin: 0; appearance: none; }
-.skill-card-action:hover h4 { color: var(--azure); }
-.skill-card-action:hover h4 .arrow { color: var(--azure); transform: translateX(3px); }
-.skill-tag-alt { color: var(--muted); background: var(--mist); border-color: var(--line); }
+/* ---------- collapse the skill grid to two rows ----------
+   Twelve cards is a lot of page for a section most visitors scroll past. Show the
+   first six plus the action card, and reveal the rest on demand. The action card
+   is ordered last so it always sits at the end of the visible set. */
+/* Collapsed: exactly two full rows of six. */
+.skill-cards .skill-card-extra { display: none; }
+.skill-cards.is-open .skill-card-extra { display: block; }
+.skill-more { display: flex; justify-content: center; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
+.skill-more-alt { color: var(--muted); }
+.skill-more-alt:hover { color: var(--azure); }
+.skill-more-btn { display: inline-flex; align-items: center; gap: 8px; font: inherit; font-size: .9rem; font-weight: 500; color: var(--azure); background: var(--white); border: 1px solid var(--line); border-radius: 999px; padding: 9px 20px; cursor: pointer; box-shadow: var(--shadow); transition: border-color .15s ease, background .15s ease; }
+.skill-more-btn:hover { border-color: #c6d6ee; background: var(--mist); }
+.skill-more-btn:focus-visible { outline: 2px solid var(--azure); outline-offset: 2px; }
+.skill-more-ico { font-size: .8em; transition: transform .18s ease; }
+.skill-more-btn[aria-expanded="true"] .skill-more-ico { transform: rotate(180deg); }
 
 /* ---------- modal (native <dialog>) ---------- */
 .modal { width: min(620px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-lg); color: inherit; background: var(--white); }
