@@ -227,6 +227,30 @@ section[id] { scroll-margin-top: 84px; }
 .head-anchor:hover { opacity: 1; text-decoration: none; }
 .section-head-light .head-anchor { color: #fff; }
 @media (hover: none) { .head-anchor { opacity: .4; } }
+
+/* shareable anchors on doc-page headings. Kramdown already emits the ids; the JS
+   adds the visible link and copies the full URL on click. */
+.prose h2, .prose h3 { scroll-margin-top: 84px; position: relative; }
+.prose h2:hover .head-anchor,
+.prose h3:hover .head-anchor,
+.prose .head-anchor:focus-visible { opacity: .6; }
+.prose .head-anchor { position: relative; cursor: pointer; }
+.prose .head-anchor.is-copied { opacity: 1; }
+.prose .head-anchor.is-copied::after {
+  content: "Link copied";
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  font-weight: 500;
+  color: var(--on-dark);
+  background: var(--ink);
+  border-radius: 6px;
+  padding: 4px 9px;
+}
 .section-head .lead { color: var(--muted); font-size: 1.1rem; margin-top: 14px; }
 .section-head-center { max-width: 720px; margin-left: auto; margin-right: auto; text-align: center; }
 .section-head-center .eyebrow { justify-content: center; }
