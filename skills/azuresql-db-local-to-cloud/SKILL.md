@@ -61,7 +61,10 @@ SQL. Only `Server`, the auth fields, and TLS posture move.
 Local: the container is provisioned with one bootstrap login, `sa`, set via the
 `MSSQL_SA_PASSWORD` environment variable. There is no identity provider in front
 of a container on your laptop, so password auth over a trusted self-signed cert
-(`TrustServerCertificate=true`) is the pragmatic local default.
+(`TrustServerCertificate=true`) is the pragmatic local default. **Microsoft Entra
+ID authentication is not supported on the container**, so do not try to wire it up
+locally: the `MSSQL_AAD_*` environment variables that work on the SQL Server image
+have no effect here. SQL auth locally is the intended path, not a workaround.
 
 Cloud: Azure SQL Database sits behind Microsoft Entra ID. Instead of shipping a
 password, the app presents a token from its Entra identity (a managed identity

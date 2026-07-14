@@ -17,6 +17,7 @@ https://aka.ms/azuresql-developer-bug to file an issue.
 
 ## Known behavior gaps (differences from the cloud)
 
+- **Microsoft Entra ID authentication.** Not supported on the container. Use SQL authentication locally (`sa`, or a contained user). The SQL Server image supports Entra via `MSSQL_AAD_CLIENT_ID` / `MSSQL_AAD_PRIMARY_TENANT` / `MSSQL_AAD_CERTIFICATE_FILE_PATH`; **those variables have no effect on this image.** Azure SQL Database in the cloud does support Entra, so the normal pattern is SQL auth locally and Entra in the cloud, changing only the connection string.
 - **Backup and restore.** `BACKUP DATABASE` / `RESTORE DATABASE` are not supported on the container (return `Msg 40510` in any session). Azure SQL Database in the cloud likewise does not support them. Use a Docker named volume for local persistence; use Azure SQL Database in the cloud for managed backups, point-in-time restore, and geo-replication.
 - **Always Encrypted with secure enclaves.** Basic Always Encrypted works; secure enclaves need host TEE support and are not validated.
 - **Auditing to Log Analytics or Storage.** Audit-to-file works; audit-to-cloud-targets is not applicable on the container.
