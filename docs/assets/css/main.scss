@@ -366,6 +366,11 @@ section[id] { scroll-margin-top: 84px; }
 .agent h3 { transition: color .15s ease; }
 .agent:hover h3 { color: var(--azure); }
 .agent img { width: 40px; height: 40px; margin: 0 auto 14px; display: block; background: var(--ink); border-radius: 11px; padding: 9px; }
+/* The Copilot mark's ink sits in the upper part of its viewBox, so it reads as
+   floating high in the tile while the other three are centred. Nudge it down
+   optically. Trimming the padding-top and adding it back at the bottom keeps the
+   glyph the same size and only moves it. */
+.agent img.agent-ico-copilot { padding: 7px 9px 11px; }
 .agent h3 { font-size: 1.05rem; margin-bottom: 4px; }
 .agent p { color: var(--muted); font-size: .86rem; }
 .agents-note { text-align: center; margin-top: 22px; color: var(--muted); font-size: .98rem; }
