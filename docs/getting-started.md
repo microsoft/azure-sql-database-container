@@ -35,23 +35,27 @@ From here you have two ways to reach your first query. Both end in the same plac
 
 ## Fastest: let your AI agent set it up
 
-Your agent does the whole setup for you: it pulls the image, starts the container, provisions the database, and runs your first query. You install the skill once, then ask in plain English.
+Your agent does the whole setup for you: it pulls the image, starts the container, provisions the database, and runs your first query. You install the skills once, then ask in plain English.
 
 ```bash
-npx skills add microsoft/azure-sql-database-container --copy
+npx skills add microsoft/azure-sql-database-container
 ```
 
-> **Why `--copy`?** Without it, the installer writes the skills to `.agents/skills/` and *symlinks* them into your agent's folder. Creating a symlink on Windows requires Developer Mode or an elevated shell, and when it fails the installer can still report success while your agent silently never loads the skills. `--copy` writes real directories instead. It is safe on every platform, so it is the recommended default.
-
-**Verify the skills loaded** before you rely on them. For Claude Code:
+That installs the whole collection, which is what we recommend: the skills route to each other, so the one that starts the container hands off to the one that runs your migrations. Only want a single skill? Name it:
 
 ```bash
-ls .claude/skills/
+npx skills add microsoft/azure-sql-database-container --skill azuresql-db-rag
 ```
 
-You should see the ten `azuresql-db-*` directories. If that folder is missing or empty while `.agents/skills/` is full, the symlink step failed: re-run with `--copy`, or copy them across with `mkdir -p .claude/skills && cp -R .agents/skills/azuresql-db-* .claude/skills/`. Other agents read from different folders; see the [install matrix](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#install-matrix). You can also skip the installer entirely and [copy the skill directories in by hand](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#manual-install), which works the same way.
+> **Check that the skills actually loaded.** Run `ls .claude/skills/` (Claude Code; other agents read from different folders, see the [install matrix](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#install-matrix)). You should see the `azuresql-db-*` directories. If that folder is empty or missing while `.agents/skills/` is full, the installer did not target your agent, and it can report success when this happens. Re-run it naming your agent explicitly:
+>
+> ```bash
+> npx skills add microsoft/azure-sql-database-container -a claude-code
+> ```
+>
+> If it still does not appear, copy the directories across by hand with `mkdir -p .claude/skills && cp -R .agents/skills/azuresql-db-* .claude/skills/`, or skip the installer and [install manually](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#manual-install). This is a known installer issue ([vercel-labs/skills#1355](https://github.com/vercel-labs/skills/issues/1355)), not a problem with the skills themselves.
 
-The skill works across Claude Code, GitHub Copilot (VS Code and CLI), Codex, and Cursor. Then ask your agent, for example:
+The skills work across Claude Code, GitHub Copilot (VS Code and CLI), Codex, and Cursor. Then ask your agent, for example:
 
 > Add a local Azure SQL Database to this project, then scaffold the schema, migrations, and data-access layer for my stack.
 
