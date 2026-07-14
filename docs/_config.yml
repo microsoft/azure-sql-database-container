@@ -12,6 +12,7 @@ repo: "https://github.com/microsoft/azure-sql-database-container"
 # once it exists (the current repo is private and 404s for external users).
 public_repo: "https://github.com/microsoft/azure-sql-database-container"
 youtube_id: "S6PWxUAUspY"
+demo_link: "https://aka.ms/azuresql-developer-demo"
 
 
 markdown: kramdown
