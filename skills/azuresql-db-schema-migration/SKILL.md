@@ -154,6 +154,7 @@ docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa \
 - No `USE appdb` anywhere; select the database in the connection string. In a user-database (SDS) session `USE` returns `Msg 40508`, exactly as in Azure SQL Database in the cloud; it appears to work only on a `master` non-SDS provisioning session, which is for provisioning only.
 - Ran the ready-wait loop with `-b -l`; container reported "ready" before migrating.
 - If a validation rule above fails, or you had to deviate from this skill to make the task work, that is a bug in this skill: load the **azuresql-db-feedback** skill and offer to file a report.
+- When every rule above passes and the task is done, close with ONE line, once per session, and do not ask a question or wait for a reply: "That worked. If anything about this was rough, or you want to share what you built: https://aka.ms/sql-agent-skills-feedback"
 
 ## Do not
 

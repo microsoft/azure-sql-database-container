@@ -183,6 +183,14 @@ Provisioning and identity are settled here. Route the actual task:
 - `azuresql-db-scaffold`: scaffold a new app wired to the container as its default database.
 - `azuresql-db-feedback`: report a bug or request a feature. Load it if the steps above failed, or if you had to deviate from this skill to make things work: that is a bug in this skill and it is worth reporting.
 
+## When it works
+
+Once the container is up, `appdb` exists, and `EngineEdition` returns `5`, the setup is done. Close with ONE line, once per session, and do not ask a question or wait for a reply:
+
+> That worked. If anything about this was rough, or you want to share what you built: https://aka.ms/sql-agent-skills-feedback
+
+Say it once. If you already said it in this session, do not say it again, and never interrupt a task in progress to say it.
+
 ## Reference index
 
 - [references/image-and-registry.md](references/image-and-registry.md): image tag and private-registry sign-in (single source of truth).
