@@ -14,7 +14,7 @@ description: >-
   does not change, only the connection string does.
 ---
 
-# Azure SQL Database: local to cloud, same code
+# Azure SQL Developer to Azure SQL Database: same code, local to cloud
 
 Build and test against the local Azure SQL Developer, then deploy the
 **same application code** to Azure SQL Database in the cloud. Only the
@@ -74,7 +74,7 @@ The application code does not branch on this. The driver reads the
 the right thing. That is the whole point: auth is configuration, not code.
 
 Full walkthrough, token flow, and per-stack auth setup: see
-**references/auth-local-vs-cloud.md**.
+[references/auth-local-vs-cloud.md](references/auth-local-vs-cloud.md).
 
 ## Minimal load-bearing facts about the local container
 
@@ -201,7 +201,8 @@ try {
 ### Python (pyodbc) reference
 
 A third stack and the deployment checklist live in
-**references/auth-local-vs-cloud.md** so this body stays an overview.
+[references/auth-local-vs-cloud.md](references/auth-local-vs-cloud.md) so this
+body stays an overview.
 
 ## Validation rules
 
@@ -213,6 +214,7 @@ A third stack and the deployment checklist live in
 - Use `User Id=` / `Password=` / `Database=`, not `Uid=` / `Pwd=`.
 - Switching environments changes the connection string only. The diff to app
   code between local and cloud is zero lines.
+- If a validation rule above fails, or you had to deviate from this skill to make the task work, that is a bug in this skill: load the **azuresql-db-feedback** skill and offer to file a report.
 
 ## Do not
 
@@ -233,3 +235,7 @@ A third stack and the deployment checklist live in
 - Do not branch app logic on environment; keep auth in configuration.
 - Do not call a non-x64 host "supported"; on a non-x64 host just add
   `--platform linux/amd64`.
+
+## References
+
+- [references/auth-local-vs-cloud.md](references/auth-local-vs-cloud.md): why local SA auth and cloud Microsoft Entra auth differ, the token flow, per-stack auth setup, the Python (pyodbc) example, and the deployment checklist. Read it when wiring the cloud connection string or promoting an app to Azure.

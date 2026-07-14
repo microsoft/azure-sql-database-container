@@ -1,5 +1,17 @@
 # FAQ: capabilities and limits, with the why
 
+## Contents
+
+- [Development vs production](#development-vs-production)
+- [Backups and recovery](#backups-and-recovery)
+- [Connection model and databases](#connection-model-and-databases)
+- [Vectors / AI](#vectors--ai)
+- [Platform / image / access](#platform--image--access)
+- [Tooling](#tooling)
+- [Parity with the cloud](#parity-with-the-cloud)
+- [Box-product features (intentionally absent, like the cloud)](#box-product-features-intentionally-absent-like-the-cloud)
+- [Managed-service surfaces (not applicable to a container)](#managed-service-surfaces-not-applicable-to-a-container)
+
 Grouped by the four buckets from `SKILL.md`. When a question is not here, fall back
 to the bucket model and the live Known limitations page:
 https://microsoft.github.io/azure-sql-database-container/known-limitations.html

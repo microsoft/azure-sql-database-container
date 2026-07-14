@@ -12,7 +12,7 @@ enforced, so `USE` appears to work there, but `master` is
 for provisioning only, not application work. Always select the target database in
 the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 
-## Table of contents
+## Contents
 
 - [Shared connection facts](#shared-connection-facts)
 - [EF Core (.NET)](#ef-core-net)

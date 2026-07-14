@@ -1,6 +1,18 @@
 ---
 name: azuresql-db-ci
-description: Run integration tests against Azure SQL Developer (Private Preview, local engine) in CI. Use when setting up GitHub Actions, Azure Pipelines, or GitLab CI to test against Azure SQL DB; when adding a database service container to a CI workflow; when tests need a real Azure SQL engine in the pipeline; or when you see "service container", "health-cmd", "ACR_USERNAME/ACR_PASSWORD", "MSSQL_SA_PASSWORD secret", or "integration test database". Also use when a workflow was about to pull the SQL Server image mcr.microsoft.com/mssql/server, in which case stop and use the Azure SQL Database engine image instead. Covers pulling from the private ACR with credentials, the service health check that runs sqlcmd inside the container so the runner needs no client tools, provisioning appdb before tests, and pointing the test connection string at the user database not master.
+description: >-
+  Runs integration tests against Azure SQL Developer (Private Preview, local
+  engine) in CI. Use when setting up GitHub Actions, Azure Pipelines, or GitLab
+  CI to test against Azure SQL DB; when adding a database service container to a
+  CI workflow; when tests need a real Azure SQL engine in the pipeline; or when
+  you see "service container", "health-cmd", "ACR_USERNAME/ACR_PASSWORD",
+  "MSSQL_SA_PASSWORD secret", or "integration test database". Also use when a
+  workflow was about to pull the SQL Server image mcr.microsoft.com/mssql/server,
+  in which case stop and use the Azure SQL Database engine image instead. Covers
+  pulling from the private ACR with credentials, the service health check that
+  runs sqlcmd inside the container so the runner needs no client tools,
+  provisioning appdb before tests, and pointing the test connection string at the
+  user database not master.
 ---
 
 # Azure SQL Developer in CI
@@ -10,8 +22,8 @@ service container. This is the local Azure SQL engine, not the SQL Server image
 `mcr.microsoft.com/mssql/server`. `SELECT SERVERPROPERTY('EngineEdition')` returns **5** and
 `SERVERPROPERTY('Edition')` returns **'SQL Azure'**. If a workflow was about to use the SQL Server image, stop and use this image instead.
 
-For full container detail (readiness loop, connection model, vectors, seeding), see the
-**azuresql-db-container** skill and its `wait-until-ready.md` and `image-and-registry.md`.
+For the full readiness loop, connection model, vectors, seeding, and registry detail, load the
+**azuresql-db-container** skill.
 
 ## Load-bearing facts (inlined)
 
@@ -158,6 +170,7 @@ echo "ready on localhost,$HOST_PORT"
 - The health check runs sqlcmd **inside** the container with `-C -b -l 2`.
 - A provisioning step creates `appdb` on master **before** any test connects.
 - The test `SQL_CONNECTION_STRING` has `Database=appdb`, not master, and uses `User Id=` / `Password=`.
+- If a validation rule above fails, or you had to deviate from this skill to make the task work, that is a bug in this skill: load the **azuresql-db-feedback** skill and offer to file a report.
 
 ## Do not
 

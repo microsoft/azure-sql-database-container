@@ -1,6 +1,15 @@
 ---
 name: azuresql-db-import
-description: Imports an existing Azure SQL Database or SQL Server schema and data INTO the local Azure SQL Developer using SqlPackage. Use when asked to "import a bacpac", "load my existing database locally", "restore a dacpac into the container", "bring my prod schema into the dev container", "run my .bacpac/.dacpac against the local Azure SQL engine", or migrate an existing database into the preview container. Handles provisioning the target database on master first, then running SqlPackage /Action:Import against the provisioned user database. Use this for any "get my real database running in the container" request instead of hand-writing SqlPackage flags.
+description: >-
+  Imports an existing Azure SQL Database or SQL Server schema and data INTO the
+  local Azure SQL Developer using SqlPackage. Use when asked to "import a
+  bacpac", "load my existing database locally", "restore a dacpac into the
+  container", "bring my prod schema into the dev container", "run my
+  .bacpac/.dacpac against the local Azure SQL engine", or migrate an existing
+  database into the preview container. Handles provisioning the target database
+  on master first, then running SqlPackage /Action:Import against the
+  provisioned user database. Use this for any "get my real database running in
+  the container" request instead of hand-writing SqlPackage flags.
 ---
 
 # Azure SQL Developer: import a database
@@ -90,7 +99,7 @@ SqlPackage /Action:Publish \
   /TargetConnectionString:"Server=localhost,$HOST_PORT;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
 ```
 
-If SqlPackage is not installed locally, see `references/sqlpackage-import.md` for
+If SqlPackage is not installed locally, see [references/sqlpackage-import.md](references/sqlpackage-import.md) for
 install options and a container-based fallback.
 
 ## Step 2: validate
@@ -124,7 +133,7 @@ that Azure SQL DB does not support will fail or be skipped on import:
   compatibility-level features.
 
 Read SqlPackage output for skipped/blocking items. See
-`references/sqlpackage-import.md` for the common error patterns and fixes.
+[references/sqlpackage-import.md](references/sqlpackage-import.md) for the common error patterns and fixes.
 
 ## Validation rules
 
@@ -133,6 +142,7 @@ Read SqlPackage output for skipped/blocking items. See
 - After import, `SERVERPROPERTY('EngineEdition')` on the target is `5`.
 - Use `.bacpac` for schema + data via `/Action:Import`; `.dacpac` for schema via
   `/Action:Publish`.
+- If a validation rule above fails, or you had to deviate from this skill to make the task work, that is a bug in this skill: load the **azuresql-db-feedback** skill and offer to file a report.
 
 ## Do not
 
@@ -148,5 +158,5 @@ Read SqlPackage output for skipped/blocking items. See
 
 ## References
 
-- `references/sqlpackage-import.md`: SqlPackage install, full flag reference,
-  container-based fallback, and common import errors with fixes.
+- [references/sqlpackage-import.md](references/sqlpackage-import.md): SqlPackage install, full flag reference,
+  container-based fallback, and common import errors with fixes. Read it when SqlPackage is missing or an import fails.

@@ -1,7 +1,7 @@
 ---
 name: azuresql-db-rag
 description: >-
-  Build local vector search, RAG, embeddings, and semantic search on Azure SQL
+  Builds local vector search, RAG, embeddings, and semantic search on Azure SQL
   Developer using the native VECTOR type and VECTOR_DISTANCE. Use
   when you need to store embeddings, do similarity search, top-k nearest
   neighbor, cosine distance, retrieval-augmented generation, "find similar
@@ -99,7 +99,7 @@ CREATE TABLE docs (
 ```
 
 Full schema notes, dimension choice, and metadata-filtering patterns:
-`references/vector-schema.md`.
+[references/vector-schema.md](references/vector-schema.md).
 
 ## Step 3: embed text (the one network exception)
 
@@ -199,6 +199,7 @@ the same; you just add the index.
 - The dimension in `VECTOR(n)` and `CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n))` is a literal integer,
   identical to `len(embed(text))`.
 - Smaller cosine distance means more similar; results are `ORDER BY distance ASC`.
+- If a validation rule above fails, or you had to deviate from this skill to make the task work, that is a bug in this skill: load the **azuresql-db-feedback** skill and offer to file a report.
 
 ## Do not
 
@@ -217,3 +218,7 @@ the same; you just add the index.
   `sqlcmd -d appdb -i seed.sql` after provisioning appdb.
 - Do not call a non-x64 host "supported"; just add `--platform linux/amd64`
   on a non-x64 host.
+
+## References
+
+- [references/vector-schema.md](references/vector-schema.md): table shapes, how to choose the dimension n, insert and top-k query mechanics, distance metrics, metadata filtering, corpus seeding, indexing status, and troubleshooting. Read it when designing the vector schema or a query beyond the basic top-k shown above.

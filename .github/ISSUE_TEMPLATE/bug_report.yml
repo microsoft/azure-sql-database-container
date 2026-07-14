@@ -7,7 +7,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for filing a bug. Before you do, scan the [open issues](../../issues) and [Known limitations](https://microsoft.github.io/azure-sql-database-container/known-limitations.html) — if it is a known limitation, comment there instead.
+        Thanks for filing a bug. Before you do, scan the [open issues](../../issues) and [Known limitations](https://microsoft.github.io/azure-sql-database-container/known-limitations.html). If it is a known limitation, comment there instead.
 
   - type: input
     id: image-tag

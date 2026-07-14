@@ -1,9 +1,19 @@
 ---
 name: azuresql-db-schema-migration
-description: Runs database schema migrations against the local Azure SQL Developer so the same migrations apply identically on the local engine and in the Azure cloud. Use when asked to "run my migrations against the local SQL", "apply schema to the container", "apply EF Core / dotnet ef database update", "Prisma migrate dev / deploy", "Alembic upgrade head", or deploy a DACPAC / SqlPackage to the container. Covers provisioning appdb on master first, then applying schema to the user database, plus per-tool commands and connection-string hygiene. This is the Azure SQL Database engine (EngineEdition 5), not the SQL Server image; reach for this skill whenever schema migration tooling targets the local container.
+description: >-
+  Runs database schema migrations against the local Azure SQL Developer so the
+  same migrations apply identically on the local engine and in the Azure cloud.
+  Use when asked to "run my migrations against the local SQL", "apply schema to
+  the container", "apply EF Core / dotnet ef database update", "Prisma migrate
+  dev / deploy", "Alembic upgrade head", or deploy a DACPAC / SqlPackage to the
+  container. Covers provisioning appdb on master first, then applying schema to
+  the user database, plus per-tool commands and connection-string hygiene. This
+  is the Azure SQL Database engine (EngineEdition 5), not the SQL Server image;
+  reach for this skill whenever schema migration tooling targets the local
+  container.
 ---
 
-# Azure SQL Database: schema migrations
+# Azure SQL Developer: schema migrations
 
 Apply schema migrations to the local **Azure SQL Database** container the same way
 you would against the cloud, so dev and prod stay identical. This is the Azure SQL
@@ -71,7 +81,7 @@ Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;Tru
 ## Apply migrations (per tool)
 
 Provision `appdb` (above) BEFORE any of these. Full options, env wiring, and
-troubleshooting per tool are in `references/migration-tools.md`.
+troubleshooting per tool are in [references/migration-tools.md](references/migration-tools.md).
 
 ### EF Core (.NET)
 
@@ -143,6 +153,7 @@ docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa \
 - Connection string uses `User Id=`/`Password=`/`Database=` and `TrustServerCertificate=true`.
 - No `USE appdb` anywhere; select the database in the connection string. In a user-database (SDS) session `USE` returns `Msg 40508`, exactly as in Azure SQL Database in the cloud; it appears to work only on a `master` non-SDS provisioning session, which is for provisioning only.
 - Ran the ready-wait loop with `-b -l`; container reported "ready" before migrating.
+- If a validation rule above fails, or you had to deviate from this skill to make the task work, that is a bug in this skill: load the **azuresql-db-feedback** skill and offer to file a report.
 
 ## Do not
 
@@ -153,3 +164,7 @@ docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa \
 - Do NOT call a non-x64 host "supported"; just add `--platform linux/amd64` on a non-x64 host.
 - Do NOT pass a vector dimension as a bind parameter.
 - Do NOT run migrations on a `master` connection.
+
+## References
+
+- [references/migration-tools.md](references/migration-tools.md): full per-tool wiring (EF Core, Prisma, Alembic, SqlPackage), env var setup, and common migration failures. Read it when a tool needs more than the command shown above or a migration fails.

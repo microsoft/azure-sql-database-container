@@ -38,8 +38,18 @@ From here you have two ways to reach your first query. Both end in the same plac
 Your agent does the whole setup for you: it pulls the image, starts the container, provisions the database, and runs your first query. You install the skill once, then ask in plain English.
 
 ```bash
-npx skills add microsoft/azure-sql-database-container
+npx skills add microsoft/azure-sql-database-container --copy
 ```
+
+> **Why `--copy`?** Without it, the installer writes the skills to `.agents/skills/` and *symlinks* them into your agent's folder. Creating a symlink on Windows requires Developer Mode or an elevated shell, and when it fails the installer can still report success while your agent silently never loads the skills. `--copy` writes real directories instead. It is safe on every platform, so it is the recommended default.
+
+**Verify the skills loaded** before you rely on them. For Claude Code:
+
+```bash
+ls .claude/skills/
+```
+
+You should see the ten `azuresql-db-*` directories. If that folder is missing or empty while `.agents/skills/` is full, the symlink step failed: re-run with `--copy`, or copy them across with `mkdir -p .claude/skills && cp -R .agents/skills/azuresql-db-* .claude/skills/`. Other agents read from different folders; see the [install matrix](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#install-matrix). You can also skip the installer entirely and [copy the skill directories in by hand](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#manual-install), which works the same way.
 
 The skill works across Claude Code, GitHub Copilot (VS Code and CLI), Codex, and Cursor. Then ask your agent, for example:
 

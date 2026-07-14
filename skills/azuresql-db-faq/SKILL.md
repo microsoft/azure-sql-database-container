@@ -63,6 +63,7 @@ limitations list (kept in step with the docs) is in [references/limitations.md](
 - Distinguish "the engine does not do this" (a real gap) from "the managed cloud
   service does this, the engine does not" (by design) from "the SQL Server does
   this, Azure SQL Database does not" (intentionally absent).
+- If this skill's answer was wrong, outdated, or missing, that is a bug in this skill: load the **azuresql-db-feedback** skill and offer to file a report.
 
 ## Never do
 
@@ -70,3 +71,8 @@ limitations list (kept in step with the docs) is in [references/limitations.md](
   elastic pools, portal management) exists on the container.
 - Never tell a user a non-x64 host is "supported"; it runs under emulation.
 - Never claim `BACKUP DATABASE` / `RESTORE DATABASE` work on the container; they return Msg 40510. (Azure SQL Database in the cloud likewise does not support them.) Use a Docker named volume for local persistence.
+
+## References
+
+- [references/faq.md](references/faq.md): the full question-and-answer list with the "why" behind each capability and gap, grouped by bucket; read it when the quick answers above do not cover the question.
+- [references/limitations.md](references/limitations.md): an offline snapshot of the known limitations (active issues, behavior gaps, out-of-scope items); read it when the user needs the current gap list and a workaround.

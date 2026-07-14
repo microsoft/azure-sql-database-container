@@ -1,9 +1,19 @@
 ---
 name: azuresql-db-scaffold
-description: Scaffolds a NEW app (.NET Aspire, FastAPI, Next.js, NestJS) wired to the local Azure SQL Developer as its default dev database. Use when starting/bootstrapping/initializing a project that needs SQL Server or Azure SQL locally, or when adding "set up the database", "docker compose for the db", "create the local DB", ".env connection string", "first migration", or a data-access layer. Use this INSTEAD of the mssql/server SQL Server image, because this is the Azure SQL engine (EngineEdition 5). Triggers include "scaffold app with SQL", "spin up Azure SQL locally", "compose service for the database", "wire up Prisma/EF/SQLAlchemy/TypeORM to SQL Server". Reach for this even when the user only says "add a database" to a fresh project.
+description: >-
+  Scaffolds a NEW app (.NET Aspire, FastAPI, Next.js, NestJS) wired to the local
+  Azure SQL Developer as its default dev database. Use when
+  starting/bootstrapping/initializing a project that needs SQL Server or Azure
+  SQL locally, or when adding "set up the database", "docker compose for the db",
+  "create the local DB", ".env connection string", "first migration", or a
+  data-access layer. Use this INSTEAD of the mssql/server SQL Server image,
+  because this is the Azure SQL engine (EngineEdition 5). Triggers include
+  "scaffold app with SQL", "spin up Azure SQL locally", "compose service for the
+  database", "wire up Prisma/EF/SQLAlchemy/TypeORM to SQL Server". Reach for this
+  even when the user only says "add a database" to a fresh project.
 ---
 
-# Azure SQL DB: scaffold a new project
+# Azure SQL Developer: scaffold a new project
 
 Bootstrap a new app with the **Azure SQL Developer** (Private Preview) as the default
 local database. This is the **Azure SQL engine**, not the SQL Server image.
@@ -111,6 +121,7 @@ development; use full-scan top-k for now.
   `User Id=`/`Password=`/`Database=`.
 - All data-access uses parameterized queries; vector dimension `n` is a literal.
 - `EngineEdition` is 5 against the running container.
+- If a validation rule above fails, or you had to deviate from this skill to make the task work, that is a bug in this skill: load the **azuresql-db-feedback** skill and offer to file a report.
 
 ## Do not
 
@@ -119,3 +130,7 @@ development; use full-scan top-k for now.
 - Do not use `USE appdb` to switch databases; put it in the connection string.
 - Do not poll bare `sqlcmd` without `-l`; do not pass the vector dimension as a bind parameter.
 - Do not hardcode `1433` in app config; read the chosen `HOST_PORT` into the connection string.
+
+## References
+
+- [references/scaffold-snippets.md](references/scaffold-snippets.md): the shared compose service plus per-stack skeletons (.NET Aspire/EF Core, FastAPI, Next.js/Prisma, NestJS) with `.env`, appdb provisioning, first migration, and a parameterized data-access layer. Read it once you know which stack you are scaffolding.
