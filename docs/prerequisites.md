@@ -63,12 +63,12 @@ If your container runtime's VM is set lower than this, the container may fail to
 If you are driving the container with an AI coding agent (Claude Code, Codex, GitHub Copilot, or Cursor) or from the CLI, install the container skill first. For that workflow it is a hard requirement, more important than any individual tool below: the skill teaches your agent the registry sign-in, image name, ports, connection string, and the local-to-cloud handoff, so a single plain-English prompt is enough.
 
 ```bash
-npx skills add microsoft/azure-sql-database-container
+npx skills add microsoft/azure-sql-database-container --copy
 ```
 
-> **On Windows, add `--copy`.** The installer writes the skills to `.agents/skills/` and symlinks them into your agent's folder, but creating a symlink on Windows requires Developer Mode or an elevated shell. When it fails, the installer can still report success while your agent never loads the skills. `--copy` writes real directories instead and is safe on every platform.
+> **Why `--copy`?** Without it, the installer writes the skills to `.agents/skills/` and symlinks them into your agent's folder. Creating a symlink on Windows requires Developer Mode or an elevated shell, and when it fails the installer can still report success while your agent never loads the skills. `--copy` writes real directories instead. It is safe on every platform, so it is the recommended default.
 
-Verify they loaded: `ls .claude/skills/` (Claude Code) should list the ten `azuresql-db-*` directories. If it is empty while `.agents/skills/` is populated, re-run with `--copy`. Other agents read from different folders; see the [install matrix](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#install-matrix).
+Verify they loaded: `ls .claude/skills/` (Claude Code) should list the `azuresql-db-*` directories. If it is empty while `.agents/skills/` is populated, re-run with `--copy`. Other agents read from different folders; see the [install matrix](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#install-matrix).
 
 It works across Claude Code, GitHub Copilot, Codex, and Cursor. Browse the skill and ready-made prompts in [agent skills](https://github.com/microsoft/azure-sql-database-container/tree/main/skills). Without it, the agent will not know how to sign in to the registry, which image to run, or how to connect.
 

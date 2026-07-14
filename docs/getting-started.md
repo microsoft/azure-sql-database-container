@@ -38,10 +38,10 @@ From here you have two ways to reach your first query. Both end in the same plac
 Your agent does the whole setup for you: it pulls the image, starts the container, provisions the database, and runs your first query. You install the skill once, then ask in plain English.
 
 ```bash
-npx skills add microsoft/azure-sql-database-container
+npx skills add microsoft/azure-sql-database-container --copy
 ```
 
-> **On Windows, add `--copy`:** `npx skills add microsoft/azure-sql-database-container --copy`. The installer normally writes the skills to `.agents/skills/` and symlinks them into your agent's folder, but creating a symlink on Windows requires Developer Mode or an elevated shell. When it fails, the installer can still report success and your agent silently never loads the skills. `--copy` writes real directories instead, and is safe on every platform.
+> **Why `--copy`?** Without it, the installer writes the skills to `.agents/skills/` and *symlinks* them into your agent's folder. Creating a symlink on Windows requires Developer Mode or an elevated shell, and when it fails the installer can still report success while your agent silently never loads the skills. `--copy` writes real directories instead. It is safe on every platform, so it is the recommended default.
 
 **Verify the skills loaded** before you rely on them. For Claude Code:
 

@@ -40,22 +40,16 @@ EngineEdition `5` and Edition `'SQL Azure'` are the cloud engine's fingerprint. 
 The portable way. Works across agents that follow the skills.sh convention. The source is the **repository**, not a skill name:
 
 ```bash
-npx skills add microsoft/azure-sql-database-container
+npx skills add microsoft/azure-sql-database-container --copy
 ```
 
 Add `--all` to take every skill without prompting, or `-s` to pick a subset:
 
 ```bash
-npx skills add microsoft/azure-sql-database-container -s azuresql-db-container,azuresql-db-rag
+npx skills add microsoft/azure-sql-database-container --copy -s azuresql-db-container,azuresql-db-rag
 ```
 
-> **On Windows, add `--copy`.** By default the installer writes the skills to `.agents/skills/` and *symlinks* them into your agent's directory. Creating a symlink on Windows requires Developer Mode or an elevated shell, and when it fails the installer can still report success, leaving you with skills your agent never loads. `--copy` writes real directories instead and sidesteps the problem:
->
-> ```bash
-> npx skills add microsoft/azure-sql-database-container --copy
-> ```
->
-> This is safe on every platform, so use it if you are unsure.
+> **Why `--copy`?** Without it, the installer writes the skills to `.agents/skills/` and *symlinks* them into your agent's directory. Creating a symlink on Windows requires Developer Mode or an elevated shell, and when it fails the installer can still report success, leaving you with skills your agent never loads. `--copy` writes real directories instead and sidesteps the problem entirely. It is safe on every platform, so it is the recommended default. (Upstream issue: [vercel-labs/skills#1355](https://github.com/vercel-labs/skills/issues/1355).)
 
 **Then verify the skills actually loaded.** This is the step worth not skipping:
 
