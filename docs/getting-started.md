@@ -12,6 +12,8 @@ description: "Go from pulling the Azure SQL Developer image to your first query 
   - [Step 1: sign in and pull the image](#step-1-sign-in-and-pull-the-image)
   - [Step 2: start the container](#step-2-start-the-container)
   - [Step 3: connect and run your first query](#step-3-connect-and-run-your-first-query)
+- [Troubleshooting](#troubleshooting)
+  - [Skills did not load](#skills-did-not-load)
 - [Next: build something](#next-build-something)
 - [Related content](#related-content)
 
@@ -41,19 +43,9 @@ Your agent does the whole setup for you: it pulls the image, starts the containe
 npx skills add microsoft/azure-sql-database-container
 ```
 
-That installs the whole collection, which is what we recommend: the skills route to each other, so the one that starts the container hands off to the one that runs your migrations. Only want a single skill? Name it:
+That installs the whole collection, which is what we recommend: the skills route to each other, so the one that starts the container hands off to the one that runs your migrations. To take just one, [pick it from the table](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#install-just-one).
 
-```bash
-npx skills add microsoft/azure-sql-database-container --skill azuresql-db-rag
-```
-
-> **Check that the skills actually loaded.** Run `ls .claude/skills/` (Claude Code; other agents read from different folders, see the [install matrix](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#install-matrix)). You should see the `azuresql-db-*` directories. If that folder is empty or missing while `.agents/skills/` is full, the installer did not target your agent, and it can report success when this happens. Re-run it naming your agent explicitly:
->
-> ```bash
-> npx skills add microsoft/azure-sql-database-container -a claude-code
-> ```
->
-> If it still does not appear, copy the directories across by hand with `mkdir -p .claude/skills && cp -R .agents/skills/azuresql-db-* .claude/skills/`, or skip the installer and [install manually](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#manual-install). This is a known installer issue ([vercel-labs/skills#1355](https://github.com/vercel-labs/skills/issues/1355)), not a problem with the skills themselves.
+Confirm they loaded with `ls .claude/skills/`. If it is empty, see [skills did not load](#skills-did-not-load).
 
 The skills work across Claude Code, GitHub Copilot (VS Code and CLI), Codex, and Cursor. Then ask your agent in plain English. Copy this and paste it into your agent:
 
@@ -143,6 +135,32 @@ docker rm -f sqldb
 # or, if you used docker compose (add -v to also remove the data volume):
 docker compose down
 ```
+
+## Troubleshooting
+
+### Skills did not load
+
+Your agent reads skills from its own folder, and `npx skills add` writes them to `.agents/skills/` first and then links them across. If that second step does not happen, you are left with skills your agent never sees, and **the installer can still report success**.
+
+Check the folder your agent actually reads (`.claude/skills/` for Claude Code; the others are in the [install matrix](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#install-matrix)):
+
+```bash
+ls .claude/skills/
+```
+
+If it is empty or missing while `.agents/skills/` has the skills in it, name your agent explicitly and run it again:
+
+```bash
+npx skills add microsoft/azure-sql-database-container -a claude-code
+```
+
+Still nothing? Copy them across yourself, which always works:
+
+```bash
+mkdir -p .claude/skills && cp -R .agents/skills/azuresql-db-* .claude/skills/
+```
+
+This is a known issue in the installer ([vercel-labs/skills#1355](https://github.com/vercel-labs/skills/issues/1355)), not a problem with the skills. If you hit it, [tell us](https://aka.ms/sql-agent-skills-feedback): we want to know which agent and which install method.
 
 ## Next: build something
 
