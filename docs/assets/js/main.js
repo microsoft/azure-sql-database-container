@@ -44,6 +44,21 @@
     }
   }
 
+  // show/hide the rest of the skill cards
+  document.querySelectorAll("[data-toggle-skills]").forEach(function (btn) {
+    var grid = document.querySelector(".skill-cards");
+    var label = btn.querySelector(".skill-more-label");
+    if (!grid || !label) return;
+    var hidden = grid.querySelectorAll(".skill-card-extra").length;
+    var shown = grid.querySelectorAll(".skill-card:not(.skill-card-extra):not(.skill-card-action)").length;
+    label.textContent = "See all " + (hidden + shown) + " skills";
+    btn.addEventListener("click", function () {
+      var open = grid.classList.toggle("is-open");
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      label.textContent = open ? "Show fewer" : "See all " + (hidden + shown) + " skills";
+    });
+  });
+
   // modals (native <dialog>: Escape and focus handling come for free)
   document.querySelectorAll("[data-open-modal]").forEach(function (btn) {
     btn.addEventListener("click", function () {

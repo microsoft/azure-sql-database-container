@@ -292,35 +292,35 @@ title: Azure SQL Developer
         <h4>RAG and vector search <span class="arrow">&rarr;</span></h4>
         <p>Native <code>VECTOR</code> type and <code>VECTOR_DISTANCE</code>, with a local embedding model.</p>
       </a>
-      <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-ci" rel="noopener">
+      <a class="skill-card skill-card-extra" href="{{ site.repo }}/tree/main/skills/azuresql-db-ci" rel="noopener">
 
         <span class="skill-tag">azuresql-db-ci</span>
 
         <h4>CI <span class="arrow">&rarr;</span></h4>
         <p>Run the engine as a service in GitHub Actions, with the right readiness and provisioning.</p>
       </a>
-      <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-sidecar" rel="noopener">
+      <a class="skill-card skill-card-extra" href="{{ site.repo }}/tree/main/skills/azuresql-db-sidecar" rel="noopener">
 
         <span class="skill-tag">azuresql-db-sidecar</span>
 
         <h4>Sidecar <span class="arrow">&rarr;</span></h4>
         <p>Add it to a docker compose stack or Dev Container, wired by service name.</p>
       </a>
-      <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-scaffold" rel="noopener">
+      <a class="skill-card skill-card-extra" href="{{ site.repo }}/tree/main/skills/azuresql-db-scaffold" rel="noopener">
 
         <span class="skill-tag">azuresql-db-scaffold</span>
 
         <h4>Scaffold <span class="arrow">&rarr;</span></h4>
         <p>Bootstrap a new app with Azure SQL Developer as the default local database.</p>
       </a>
-      <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-faq" rel="noopener">
+      <a class="skill-card skill-card-extra" href="{{ site.repo }}/tree/main/skills/azuresql-db-faq" rel="noopener">
 
         <span class="skill-tag">azuresql-db-faq</span>
 
         <h4>Answer questions <span class="arrow">&rarr;</span></h4>
         <p>What Azure SQL Developer can and can't do, and why it differs from the cloud: backups, <code>USE</code>, vector index, x64-only, tooling.</p>
       </a>
-      <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-feedback" rel="noopener">
+      <a class="skill-card skill-card-extra" href="{{ site.repo }}/tree/main/skills/azuresql-db-feedback" rel="noopener">
 
         <span class="skill-tag">azuresql-db-feedback</span>
 
@@ -328,11 +328,13 @@ title: Azure SQL Developer
         <p>Your agent writes the bug report for you, from what it already knows, and hands you a prefilled issue to review. It never files anything without your say-so.</p>
       </a>
       {% assign one_skills = "azuresql-db-container|Start the engine,azuresql-db-from-sql-server|Convert from SQL Server,azuresql-db-local-to-cloud|Local to cloud,azuresql-db-schema-migration|Schema migrations,azuresql-db-import|Import a database,azuresql-db-rag|RAG and vector search,azuresql-db-ci|CI,azuresql-db-sidecar|Sidecar,azuresql-db-scaffold|Scaffold,azuresql-db-faq|Answer questions,azuresql-db-feedback|Report a problem" | split: "," %}
-      <button class="skill-card skill-card-action" type="button" data-open-modal="single-skill">
-        <span class="skill-tag skill-tag-alt">one skill only</span>
-        <h4>Install a single skill <span class="arrow">&rarr;</span></h4>
-        <p>The command above installs all {{ one_skills | size }}, which is what we recommend: they hand off to each other. Need just one? Grab its install command.</p>
+    </div>
+    <div class="skill-more">
+      <button class="skill-more-btn" type="button" data-toggle-skills aria-expanded="false">
+        <span class="skill-more-label">See all 11 skills</span>
+        <span class="skill-more-ico" aria-hidden="true">&#8964;</span>
       </button>
+      <button class="skill-more-btn skill-more-alt" type="button" data-open-modal="single-skill">Install a single skill</button>
     </div>
   </div>
 
