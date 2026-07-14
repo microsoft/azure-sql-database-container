@@ -169,10 +169,10 @@ title: Azure SQL Developer
           <h3>Sign in to the preview registry</h3>
           <p class="qstep-desc">Use the username and password you received when you signed up.</p>
           <div class="qstep-cmd-group" data-runtime-tabs>
-            <div class="runtime-tabs" role="tablist" aria-label="Container runtime">
-              <button class="runtime-tab is-active" type="button" role="tab" aria-selected="true" data-runtime="docker">Docker</button>
-              <button class="runtime-tab" type="button" role="tab" aria-selected="false" data-runtime="podman">Podman</button>
-              <button class="runtime-tab" type="button" role="tab" aria-selected="false" data-runtime="containerd">containerd</button>
+            <div class="runtime-tabs" aria-label="Container runtime">
+              <button class="runtime-tab is-active" type="button" data-runtime="docker">Docker</button>
+              <button class="runtime-tab" type="button" data-runtime="podman">Podman</button>
+              <button class="runtime-tab" type="button" data-runtime="containerd">containerd (nerdctl)</button>
             </div>
             <div class="qstep-cmd" data-runtime-panel="docker">
               <code><span class="cmd-p">$</span> docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u &lt;username&gt;</code>
@@ -193,12 +193,12 @@ title: Azure SQL Developer
         <span class="qstep-num">2</span>
         <div class="qstep-body">
           <h3>Start the container</h3>
-          <p class="qstep-desc">Run it on port 1433 with a strong SA password.</p>
+          <p class="qstep-desc">Run it on port 1433 with a strong SA password. On a non-x64 host, add <code>--platform linux/amd64</code> to the run command (see <a href="{{ '/getting-started.html' | relative_url }}#step-2-start-the-container">Getting started</a>).</p>
           <div class="qstep-cmd-group" data-runtime-tabs>
-            <div class="runtime-tabs" role="tablist" aria-label="Container runtime">
-              <button class="runtime-tab is-active" type="button" role="tab" aria-selected="true" data-runtime="docker">Docker</button>
-              <button class="runtime-tab" type="button" role="tab" aria-selected="false" data-runtime="podman">Podman</button>
-              <button class="runtime-tab" type="button" role="tab" aria-selected="false" data-runtime="containerd">containerd</button>
+            <div class="runtime-tabs" aria-label="Container runtime">
+              <button class="runtime-tab is-active" type="button" data-runtime="docker">Docker</button>
+              <button class="runtime-tab" type="button" data-runtime="podman">Podman</button>
+              <button class="runtime-tab" type="button" data-runtime="containerd">containerd (nerdctl)</button>
             </div>
             <div class="qstep-cmd" data-runtime-panel="docker">
               <code><span class="cmd-p">$</span> docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
@@ -224,10 +224,10 @@ title: Azure SQL Developer
           <h3>Connect and query</h3>
           <p class="qstep-desc">No host install needed: the container bundles <a href="https://learn.microsoft.com/sql/tools/sqlcmd/sqlcmd-utility" rel="noopener">sqlcmd</a>. Run your first query with exec.</p>
           <div class="qstep-cmd-group" data-runtime-tabs>
-            <div class="runtime-tabs" role="tablist" aria-label="Container runtime">
-              <button class="runtime-tab is-active" type="button" role="tab" aria-selected="true" data-runtime="docker">Docker</button>
-              <button class="runtime-tab" type="button" role="tab" aria-selected="false" data-runtime="podman">Podman</button>
-              <button class="runtime-tab" type="button" role="tab" aria-selected="false" data-runtime="containerd">containerd</button>
+            <div class="runtime-tabs" aria-label="Container runtime">
+              <button class="runtime-tab is-active" type="button" data-runtime="docker">Docker</button>
+              <button class="runtime-tab" type="button" data-runtime="podman">Podman</button>
+              <button class="runtime-tab" type="button" data-runtime="containerd">containerd (nerdctl)</button>
             </div>
             <div class="qstep-cmd" data-runtime-panel="docker">
               <code><span class="cmd-p">$</span> docker exec sqldb /opt/mssql-tools18/bin/sqlcmd \
