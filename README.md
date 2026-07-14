@@ -35,7 +35,7 @@ For the first time, developers can build, test, and ship applications against th
 - File a bug: [GitHub Issues](https://aka.ms/azuresql-developer-bug)
 - Request a feature: [GitHub Issues](https://aka.ms/azuresql-developer-feature-request)
 - Ask a question, share a build, suggest an idea: [GitHub Discussions](../../discussions)
-- Connect with the team: [book a session](https://aka.ms/azuresql-container-meet) or email [azuresqldb-container@microsoft.com](mailto:azuresqldb-container@microsoft.com)
+- Connect with the team: [book a session](https://aka.ms/azuresql-developer-meet) or email [azuresqldb-container@microsoft.com](mailto:azuresqldb-container@microsoft.com)
 - Real-time conversation: the private Teams channel shared via the early-access feedback channel
 
 See [Feedback and how to engage](docs/feedback-and-how-to-engage.md) for the full guide on which channel fits which question.

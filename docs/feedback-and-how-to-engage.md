@@ -29,7 +29,7 @@ Filing a bug or requesting a feature?
 | Share what you built                                       | [GitHub Discussions: Show & Tell](https://github.com/microsoft/azure-sql-database-container/discussions/categories/show-and-tell) |
 | Suggest a direction or pitch an idea                       | [GitHub Discussions: Ideas](https://github.com/microsoft/azure-sql-database-container/discussions/categories/ideas) |
 | Email the team directly                                    | [azuresqldb-container@microsoft.com](mailto:azuresqldb-container@microsoft.com) |
-| Book live time with the team                               | [Connect with the team](https://aka.ms/azuresql-container-meet) |
+| Book live time with the team                               | [Connect with the team](https://aka.ms/azuresql-developer-meet) |
 | Talk to the team in real time                              | Private Teams channel (link shared via the early-access feedback channel) |
 | Demo, ask questions live, hear roadmap updates             | Office hours (calendar invite shared via the early-access feedback channel) |
 
@@ -67,7 +67,7 @@ Discussions move slower than the Teams channel but they are searchable and durab
 Want to reach the team directly?
 
 - **Email:** [azuresqldb-container@microsoft.com](mailto:azuresqldb-container@microsoft.com). Good for anything that does not fit a public issue or discussion: onboarding questions, access, or a quick note to the team.
-- **Book live time:** [aka.ms/azuresql-container-meet](https://aka.ms/azuresql-container-meet). Grab a slot to talk through your scenario, show what you built, or work through a blocker with the team.
+- **Book live time:** [aka.ms/azuresql-developer-meet](https://aka.ms/azuresql-developer-meet). Grab a slot to talk through your scenario, show what you built, or work through a blocker with the team.
 
 For bugs and feature requests, still file on GitHub so the work is tracked and visible to the whole cohort.
 
