@@ -44,6 +44,29 @@
     }
   }
 
+  // shareable anchors on doc-page headings (kramdown already gives them ids)
+  document.querySelectorAll(".prose h2[id], .prose h3[id]").forEach(function (h) {
+    if (h.querySelector(".head-anchor")) return;
+    var a = document.createElement("a");
+    a.className = "head-anchor";
+    a.href = "#" + h.id;
+    a.setAttribute("aria-label", "Link to this section");
+    a.textContent = "#";
+    a.addEventListener("click", function (e) {
+      e.preventDefault();
+      var url = location.origin + location.pathname + "#" + h.id;
+      history.replaceState(null, "", "#" + h.id);
+      // copy the full link, but flash a tooltip rather than swapping the "#" for
+      // "Copied", which would reflow the heading
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).catch(function () {});
+      }
+      a.classList.add("is-copied");
+      setTimeout(function () { a.classList.remove("is-copied"); }, 1600);
+    });
+    h.appendChild(a);
+  });
+
   // show/hide the rest of the skill cards
   document.querySelectorAll("[data-toggle-skills]").forEach(function (btn) {
     var grid = document.querySelector(".skill-cards");
