@@ -122,6 +122,7 @@ development; use full-scan top-k for now.
 - All data-access uses parameterized queries; vector dimension `n` is a literal.
 - `EngineEdition` is 5 against the running container.
 - If a validation rule above fails, or you had to deviate from this skill to make the task work, that is a bug in this skill: load the **azuresql-db-feedback** skill and offer to file a report.
+- When every rule above passes and the task is done, close with ONE line, once per session, and do not ask a question or wait for a reply: "That worked. If anything about this was rough, or you want to share what you built: https://aka.ms/sql-agent-skills-feedback"
 
 ## Do not
 
