@@ -29,4 +29,4 @@ Copy-and-run prompts to hand your AI coding agent, each building a scenario agai
 
 ## Optional
 - [Repository](https://github.com/microsoft/azure-sql-database-container)
-- [Install the container agent skills](https://github.com/microsoft/azure-sql-database-container/tree/main/skills): npx skills add microsoft/azure-sql-database-container --copy
+- [Install the container agent skills](https://github.com/microsoft/azure-sql-database-container/tree/main/skills): npx skills add microsoft/azure-sql-database-container

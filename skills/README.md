@@ -40,28 +40,42 @@ EngineEdition `5` and Edition `'SQL Azure'` are the cloud engine's fingerprint. 
 The portable way. Works across agents that follow the skills.sh convention. The source is the **repository**, not a skill name:
 
 ```bash
-npx skills add microsoft/azure-sql-database-container --copy
+npx skills add microsoft/azure-sql-database-container
 ```
 
-Add `--all` to take every skill without prompting, or `-s` to pick a subset:
+Install the whole collection unless you have a reason not to: the hub skill routes to the others, so a partial install loses the handoffs. Add `--all` to take every skill without prompting.
+
+### Install just one
+
+Name the skill you want. This is the exception, not the default:
 
 ```bash
-npx skills add microsoft/azure-sql-database-container --copy -s azuresql-db-container,azuresql-db-rag
+npx skills add microsoft/azure-sql-database-container --skill azuresql-db-rag
 ```
 
-> **Why `--copy`?** Without it, the installer writes the skills to `.agents/skills/` and *symlinks* them into your agent's directory. Creating a symlink on Windows requires Developer Mode or an elevated shell, and when it fails the installer can still report success, leaving you with skills your agent never loads. `--copy` writes real directories instead and sidesteps the problem entirely. It is safe on every platform, so it is the recommended default. (Upstream issue: [vercel-labs/skills#1355](https://github.com/vercel-labs/skills/issues/1355).)
+Any skill name from the table above works. Each skill stands alone (the load-bearing facts are deliberately repeated in every one), so a single-skill install is functional; you just lose the routing between them.
 
-**Then verify the skills actually loaded.** This is the step worth not skipping:
+### Then verify the skills actually loaded
+
+This is the step worth not skipping:
 
 ```bash
 ls .claude/skills/          # Claude Code; see the matrix below for other agents
 ```
 
-You should see the ten `azuresql-db-*` directories. If the directory is missing or empty while `.agents/skills/` is populated, the symlink step failed: re-run with `--copy`, or copy them across by hand:
+You should see the `azuresql-db-*` directories. If the directory is missing or empty while `.agents/skills/` is populated, **the installer did not target your agent, and it can report success when this happens.** Re-run it naming your agent explicitly:
+
+```bash
+npx skills add microsoft/azure-sql-database-container -a claude-code
+```
+
+If they still do not appear, copy them across by hand:
 
 ```bash
 mkdir -p .claude/skills && cp -R .agents/skills/azuresql-db-* .claude/skills/
 ```
+
+This is a known installer issue ([vercel-labs/skills#1355](https://github.com/vercel-labs/skills/issues/1355), [#744](https://github.com/vercel-labs/skills/issues/744)), not a problem with the skills. It is not specific to Windows.
 
 ### Manual install
 
