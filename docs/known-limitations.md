@@ -48,15 +48,11 @@ Some session-level and database-level defaults (collation, transaction isolation
 
 **Workaround:** For Private Preview prototypes, run vector search without an index (full scan). This is fine for the corpus sizes typical of a prototype. For larger corpora, file a feature request and we will prioritize.
 
-### 4. x64 image; non-x64 hosts need a platform flag
-
-The image is x64 (`linux/amd64`); on a non-x64 host, add `--platform linux/amd64`.
-
-### 5. Two-step provisioning
+### 4. Two-step provisioning
 
 Two-step provisioning is a current limitation: you provision a database on a master connection, then reconnect directly to it. Public preview will let the container set a default startup database (for example `MSSQL_DB=appdb`) so you connect straight into an Azure-faithful (SDS) session without going through master.
 
-### 6. GUI tooling compatibility (MSSQL extension and SSMS)
+### 5. GUI tooling compatibility (MSSQL extension and SSMS)
 
 Graphical tools are not yet 100% compatible with the container. The [VS Code MSSQL extension](https://marketplace.visualstudio.com/items?itemName=ms-mssql.mssql) and SQL Server Management Studio (SSMS) can throw UI errors against it. We are actively working on full compatibility.
 
@@ -66,6 +62,7 @@ Graphical tools are not yet 100% compatible with the container. The [VS Code MSS
 
 The following gaps are functional differences from Azure SQL Database in the cloud that we are aware of. They may or may not close before Public Preview.
 
+- **x64 image only; no native ARM64 build.** The image is x64 (`linux/amd64`). **There is no native ARM64 build today**, so on an ARM64 host (an Apple Silicon Mac, an ARM64 Windows or Linux machine) the container runs under **emulation**. To run it, add the platform flag: `--platform linux/amd64` on `docker run` (see [Step 2: start the container](getting-started.md#step-2-start-the-container)), or `platform: linux/amd64` under the service in a compose file. Emulation works, and it is how most Apple Silicon developers are running the preview today, but it is not free: expect slower startup and slower query performance than a native build, and heavier memory use. Treat it as "runs under emulation", not "ARM64 is supported". If a native ARM64 build matters for your workflow, [tell us in a feature request](https://aka.ms/azuresql-developer-feature-request) and say what it is costing you. Demand from the preview cohort is what we weigh when prioritizing it.
 - **Microsoft Entra ID authentication.** Microsoft Entra ID (formerly Azure AD) authentication does not work on the container today. Use SQL authentication (the `sa` login, or a contained user you create) for local development.
 
   The configuration surface is present, which makes this confusing to diagnose. If you follow the SQL Server guidance for [Entra authentication in a container](https://learn.microsoft.com/sql/linux/security/authentication/container-kubernetes-microsoft-entra-deployment) and pass `MSSQL_AAD_CLIENT_ID`, `MSSQL_AAD_PRIMARY_TENANT`, and `MSSQL_AAD_CERTIFICATE_FILE_PATH` with a mounted `.pfx`, the container accepts the variables and **the log even reports that it loaded your certificate and enabled Entra**. Initialization then fails and Entra is silently switched off:
