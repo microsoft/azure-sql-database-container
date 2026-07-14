@@ -1,0 +1,120 @@
+name: Agent skill feedback
+description: Report a problem with an azuresql-db-* agent skill, or suggest an improvement to one. For problems with the container itself, use the bug report instead.
+title: "[Skill]: "
+labels: ["skills", "needs-triage", "User-filled"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This is for feedback about the **agent skills**: the `azuresql-db-*` instructions your AI agent loads.
+
+        If the **container** is what misbehaved (it will not start, a query fails, the engine does something unexpected), that belongs in a [bug report](https://aka.ms/azuresql-developer-bug) instead. Rule of thumb: if the skill told your agent to do the right thing and the container still failed, it is a container bug. If the skill told your agent to do the *wrong* thing, or did not tell it enough, it is a skill bug and it belongs here.
+
+  - type: dropdown
+    id: skill
+    attributes:
+      label: Which skill
+      description: The skill that caused the problem. Pick "The collection as a whole" for install problems or for a skill that never loaded.
+      options:
+        - azuresql-db-container
+        - azuresql-db-from-sql-server
+        - azuresql-db-local-to-cloud
+        - azuresql-db-schema-migration
+        - azuresql-db-import
+        - azuresql-db-rag
+        - azuresql-db-ci
+        - azuresql-db-sidecar
+        - azuresql-db-scaffold
+        - azuresql-db-faq
+        - azuresql-db-feedback
+        - The collection as a whole (install, discovery, or the wrong skill loaded)
+        - Not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: problem-type
+    attributes:
+      label: What kind of problem
+      options:
+        - The skill told the agent to do something wrong
+        - The skill was missing something it needed to say
+        - The wrong skill was used, or no skill was used at all
+        - The skill would not install or would not load
+        - The skill worked, but I want to suggest an improvement
+        - Something else
+    validations:
+      required: true
+
+  - type: dropdown
+    id: agent
+    attributes:
+      label: Which agent
+      description: Skills behave differently across harnesses, and we cannot see which one you used.
+      options:
+        - Claude Code
+        - GitHub Copilot (VS Code)
+        - GitHub Copilot (CLI)
+        - Codex
+        - Cursor
+        - Other (describe below)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install-method
+    attributes:
+      label: How did you install the skills
+      options:
+        - npx skills add
+        - Copied the directories in by hand
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you asked your agent to do, and what it did.
+      placeholder: |
+        I asked: "add a local Azure SQL database to this project"
+        The agent ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: skill-said
+    attributes:
+      label: What the skill said, and what you had to do instead
+      description: |
+        This is the most useful thing you can tell us, and the thing we are otherwise blind to. If the agent followed the skill and it did not work, quote the instruction that was wrong or missing, and say what actually worked. If the agent had to improvise or work around the skill, tell us what it worked around.
+      placeholder: |
+        The skill said to run:      docker run ... (without --platform)
+        What actually worked:       docker run --platform linux/amd64 ...
+    validations:
+      required: false
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: The prompt you gave the agent, and the commands it ran. Redact any password or credential before pasting.
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Host OS, container runtime, or anything else that matters. Optional.
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmation
+      options:
+        - label: This is about an agent skill, not about the container itself.
+          required: true
+        - label: I removed any password, registry credential, or connection string from what I pasted above.
+          required: true

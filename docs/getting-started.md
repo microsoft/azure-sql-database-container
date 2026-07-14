@@ -55,9 +55,11 @@ npx skills add microsoft/azure-sql-database-container --skill azuresql-db-rag
 >
 > If it still does not appear, copy the directories across by hand with `mkdir -p .claude/skills && cp -R .agents/skills/azuresql-db-* .claude/skills/`, or skip the installer and [install manually](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#manual-install). This is a known installer issue ([vercel-labs/skills#1355](https://github.com/vercel-labs/skills/issues/1355)), not a problem with the skills themselves.
 
-The skills work across Claude Code, GitHub Copilot (VS Code and CLI), Codex, and Cursor. Then ask your agent, for example:
+The skills work across Claude Code, GitHub Copilot (VS Code and CLI), Codex, and Cursor. Then ask your agent in plain English. Copy this and paste it into your agent:
 
-> Add a local Azure SQL Database to this project, then scaffold the schema, migrations, and data-access layer for my stack.
+```text
+Add a local Azure SQL Database to this project, then scaffold the schema, migrations, and data-access layer for my stack.
+```
 
 **Why use the skills?** They already know the private preview registry, the x64 image, the connection model (the engine does not auto-create databases, so they provision a database first, named `appdb` in these examples or whatever name you choose), the readiness wait, and the local-to-cloud story. So your agent stands up a real Azure SQL Database the right way the first time, instead of reaching for the SQL Server image (`mcr.microsoft.com/mssql/server`) or inventing behavior the engine does not have. Browse the [skills on GitHub](https://github.com/microsoft/azure-sql-database-container/tree/main/skills).
 

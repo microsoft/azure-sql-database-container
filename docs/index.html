@@ -320,6 +320,32 @@ title: Azure SQL Developer
         <h4>Answer questions <span class="arrow">&rarr;</span></h4>
         <p>What Azure SQL Developer can and can't do, and why it differs from the cloud: backups, <code>USE</code>, vector index, x64-only, tooling.</p>
       </a>
+      <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-feedback" rel="noopener">
+
+        <span class="skill-tag">azuresql-db-feedback</span>
+
+        <h4>Report a problem <span class="arrow">&rarr;</span></h4>
+        <p>Your agent writes the bug report for you, from what it already knows, and hands you a prefilled issue to review. It never files anything without your say-so.</p>
+      </a>
+    </div>
+
+    <h4 class="skill-install-title">Install a single skill</h4>
+    <p class="skill-install-lead">The command above installs the whole collection, which is what we recommend: the skills hand off to each other. To take just one, name it.</p>
+    <div class="skill-install">
+      <table class="skill-install-table">
+        {% assign one_skills = "azuresql-db-container|Start the engine,azuresql-db-from-sql-server|Convert from SQL Server,azuresql-db-local-to-cloud|Local to cloud,azuresql-db-schema-migration|Schema migrations,azuresql-db-import|Import a database,azuresql-db-rag|RAG and vector search,azuresql-db-ci|CI,azuresql-db-sidecar|Sidecar,azuresql-db-scaffold|Scaffold,azuresql-db-faq|Answer questions,azuresql-db-feedback|Report a problem" | split: "," %}
+        {% for row in one_skills %}
+          {% assign parts = row | split: "|" %}
+          {% assign sname = parts[0] %}
+          <tr>
+            <td class="si-name"><code>{{ sname }}</code></td>
+            <td class="si-what">{{ parts[1] }}</td>
+            <td class="si-act">
+              <button class="copy-btn copy-light" type="button" data-copy-text="npx skills add microsoft/azure-sql-database-container --skill {{ sname }}" aria-label="Copy the install command for {{ sname }}"><span class="copy-label">Copy</span></button>
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
     </div>
   </div>
 </section>
