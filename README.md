@@ -34,11 +34,16 @@ For the first time, developers can build, test, and ship applications against th
 
 - File a bug: [GitHub Issues](https://aka.ms/azuresql-developer-bug)
 - Request a feature: [GitHub Issues](https://aka.ms/azuresql-developer-feature-request)
+- Report a problem with an [agent skill](skills/README.md): [Skill feedback](https://aka.ms/sql-agent-skills-feedback)
 - Ask a question, share a build, suggest an idea: [GitHub Discussions](../../discussions)
 - Connect with the team: [book a session](https://aka.ms/azuresql-developer-meet) or email [azuresqldb-container@microsoft.com](mailto:azuresqldb-container@microsoft.com)
 - Real-time conversation: the private Teams channel shared via the early-access feedback channel
 
-See [Feedback and how to engage](docs/feedback-and-how-to-engage.md) for the full guide on which channel fits which question.
+See [Feedback and how to engage](docs/feedback-and-how-to-engage.md) for the full guide on which channel fits which question, and [SUPPORT.md](SUPPORT.md) for how to get help.
+
+## Contributing
+
+Pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first: it covers what we are looking for during the Private Preview, how to build the site locally, and the conventions the agent skills follow (which are easy to break in ways that only show up when an agent silently stops loading a skill).
 
 ## License
 
