@@ -66,7 +66,20 @@ Graphical tools are not yet 100% compatible with the container. The [VS Code MSS
 
 The following gaps are functional differences from Azure SQL Database in the cloud that we are aware of. They may or may not close before Public Preview.
 
-- **Microsoft Entra ID authentication.** The container does not support Microsoft Entra ID (formerly Azure AD) authentication. Use SQL authentication (the `sa` login, or a contained user you create) for local development. Note that the SQL Server image (`mcr.microsoft.com/mssql/server`) does support it through the `MSSQL_AAD_CLIENT_ID`, `MSSQL_AAD_PRIMARY_TENANT`, and `MSSQL_AAD_CERTIFICATE_FILE_PATH` environment variables; those variables have no effect here, and setting them will not enable Entra authentication. This does not change the local-to-cloud story: Azure SQL Database in the cloud supports Entra, so the usual pattern is SQL authentication locally and Entra in the cloud, with only the connection string changing. See the [local-to-cloud skill](https://github.com/microsoft/azure-sql-database-container/tree/main/skills/azuresql-db-local-to-cloud).
+- **Microsoft Entra ID authentication.** Microsoft Entra ID (formerly Azure AD) authentication does not work on the container today. Use SQL authentication (the `sa` login, or a contained user you create) for local development.
+
+  The configuration surface is present, which makes this confusing to diagnose. If you follow the SQL Server guidance for [Entra authentication in a container](https://learn.microsoft.com/sql/linux/security/authentication/container-kubernetes-microsoft-entra-deployment) and pass `MSSQL_AAD_CLIENT_ID`, `MSSQL_AAD_PRIMARY_TENANT`, and `MSSQL_AAD_CERTIFICATE_FILE_PATH` with a mounted `.pfx`, the container accepts the variables and **the log even reports that it loaded your certificate and enabled Entra**. Initialization then fails and Entra is silently switched off:
+
+  ```
+  Microsoft Entra ID authentication is enabled.
+  Successfully loaded the AAD first party principal certificate.
+  Azure Active Directory authentication manager initialization failed.
+    AAD authentication will be disabled, failure: 0x80004005
+  ```
+
+  The engine keeps running and SQL authentication continues to work, so the only sign that Entra is off is in the container log. If you hit this, please [file a bug](https://aka.ms/azuresql-developer-bug) with those log lines.
+
+  This does not change the local-to-cloud story: Azure SQL Database in the cloud supports Entra, so the usual pattern is SQL authentication locally and Entra in the cloud, with only the connection string changing. See the [local-to-cloud skill](https://github.com/microsoft/azure-sql-database-container/tree/main/skills/azuresql-db-local-to-cloud).
 - **Backup and restore.** `BACKUP DATABASE` and `RESTORE DATABASE` are not supported on the container (they return `Msg 40510`). Azure SQL Database in the cloud likewise does not support them, because backups there are managed by the platform. For local data persistence, use a Docker named volume (`-v sqldb-data:/var/opt/mssql`); for managed backups, point-in-time restore, and geo-replication, use Azure SQL Database in the cloud.
 - **Always Encrypted with secure enclaves.** Always Encrypted basic functionality works. Secure enclaves require host TEE support and are not validated for the container.
 - **Auditing to Log Analytics or Storage.** Audit-to-file works. Audit-to-cloud-targets is not applicable on the container.
