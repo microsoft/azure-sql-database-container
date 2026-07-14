@@ -327,13 +327,25 @@ title: Azure SQL Developer
         <h4>Report a problem <span class="arrow">&rarr;</span></h4>
         <p>Your agent writes the bug report for you, from what it already knows, and hands you a prefilled issue to review. It never files anything without your say-so.</p>
       </a>
+      {% assign one_skills = "azuresql-db-container|Start the engine,azuresql-db-from-sql-server|Convert from SQL Server,azuresql-db-local-to-cloud|Local to cloud,azuresql-db-schema-migration|Schema migrations,azuresql-db-import|Import a database,azuresql-db-rag|RAG and vector search,azuresql-db-ci|CI,azuresql-db-sidecar|Sidecar,azuresql-db-scaffold|Scaffold,azuresql-db-faq|Answer questions,azuresql-db-feedback|Report a problem" | split: "," %}
+      <button class="skill-card skill-card-action" type="button" data-open-modal="single-skill">
+        <span class="skill-tag skill-tag-alt">one skill only</span>
+        <h4>Install a single skill <span class="arrow">&rarr;</span></h4>
+        <p>The command above installs all {{ one_skills | size }}, which is what we recommend: they hand off to each other. Need just one? Grab its install command.</p>
+      </button>
     </div>
+  </div>
 
-    <h4 class="skill-install-title">Install a single skill</h4>
-    <p class="skill-install-lead">The command above installs the whole collection, which is what we recommend: the skills hand off to each other. To take just one, name it.</p>
-    <div class="skill-install">
+  <dialog class="modal" id="single-skill" aria-labelledby="single-skill-title">
+    <div class="modal-head">
+      <div>
+        <h3 id="single-skill-title">Install a single skill</h3>
+        <p>Each skill stands alone, so one is enough to be useful. You only lose the handoffs between them.</p>
+      </div>
+      <button class="modal-close" type="button" data-close-modal aria-label="Close">&times;</button>
+    </div>
+    <div class="modal-body">
       <table class="skill-install-table">
-        {% assign one_skills = "azuresql-db-container|Start the engine,azuresql-db-from-sql-server|Convert from SQL Server,azuresql-db-local-to-cloud|Local to cloud,azuresql-db-schema-migration|Schema migrations,azuresql-db-import|Import a database,azuresql-db-rag|RAG and vector search,azuresql-db-ci|CI,azuresql-db-sidecar|Sidecar,azuresql-db-scaffold|Scaffold,azuresql-db-faq|Answer questions,azuresql-db-feedback|Report a problem" | split: "," %}
         {% for row in one_skills %}
           {% assign parts = row | split: "|" %}
           {% assign sname = parts[0] %}
@@ -347,7 +359,7 @@ title: Azure SQL Developer
         {% endfor %}
       </table>
     </div>
-  </div>
+  </dialog>
 </section>
 
 <!-- ============ USE CASES (JTBD) ============ -->

@@ -44,6 +44,23 @@
     }
   }
 
+  // modals (native <dialog>: Escape and focus handling come for free)
+  document.querySelectorAll("[data-open-modal]").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var dlg = document.getElementById(btn.getAttribute("data-open-modal"));
+      if (dlg && typeof dlg.showModal === "function") dlg.showModal();
+    });
+  });
+  document.querySelectorAll("dialog.modal").forEach(function (dlg) {
+    dlg.querySelectorAll("[data-close-modal]").forEach(function (btn) {
+      btn.addEventListener("click", function () { dlg.close(); });
+    });
+    // click the backdrop (i.e. the dialog element itself, outside its content) to close
+    dlg.addEventListener("click", function (e) {
+      if (e.target === dlg) dlg.close();
+    });
+  });
+
   // inline copy (commands, code blocks)
   document.querySelectorAll("[data-copy], [data-copy-text]").forEach(function (btn) {
     btn.addEventListener("click", function () {

@@ -463,10 +463,26 @@ section[id] { scroll-margin-top: 84px; }
 /* skill-name label on the agent-skill cards */
 .skill-tag { display: inline-block; font-family: var(--font-mono); font-size: .68rem; color: var(--azure); background: rgba(19,102,224,.07); border: 1px solid rgba(19,102,224,.18); border-radius: 5px; padding: 2px 7px; margin-bottom: 10px; }
 
+/* ---------- "install a single skill" card: a button that reads as a card ----------
+   .skill-card is styled for <a>. A <button> brings its own font, alignment and
+   intrinsic width, so reset those or it spans the grid instead of sitting in a cell. */
+.skill-card-action { font: inherit; text-align: left; cursor: pointer; width: 100%; min-width: 0; margin: 0; appearance: none; }
+.skill-card-action:hover h4 { color: var(--azure); }
+.skill-card-action:hover h4 .arrow { color: var(--azure); transform: translateX(3px); }
+.skill-tag-alt { color: var(--muted); background: var(--mist); border-color: var(--line); }
+
+/* ---------- modal (native <dialog>) ---------- */
+.modal { width: min(620px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-lg); color: inherit; background: var(--white); }
+.modal::backdrop { background: rgba(11,18,32,.55); backdrop-filter: blur(2px); }
+.modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; padding: 20px 22px 14px; border-bottom: 1px solid var(--line); }
+.modal-head h3 { font-size: 1.1rem; margin: 0 0 4px; }
+.modal-head p { color: var(--muted); font-size: .9rem; margin: 0; max-width: 46ch; }
+.modal-close { flex-shrink: 0; font-size: 1.4rem; line-height: 1; color: var(--muted); background: none; border: 0; cursor: pointer; padding: 2px 8px; border-radius: 6px; }
+.modal-close:hover { color: var(--ink); background: var(--mist); }
+.modal-close:focus-visible { outline: 2px solid var(--azure); outline-offset: 2px; }
+.modal-body { max-height: min(64vh, 560px); overflow-y: auto; }
+
 /* ---------- install a single skill (compact table, copy per skill) ---------- */
-.skill-install-title { font-size: 1.1rem; margin: 40px 0 6px; }
-.skill-install-lead { color: var(--muted); font-size: .95rem; max-width: 640px; margin: 0 0 16px; }
-.skill-install { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
 .skill-install-table { width: 100%; border-collapse: collapse; }
 .skill-install-table td { padding: 10px 16px; border-bottom: 1px solid var(--line); vertical-align: middle; }
 .skill-install-table tr:last-child td { border-bottom: 0; }
