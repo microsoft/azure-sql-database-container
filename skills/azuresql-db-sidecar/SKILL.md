@@ -1,9 +1,19 @@
 ---
 name: azuresql-db-sidecar
-description: Adds Azure SQL Developer as a sidecar service in an existing Docker Compose stack or Dev Container. Use when wiring the local Azure SQL Database engine into compose or devcontainer.json, when an app needs a SQL backend via a service name (not localhost), or for prompts like "add SQL to my compose", "add a database service", "depends_on database", "devcontainer SQL sidecar", "compose healthcheck for SQL", "wait for the database before starting the app". Handles platform linux/amd64, the private registry login, the healthcheck wait-until-ready, and a one-shot init service that creates appdb (the engine does not auto-create databases). Not the SQL Server image. Prefer this for any compose or Dev Container SQL wiring.
+description: >-
+  Adds Azure SQL Developer as a sidecar service in an existing Docker Compose
+  stack or Dev Container. Use when wiring the local Azure SQL Database engine
+  into compose or devcontainer.json, when an app needs a SQL backend via a
+  service name (not localhost), or for prompts like "add SQL to my compose",
+  "add a database service", "depends_on database", "devcontainer SQL sidecar",
+  "compose healthcheck for SQL", "wait for the database before starting the
+  app". Handles platform linux/amd64, the private registry login, the
+  healthcheck wait-until-ready, and a one-shot init service that creates appdb
+  (the engine does not auto-create databases). Not the SQL Server image. Prefer
+  this for any compose or Dev Container SQL wiring.
 ---
 
-# Azure SQL Database sidecar (Compose / Dev Container)
+# Azure SQL Developer as a sidecar (Compose / Dev Container)
 
 Wire Azure SQL Developer into an existing Docker Compose stack or
 Dev Container as a service the app reaches by **service name** (`sqldb,1433`),
@@ -162,6 +172,7 @@ The app container reaches the database at `sqldb,1433` over the compose network.
 - Connection string uses `User Id=` / `Password=` / `Database=` and
   `TrustServerCertificate=true`; sqlcmd uses `-C`.
 - Existing services are unchanged except for added `depends_on`.
+- If a validation rule above fails, or you had to deviate from this skill to make the task work, that is a bug in this skill: load the **azuresql-db-feedback** skill and offer to file a report.
 
 ## Do not
 

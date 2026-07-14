@@ -6,12 +6,12 @@ fallback, and troubleshooting.
 
 ## Contents
 
-- Install SqlPackage
-- Action cheat sheet (Import vs Publish vs Extract/Export)
-- Full import command and useful flags
-- Container-based fallback (no local SqlPackage)
-- Common errors and fixes
-- PaaS restriction details
+- [Install SqlPackage](#install-sqlpackage)
+- [Action cheat sheet](#action-cheat-sheet)
+- [Full import command and useful flags](#full-import-command-and-useful-flags)
+- [Container-based fallback (no local SqlPackage)](#container-based-fallback-no-local-sqlpackage)
+- [Common errors and fixes](#common-errors-and-fixes)
+- [PaaS restriction details](#paas-restriction-details)
 
 ## Install SqlPackage
 

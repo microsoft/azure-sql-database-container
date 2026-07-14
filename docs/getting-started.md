@@ -41,6 +41,16 @@ Your agent does the whole setup for you: it pulls the image, starts the containe
 npx skills add microsoft/azure-sql-database-container
 ```
 
+> **On Windows, add `--copy`:** `npx skills add microsoft/azure-sql-database-container --copy`. The installer normally writes the skills to `.agents/skills/` and symlinks them into your agent's folder, but creating a symlink on Windows requires Developer Mode or an elevated shell. When it fails, the installer can still report success and your agent silently never loads the skills. `--copy` writes real directories instead, and is safe on every platform.
+
+**Verify the skills loaded** before you rely on them. For Claude Code:
+
+```bash
+ls .claude/skills/
+```
+
+You should see the ten `azuresql-db-*` directories. If that folder is missing or empty while `.agents/skills/` is full, the symlink step failed: re-run with `--copy`, or copy them across with `mkdir -p .claude/skills && cp -R .agents/skills/azuresql-db-* .claude/skills/`. Other agents read from different folders; see the [install matrix](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#install-matrix). You can also skip the installer entirely and [copy the skill directories in by hand](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#manual-install), which works the same way.
+
 The skill works across Claude Code, GitHub Copilot (VS Code and CLI), Codex, and Cursor. Then ask your agent, for example:
 
 > Add a local Azure SQL Database to this project, then scaffold the schema, migrations, and data-access layer for my stack.

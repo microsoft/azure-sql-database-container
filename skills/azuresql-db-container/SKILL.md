@@ -43,7 +43,7 @@ The image lives in a private Private Preview registry. Sign in once with the
 shared, pull-only username and password. The credentials are not in any doc:
 get them by signing up at https://aka.ms/sqldbcontainerpreview-signup. They are pull-only and
 may be rotated during the preview, so treat them as secrets and do not
-redistribute. See `references/image-and-registry.md`.
+redistribute. See [references/image-and-registry.md](references/image-and-registry.md).
 
 ```bash
 docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>
@@ -54,7 +54,7 @@ docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>
 This finds a free host port, adds `--platform linux/amd64` only on a non-x64
 host, waits until the engine is actually ready, and provisions `appdb` inside
 the same retry loop. Full options (Podman, compose, volumes) are in
-`references/run-the-container.md` and `references/wait-until-ready.md`.
+[references/run-the-container.md](references/run-the-container.md) and [references/wait-until-ready.md](references/wait-until-ready.md).
 
 ```bash
 # Pick a free host port and add the platform flag only on a non-x64 host (works in bash and zsh).
@@ -75,7 +75,7 @@ echo "ready on localhost,$HOST_PORT"
   three of upper case, lower case, digits, and symbols). The engine listens on container port `1433`.
 - App convention: apps read one `SQL_CONNECTION_STRING` env var.
 
-Details: `references/environment-variables.md`.
+Details: [references/environment-variables.md](references/environment-variables.md).
 
 ### 4. Connect and VERIFY the engine identity (self-check guard)
 
@@ -89,11 +89,26 @@ docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0n
 
 Expect `EngineEdition = 5` and `Edition = SQL Azure`. If you see anything else,
 you started the wrong image. Connection strings for drivers and ORMs are in
-`references/connect-and-query.md`.
+[references/connect-and-query.md](references/connect-and-query.md).
+
+### 5. Or prove the whole setup with one command
+
+`scripts/verify.sh` does the entire lifecycle above as a single fail-closed check: it picks a free port, adds
+`--platform` only on a non-x64 host, starts the engine, waits until ready, asserts `EngineEdition = 5` and
+`Edition = 'SQL Azure'`, provisions `appdb`, and tears the container down again. It **refuses to run** against
+`mcr.microsoft.com/mssql/server`. Run it when you want to confirm the image, the registry sign-in, and the
+host platform are all correct before building on top of them:
+
+```bash
+bash scripts/verify.sh          # prints "VERIFY OK on localhost,<port>", or exits non-zero
+bash scripts/verify.sh --keep   # same, but leaves the container running so you can connect to it
+```
+
+A non-zero exit means the setup is wrong. Read the error, fix it, and run it again before continuing.
 
 ## The three connection-model facts (state these plainly)
 
-These bite every newcomer. Full workflow in `references/connection-model.md`.
+These bite every newcomer. Full workflow in [references/connection-model.md](references/connection-model.md).
 
 1. **The engine does NOT auto-create databases on connect.** You must
    `CREATE DATABASE appdb` on a **master** connection before you connect with
@@ -133,7 +148,7 @@ For a self-contained local stack: a compose file with `platform: linux/amd64`
 (on non-x64 hosts), a named volume for persistence, a healthcheck that uses the
 canonical ready-wait, then a one-shot that provisions `appdb` and seeds it via
 `sqlcmd -d appdb`. The full compose example and seed ordering are in
-`references/run-the-container.md` and `references/wait-until-ready.md`.
+[references/run-the-container.md](references/run-the-container.md) and [references/wait-until-ready.md](references/wait-until-ready.md).
 
 ## Stop and clean up
 
@@ -148,7 +163,7 @@ docker volume rm sqldb-data   # only if you created a named volume and want a cl
 - It does **not** have full SQL Server surface area: no SQL Agent, no
   FILESTREAM, no full Service Broker, no cross-server DTC, no Windows
   Auth/NTLM. Validate features against the cloud before declaring readiness.
-  See `references/paas-parity-checklist.md`.
+  See [references/paas-parity-checklist.md](references/paas-parity-checklist.md).
 - It does **not** auto-create databases and does **not** auto-run a seed
   directory.
 - The image is x64 only (`linux/amd64`). On a non-x64 host, add
@@ -166,14 +181,19 @@ Provisioning and identity are settled here. Route the actual task:
 - `azuresql-db-ci`: use the engine as a CI service / test database.
 - `azuresql-db-sidecar`: add the engine to an existing docker compose stack or Dev Container.
 - `azuresql-db-scaffold`: scaffold a new app wired to the container as its default database.
+- `azuresql-db-feedback`: report a bug or request a feature. Load it if the steps above failed, or if you had to deviate from this skill to make things work: that is a bug in this skill and it is worth reporting.
 
 ## Reference index
 
-- `references/image-and-registry.md`: image tag and private-registry sign-in (single source of truth).
-- `references/run-the-container.md`: Docker, Podman, compose, platform, ports, volumes.
-- `references/connection-model.md`: master vs user DB, provision-then-connect, Msg 40508, seeding pattern.
-- `references/connect-and-query.md`: sqlcmd and driver/ORM connection strings.
-- `references/environment-variables.md`: `ACCEPT_EULA`, `MSSQL_SA_PASSWORD`, `SQL_CONNECTION_STRING`.
-- `references/wait-until-ready.md`: the readiness retry loop and compose healthcheck.
-- `references/troubleshooting.md`: common failures and fixes.
-- `references/paas-parity-checklist.md`: what is not present vs the SQL Server.
+- [references/image-and-registry.md](references/image-and-registry.md): image tag and private-registry sign-in (single source of truth).
+- [references/run-the-container.md](references/run-the-container.md): Docker, Podman, compose, platform, ports, volumes.
+- [references/connection-model.md](references/connection-model.md): master vs user DB, provision-then-connect, Msg 40508, seeding pattern.
+- [references/connect-and-query.md](references/connect-and-query.md): sqlcmd and driver/ORM connection strings.
+- [references/environment-variables.md](references/environment-variables.md): `ACCEPT_EULA`, `MSSQL_SA_PASSWORD`, `SQL_CONNECTION_STRING`.
+- [references/wait-until-ready.md](references/wait-until-ready.md): the readiness retry loop and compose healthcheck.
+- [references/troubleshooting.md](references/troubleshooting.md): common failures and fixes.
+- [references/paas-parity-checklist.md](references/paas-parity-checklist.md): what is not present vs the SQL Server.
+
+## Scripts
+
+- `scripts/verify.sh`: run it (`bash scripts/verify.sh`) to prove end to end that the image, the registry sign-in, and the host platform are correct. Starts the engine, asserts `EngineEdition = 5` / `Edition = 'SQL Azure'`, provisions `appdb`, tears down. Fails closed on the SQL Server image. Pass `--keep` to leave the container running.

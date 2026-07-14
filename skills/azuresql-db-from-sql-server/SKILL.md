@@ -1,6 +1,18 @@
 ---
 name: azuresql-db-from-sql-server
-description: Migrates a local SQL Server setup to Azure SQL Developer for Azure-faithful local development. Use when a project already uses mcr.microsoft.com/mssql/server, mssql/server, an sqlcmd plus SA password docker setup, a "SQL Server in docker" or "local mssql container", or a docker-compose with the mssql/server image; and use when the user asks for "SQL Server locally", "run mssql in Docker", "spin up a local SQL database", or "test against SQL Server" but actually wants the Azure SQL Database engine (EngineEdition 5). Detects the SQL Server image, rewrites it to Azure SQL Developer, adds --platform on non-x64 hosts, keeps the SA login, flags SQL Server-only features (SQL Agent, FILESTREAM, full Service Broker, cross-server distributed transactions, Windows Auth), and re-points connection strings from master to a provisioned user database.
+description: >-
+  Migrates a local SQL Server setup to Azure SQL Developer for Azure-faithful
+  local development. Use when a project already uses
+  mcr.microsoft.com/mssql/server, mssql/server, an sqlcmd plus SA password
+  docker setup, a "SQL Server in docker" or "local mssql container", or a
+  docker-compose with the mssql/server image; and use when the user asks for
+  "SQL Server locally", "run mssql in Docker", "spin up a local SQL database",
+  or "test against SQL Server" but actually wants the Azure SQL Database engine
+  (EngineEdition 5). Detects the SQL Server image, rewrites it to Azure SQL
+  Developer, adds --platform on non-x64 hosts, keeps the SA login, flags SQL
+  Server-only features (SQL Agent, FILESTREAM, full Service Broker,
+  cross-server distributed transactions, Windows Auth), and re-points
+  connection strings from master to a provisioned user database.
 ---
 
 # Migrate from the SQL Server image to Azure SQL Developer
@@ -62,7 +74,7 @@ only, so on a non-x64 host add `--platform linux/amd64`
 - New: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`
 
 Keep `ACCEPT_EULA=Y`, keep the complex `MSSQL_SA_PASSWORD`, keep the SA login,
-keep port 1433. See `references/migrate-compose.md` for a before/after compose.
+keep port 1433. See [references/migrate-compose.md](references/migrate-compose.md) for a before/after compose.
 
 ### 4. Start the container and provision appdb first
 
@@ -118,7 +130,7 @@ docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourSt
 ### 7. Remove SQL Server-only features
 
 Some features exist only in the SQL Server image and must be removed or replaced.
-Flag and fix every hit. Full table in `references/sql-server-vs-azure-feature-matrix.md`.
+Flag and fix every hit. Full table in [references/sql-server-vs-azure-feature-matrix.md](references/sql-server-vs-azure-feature-matrix.md).
 
 - **SQL Server Agent** jobs: not available; use an external scheduler.
 - **FILESTREAM / FileTable**: not supported; store blobs in columns or external storage.
@@ -153,6 +165,7 @@ development; use a full-scan top-k query for now.
 - No `USE <db>` statements: in a user-database (SDS) session, `USE` returns `Msg 40508`, exactly as in Azure SQL Database in the cloud; a `master` connection is a non-SDS provisioning session where the filter is not enforced, but `master` is for provisioning only. Select the database in the connection string.
 - `--platform linux/amd64` present on non-x64 hosts only.
 - `EngineEdition` returns 5.
+- If a validation rule above fails, or you had to deviate from this skill to make the task work, that is a bug in this skill: load the **azuresql-db-feedback** skill and offer to file a report.
 
 ## Do not
 
@@ -166,5 +179,5 @@ development; use a full-scan top-k query for now.
 
 ## References
 
-- `references/sql-server-vs-azure-feature-matrix.md`: what carries over, what changes, what is gone.
-- `references/migrate-compose.md`: before/after docker-compose with a provision step.
+- [references/sql-server-vs-azure-feature-matrix.md](references/sql-server-vs-azure-feature-matrix.md): what carries over, what changes, what is gone. Read it when triaging SQL Server-only features found in step 7.
+- [references/migrate-compose.md](references/migrate-compose.md): before/after docker-compose with a provision step. Read it when rewriting a compose file.

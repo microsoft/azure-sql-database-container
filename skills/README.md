@@ -29,6 +29,7 @@ EngineEdition `5` and Edition `'SQL Azure'` are the cloud engine's fingerprint. 
 | **azuresql-db-sidecar** | Run the engine as a sidecar alongside an app (compose-style), with `platform: linux/amd64` on non-x64 hosts and a single `SQL_CONNECTION_STRING` contract. |
 | **azuresql-db-scaffold** | Scaffold a new app wired to the engine: connection string via one `SQL_CONNECTION_STRING` env var, provisioning step, and seed step in the correct order. |
 | **azuresql-db-faq** | Answer questions about what the container can and cannot do, and why it differs from the cloud (backups, `USE`, vector index, GUI tooling, registry). Sorts each into engine vs. managed-service vs. SQL Server, and links the live Known limitations. |
+| **azuresql-db-feedback** | Report a bug or request a feature without leaving the agent. Builds a complete, prefilled GitHub issue from context the agent already has (image tag, host OS, runtime, the failing command, the error), redacts secrets, and hands it to you to review and submit. It never submits anything without your explicit confirmation. |
 
 ---
 
@@ -36,18 +37,41 @@ EngineEdition `5` and Edition `'SQL Azure'` are the cloud engine's fingerprint. 
 
 ### `npx skills add` (cross-agent, skills.sh)
 
-The portable way. Works across agents that follow the skills.sh convention:
+The portable way. Works across agents that follow the skills.sh convention. The source is the **repository**, not a skill name:
 
 ```bash
-npx skills add azuresql-db-container
-npx skills add azuresql-db-from-sql-server azuresql-db-local-to-cloud \
-  azuresql-db-schema-migration azuresql-db-import azuresql-db-rag \
-  azuresql-db-ci azuresql-db-sidecar azuresql-db-scaffold azuresql-db-faq
+npx skills add microsoft/azure-sql-database-container
 ```
 
-### Claude Code (`.claude/skills/`)
+Add `--all` to take every skill without prompting, or `-s` to pick a subset:
 
-Drop each skill directory into `.claude/skills/` at the root of your project (or `~/.claude/skills/` to make it available everywhere):
+```bash
+npx skills add microsoft/azure-sql-database-container -s azuresql-db-container,azuresql-db-rag
+```
+
+> **On Windows, add `--copy`.** By default the installer writes the skills to `.agents/skills/` and *symlinks* them into your agent's directory. Creating a symlink on Windows requires Developer Mode or an elevated shell, and when it fails the installer can still report success, leaving you with skills your agent never loads. `--copy` writes real directories instead and sidesteps the problem:
+>
+> ```bash
+> npx skills add microsoft/azure-sql-database-container --copy
+> ```
+>
+> This is safe on every platform, so use it if you are unsure.
+
+**Then verify the skills actually loaded.** This is the step worth not skipping:
+
+```bash
+ls .claude/skills/          # Claude Code; see the matrix below for other agents
+```
+
+You should see the ten `azuresql-db-*` directories. If the directory is missing or empty while `.agents/skills/` is populated, the symlink step failed: re-run with `--copy`, or copy them across by hand:
+
+```bash
+mkdir -p .claude/skills && cp -R .agents/skills/azuresql-db-* .claude/skills/
+```
+
+### Manual install
+
+Equally supported, and immune to the above. Drop each skill directory into your agent's skills folder (see the matrix), for example for Claude Code at the root of your project, or `~/.claude/skills/` to make it available everywhere:
 
 ```bash
 mkdir -p .claude/skills
@@ -65,7 +89,30 @@ Same skills, per-agent install location (mirrors how Google, Supabase, and Neon 
 | Codex | `~/.codex/skills/` |
 | Cursor | `.cursor/skills/` (project) |
 
-`npx skills add` targets the active agent automatically; the table above is for manual placement.
+`npx skills add` targets the active agent automatically; the table above is for manual placement, and for knowing where to look when you verify.
+
+---
+
+## Authoring standard
+
+These skills follow the published Agent Skills guidance rather than a house style invented here. If you are adding a skill or editing one, read these first:
+
+- **[Skill authoring best practices](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/best-practices)** (Anthropic): the primary reference. Descriptions, progressive disclosure, degrees of freedom, feedback loops, and the anti-patterns.
+- **[Agent Skills open standard](https://agentskills.io/home)** ([spec on GitHub](https://github.com/agentskills/agentskills)): the vendor-neutral format these skills conform to, so they load in Claude Code, GitHub Copilot, Codex, and Cursor without change.
+- **[Evaluating skills](https://developers.openai.com/blog/eval-skills)** (OpenAI): the approach behind how this collection is tested, in particular testing whether a skill *triggers* on a realistic user request, and using negative controls to catch a skill that fires when it should not.
+
+Conventions this collection holds itself to:
+
+| Convention | Why |
+| --- | --- |
+| Frontmatter is `name` and `description`, nothing else | Anything else is agent-specific and breaks portability |
+| Descriptions are third person, and name concrete trigger phrases | The description is a trigger signal for the model, not documentation for a human. Inconsistent voice degrades skill selection |
+| `SKILL.md` bodies stay under 500 lines | Detail belongs in `references/`, which is read only when needed |
+| Reference files are linked as real relative markdown links, one level deep from `SKILL.md` | Agents follow links; they do not reliably follow prose mentions or bare filenames |
+| A skill never references a path outside its own folder | Skills install independently. A path into a sibling skill's folder resolves to nothing |
+| Reference files over 100 lines start with a `## Contents` list | An agent that previews a long file with a partial read still sees the full scope |
+| Every skill stands alone, even where that means repeating a canonical fact | A user may install one skill, not the collection. Duplication is deliberate; drift is guarded by an automated check that the shared facts agree across all skills |
+| Each skill ends by pointing at `azuresql-db-feedback` if its own instructions failed | A skill that quietly gets worked around is a bug we would otherwise never hear about |
 
 ---
 
