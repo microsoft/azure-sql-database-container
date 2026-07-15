@@ -486,6 +486,8 @@ section[id] { scroll-margin-top: 84px; }
 .skill-cmd { display: flex; align-items: center; gap: 12px; max-width: 560px; margin: 0 auto; background: var(--ink); border: 1px solid var(--ink-3); border-radius: 11px; padding: 11px 11px 11px 16px; text-align: left; box-shadow: var(--shadow); }
 .skill-cmd code { flex: 1; font-family: var(--font-mono); font-size: .86rem; color: #e7eefc; white-space: nowrap; overflow-x: auto; }
 .skill-cmd .copy-btn { flex-shrink: 0; }
+/* the primary call to action to the Agent skills page, centered under the install command */
+.skill-cta { margin-top: 18px; }
 .skill-link { display: inline-block; margin-top: 14px; font-family: var(--font-mono); font-size: .78rem; color: var(--azure); }
 .skill-link:hover { text-decoration: none; opacity: .85; }
 /* skills.sh + browse, one concise centered line */
