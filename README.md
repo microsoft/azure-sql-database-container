@@ -27,6 +27,7 @@ For the first time, developers can build, test, and ship applications against th
 - [Goals of the Private Preview](docs/goals-of-the-private-preview.md)
 - [Prerequisites](docs/prerequisites.md)
 - [Getting Started](docs/getting-started.md)
+- [Agent skills](docs/agent-skills.md)
 - [Known limitations](docs/known-limitations.md)
 - [Feedback and how to engage](docs/feedback-and-how-to-engage.md)
 
