@@ -5,45 +5,138 @@ description: "Install the Azure SQL Developer agent skills in Claude Code, Codex
 
 ## Table of Contents
 
-- [What the skills do](#what-the-skills-do)
+- [Install](#install)
+- [The skills](#the-skills)
 - [Install by tool](#install-by-tool)
   - [Claude Code](#claude-code)
   - [Codex](#codex)
   - [Cursor](#cursor)
   - [VS Code with GitHub Copilot](#vs-code-with-github-copilot)
 - [Confirm the skills loaded](#confirm-the-skills-loaded)
-- [What each skill does](#what-each-skill-does)
 - [Report a problem with a skill](#report-a-problem-with-a-skill)
 - [Related content](#related-content)
 
-## What the skills do
+## Install
 
-The skills teach your AI coding agent to use Azure SQL Developer, the Azure SQL Database engine running locally in a container, the right way: start the engine, connect, provision the database, apply migrations, import data, scaffold a new app, build local RAG, wire CI, run it as a sidecar, and move the same code to Azure SQL Database in the cloud. They encode the things a model does not otherwise know: the private preview registry, that the engine reports `EngineEdition` 5, that it does not auto-create databases, and that it is not the SQL Server image.
+The skills teach your AI coding agent to use Azure SQL Developer, the Azure SQL Database engine running locally in a container, the right way: start the engine, connect, provision the database, apply migrations, import data, scaffold a new app, build local RAG, wire CI, and move the same code to Azure SQL Database in the cloud. They encode what a model does not otherwise know: the private preview registry, that the engine reports `EngineEdition` 5, that it does not auto-create databases, and that it is not the SQL Server image.
 
-Eleven skills ship in the collection. Install them once, then ask your agent in plain English, for example:
+Install the whole collection with one command. It works in **Claude Code, Codex, Cursor, and VS Code with GitHub Copilot**:
+
+```bash
+npx skills add microsoft/azure-sql-database-container
+```
+
+Then ask your agent in plain English, for example:
 
 > Add a local Azure SQL Database to this project, then scaffold the schema, migrations, and data-access layer for my stack.
 
-The skills work in **Claude Code, Codex, Cursor, and VS Code with GitHub Copilot**. One folder format, all four tools.
+For the native plugin install (Claude Code and Codex), a single skill, or per-tool detail, see [Install by tool](#install-by-tool) below.
+
+## The skills
+
+Eleven skills ship in the collection. Each one stands alone and teaches your agent one job; the collection routes between them.
+
+<div class="skill-cards">
+  <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-container" rel="noopener">
+    <span class="skill-tag">azuresql-db-container</span>
+    <h4>Start the engine <span class="arrow">&rarr;</span></h4>
+    <p>Free host port, <code>--platform linux/amd64</code> on non-x64 hosts, a ready-wait loop, and <code>CREATE DATABASE appdb</code> (the engine does not auto-create databases).</p>
+  </a>
+  <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-from-sql-server" rel="noopener">
+    <span class="skill-tag">azuresql-db-from-sql-server</span>
+    <h4>Convert from SQL Server <span class="arrow">&rarr;</span></h4>
+    <p>Move a project off the <code>mcr.microsoft.com/mssql/server</code> SQL Server image to the real Azure SQL Database engine.</p>
+  </a>
+  <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-local-to-cloud" rel="noopener">
+    <span class="skill-tag">azuresql-db-local-to-cloud</span>
+    <h4>Local to cloud <span class="arrow">&rarr;</span></h4>
+    <p>Ship the same code to Azure SQL Database in the cloud; only the connection string changes.</p>
+  </a>
+  <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-schema-migration" rel="noopener">
+    <span class="skill-tag">azuresql-db-schema-migration</span>
+    <h4>Schema migrations <span class="arrow">&rarr;</span></h4>
+    <p>Apply EF Core, Prisma, Alembic, or SqlPackage migrations against the user database.</p>
+  </a>
+  <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-import" rel="noopener">
+    <span class="skill-tag">azuresql-db-import</span>
+    <h4>Import a database <span class="arrow">&rarr;</span></h4>
+    <p>Load an existing <code>.bacpac</code> / <code>.dacpac</code> into the container with SqlPackage.</p>
+  </a>
+  <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-rag" rel="noopener">
+    <span class="skill-tag">azuresql-db-rag</span>
+    <h4>RAG and vector search <span class="arrow">&rarr;</span></h4>
+    <p>Native <code>VECTOR</code> type and <code>VECTOR_DISTANCE</code>, with a local embedding model.</p>
+  </a>
+  <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-ci" rel="noopener">
+    <span class="skill-tag">azuresql-db-ci</span>
+    <h4>CI <span class="arrow">&rarr;</span></h4>
+    <p>Run the engine as a service in GitHub Actions, with the right readiness and provisioning.</p>
+  </a>
+  <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-sidecar" rel="noopener">
+    <span class="skill-tag">azuresql-db-sidecar</span>
+    <h4>Sidecar <span class="arrow">&rarr;</span></h4>
+    <p>Add it to a docker compose stack or Dev Container, wired by service name.</p>
+  </a>
+  <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-scaffold" rel="noopener">
+    <span class="skill-tag">azuresql-db-scaffold</span>
+    <h4>Scaffold <span class="arrow">&rarr;</span></h4>
+    <p>Bootstrap a new app with Azure SQL Developer as the default local database.</p>
+  </a>
+  <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-faq" rel="noopener">
+    <span class="skill-tag">azuresql-db-faq</span>
+    <h4>Answer questions <span class="arrow">&rarr;</span></h4>
+    <p>What Azure SQL Developer can and can't do, and why it differs from the cloud: backups, <code>USE</code>, vector index, x64-only, tooling.</p>
+  </a>
+  <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-feedback" rel="noopener">
+    <span class="skill-tag">azuresql-db-feedback</span>
+    <h4>Report a problem <span class="arrow">&rarr;</span></h4>
+    <p>Your agent writes the bug report for you, from what it already knows, and hands you a prefilled issue to review. It never files anything without your say-so.</p>
+  </a>
+  {% assign one_skills = "azuresql-db-container|Start the engine,azuresql-db-from-sql-server|Convert from SQL Server,azuresql-db-local-to-cloud|Local to cloud,azuresql-db-schema-migration|Schema migrations,azuresql-db-import|Import a database,azuresql-db-rag|RAG and vector search,azuresql-db-ci|CI,azuresql-db-sidecar|Sidecar,azuresql-db-scaffold|Scaffold,azuresql-db-faq|Answer questions,azuresql-db-feedback|Report a problem" | split: "," %}
+</div>
+<div class="skill-more">
+  <button class="skill-more-btn skill-more-alt" type="button" data-open-modal="single-skill">Install a single skill</button>
+</div>
+
+<dialog class="modal" id="single-skill" aria-labelledby="single-skill-title">
+  <div class="modal-head">
+    <div>
+      <h3 id="single-skill-title">Install a single skill</h3>
+      <p>Each skill stands alone, so one is enough to be useful. You only lose the handoffs between them.</p>
+    </div>
+    <button class="modal-close" type="button" data-close-modal aria-label="Close">&times;</button>
+  </div>
+  <div class="modal-body">
+    <table class="skill-install-table">
+      {% for row in one_skills %}
+        {% assign parts = row | split: "|" %}
+        {% assign sname = parts[0] %}
+        <tr>
+          <td class="si-name"><code>{{ sname }}</code></td>
+          <td class="si-what">{{ parts[1] }}</td>
+          <td class="si-act">
+            <button class="copy-btn copy-light" type="button" data-copy-text="npx skills add microsoft/azure-sql-database-container --skill {{ sname }}" aria-label="Copy the install command for {{ sname }}"><span class="copy-label">Copy</span></button>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  </div>
+</dialog>
 
 ## Install by tool
 
+The `npx skills add` command above works everywhere. Claude Code and Codex additionally have a native plugin install, which lets the tool manage updates for you.
+
 ### Claude Code
 
-Install as a native plugin so Claude Code manages updates for you. In Claude Code, run:
+Install as a native plugin. In Claude Code, run:
 
 ```text
 /plugin marketplace add microsoft/azure-sql-database-container
 /plugin install azure-sql-developer@azure-sql-developer
 ```
 
-The first command registers this repository as a plugin marketplace; the second installs the `azure-sql-developer` plugin, which contains all 11 skills. Run `/plugin` any time to manage it, and `/reload-plugins` to activate it in the current session.
-
-Prefer not to use the plugin system? The portable command works too:
-
-```bash
-npx skills add microsoft/azure-sql-database-container
-```
+The first command registers this repository as a plugin marketplace; the second installs the `azure-sql-developer` plugin, which contains all 11 skills. Run `/plugin` any time to manage it, and `/reload-plugins` to activate it in the current session. The portable `npx skills add microsoft/azure-sql-database-container` works too.
 
 ### Codex
 
@@ -54,11 +147,7 @@ codex plugin marketplace add microsoft/azure-sql-database-container
 codex plugin add azure-sql-developer@azure-sql-developer
 ```
 
-Or with the portable command:
-
-```bash
-npx skills add microsoft/azure-sql-database-container
-```
+Or with the portable command: `npx skills add microsoft/azure-sql-database-container`.
 
 ### Cursor
 
@@ -87,24 +176,6 @@ ls .claude/skills/
 You should see the `azuresql-db-*` directories. Other agents read from different folders (Codex from `.codex/skills/` or `.agents/skills/`, Cursor from `.cursor/skills/`, VS Code Copilot from `.github/skills/` or `~/.copilot/skills/`).
 
 If the folder is empty while `.agents/skills/` has the skills in it, the `npx` installer did not target your agent, and it can report success when this happens. Re-run it naming your agent, for example `npx skills add microsoft/azure-sql-database-container -a claude-code`. This is a [known installer issue](https://github.com/vercel-labs/skills/issues/1355), not a problem with the skills. The plugin install paths above (Claude Code and Codex) are not affected.
-
-## What each skill does
-
-| Skill | What it does |
-| --- | --- |
-| **azuresql-db-container** | Start the engine locally the correct way, and provision the first database. The foundation the others build on. |
-| **azuresql-db-from-sql-server** | Move a project off the SQL Server image onto the real Azure SQL Database engine. |
-| **azuresql-db-local-to-cloud** | Take code that works locally and move it to Azure SQL Database in the cloud, changing only the connection string. |
-| **azuresql-db-schema-migration** | Apply and version schema changes: EF Core, Prisma, Alembic, or SqlPackage, against the user database. |
-| **azuresql-db-import** | Load an existing `.bacpac` or `.dacpac` into the container with SqlPackage. |
-| **azuresql-db-rag** | Build local vector search and RAG on the native `VECTOR` type and `VECTOR_DISTANCE`. |
-| **azuresql-db-ci** | Run the engine as a service in GitHub Actions or other CI, with the right readiness and provisioning. |
-| **azuresql-db-sidecar** | Add the engine to a Docker Compose stack or Dev Container, wired by service name. |
-| **azuresql-db-scaffold** | Scaffold a new app (.NET Aspire, FastAPI, Next.js, NestJS) wired to the engine as its dev database. |
-| **azuresql-db-faq** | Answer what the container can and cannot do, and why it differs from the cloud. |
-| **azuresql-db-feedback** | Report a bug or request a feature without leaving the agent; builds a prefilled GitHub issue for you to review. |
-
-To install a single skill instead of the collection, see [Install just one](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#install-just-one) in the skills README. Installing the whole collection is recommended, since the skills hand off to each other.
 
 ## Report a problem with a skill
 
