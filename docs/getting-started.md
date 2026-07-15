@@ -49,7 +49,7 @@ Your agent does the whole setup for you: it pulls the image, starts the containe
 npx skills add microsoft/azure-sql-database-container
 ```
 
-That installs the whole collection, which is what we recommend: the skills route to each other, so the one that starts the container hands off to the one that runs your migrations. To take just one, [pick it from the table](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#install-just-one).
+That installs the whole collection, which is what we recommend: the skills route to each other, so the one that starts the container hands off to the one that runs your migrations. For per-tool install, including the native plugin for Claude Code and Codex, and what each skill does, see [Agent skills](agent-skills.md). To take just one, [pick it from the table](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#install-just-one).
 
 Confirm they loaded with `ls .claude/skills/`. If it is empty, see [skills did not load](#skills-did-not-load).
 
@@ -289,6 +289,7 @@ Haven't installed the skill yet? See [Agent skill](prerequisites.md#agent-skill)
 - [What is Azure SQL Developer](what-is-the-container.md)
 - [Prerequisites](prerequisites.md)
 - [Known limitations](known-limitations.md)
+- [Agent skills](agent-skills.md)
 - [Feedback and how to engage](feedback-and-how-to-engage.md)
 - [Report a bug](https://aka.ms/azuresql-developer-bug)
 - [Request a feature](https://aka.ms/azuresql-developer-feature-request)
