@@ -135,6 +135,31 @@
     });
   });
 
+  // ---- quickstart: Docker / Podman / containerd runtime tabs ----
+  var runtimeGroups = document.querySelectorAll("[data-runtime-tabs]");
+  function setRuntime(runtime) {
+    runtimeGroups.forEach(function (group) {
+      group.querySelectorAll(".runtime-tab").forEach(function (tab) {
+        tab.classList.toggle("is-active", tab.getAttribute("data-runtime") === runtime);
+      });
+      group.querySelectorAll("[data-runtime-panel]").forEach(function (panel) {
+        panel.hidden = panel.getAttribute("data-runtime-panel") !== runtime;
+      });
+    });
+    try { localStorage.setItem("runtime", runtime); } catch (e) {}
+  }
+  runtimeGroups.forEach(function (group) {
+    group.querySelectorAll(".runtime-tab").forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        setRuntime(tab.getAttribute("data-runtime"));
+      });
+    });
+  });
+  try {
+    var savedRuntime = localStorage.getItem("runtime");
+    if (savedRuntime) setRuntime(savedRuntime);
+  } catch (e) {}
+
   // ---- local / cloud connection-string swap ----
   var swap = document.querySelector("[data-swap]");
   if (swap) {
