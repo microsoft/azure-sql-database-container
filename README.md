@@ -7,6 +7,7 @@ Run and build against Azure SQL Database, right on your local environment. Try i
 [![Report Bug](https://img.shields.io/badge/Report%20Bug-red?logo=github)](https://aka.ms/azuresql-developer-bug)
 [![Request Feature](https://img.shields.io/badge/Request%20Feature-blue?logo=github)](https://aka.ms/azuresql-developer-feature-request)
 [![Discussions](https://img.shields.io/badge/Discussions-blueviolet?logo=github)](../../discussions)
+[![Skills](https://skills.sh/b/microsoft/azure-sql-database-container)](https://skills.sh/microsoft/azure-sql-database-container)
 
 <a href="https://aka.ms/azuresql-developer-demo">
   <img src="docs/assets/img/Azure SQL Developer cover page.png" alt="Watch the Azure SQL Developer demo" width="760">
@@ -30,6 +31,16 @@ For the first time, developers can build, test, and ship applications against th
 - [Agent skills](docs/agent-skills.md)
 - [Known limitations](docs/known-limitations.md)
 - [Feedback and how to engage](docs/feedback-and-how-to-engage.md)
+
+## Agent skills
+
+Point your AI coding agent at Azure SQL Developer and let it start the container, provision the database, scaffold the schema, write the migrations, and build the data layer. The repo ships [11 agent skills](skills/README.md) that work in **Claude Code, Codex, Cursor, and VS Code with GitHub Copilot**:
+
+```bash
+npx skills add microsoft/azure-sql-database-container
+```
+
+Claude Code and Codex users can also install them as a native plugin (`/plugin marketplace add microsoft/azure-sql-database-container`). See the [skills README](skills/README.md) for per-tool install and the full list.
 
 ## Feedback
 

@@ -35,6 +35,41 @@ EngineEdition `5` and Edition `'SQL Azure'` are the cloud engine's fingerprint. 
 
 ## INSTALL
 
+These skills work in **Claude Code, Codex, Cursor, and VS Code with GitHub Copilot.** One folder format, all four tools. `npx skills add` works in every one; Claude Code and Codex additionally have a native plugin install with auto-update.
+
+### By tool
+
+**Claude Code:** the native plugin (install + auto-update), or the portable command:
+
+```bash
+# in Claude Code:
+/plugin marketplace add microsoft/azure-sql-database-container
+/plugin install azure-sql-developer@azure-sql-developer
+# or, anywhere:
+npx skills add microsoft/azure-sql-database-container
+```
+
+**Codex:** the native plugin, or the portable command:
+
+```bash
+codex plugin marketplace add microsoft/azure-sql-database-container
+codex plugin add azure-sql-developer@azure-sql-developer
+# or:
+npx skills add microsoft/azure-sql-database-container
+```
+
+**Cursor:**
+
+```bash
+npx skills add microsoft/azure-sql-database-container
+```
+
+**VS Code with GitHub Copilot.** `npx skills add` writes to a folder Copilot already reads, so the skills are available with no extra step. Find them under **Configure Chat → Skills** (or type `/skills` in chat):
+
+```bash
+npx skills add microsoft/azure-sql-database-container
+```
+
 ### `npx skills add` (cross-agent, skills.sh)
 
 The portable way. Works across agents that follow the skills.sh convention. The source is the **repository**, not a skill name:
