@@ -451,6 +451,9 @@ section[id] { scroll-margin-top: 84px; }
 .skill-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 0 0 8px; }
 .skill-card { display: block; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); color: inherit; transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
 .skill-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: #c6d6ee; text-decoration: none; }
+/* the card is an <a>; inside a docs .prose block, cancel the prose link styling so the card body reads as a card, not a link */
+.prose a.skill-card, .prose a.skill-card:hover, .prose a.skill-card:focus { text-decoration: none; color: inherit; font-weight: inherit; }
+.prose a.skill-card:hover h4 { color: var(--azure); }
 .skill-card h4 { font-size: 1rem; margin-bottom: 8px; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; transition: color .15s ease; }
 .skill-card:hover h4 { color: var(--azure); }
 .skill-card h4 .arrow { color: var(--muted); font-weight: 400; transition: transform .18s ease, color .15s ease; }

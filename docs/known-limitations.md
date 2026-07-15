@@ -102,6 +102,7 @@ These are intentional non-goals for the container:
 - [What is Azure SQL Developer](what-is-the-container.md)
 - [Get started](getting-started.md)
 - [Prerequisites](prerequisites.md)
+- [Agent skills](agent-skills.md)
 - [Feedback and how to engage](feedback-and-how-to-engage.md)
 - [Report a bug](https://aka.ms/azuresql-developer-bug)
 - [Request a feature](https://aka.ms/azuresql-developer-feature-request)
