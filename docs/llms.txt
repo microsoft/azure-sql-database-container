@@ -2,6 +2,8 @@
 
 > The Azure SQL Database engine, running locally for development and CI. Build and test against the same engine, defaults, and T-SQL you run in the Microsoft Azure cloud, with AI-native capabilities built in. Free for local development; no Azure subscription required. Lift and shift to Azure SQL Database in the cloud is a connection-string change, not a code change. Status: Private Preview.
 
+_Last updated: July 2026._
+
 ## Documentation
 - [What is Azure SQL Developer](https://microsoft.github.io/azure-sql-database-container/what-is-the-container.html): the engine surface, AI-native capabilities, drivers and ORMs, and supported runtimes and platforms.
 - [Goals of the Private Preview](https://microsoft.github.io/azure-sql-database-container/goals-of-the-private-preview.html): what this preview sets out to learn and validate.
@@ -24,9 +26,10 @@ Copy-and-run prompts to hand your AI coding agent, each building a scenario agai
 ## Key facts
 - Image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev, x64 (linux/amd64); on a non-x64 host, add --platform linux/amd64. It is the Azure SQL Database engine (SERVERPROPERTY('EngineEdition')=5, Edition='SQL Azure'), not the SQL Server image. The shared pull-only registry credentials are provided when you sign up for the Private Preview at https://aka.ms/sqldbcontainerpreview-signup and may rotate.
 - Connection: TCP port 1433; SQL login (sa) locally, Microsoft Entra in the cloud. Apps read the connection string from the SQL_CONNECTION_STRING environment variable.
-- AI-native: native vector data type, DiskANN vector indexes, VECTOR_DISTANCE similarity search, AI_GENERATE_EMBEDDINGS, CREATE EXTERNAL MODEL, native JSON, and RegEx.
+- AI-native: native vector data type, VECTOR_DISTANCE similarity search, AI_GENERATE_EMBEDDINGS, CREATE EXTERNAL MODEL, native JSON, and RegEx. DiskANN vector indexes (CREATE VECTOR INDEX) are in development; use full-scan top-k until then.
 - Parity: same engine, defaults, T-SQL, and error messages as Azure SQL Database in the cloud.
+- Not yet supported on the container (use SQL auth and the workarounds on the Known limitations page): Microsoft Entra ID authentication (the MSSQL_AAD_* variables initialize and then fail; use the sa login locally, Entra in the cloud), a native ARM64 build (ARM64 hosts run under emulation with --platform linux/amd64), CREATE VECTOR INDEX (DiskANN), and BACKUP / RESTORE.
 
 ## Optional
 - [Repository](https://github.com/microsoft/azure-sql-database-container)
-- [Install the container agent skills](https://github.com/microsoft/azure-sql-database-container/tree/main/skills): npx skills add microsoft/azure-sql-database-container
+- [Install the container agent skills](https://github.com/microsoft/azure-sql-database-container/tree/main/skills): npx skills add microsoft/azure-sql-database-container (works in Claude Code, Codex, Cursor, and VS Code with GitHub Copilot; in Claude Code and Codex you can also install them as a native plugin with /plugin marketplace add microsoft/azure-sql-database-container).
