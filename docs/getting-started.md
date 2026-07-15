@@ -43,7 +43,15 @@ From here you have two ways to reach your first query. Both end in the same plac
 
 ## Fastest: let your AI agent set it up
 
-Your agent does the whole setup for you: it pulls the image, starts the container, provisions the database, and runs your first query. You install the skills once, then ask in plain English.
+**Sign in to the registry first.** This is the one step your agent cannot do for you: the registry password is a secret it does not have, and the login is an interactive prompt. Run it once yourself, then let the agent take over.
+
+```bash
+docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>
+```
+
+The username and password come from [signing up for the Private Preview](https://aka.ms/sqldbcontainerpreview-signup). Skip this and the agent's first pull fails with an authentication error.
+
+Your agent does the rest of the setup for you: it pulls the image, starts the container, provisions the database, and runs your first query. You install the skills once, then ask in plain English.
 
 ```bash
 npx skills add microsoft/azure-sql-database-container
