@@ -1,0 +1,21 @@
+{
+  "name": "azure-sql-developer",
+  "description": "Agent skills for Azure SQL Developer, the Azure SQL Database engine running locally in a container. Teaches your agent to run the engine, connect, migrate, scaffold, build RAG, wire CI, and go local-to-cloud, using the real Private Preview image instead of the SQL Server image.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Microsoft"
+  },
+  "homepage": "https://microsoft.github.io/azure-sql-database-container/",
+  "repository": "https://github.com/microsoft/azure-sql-database-container",
+  "license": "MIT",
+  "keywords": [
+    "azure-sql",
+    "sql-server",
+    "database",
+    "container",
+    "docker",
+    "local-development",
+    "rag",
+    "vector-search"
+  ]
+}
