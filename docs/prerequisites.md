@@ -39,6 +39,7 @@ The container is OCI-compliant and runs on any modern runtime. Tested runtimes:
 - **Podman** 5.0 or later
 - **Rancher Desktop** 1.13 or later
 - **containerd** (via `nerdctl` or Kubernetes)
+- **[WSL containers](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers)** (`wslc`, included with WSL on Windows)
 
 Pick the runtime that already works on your machine. The container image and the connection behavior are the same across runtimes.
 

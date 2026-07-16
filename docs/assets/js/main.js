@@ -135,7 +135,7 @@
     });
   });
 
-  // ---- quickstart: Docker / Podman / containerd runtime tabs ----
+  // ---- quickstart: Docker / Podman / containerd / WSL container runtime tabs ----
   var runtimeGroups = document.querySelectorAll("[data-runtime-tabs]");
   function setRuntime(runtime) {
     runtimeGroups.forEach(function (group) {
