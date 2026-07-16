@@ -27,7 +27,7 @@ description: "Go from pulling the Azure SQL Developer image to your first query 
 
 Confirm you have:
 
-- A supported container engine installed and running (Docker, Podman, containerd, or Rancher Desktop). See [Prerequisites](prerequisites.md).
+- A supported container engine installed and running (Docker, Podman, containerd, Rancher Desktop, or [WSL containers](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers) on Windows). See [Prerequisites](prerequisites.md).
 - Port `1433` available on the host.
 - The registry username and password, provided when you sign up at [aka.ms/sqldbcontainerpreview-signup](https://aka.ms/sqldbcontainerpreview-signup) (pull-only; may be rotated during the preview).
 
@@ -71,7 +71,7 @@ Add a local Azure SQL Database to this project, then scaffold the schema, migrat
 
 ## Manual: run it yourself
 
-Prefer to run it yourself? Three commands take you from pull to query, with Docker or Podman.
+Prefer to run it yourself? Three commands take you from pull to query, with Docker, Podman, or [WSL containers](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers) (`wslc`).
 
 ### Step 1: sign in and pull the image
 
@@ -89,7 +89,7 @@ Once you are signed in, pull the image:
 docker pull sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
-With Podman, replace `docker` with `podman`. The registry path, image tag, and credentials are provisional during Private Preview.
+With Podman, replace `docker` with `podman`. On Windows with [WSL containers](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers), replace `docker` with `wslc` (sign-in is `wslc login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io <username>`). The registry path, image tag, and credentials are provisional during Private Preview.
 
 ### Step 2: start the container
 
@@ -157,7 +157,7 @@ docker compose down
 
 ## Troubleshooting
 
-The commands below use `docker`. If you run Podman, containerd, or Rancher Desktop, substitute your own CLI (`podman`, `nerdctl`): the behavior is the same on every runtime.
+The commands below use `docker`. If you run Podman, containerd, Rancher Desktop, or [WSL containers](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers), substitute your own CLI (`podman`, `nerdctl`, `wslc`): the behavior is the same on every runtime.
 
 ### Let your AI agent diagnose it
 
@@ -175,8 +175,8 @@ Prefer to work through it yourself? Start below.
 
 Most first-run failures are not the database, they are the runtime. Nothing checks these for you, so check all four:
 
-1. **A container runtime is installed and up to date.** Any modern OCI runtime works: Docker 24+, Podman 5.0+, Rancher Desktop 1.13+, or containerd. Install and setup docs: [Docker](https://docs.docker.com/desktop/), [Podman](https://podman.io/docs/installation), [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/), [containerd](https://github.com/containerd/nerdctl).
-2. **It is actually running.** `docker info` (or `podman info`) must return without an error. A fresh install does not always start the engine for you.
+1. **A container runtime is installed and up to date.** Any modern OCI runtime works: Docker 24+, Podman 5.0+, Rancher Desktop 1.13+, containerd, or [WSL containers](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers) (`wslc`, included with WSL). Install and setup docs: [Docker](https://docs.docker.com/desktop/), [Podman](https://podman.io/docs/installation), [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/), [containerd](https://github.com/containerd/nerdctl), [WSL containers](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers).
+2. **It is actually running.** `docker info` (or `podman info`, or `wslc version`) must return without an error. A fresh install does not always start the engine for you.
 3. **It is set to run Linux containers.** This is a Linux container. On **Windows**, a runtime set to Windows containers cannot run it: switch it to Linux containers ([Docker](https://docs.docker.com/desktop/setup/install/windows-install/#switch-between-windows-and-linux-containers), [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/)). This is the most common Windows failure.
 4. **It has enough memory.** The engine needs **at least 2 GB** to start, and will use most of what it is given. Allocate **4 GB and 2 CPUs** to the runtime (in Docker Desktop and Rancher Desktop this is under Settings, Resources; Podman machines are sized with `podman machine set --memory`). Too little memory shows up as a container that starts and then dies with no obvious error, which is the hardest failure to diagnose.
 
@@ -273,7 +273,7 @@ This is a known issue in the installer ([vercel-labs/skills#1355](https://github
 ### Still stuck?
 
 1. **Is it a known gap?** Check [Known limitations](known-limitations.md) first. The behavior may be documented rather than broken.
-2. **Is it your runtime, not the container?** If the container never starts, if `docker info` fails, or if the runtime cannot pull any image at all, it is a runtime problem and their documentation will fix it faster than we can: [Docker](https://docs.docker.com/desktop/troubleshoot-and-support/troubleshoot/), [Podman](https://podman.io/docs), [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/).
+2. **Is it your runtime, not the container?** If the container never starts, if `docker info` fails, or if the runtime cannot pull any image at all, it is a runtime problem and their documentation will fix it faster than we can: [Docker](https://docs.docker.com/desktop/troubleshoot-and-support/troubleshoot/), [Podman](https://podman.io/docs), [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/), [WSL containers](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers).
 3. **Still nothing? Tell us.** We would rather hear about it than have you work around it in silence.
 
 - **Something wrong with the container:** [report a bug](https://aka.ms/azuresql-developer-bug). Include the image tag, your host OS, your container runtime and version, and the container logs.
