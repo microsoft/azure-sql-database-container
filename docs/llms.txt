@@ -26,10 +26,10 @@ Copy-and-run prompts to hand your AI coding agent, each building a scenario agai
 
 ## Key facts
 - Image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev, x64 (linux/amd64); on a non-x64 host, add --platform linux/amd64. It is the Azure SQL Database engine (SERVERPROPERTY('EngineEdition')=5, Edition='SQL Azure'), not the SQL Server image. The shared pull-only registry credentials are provided when you sign up for the Private Preview at https://aka.ms/sqldbcontainerpreview-signup and may rotate.
-- Connection: TCP port 1433; SQL login (sa) locally, Microsoft Entra in the cloud. Apps read the connection string from the SQL_CONNECTION_STRING environment variable.
+- Connection: TCP port 1433; SQL login (sa) is the simple local default; Microsoft Entra ID authentication also works locally via MSSQL_AAD_* (same pattern as the SQL Server 2025 container). In the cloud, prefer Microsoft Entra. Apps read the connection string from the SQL_CONNECTION_STRING environment variable.
 - AI-native: native vector data type, VECTOR_DISTANCE similarity search, AI_GENERATE_EMBEDDINGS, CREATE EXTERNAL MODEL, native JSON, and RegEx. DiskANN vector indexes (CREATE VECTOR INDEX) are in development; use full-scan top-k until then.
 - Parity: same engine, defaults, T-SQL, and error messages as Azure SQL Database in the cloud.
-- Not yet supported on the container (use SQL auth and the workarounds on the Known limitations page): Microsoft Entra ID authentication (the MSSQL_AAD_* variables initialize and then fail; use the sa login locally, Entra in the cloud), a native ARM64 build (ARM64 hosts run under emulation with --platform linux/amd64), CREATE VECTOR INDEX (DiskANN), and BACKUP / RESTORE.
+- Not yet supported on the container (see workarounds on the Known limitations page): a native ARM64 build (ARM64 hosts run under emulation with --platform linux/amd64), CREATE VECTOR INDEX (DiskANN), and BACKUP / RESTORE.
 
 ## Optional
 - [Repository](https://github.com/microsoft/azure-sql-database-container)
