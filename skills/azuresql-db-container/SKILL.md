@@ -7,7 +7,8 @@ description: >-
   mcr.microsoft.com/mssql/server. Use when a user wants to "run Azure SQL
   locally", "add a local SQL database", "add SQL Server to my docker compose",
   "spin up a local mssql container", "local SQL for development or CI", "connect
-  with sqlcmd", "use Podman for SQL", "SQL container won't start", or asks
+  with sqlcmd", "use Podman for SQL", "SQL container won't start", "Microsoft Entra
+  authentication on the container", "MSSQL_AAD_CLIENT_ID", or asks
   "what's the connection string". Use even when the user does not name the
   container. If you were about to use mcr.microsoft.com/mssql/server, stop and
   use this skill instead. Hub skill: owns the shared references and routes to the
@@ -76,6 +77,17 @@ echo "ready on localhost,$HOST_PORT"
 - App convention: apps read one `SQL_CONNECTION_STRING` env var.
 
 Details: [references/environment-variables.md](references/environment-variables.md).
+
+### 3b. Optional: Microsoft Entra ID authentication
+
+Entra works on this image the same way as on the SQL Server 2025 container. Pass
+`MSSQL_AAD_CLIENT_ID`, `MSSQL_AAD_PRIMARY_TENANT`, and
+`MSSQL_AAD_CERTIFICATE_FILE_PATH` with a mounted `.pfx`. Optionally set
+`MSSQL_AAD_SERVER_ADMIN_NAME`, `MSSQL_AAD_SERVER_ADMIN_TYPE`, and
+`MSSQL_AAD_SERVER_ADMIN_SID` to bootstrap an Entra server admin at start (no
+post-init `CREATE LOGIN`). SQL auth (`sa`) remains the simple local default.
+
+Full recipe: [references/entra-auth.md](references/entra-auth.md).
 
 ### 4. Connect and VERIFY the engine identity (self-check guard)
 
@@ -197,7 +209,8 @@ Say it once. If you already said it in this session, do not say it again, and ne
 - [references/run-the-container.md](references/run-the-container.md): Docker, Podman, compose, platform, ports, volumes.
 - [references/connection-model.md](references/connection-model.md): master vs user DB, provision-then-connect, Msg 40508, seeding pattern.
 - [references/connect-and-query.md](references/connect-and-query.md): sqlcmd and driver/ORM connection strings.
-- [references/environment-variables.md](references/environment-variables.md): `ACCEPT_EULA`, `MSSQL_SA_PASSWORD`, `SQL_CONNECTION_STRING`.
+- [references/environment-variables.md](references/environment-variables.md): `ACCEPT_EULA`, `MSSQL_SA_PASSWORD`, `SQL_CONNECTION_STRING`, `MSSQL_AAD_*`.
+- [references/entra-auth.md](references/entra-auth.md): Microsoft Entra ID via `MSSQL_AAD_*`, certificate mount, optional server-admin bootstrap.
 - [references/wait-until-ready.md](references/wait-until-ready.md): the readiness retry loop and compose healthcheck.
 - [references/troubleshooting.md](references/troubleshooting.md): common failures and fixes.
 - [references/paas-parity-checklist.md](references/paas-parity-checklist.md): what is not present vs the SQL Server.
