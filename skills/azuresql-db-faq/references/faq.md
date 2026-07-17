@@ -91,36 +91,19 @@ example the schema designer or natural-language SQL): https://aka.ms/vscode-mssq
 
 ## Parity with the cloud
 
-**Is Microsoft Entra ID (Azure AD) authentication supported?** It does not work on the
-container today. Use SQL authentication locally: the `sa` login, or a contained user you
-create.
+**Is Microsoft Entra ID (Azure AD) authentication supported?** Yes. It works the same
+way as on the SQL Server 2025 container. Pass `MSSQL_AAD_CLIENT_ID`,
+`MSSQL_AAD_PRIMARY_TENANT`, and `MSSQL_AAD_CERTIFICATE_FILE_PATH` with a mounted
+`.pfx` (export password empty). Optionally set `MSSQL_AAD_SERVER_ADMIN_NAME`,
+`MSSQL_AAD_SERVER_ADMIN_TYPE` (`0` for user, `1` for group), and
+`MSSQL_AAD_SERVER_ADMIN_SID` (object ID) to create an Entra server admin when the
+container starts, so you do not need a post-init `CREATE LOGIN` /
+`sp_addsrvrolemember`.
 
-**Do not say "the variables are ignored". They are not, and that matters.** Reproduced on
-the preview image: the container accepts `MSSQL_AAD_CLIENT_ID`,
-`MSSQL_AAD_PRIMARY_TENANT`, and `MSSQL_AAD_CERTIFICATE_FILE_PATH`; it exposes the full set
-of `network.aad*` settings in `mssql-conf`; and it loads the mounted `.pfx`. The log
-reports success and then fails:
-
-```
-Microsoft Entra ID authentication is enabled.
-Successfully loaded the AAD first party principal certificate.
-JSONWebTokenService::MiseInitForFirstPartyApplications:Error: Could not retrieve ...
-Azure Active Directory authentication manager initialization failed.
-  AAD authentication will be disabled, failure: 0x80004005
-```
-
-Entra is then silently off while the engine keeps running and SQL auth keeps working, so
-the only evidence is in the container log. That is why someone following the
-[SQL Server container Entra guidance](https://learn.microsoft.com/sql/linux/security/authentication/container-kubernetes-microsoft-entra-deployment)
-sees a "failure in the log" rather than a clean "not supported" message.
-
-Tell the user to check `docker logs <container>` for those lines, and to file a bug at
-https://aka.ms/azuresql-developer-bug with them attached.
-
-It does not break the local-to-cloud story. Azure SQL Database in the cloud supports
-Entra, so the intended pattern is SQL auth locally and Entra in the cloud, with only the
-connection string changing (see the `azuresql-db-local-to-cloud` skill). Do not promise a
-date for local Entra support.
+SQL authentication (`sa`) remains the pragmatic local default. Use Entra locally
+when you want closer parity with Azure SQL Database in the cloud. Full recipe:
+`azuresql-db-container` skill, `references/entra-auth.md`. Learn tutorial:
+https://learn.microsoft.com/sql/linux/security/authentication/container-kubernetes-microsoft-entra-deployment
 
 **My query works locally but fails when I deploy to Azure SQL Database.** Some PaaS
 restrictions enforced in the cloud are not yet enforced by the container, so an
