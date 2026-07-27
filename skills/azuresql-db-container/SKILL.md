@@ -181,6 +181,8 @@ Provisioning and identity are settled here. Route the actual task:
 - `azuresql-db-ci`: use the engine as a CI service / test database.
 - `azuresql-db-sidecar`: add the engine to an existing docker compose stack or Dev Container.
 - `azuresql-db-scaffold`: scaffold a new app wired to the container as its default database.
+- `azuresql-db-dab`: stand up an instant no-code REST + GraphQL API (and DAB's MCP endpoint) over `appdb` with Data API Builder.
+- `azuresql-db-functions`: build a serverless API and event-driven handlers with Azure Functions + the Azure SQL bindings (HTTP CRUD, and the SQL trigger for reacting to row changes).
 - `azuresql-db-feedback`: report a bug or request a feature. Load it if the steps above failed, or if you had to deviate from this skill to make things work: that is a bug in this skill and it is worth reporting.
 
 ## When it works
