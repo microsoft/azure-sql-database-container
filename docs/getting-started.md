@@ -289,6 +289,8 @@ Pick a job and let your AI coding agent build it against Azure SQL Developer. Ea
 - [Develop offline]({{ '/prompts/offline.md' | relative_url }}): demos, classes, and workshops with no internet.
 - [Drop in as a sidecar]({{ '/prompts/sidecar.md' | relative_url }}): add it to a docker compose stack or Dev Container.
 - [Scaffold new projects]({{ '/prompts/templates.md' | relative_url }}): start a new .NET Aspire, FastAPI, Next.js, or NestJS project.
+- [Instant REST + GraphQL API]({{ '/prompts/dab.md' | relative_url }}): expose your tables as a no-code API (and an MCP endpoint) with Data API Builder.
+- [Serverless and event-driven]({{ '/prompts/functions.md' | relative_url }}): an Azure Functions HTTP API with the Azure SQL bindings, plus the SQL trigger for reacting to row changes locally.
 
 Haven't installed the skill yet? See [Agent skill](prerequisites.md#agent-skill).
 

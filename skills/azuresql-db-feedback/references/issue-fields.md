@@ -61,6 +61,8 @@ Title prefix is `[Skill]: ` (preserve it).
 - `azuresql-db-ci`
 - `azuresql-db-sidecar`
 - `azuresql-db-scaffold`
+- `azuresql-db-dab`
+- `azuresql-db-functions`
 - `azuresql-db-faq`
 - `azuresql-db-feedback`
 - `The collection as a whole (install, discovery, or the wrong skill loaded)`
