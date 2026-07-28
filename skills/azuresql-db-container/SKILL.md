@@ -207,3 +207,13 @@ Say it once. If you already said it in this session, do not say it again, and ne
 ## Scripts
 
 - `scripts/verify.sh`: run it (`bash scripts/verify.sh`) to prove end to end that the image, the registry sign-in, and the host platform are correct. Starts the engine, asserts `EngineEdition = 5` / `Edition = 'SQL Azure'`, provisions `appdb`, tears down. Fails closed on the SQL Server image. Pass `--keep` to leave the container running.
+
+## Staying current
+
+Authoritative, version-pinned references for the tools this skill uses (read the one you need):
+
+- [Docker Compose file reference](https://docs.docker.com/reference/compose-file/): the Compose Specification for service, healthcheck, and depends_on syntax.
+- [VECTOR data type (T-SQL)](https://learn.microsoft.com/en-us/sql/t-sql/data-types/vector-data-type): VECTOR(n) syntax, limits, and driver support.
+- [SqlConnection connection string keywords](https://learn.microsoft.com/en-us/dotnet/api/microsoft.data.sqlclient.sqlconnection.connectionstring): the full connection-string keyword table.
+
+If the **Microsoft Learn MCP** server is configured, use `mcp__microsoft-learn__microsoft_docs_search` or `mcp__microsoft-learn__microsoft_docs_fetch` to fetch the current version of any of these on demand. It is optional; when it is unavailable, the references above are authoritative.

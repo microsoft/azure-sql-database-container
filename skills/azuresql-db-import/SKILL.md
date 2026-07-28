@@ -161,3 +161,11 @@ Read SqlPackage output for skipped/blocking items. See
 
 - [references/sqlpackage-import.md](references/sqlpackage-import.md): SqlPackage install, full flag reference,
   container-based fallback, and common import errors with fixes. Read it when SqlPackage is missing or an import fails.
+
+## Staying current
+
+Authoritative, version-pinned references for the tools this skill uses (read the one you need):
+
+- [SqlPackage import](https://learn.microsoft.com/en-us/sql/tools/sqlpackage/sqlpackage-import): Import and Publish parameters for .bacpac/.dacpac.
+
+If the **Microsoft Learn MCP** server is configured, use `mcp__microsoft-learn__microsoft_docs_search` or `mcp__microsoft-learn__microsoft_docs_fetch` to fetch the current version of any of these on demand. It is optional; when it is unavailable, the references above are authoritative.

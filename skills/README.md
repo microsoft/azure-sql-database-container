@@ -175,6 +175,61 @@ Conventions this collection holds itself to:
 | Every skill stands alone, even where that means repeating a canonical fact | A user may install one skill, not the collection. Duplication is deliberate; drift is guarded by an automated check that the shared facts agree across all skills |
 | Each skill ends by pointing at `azuresql-db-feedback` if its own instructions failed | A skill that quietly gets worked around is a bug we would otherwise never hear about |
 
+### Knowledge layers
+
+Every skill in this collection carries its knowledge in the same three layers, following Anthropic's
+[progressive disclosure](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview) model.
+The layers are uniform across all skills; no skill is special.
+
+| Layer | Where | Loaded | Purpose |
+| --- | --- | --- | --- |
+| **1. Instructions** | `SKILL.md` body | when the skill triggers | The happy path plus the canonical facts. Kept under 500 lines. |
+| **2. References** | `references/*.md` (linked one level deep) | on demand | Deeper detail. For any feature the agent must generate a config or spec for, this includes a **curated distilled shape** and the **version-pinned** authoritative schema, so generation is correct and offline-reliable. |
+| **3. Live docs (optional)** | the **Microsoft Learn MCP** | when available at runtime | The *current* Microsoft documentation and schema, fetched on demand. Referenced by fully-qualified tool name and always with a fallback, so the skill still works when the MCP or the network is absent. |
+
+Rules this enforces:
+
+- **Configs are generated against the latest schema.** A feature that emits a config (for example
+  `dab-config.json`, `host.json`, `schema.prisma`, a compose file, a workflow) bundles the distilled shape and
+  pins the schema in Layer 2, and points at the Learn MCP in Layer 3 for the current version. The distilled,
+  pinned copy is the offline source of truth; the MCP keeps it current when reachable.
+- **The MCP is optional, never a dependency.** Layer 3 is phrased conditionally and always names the tool in
+  the fully-qualified form Anthropic requires (`mcp__microsoft-learn__microsoft_docs_fetch`,
+  `mcp__microsoft-learn__microsoft_docs_search`). If it is not configured, Layer 2 is authoritative. See
+  [Using the Microsoft Learn MCP](#using-the-microsoft-learn-mcp-optional) to enable it.
+- **No time-sensitive text and no skill-to-skill dependency**, per the standard: each skill stands alone and
+  reaches the same three layers on its own.
+
+Every `SKILL.md` surfaces Layers 2 and 3 in a uniform **"Staying current"** section.
+
+---
+
+## Using the Microsoft Learn MCP (optional)
+
+Layer 3 above is the [Microsoft Learn MCP server](https://learn.microsoft.com/en-us/training/support/mcp): a
+public, no-auth, generally available server that returns current Microsoft documentation (Azure SQL, Data API
+Builder, Azure Functions, EF Core, T-SQL, SqlPackage, and the rest of Microsoft Learn). It is **optional** and
+the skills work without it, but enabling it lets an agent pull the latest reference and schema on demand.
+
+To enable it in Claude Code, add the server to your project's `.mcp.json` (a ready-to-copy
+[`.mcp.json.sample`](../.mcp.json.sample) is in the repo root):
+
+```json
+{
+  "mcpServers": {
+    "microsoft-learn": {
+      "type": "http",
+      "url": "https://learn.microsoft.com/api/mcp"
+    }
+  }
+}
+```
+
+Other agents (GitHub Copilot, Codex, Cursor) accept the same `type: http` / `url` entry in their own MCP
+config. Once enabled, the skills reference its tools as `mcp__microsoft-learn__microsoft_docs_search`,
+`mcp__microsoft-learn__microsoft_docs_fetch`, and `mcp__microsoft-learn__microsoft_code_sample_search`. The
+server label (`microsoft-learn`) is yours to choose; the fully-qualified tool prefix follows whatever you pick.
+
 ---
 
 ## Accuracy baseline

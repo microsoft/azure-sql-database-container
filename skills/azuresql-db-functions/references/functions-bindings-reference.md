@@ -81,11 +81,14 @@ bound to `IReadOnlyList<SqlChange<T>>`. `function.json` equivalent: `"type":
 
 Requires Change Tracking on the database and table (see event-driven.md).
 
-## host.json trigger tuning
+## host.json shape (bundle + trigger tuning)
 
-Under `extensions.Sql`:
+`host.json` carries two load-bearing pieces. For JS/TS/Python/PowerShell the
+**`extensionBundle`** node is required (without it the bindings do not load); the
+`.NET` isolated worker uses the NuGet package instead and does not need it.
+`extensions.Sql` tunes the trigger.
 
-| Setting | Default | Meaning |
+| `extensions.Sql` setting | Default | Meaning |
 | --- | --- | --- |
 | `MaxBatchSize` | 100 | Max changes delivered per invocation |
 | `PollingIntervalMs` | 1000 | Delay between polls (ms) |
@@ -94,6 +97,10 @@ Under `extensions.Sql`:
 ```json
 {
   "version": "2.0",
+  "extensionBundle": {
+    "id": "Microsoft.Azure.Functions.ExtensionBundle",
+    "version": "[4.0.0, 5.0.0)"
+  },
   "extensions": { "Sql": { "MaxBatchSize": 300, "PollingIntervalMs": 1000 } }
 }
 ```

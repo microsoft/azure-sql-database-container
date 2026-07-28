@@ -187,3 +187,14 @@ move to least-privilege or to the cloud.
 - [references/functions-bindings-reference.md](references/functions-bindings-reference.md): the input, output, and trigger binding fields (C# attributes, `function.json`, Python decorators), the `SqlConnectionString` setting, and host.json trigger tuning (`MaxBatchSize`, `PollingIntervalMs`).
 - [references/functions-snippets.md](references/functions-snippets.md): copy-paste project setup and per-language function bodies - HTTP GET (input binding), HTTP POST upsert (output binding), and a SQL-trigger handler - plus `func` commands and a local run/verify loop.
 - [references/event-driven.md](references/event-driven.md): how the SQL trigger works (Change Tracking, polling, coalescing, `az_func` state tables), the required permission grants, and why CES is a cloud-only path you stub locally with the trigger.
+
+## Staying current
+
+Authoritative, version-pinned references for the tools this skill uses (read the one you need):
+
+- [Azure SQL bindings for Functions](https://learn.microsoft.com/en-us/azure/azure-functions/functions-bindings-azure-sql): input/output/trigger bindings, extension install, and connection settings.
+- [host.json reference](https://learn.microsoft.com/en-us/azure/azure-functions/functions-host-json): extensionBundle and all host.json top-level properties.
+- [host.json JSON schema](https://json.schemastore.org/host.json): the authoritative schema for host.json.
+- [About change tracking](https://learn.microsoft.com/en-us/sql/relational-databases/track-changes/about-change-tracking-sql-server): the change-tracking feature the SQL trigger depends on.
+
+If the **Microsoft Learn MCP** server is configured, use `mcp__microsoft-learn__microsoft_docs_search` or `mcp__microsoft-learn__microsoft_docs_fetch` to fetch the current version of any of these on demand. It is optional; when it is unavailable, the references above are authoritative.

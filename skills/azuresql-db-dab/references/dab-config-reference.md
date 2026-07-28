@@ -17,7 +17,7 @@
 
 ```json
 {
-  "$schema": "https://github.com/Azure/data-api-builder/releases/latest/download/dab.draft.schema.json",
+  "$schema": "https://github.com/Azure/data-api-builder/releases/download/v2.0.9/dab.draft.schema.json",
   "data-source": {
     "database-type": "mssql",
     "connection-string": "@env('SQL_CONNECTION_STRING')"
@@ -126,6 +126,16 @@ Both related entities must already exist (`dab add`) before you relate them.
 ## Regenerating vs hand-editing
 
 `dab-config.json` is generated. Prefer `dab add` / `dab update` over editing the
-JSON by hand so it stays schema-valid; the `$schema` line enables editor
-validation if you must edit. `dab validate` checks the file, and
-`dab start` fails fast on an invalid config.
+JSON by hand so it stays schema-valid; the pinned `$schema` line (above) enables
+editor validation if you must edit.
+
+## Validate against the schema
+
+`dab validate -c dab-config.json` is the authoritative gate: it runs five ordered
+stages (schema, config properties, permissions, database connection, entity
+metadata) and exits nonzero on the first failure. Stages 4 and 5 connect to the
+engine and read the real tables, so a fully green run needs the container up with
+the target tables provisioned. `dab start` also fail-fasts on an invalid config.
+Run `dab validate` after any hand edit. For the current schema (this reference
+pins v2.0.9), fetch it from the Learn MCP or the `$schema` URL if the DAB version
+you install differs.

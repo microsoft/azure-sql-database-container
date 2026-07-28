@@ -188,3 +188,12 @@ echo "ready on localhost,$HOST_PORT"
 - Do not rely on `/docker-entrypoint-initdb.d/*.sql`; it is not honored. Seed with `sqlcmd -d appdb -i`.
 - Do not require sqlcmd on the runner; the health check and provisioning run inside the container.
 - Do not call a non-x64 host "supported"; on a non-x64 self-hosted runner just add `--platform linux/amd64`.
+
+## Staying current
+
+Authoritative, version-pinned references for the tools this skill uses (read the one you need):
+
+- [GitHub Actions service containers](https://docs.github.com/en/actions/use-cases-and-examples/using-containerized-services/about-service-containers): how service containers, health options, and credentials work in a workflow.
+- [GitHub workflow JSON schema](https://json.schemastore.org/github-workflow.json): the authoritative schema for workflow YAML.
+
+If the **Microsoft Learn MCP** server is configured, use `mcp__microsoft-learn__microsoft_docs_search` or `mcp__microsoft-learn__microsoft_docs_fetch` to fetch the current version of any of these on demand. It is optional; when it is unavailable, the references above are authoritative.
