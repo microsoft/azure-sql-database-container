@@ -4,6 +4,9 @@
 
 _Last updated: July 2026._
 
+> Full text: [llms-full.txt](https://microsoft.github.io/azure-sql-database-container/llms-full.txt) is the complete text of all 13 agent skills and the build prompts in one file.
+> Layered knowledge: each skill bundles its instructions and version-pinned config shapes, and can optionally use the public [Microsoft Learn MCP](https://learn.microsoft.com/api/mcp) (`microsoft_docs_search` / `microsoft_docs_fetch`) to fetch current Microsoft docs on demand.
+
 ## Documentation
 - [What is Azure SQL Developer](https://microsoft.github.io/azure-sql-database-container/what-is-the-container.html): the engine surface, AI-native capabilities, drivers and ORMs, and supported runtimes and platforms.
 - [Goals of the Private Preview](https://microsoft.github.io/azure-sql-database-container/goals-of-the-private-preview.html): what this preview sets out to learn and validate.
