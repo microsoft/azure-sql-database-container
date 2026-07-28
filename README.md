@@ -42,7 +42,7 @@ npx skills add microsoft/azure-sql-database-container
 
 Claude Code and Codex users can also install them as a native plugin (`/plugin marketplace add microsoft/azure-sql-database-container`). See the **[Agent skills page](https://microsoft.github.io/azure-sql-database-container/agent-skills.html)** for per-tool install and what each skill does, or [browse the skill source](skills/README.md).
 
-Each skill carries its knowledge in layers (instructions, bundled `references/` with version-pinned config shapes, and an optional live layer via the public [Microsoft Learn MCP](https://learn.microsoft.com/en-us/training/support/mcp) for the current docs on demand). The MCP is optional; the skills work without it. See [Knowledge layers](skills/README.md#knowledge-layers) and the ready-to-copy [`.mcp.json.sample`](.mcp.json.sample).
+Each skill carries its knowledge in layers (instructions, bundled `references/` with version-pinned config shapes, and an optional live layer via the public [Microsoft Learn MCP](https://learn.microsoft.com/en-us/training/support/mcp) for the current docs on demand). The MCP is optional; the skills work without it. See [Knowledge layers](skills/README.md#knowledge-layers) and [Using the Microsoft Learn MCP](skills/README.md#using-the-microsoft-learn-mcp-optional).
 
 ## Feedback
 

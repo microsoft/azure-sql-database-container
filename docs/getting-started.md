@@ -61,7 +61,7 @@ That installs the whole collection, which is what we recommend: the skills route
 
 Confirm they loaded with `ls .claude/skills/`. If it is empty, see [skills did not load](#skills-did-not-load).
 
-**Optional: enable the Microsoft Learn MCP.** The skills work on their own, but if you add the public [Microsoft Learn MCP server](https://learn.microsoft.com/en-us/training/support/mcp) they can fetch the current Microsoft docs and schemas on demand. Copy [`.mcp.json.sample`](https://github.com/microsoft/azure-sql-database-container/blob/main/.mcp.json.sample) to `.mcp.json` (Claude Code) or add the same `type: http` / `url` entry to your agent's MCP config. See [Using the Microsoft Learn MCP](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#using-the-microsoft-learn-mcp-optional).
+**Optional: enable the Microsoft Learn MCP.** The skills work on their own, but if you add the public [Microsoft Learn MCP server](https://learn.microsoft.com/en-us/training/support/mcp) they can fetch the current Microsoft docs and schemas on demand. Add a `microsoft-learn` server (`type: http`, `url: https://learn.microsoft.com/api/mcp`) to your agent's MCP config, for example `.mcp.json` in Claude Code. The copy-pasteable snippet and per-tool detail are in [Using the Microsoft Learn MCP](https://github.com/microsoft/azure-sql-database-container/tree/main/skills#using-the-microsoft-learn-mcp-optional).
 
 The skills work across Claude Code, GitHub Copilot (VS Code and CLI), Codex, and Cursor. Then ask your agent in plain English. Copy this and paste it into your agent:
 

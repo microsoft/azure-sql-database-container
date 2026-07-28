@@ -4,7 +4,6 @@
 
 _Last updated: July 2026._
 
-> Full text: [llms-full.txt](https://microsoft.github.io/azure-sql-database-container/llms-full.txt) is the complete text of all 13 agent skills and the build prompts in one file.
 > Layered knowledge: each skill bundles its instructions and version-pinned config shapes, and can optionally use the public [Microsoft Learn MCP](https://learn.microsoft.com/api/mcp) (`microsoft_docs_search` / `microsoft_docs_fetch`) to fetch current Microsoft docs on demand.
 
 ## Documentation
