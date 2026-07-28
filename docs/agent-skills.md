@@ -36,6 +36,8 @@ For the native plugin install (Claude Code and Codex), a single skill, or per-to
 
 Thirteen skills ship in the collection. Each one stands alone and teaches your agent one job; the collection routes between them.
 
+> **Layered knowledge.** Every skill carries its knowledge in three layers: the instructions in the skill, deeper `references/` (including curated, version-pinned config shapes), and an optional live layer via the public [Microsoft Learn MCP server](https://learn.microsoft.com/en-us/training/support/mcp) that fetches the *current* Microsoft docs and schemas on demand. The MCP is optional; the skills work without it. See [Using the Microsoft Learn MCP]({{ site.repo }}/tree/main/skills#using-the-microsoft-learn-mcp-optional) to enable it.
+
 <div class="skill-cards">
   <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-container" rel="noopener">
     <span class="skill-tag">azuresql-db-container</span>

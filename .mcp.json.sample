@@ -1,0 +1,9 @@
+{
+  "//": "Optional: enables Layer 3 of the skills' knowledge (the Microsoft Learn MCP). Public, no auth, generally available. Copy to .mcp.json (Claude Code) or add the same http entry to your agent's MCP config. The skills work without it; enabling it lets an agent fetch the current Microsoft docs and schemas on demand. See skills/README.md > Using the Microsoft Learn MCP.",
+  "mcpServers": {
+    "microsoft-learn": {
+      "type": "http",
+      "url": "https://learn.microsoft.com/api/mcp"
+    }
+  }
+}

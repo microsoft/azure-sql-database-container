@@ -169,3 +169,14 @@ docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa \
 ## References
 
 - [references/migration-tools.md](references/migration-tools.md): full per-tool wiring (EF Core, Prisma, Alembic, SqlPackage), env var setup, and common migration failures. Read it when a tool needs more than the command shown above or a migration fails.
+
+## Staying current
+
+Authoritative, version-pinned references for the tools this skill uses (read the one you need):
+
+- [EF Core migrations](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/): migrations add/update, the history table, and idempotent scripts.
+- [Prisma with SQL Server](https://www.prisma.io/docs/orm/overview/databases/sql-server): the SQL Server connector, datasource URL, and type mapping.
+- [Alembic](https://alembic.sqlalchemy.org/en/latest/): SQLAlchemy migrations: env.py, autogenerate, and upgrade/downgrade.
+- [SqlPackage import](https://learn.microsoft.com/en-us/sql/tools/sqlpackage/sqlpackage-import): Import and Publish parameters for .bacpac/.dacpac.
+
+If the **Microsoft Learn MCP** server is configured, use `mcp__microsoft-learn__microsoft_docs_search` or `mcp__microsoft-learn__microsoft_docs_fetch` to fetch the current version of any of these on demand. It is optional; when it is unavailable, the references above are authoritative.
