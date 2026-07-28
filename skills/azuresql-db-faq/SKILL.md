@@ -77,3 +77,12 @@ limitations list (kept in step with the docs) is in [references/limitations.md](
 
 - [references/faq.md](references/faq.md): the full question-and-answer list with the "why" behind each capability and gap, grouped by bucket; read it when the quick answers above do not cover the question.
 - [references/limitations.md](references/limitations.md): an offline snapshot of the known limitations (active issues, behavior gaps, out-of-scope items); read it when the user needs the current gap list and a workaround.
+
+## Authoritative references
+
+The load-bearing facts are above. For exhaustive detail, these are the authoritative, version-pinned sources (read the one you need):
+
+- [Connect and query Azure SQL Database](https://learn.microsoft.com/en-us/azure/azure-sql/database/connect-query-content-reference-guide): how the cloud service is connected and queried, for comparing local versus cloud.
+- [VECTOR data type (T-SQL)](https://learn.microsoft.com/en-us/sql/t-sql/data-types/vector-data-type): the native VECTOR type behind the vector-search questions.
+
+If the **Microsoft Learn MCP** server is available in your environment, you can pull the current version of any of these on demand. It is an optional booster, not required.

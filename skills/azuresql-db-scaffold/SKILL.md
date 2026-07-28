@@ -135,3 +135,14 @@ development; use full-scan top-k for now.
 ## References
 
 - [references/scaffold-snippets.md](references/scaffold-snippets.md): the shared compose service plus per-stack skeletons (.NET Aspire/EF Core, FastAPI, Next.js/Prisma, NestJS) with `.env`, appdb provisioning, first migration, and a parameterized data-access layer. Read it once you know which stack you are scaffolding.
+
+## Authoritative references
+
+The load-bearing facts are above. For exhaustive detail, these are the authoritative, version-pinned sources (read the one you need):
+
+- [Prisma with SQL Server](https://www.prisma.io/docs/orm/overview/databases/sql-server): the SQL Server connector, datasource URL, and type mapping.
+- [EF Core migrations](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/): migrations add/update and the design-time model.
+- [Docker Compose file reference](https://docs.docker.com/reference/compose-file/): the Compose Specification for the database service.
+- [SqlConnection connection string keywords](https://learn.microsoft.com/en-us/dotnet/api/microsoft.data.sqlclient.sqlconnection.connectionstring): the full connection-string keyword table.
+
+If the **Microsoft Learn MCP** server is available in your environment, you can pull the current version of any of these on demand. It is an optional booster, not required.

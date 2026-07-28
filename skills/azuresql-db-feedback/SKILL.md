@@ -113,3 +113,11 @@ dropdown values, and worked examples for all three templates are in
 ## References
 
 - [references/issue-fields.md](references/issue-fields.md): the exact field ids for all three templates, the verbatim dropdown values, URL construction and its length limit, and worked examples. Read this before building a prefilled URL.
+
+## Authoritative references
+
+The load-bearing facts are above. For exhaustive detail, these are the authoritative, version-pinned sources (read the one you need):
+
+- [GitHub issue-form schema syntax](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-githubs-form-schema): the form-schema fields (input, textarea, dropdown) the prefill maps to.
+
+If the **Microsoft Learn MCP** server is available in your environment, you can pull the current version of any of these on demand. It is an optional booster, not required.

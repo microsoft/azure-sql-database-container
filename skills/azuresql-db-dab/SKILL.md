@@ -155,5 +155,16 @@ scope the exposed tools is in [references/dab-mcp.md](references/dab-mcp.md).
 ## References
 
 - [references/dab-config-reference.md](references/dab-config-reference.md): the `dab-config.json` structure, `@env()` connection handling, entity/permission/policy options, REST and GraphQL settings, and the `dab update --relationship` syntax for one-to-many and many-to-many.
+- [references/dab-config-schema.md](references/dab-config-schema.md): the distilled `dab-config.json` shape (the load-bearing keys for the MSSQL REST + GraphQL path), the version-pinned `$schema` URL, and `dab validate`. Read this before hand-writing or patching the JSON.
 - [references/dab-snippets.md](references/dab-snippets.md): copy-paste recipes - CLI end-to-end, running DAB as a container against the SQL container (shared network / `host.docker.internal`), a compose service, and sample REST/GraphQL calls.
 - [references/dab-mcp.md](references/dab-mcp.md): DAB's built-in MCP endpoint - how to enable/scope it in config, the default `/mcp` path, and how to connect an MCP client. Framed as a DAB API surface, not a standalone SQL MCP server.
+
+## Authoritative references
+
+The load-bearing facts are above. For exhaustive detail, these are the authoritative, version-pinned sources (read the one you need):
+
+- [Data API Builder configuration reference](https://learn.microsoft.com/en-us/azure/data-api-builder/configuration/): every config key (`data-source`, `runtime`, `entities`, `autoentities`, Key Vault), with examples.
+- [DAB config JSON schema (pinned v2.0.9)](https://github.com/Azure/data-api-builder/releases/download/v2.0.9/dab.draft.schema.json): the machine-readable schema `dab validate` checks against.
+- [Data API Builder MCP (SQL MCP Server)](https://learn.microsoft.com/en-us/azure/data-api-builder/mcp/overview): the built-in MCP endpoint, DML tools, transports, and RBAC.
+
+If the **Microsoft Learn MCP** server is available in your environment, you can pull the current version of any of these on demand. It is an optional booster, not required.

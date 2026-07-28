@@ -161,3 +161,11 @@ Read SqlPackage output for skipped/blocking items. See
 
 - [references/sqlpackage-import.md](references/sqlpackage-import.md): SqlPackage install, full flag reference,
   container-based fallback, and common import errors with fixes. Read it when SqlPackage is missing or an import fails.
+
+## Authoritative references
+
+The load-bearing facts are above. For exhaustive detail, these are the authoritative, version-pinned sources (read the one you need):
+
+- [SqlPackage import](https://learn.microsoft.com/en-us/sql/tools/sqlpackage/sqlpackage-import): the full SqlPackage import/publish parameter and property reference.
+
+If the **Microsoft Learn MCP** server is available in your environment, you can pull the current version of any of these on demand. It is an optional booster, not required.

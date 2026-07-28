@@ -175,6 +175,26 @@ Conventions this collection holds itself to:
 | Every skill stands alone, even where that means repeating a canonical fact | A user may install one skill, not the collection. Duplication is deliberate; drift is guarded by an automated check that the shared facts agree across all skills |
 | Each skill ends by pointing at `azuresql-db-feedback` if its own instructions failed | A skill that quietly gets worked around is a bug we would otherwise never hear about |
 
+### Filling knowledge gaps (4-layer policy)
+
+When a skill's bundled instructions run out, the agent still has to produce correct output (a config file, a
+schema, a workflow). A model will not fetch documentation at runtime, so a skill that only links out leaves
+generation to guesswork. Every skill fills gaps in this order:
+
+1. **Bundle the load-bearing knowledge.** SKILL.md + `references/`. For any tool/feature/service where the
+   agent must generate a **schema- or spec-governed artifact** (a `dab-config.json`, `host.json`,
+   `schema.prisma`, compose file, workflow YAML), bundle a **curated distillation of the governing shape** in
+   `references/`, not the raw schema. Never outsource a correctness-critical shape to a link.
+2. **Curated deep links for the long tail.** Exhaustive or volatile detail links out to **stable public docs
+   only** (`learn.microsoft.com` or the tool's official schema), **version-pinned** where a version exists, and
+   annotated with what the reader will find there. Never link to a Private Preview provisional URL. Each skill
+   ends with an **"Authoritative references"** section listing these for every tool it drives.
+3. **Optional Microsoft Learn MCP.** If the Microsoft Learn MCP server is available, the agent may pull the
+   current reference on demand. It is an opt-in booster, never a dependency, and it returns prose, not the
+   machine-readable schema, so it does not replace the bundled shape in (1).
+4. **Never** build a "documentation skill" that other skills depend on. Skills stay self-contained; a
+   single-skill install must work.
+
 ---
 
 ## Accuracy baseline

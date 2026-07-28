@@ -191,3 +191,12 @@ The app container reaches the database at `sqldb,1433` over the compose network.
 - Do not drop `--platform` / `platform: linux/amd64`; the image is x64 only.
 - Do not depend on `/docker-entrypoint-initdb.d/*.sql`; it is not honored here.
 - Do not call a non-x64 host "supported"; it runs under emulation only.
+
+## Authoritative references
+
+The load-bearing facts are above. For exhaustive detail, these are the authoritative, version-pinned sources (read the one you need):
+
+- [Docker Compose file reference](https://docs.docker.com/reference/compose-file/): the Compose Specification for services, healthcheck, and depends_on conditions.
+- [devcontainer.json reference](https://containers.dev/implementors/json_reference/): the Dev Container metadata keys (dockerComposeFile, service, runServices, remoteEnv).
+
+If the **Microsoft Learn MCP** server is available in your environment, you can pull the current version of any of these on demand. It is an optional booster, not required.

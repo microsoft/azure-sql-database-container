@@ -244,3 +244,12 @@ body stays an overview.
 ## References
 
 - [references/auth-local-vs-cloud.md](references/auth-local-vs-cloud.md): why local SA auth and cloud Microsoft Entra auth differ, the token flow, per-stack auth setup, the Python (pyodbc) example, and the deployment checklist. Read it when wiring the cloud connection string or promoting an app to Azure.
+
+## Authoritative references
+
+The load-bearing facts are above. For exhaustive detail, these are the authoritative, version-pinned sources (read the one you need):
+
+- [Connect and query Azure SQL Database](https://learn.microsoft.com/en-us/azure/azure-sql/database/connect-query-content-reference-guide): per-language quickstarts, connection info, TLS, and drivers for the cloud service.
+- [SqlConnection connection string keywords](https://learn.microsoft.com/en-us/dotnet/api/microsoft.data.sqlclient.sqlconnection.connectionstring): the full connection-string keyword table.
+
+If the **Microsoft Learn MCP** server is available in your environment, you can pull the current version of any of these on demand. It is an optional booster, not required.

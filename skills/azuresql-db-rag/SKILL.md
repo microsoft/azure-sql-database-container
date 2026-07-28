@@ -223,3 +223,12 @@ the same; you just add the index.
 ## References
 
 - [references/vector-schema.md](references/vector-schema.md): table shapes, how to choose the dimension n, insert and top-k query mechanics, distance metrics, metadata filtering, corpus seeding, indexing status, and troubleshooting. Read it when designing the vector schema or a query beyond the basic top-k shown above.
+
+## Authoritative references
+
+The load-bearing facts are above. For exhaustive detail, these are the authoritative, version-pinned sources (read the one you need):
+
+- [VECTOR data type (T-SQL)](https://learn.microsoft.com/en-us/sql/t-sql/data-types/vector-data-type): VECTOR(n) column syntax, limits, and driver support.
+- [VECTOR_DISTANCE (T-SQL)](https://learn.microsoft.com/en-us/sql/t-sql/functions/vector-distance-transact-sql): cosine, euclidean, and dot distance with examples.
+
+If the **Microsoft Learn MCP** server is available in your environment, you can pull the current version of any of these on demand. It is an optional booster, not required.

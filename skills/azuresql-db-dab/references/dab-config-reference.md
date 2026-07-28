@@ -17,7 +17,7 @@
 
 ```json
 {
-  "$schema": "https://github.com/Azure/data-api-builder/releases/latest/download/dab.draft.schema.json",
+  "$schema": "https://github.com/Azure/data-api-builder/releases/download/v2.0.9/dab.draft.schema.json",
   "data-source": {
     "database-type": "mssql",
     "connection-string": "@env('SQL_CONNECTION_STRING')"

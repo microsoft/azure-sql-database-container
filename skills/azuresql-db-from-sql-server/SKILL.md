@@ -182,3 +182,12 @@ development; use a full-scan top-k query for now.
 
 - [references/sql-server-vs-azure-feature-matrix.md](references/sql-server-vs-azure-feature-matrix.md): what carries over, what changes, what is gone. Read it when triaging SQL Server-only features found in step 7.
 - [references/migrate-compose.md](references/migrate-compose.md): before/after docker-compose with a provision step. Read it when rewriting a compose file.
+
+## Authoritative references
+
+The load-bearing facts are above. For exhaustive detail, these are the authoritative, version-pinned sources (read the one you need):
+
+- [Docker Compose file reference](https://docs.docker.com/reference/compose-file/): the Compose Specification for the service and image syntax.
+- [SqlConnection connection string keywords](https://learn.microsoft.com/en-us/dotnet/api/microsoft.data.sqlclient.sqlconnection.connectionstring): the full connection-string keyword table.
+
+If the **Microsoft Learn MCP** server is available in your environment, you can pull the current version of any of these on demand. It is an optional booster, not required.
