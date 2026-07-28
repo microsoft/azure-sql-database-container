@@ -211,8 +211,7 @@ public, no-auth, generally available server that returns current Microsoft docum
 Builder, Azure Functions, EF Core, T-SQL, SqlPackage, and the rest of Microsoft Learn). It is **optional** and
 the skills work without it, but enabling it lets an agent pull the latest reference and schema on demand.
 
-To enable it in Claude Code, add the server to your project's `.mcp.json` (a ready-to-copy
-[`.mcp.json.sample`](../.mcp.json.sample) is in the repo root):
+To enable it in Claude Code, add the server to your project's `.mcp.json`:
 
 ```json
 {

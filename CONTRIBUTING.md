@@ -26,6 +26,13 @@ If you are changing the agent skills in `skills/`, keep these in mind:
 
 The conventions and the reasoning behind them are in the [skills README](skills/README.md#authoring-standard).
 
+## Not in this repo, on purpose
+
+These were considered and **deliberately left out**. Please do not add them back without opening an issue first; a check in the eval flow fails if they reappear.
+
+- **`.mcp.json.sample`** (a shipped Microsoft Learn MCP config file). Users install the skills into their own project with `npx skills add`; they never clone this repo, so a sample file here is not something they copy. The copy-pasteable snippet lives inline in [Using the Microsoft Learn MCP](skills/README.md#using-the-microsoft-learn-mcp-optional), which is the discoverable, usable form. Keep it there, not as a repo-root file.
+- **`docs/llms-full.txt`** (a concatenated dump of every skill + prompt) **and its generator `docs/build-llms-full.sh`**. It duplicates content that is already installed via `npx skills add`, has to be regenerated on every change (a drift risk), and works against the skills' progressive-disclosure design, which loads the one skill an agent needs rather than a ~25k-token blob. The [`docs/llms.txt`](docs/llms.txt) index is the right granularity and stays.
+
 ## Building the site locally
 
 The site is Jekyll and is published from `docs/` with GitHub Pages. To preview it:
