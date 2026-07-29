@@ -24,18 +24,12 @@ docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_P
 
 ## Optional: Microsoft Entra ID (`MSSQL_AAD_*`)
 
-Entra authentication works on this image. Pass these with a mounted `.pfx` when
-you want Entra locally (SQL auth remains the default). Full recipe:
-[entra-auth.md](entra-auth.md).
-
-| Variable | Required for Entra | Notes |
-| --- | --- | --- |
-| `MSSQL_AAD_CLIENT_ID` | Yes | Application (client) ID. |
-| `MSSQL_AAD_PRIMARY_TENANT` | Yes | Directory (tenant) ID. |
-| `MSSQL_AAD_CERTIFICATE_FILE_PATH` | Yes | Path to the `.pfx` inside the container. |
-| `MSSQL_AAD_SERVER_ADMIN_NAME` | No | Bootstrap Entra admin UPN or group name at start. |
-| `MSSQL_AAD_SERVER_ADMIN_TYPE` | No | `0` = user, `1` = group. |
-| `MSSQL_AAD_SERVER_ADMIN_SID` | No | Object ID (GUID) of that user or group. |
+Entra authentication works on this image. When you want Entra locally, set
+`MSSQL_AAD_CLIENT_ID`, `MSSQL_AAD_PRIMARY_TENANT`, and
+`MSSQL_AAD_CERTIFICATE_FILE_PATH` (required) plus optional
+`MSSQL_AAD_SERVER_ADMIN_NAME`, `MSSQL_AAD_SERVER_ADMIN_TYPE`, and
+`MSSQL_AAD_SERVER_ADMIN_SID`, with a mounted `.pfx`. SQL auth remains the
+default. Full variable table and recipe: [entra-auth.md](entra-auth.md).
 
 ## App convention: SQL_CONNECTION_STRING
 

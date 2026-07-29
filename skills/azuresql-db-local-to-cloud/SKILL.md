@@ -63,9 +63,9 @@ Local: the container is provisioned with one bootstrap login, `sa`, set via the
 in front of a container on your laptop, so password auth over a trusted
 self-signed cert (`TrustServerCertificate=true`) is the pragmatic local default.
 
-Microsoft Entra ID authentication **does** work on the container (same
-`MSSQL_AAD_*` variables and certificate mount as the SQL Server 2025 image; see
-the `azuresql-db-container` skill, `references/entra-auth.md`). Use it when you
+Microsoft Entra ID authentication **does** work on the container (configure with
+the `MSSQL_AAD_*` variables and a certificate mount; see the
+`azuresql-db-container` skill, `references/entra-auth.md`). Use it when you
 want closer local-to-cloud parity. Most local-to-cloud flows still start with SQL
 auth locally and switch only the connection string for Entra in the cloud.
 

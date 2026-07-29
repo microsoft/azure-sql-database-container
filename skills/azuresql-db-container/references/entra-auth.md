@@ -1,10 +1,9 @@
 # Microsoft Entra ID authentication
 
-Microsoft Entra ID authentication works on Azure SQL Developer the same way it
-does on the SQL Server 2025 container. Configure it with the `MSSQL_AAD_*`
-environment variables and a mounted certificate. SQL authentication (`sa`)
-remains the simple default for local development; use Entra when you want closer
-parity with Azure SQL Database in the cloud.
+Microsoft Entra ID authentication works on Azure SQL Developer. Configure it
+with the `MSSQL_AAD_*` environment variables and a mounted certificate. SQL
+authentication (`sa`) remains the simple default for local development; use
+Entra when you want closer parity with Azure SQL Database in the cloud.
 
 For app registration, certificate creation, and Kubernetes deployments, follow
 the Learn tutorial:
@@ -14,7 +13,9 @@ the Learn tutorial:
 
 1. A Microsoft Entra application registration with a certificate uploaded.
 2. A `.pfx` certificate file for the container (export password must be empty;
-   a password-protected `.pfx` prevents the engine from starting).
+   a password-protected `.pfx` prevents the engine from starting). Protect the
+   certificate with restrictive file permissions on the host (for example
+   readable only by the account that mounts it).
 3. Network reachability from the container to Microsoft Entra ID endpoints.
 
 ## Required environment variables
@@ -64,26 +65,48 @@ With optional admin bootstrap, add:
 ```
 
 Without the optional admin variables, connect as `sa` after the engine is ready
-and create logins yourself:
+and create principals yourself.
+
+For cloud parity, prefer a contained user in the user database (connect to
+`appdb`, after it exists):
+
+```sql
+CREATE USER [my-app-identity] FROM EXTERNAL PROVIDER;
+ALTER ROLE db_datareader ADD MEMBER [my-app-identity];
+ALTER ROLE db_datawriter ADD MEMBER [my-app-identity];
+```
+
+For a server-scoped login (server admin path), run on a **master** connection.
+It is server-scope; on a user-db session you would hit Msg 40508:
 
 ```sql
 CREATE LOGIN [user@contoso.com]
-	FROM EXTERNAL PROVIDER;
+FROM EXTERNAL PROVIDER;
 ```
 
 ## Verify
 
-Check the container log for Entra enabled. You should see that Microsoft Entra
-ID authentication is enabled and that the certificate loaded, with no
-authentication-manager initialization failure.
+Do not rely on "Entra enabled" or "certificate loaded" log lines alone; those
+appeared even when Entra init then failed silently.
+
+1. Confirm the authentication manager did **not** fail:
 
 ```bash
-docker logs sqldb 2>&1 | grep -i entra
+docker logs sqldb 2>&1 | grep -i "authentication manager initialization failed"
 ```
+
+Expect no matches.
+
+2. Functional check: on a **master** connection as `sa`, run
+`CREATE LOGIN [some-principal] FROM EXTERNAL PROVIDER;`. Entra is configured when
+you get **Msg 33134** (principal could not be resolved) rather than **Msg 37525**
+(AAD not configured for this instance). Use a real UPN or object name when you
+intend to create the login.
 
 ## Do not
 
 - Do not use a password-protected `.pfx`; leave the export password empty.
+- Do not leave the host certificate world-readable; restrict file permissions.
 - Do not confuse Entra with Windows Authentication / NTLM (those are out of
   scope for Azure SQL Database and for this container).
 - Do not treat Entra as required for local work; `sa` SQL auth is still the

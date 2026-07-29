@@ -80,7 +80,7 @@ Details: [references/environment-variables.md](references/environment-variables.
 
 ### 3b. Optional: Microsoft Entra ID authentication
 
-Entra works on this image the same way as on the SQL Server 2025 container. Pass
+Configure Entra with the `MSSQL_AAD_*` variables and a mounted certificate. Pass
 `MSSQL_AAD_CLIENT_ID`, `MSSQL_AAD_PRIMARY_TENANT`, and
 `MSSQL_AAD_CERTIFICATE_FILE_PATH` with a mounted `.pfx`. Optionally set
 `MSSQL_AAD_SERVER_ADMIN_NAME`, `MSSQL_AAD_SERVER_ADMIN_TYPE`, and

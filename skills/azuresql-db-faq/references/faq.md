@@ -91,19 +91,21 @@ example the schema designer or natural-language SQL): https://aka.ms/vscode-mssq
 
 ## Parity with the cloud
 
-**Is Microsoft Entra ID (Azure AD) authentication supported?** Yes. It works the same
-way as on the SQL Server 2025 container. Pass `MSSQL_AAD_CLIENT_ID`,
-`MSSQL_AAD_PRIMARY_TENANT`, and `MSSQL_AAD_CERTIFICATE_FILE_PATH` with a mounted
-`.pfx` (export password empty). Optionally set `MSSQL_AAD_SERVER_ADMIN_NAME`,
-`MSSQL_AAD_SERVER_ADMIN_TYPE` (`0` for user, `1` for group), and
-`MSSQL_AAD_SERVER_ADMIN_SID` (object ID) to create an Entra server admin when the
-container starts, so you do not need a post-init `CREATE LOGIN` /
-`sp_addsrvrolemember`.
+**Is Microsoft Entra ID (Azure AD) authentication supported?** Yes. Configure it
+with `MSSQL_AAD_CLIENT_ID`, `MSSQL_AAD_PRIMARY_TENANT`, and
+`MSSQL_AAD_CERTIFICATE_FILE_PATH` plus a mounted `.pfx` (export password empty).
+Optionally set `MSSQL_AAD_SERVER_ADMIN_NAME`, `MSSQL_AAD_SERVER_ADMIN_TYPE`
+(`0` for user, `1` for group), and `MSSQL_AAD_SERVER_ADMIN_SID` (object ID) to
+create an Entra server admin when the container starts, so you do not need a
+post-init `CREATE LOGIN` / `sp_addsrvrolemember`.
 
 SQL authentication (`sa`) remains the pragmatic local default. Use Entra locally
 when you want closer parity with Azure SQL Database in the cloud. Full recipe:
-`azuresql-db-container` skill, `references/entra-auth.md`. Learn tutorial:
+the `azuresql-db-container` skill (`references/entra-auth.md`). Learn tutorial:
 https://learn.microsoft.com/sql/linux/security/authentication/container-kubernetes-microsoft-entra-deployment
+
+Also see
+https://microsoft.github.io/azure-sql-database-container/getting-started.html#microsoft-entra-id-authentication
 
 **My query works locally but fails when I deploy to Azure SQL Database.** Some PaaS
 restrictions enforced in the cloud are not yet enforced by the container, so an
