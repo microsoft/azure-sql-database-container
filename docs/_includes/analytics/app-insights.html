@@ -1,0 +1,32 @@
+{%- comment -%}
+  Azure Application Insights (client-side, browser telemetry). Loads the SDK asynchronously,
+  runs cookieless (disableCookiesUsage) so no consent banner is required, auto-collects page
+  views, and exposes window.appInsights for the track() helper in assets/js/main.js.
+  The connection string is browser-embeddable and is not a secret.
+{%- endcomment -%}
+<script>
+(function () {
+  var cs = "{{ site.analytics.app_insights_connection_string }}";
+  if (!cs) return;
+  var s = document.createElement("script");
+  s.src = "https://js.monitor.azure.com/scripts/b/ai.3.gbl.min.js";
+  s.crossOrigin = "anonymous";
+  s.async = true;
+  s.onload = function () {
+    try {
+      var ai = new Microsoft.ApplicationInsights.ApplicationInsights({
+        config: {
+          connectionString: cs,
+          disableCookiesUsage: true,          // cookieless: consent-safe, no banner required
+          disableExceptionTracking: false,
+          enableAutoRouteTracking: false      // multi-page site: one page view per load
+        }
+      });
+      ai.loadAppInsights();
+      ai.trackPageView();
+      window.appInsights = ai;
+    } catch (e) {}
+  };
+  document.head.appendChild(s);
+})();
+</script>
