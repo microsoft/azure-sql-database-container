@@ -34,7 +34,7 @@ For the first time, developers can build, test, and ship applications against th
 
 ## Agent skills
 
-Point your AI coding agent at Azure SQL Developer and let it start the container, provision the database, scaffold the schema, write the migrations, and build the data layer. The repo ships [13 agent skills](docs/agent-skills.md) that work in **Claude Code, Codex, Cursor, and VS Code with GitHub Copilot**:
+Point your AI coding agent at Azure SQL Developer and let it start the container, provision the database, scaffold the schema, write the migrations, and build the data layer. The repo ships [16 agent skills](docs/agent-skills.md) that work in **Claude Code, Codex, Cursor, and VS Code with GitHub Copilot**:
 
 ```bash
 npx skills add microsoft/azure-sql-database-container

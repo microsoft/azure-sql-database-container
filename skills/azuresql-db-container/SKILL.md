@@ -68,6 +68,17 @@ until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "You
 echo "ready on localhost,$HOST_PORT"
 ```
 
+**Keep the image current.** The Private Preview image is rebuilt almost daily. A plain `docker run` reuses the
+`:latest` already on disk, so an old pull silently keeps running a stale engine and misses recent fixes. Pull
+before you start (after `docker login`) to get the newest build:
+
+```bash
+docker pull sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
+```
+
+Do not force `--pull always` in the run command if you rely on working offline; pull explicitly when you want
+the latest. Cache behavior and refresh detail: [references/image-and-registry.md](references/image-and-registry.md).
+
 ### 3. Required environment variables
 
 - `ACCEPT_EULA=Y` (required).
@@ -183,6 +194,9 @@ Provisioning and identity are settled here. Route the actual task:
 - `azuresql-db-scaffold`: scaffold a new app wired to the container as its default database.
 - `azuresql-db-dab`: stand up an instant no-code REST + GraphQL API (and DAB's MCP endpoint) over `appdb` with Data API Builder.
 - `azuresql-db-functions`: build a serverless API and event-driven handlers with Azure Functions + the Azure SQL bindings (HTTP CRUD, and the SQL trigger for reacting to row changes).
+- `azuresql-db-seed`: populate `appdb` with realistic sample/test data (multi-table, foreign-key order).
+- `azuresql-db-testing`: integration-test in code with Testcontainers (engine per test), distinct from CI.
+- `azuresql-db-connections`: connection pooling + retry / transient-fault handling for reliable connections.
 - `azuresql-db-feedback`: report a bug or request a feature. Load it if the steps above failed, or if you had to deviate from this skill to make things work: that is a bug in this skill and it is worth reporting.
 
 ## When it works

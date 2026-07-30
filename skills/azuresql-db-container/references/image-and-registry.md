@@ -49,7 +49,12 @@ recipe) can fetch the image. If a pull returns "unauthorized" or "manifest
 unknown", re-run the login above with the shared pull-only credentials from your
 sign-up, which may have been rotated.
 
-## Pull explicitly (optional)
+## Get or refresh the latest image
+
+The Private Preview image is rebuilt **almost daily**. `:latest` is a moving tag, but Docker's default pull
+policy for `docker run` is `missing`: once a `:latest` is on disk, `docker run` **reuses the cached copy** and
+never re-checks the registry. So after your first pull you keep running that build until you pull again, which
+means you can silently miss engine fixes. Pull explicitly to refresh:
 
 ```bash
 docker pull sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
@@ -61,6 +66,11 @@ On a non-x64 host:
 docker pull --platform linux/amd64 \
   sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
+
+`docker pull` re-fetches `:latest` and updates the local image if the registry has a newer build (the image ID
+changes); if you are already current it is a no-op. Prefer an explicit pull over `docker run --pull always`,
+which would re-check the registry on every start and break the offline-development flow after the first pull.
+For compose, `docker compose pull` (or `pull_policy: always` on the service) does the same.
 
 ## Do not
 

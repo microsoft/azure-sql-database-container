@@ -34,7 +34,7 @@ For the native plugin install (Claude Code and Codex), a single skill, or per-to
 
 ## The skills
 
-Thirteen skills ship in the collection. Each one stands alone and teaches your agent one job; the collection routes between them.
+Sixteen skills ship in the collection. Each one stands alone and teaches your agent one job; the collection routes between them.
 
 > **Layered knowledge.** Every skill carries its knowledge in three layers: the instructions in the skill, deeper `references/` (including curated, version-pinned config shapes), and an optional live layer via the public [Microsoft Learn MCP server](https://learn.microsoft.com/en-us/training/support/mcp) that fetches the *current* Microsoft docs and schemas on demand. The MCP is optional; the skills work without it. See [Using the Microsoft Learn MCP]({{ site.repo }}/tree/main/skills#using-the-microsoft-learn-mcp-optional) to enable it.
 
@@ -94,6 +94,21 @@ Thirteen skills ship in the collection. Each one stands alone and teaches your a
     <h4>Serverless + event-driven <span class="arrow">&rarr;</span></h4>
     <p>Azure Functions over the engine: HTTP CRUD via SQL bindings, and the SQL trigger (Change Tracking) for reacting to row changes locally.</p>
   </a>
+  <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-seed" rel="noopener">
+    <span class="skill-tag">azuresql-db-seed</span>
+    <h4>Seed test data <span class="arrow">&rarr;</span></h4>
+    <p>Populate the local dev database with realistic sample data across related tables, in foreign-key order.</p>
+  </a>
+  <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-testing" rel="noopener">
+    <span class="skill-tag">azuresql-db-testing</span>
+    <h4>Integration testing <span class="arrow">&rarr;</span></h4>
+    <p>Spin up the engine per test with Testcontainers (.NET, Node, Python, Java), then tear it down. Distinct from the CI skill.</p>
+  </a>
+  <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-connections" rel="noopener">
+    <span class="skill-tag">azuresql-db-connections</span>
+    <h4>Reliable connections <span class="arrow">&rarr;</span></h4>
+    <p>Connection pooling plus retry and transient-fault handling, so the same code survives Azure SQL in the cloud.</p>
+  </a>
   <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-faq" rel="noopener">
     <span class="skill-tag">azuresql-db-faq</span>
     <h4>Answer questions <span class="arrow">&rarr;</span></h4>
@@ -104,7 +119,7 @@ Thirteen skills ship in the collection. Each one stands alone and teaches your a
     <h4>Report a problem <span class="arrow">&rarr;</span></h4>
     <p>Your agent writes the bug report for you, from what it already knows, and hands you a prefilled issue to review. It never files anything without your say-so.</p>
   </a>
-  {% assign one_skills = "azuresql-db-container|Start the engine,azuresql-db-from-sql-server|Convert from SQL Server,azuresql-db-local-to-cloud|Local to cloud,azuresql-db-schema-migration|Schema migrations,azuresql-db-import|Import a database,azuresql-db-rag|RAG and vector search,azuresql-db-ci|CI,azuresql-db-sidecar|Sidecar,azuresql-db-scaffold|Scaffold,azuresql-db-dab|REST + GraphQL API,azuresql-db-functions|Serverless + event-driven,azuresql-db-faq|Answer questions,azuresql-db-feedback|Report a problem" | split: "," %}
+  {% assign one_skills = "azuresql-db-container|Start the engine,azuresql-db-from-sql-server|Convert from SQL Server,azuresql-db-local-to-cloud|Local to cloud,azuresql-db-schema-migration|Schema migrations,azuresql-db-import|Import a database,azuresql-db-rag|RAG and vector search,azuresql-db-ci|CI,azuresql-db-sidecar|Sidecar,azuresql-db-scaffold|Scaffold,azuresql-db-dab|REST + GraphQL API,azuresql-db-functions|Serverless + event-driven,azuresql-db-seed|Seed test data,azuresql-db-testing|Integration testing,azuresql-db-connections|Reliable connections,azuresql-db-faq|Answer questions,azuresql-db-feedback|Report a problem" | split: "," %}
 </div>
 <div class="skill-more">
   <button class="skill-more-btn skill-more-alt" type="button" data-open-modal="single-skill">Install a single skill</button>
@@ -148,7 +163,7 @@ Install as a native plugin. In Claude Code, run:
 /plugin install azure-sql-developer@azure-sql-developer
 ```
 
-The first command registers this repository as a plugin marketplace; the second installs the `azure-sql-developer` plugin, which contains all 13 skills. Run `/plugin` any time to manage it, and `/reload-plugins` to activate it in the current session. The portable `npx skills add microsoft/azure-sql-database-container` works too.
+The first command registers this repository as a plugin marketplace; the second installs the `azure-sql-developer` plugin, which contains all 16 skills. Run `/plugin` any time to manage it, and `/reload-plugins` to activate it in the current session. The portable `npx skills add microsoft/azure-sql-database-container` works too.
 
 ### Codex
 

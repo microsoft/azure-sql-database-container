@@ -81,6 +81,13 @@ The image is in a private registry; the shared, pull-only username and password 
 provided when you sign up for the Private Preview at https://aka.ms/sqldbcontainerpreview-signup
 and may be rotated during the preview.
 
+**Why is my container missing a recent engine fix?** `:latest` is a moving tag and the image
+is rebuilt almost daily, but Docker's default pull policy for `docker run` is `missing`: once a
+`:latest` is on disk it reuses that cached copy and never re-checks the registry, so you can
+silently keep running a stale build. Refresh with `docker pull sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`,
+then recreate the container. Prefer an explicit pull over `docker run --pull always` so offline
+work still works after the first pull.
+
 ## Tooling
 
 **Why does SSMS or the VS Code MSSQL extension UI throw errors?** Graphical tooling is

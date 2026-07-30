@@ -118,6 +118,7 @@ Bring it up (after `docker login`, see above):
 
 ```bash
 docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io   # pull-only creds by signing up at https://aka.ms/sqldbcontainerpreview-signup
+docker compose pull                                      # refresh the daily-rebuilt :latest (compose reuses a cached image otherwise)
 docker compose up -d
 ```
 

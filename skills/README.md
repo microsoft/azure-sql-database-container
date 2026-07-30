@@ -30,6 +30,9 @@ EngineEdition `5` and Edition `'SQL Azure'` are the cloud engine's fingerprint. 
 | **azuresql-db-scaffold** | Scaffold a new app wired to the engine: connection string via one `SQL_CONNECTION_STRING` env var, provisioning step, and seed step in the correct order. |
 | **azuresql-db-dab** | Stand up an instant no-code REST + GraphQL API over the engine with Data API Builder (DAB): `dab init`/`add`/`start`, `@env()` connection, entities and relationships. Also serves DAB's built-in MCP endpoint (a DAB API surface, not a standalone SQL MCP server). |
 | **azuresql-db-functions** | Build a serverless API and event-driven handlers with Azure Functions + the Azure SQL bindings: HTTP CRUD via input/output bindings, and the SQL trigger (Change Tracking) as the local event-driven mechanism. CES is cloud-only. |
+| **azuresql-db-seed** | Populate the local dev database with realistic sample/test data: multi-table inserts in foreign-key order, generating N rows, and per-stack seeders (T-SQL + `bcp`/`BULK INSERT`, Node/Python fake data). |
+| **azuresql-db-testing** | Integration-test in code against a real engine spun up per test with Testcontainers (.NET/Node/Python/Java), then torn down. Distinct from the CI-pipeline skill. |
+| **azuresql-db-connections** | Make app connections reliable: connection pooling plus retry / transient-fault handling per stack, so the same code survives Azure SQL Database in the cloud. |
 | **azuresql-db-faq** | Answer questions about what the container can and cannot do, and why it differs from the cloud (backups, `USE`, vector index, GUI tooling, registry). Sorts each into engine vs. managed-service vs. SQL Server, and links the live Known limitations. |
 | **azuresql-db-feedback** | Report a bug or request a feature without leaving the agent. Builds a complete, prefilled GitHub issue from context the agent already has (image tag, host OS, runtime, the failing command, the error), redacts secrets, and hands it to you to review and submit. It never submits anything without your explicit confirmation. |
 
@@ -103,6 +106,9 @@ npx skills add microsoft/azure-sql-database-container --skill <skill-name>
 | **azuresql-db-scaffold** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-scaffold` |
 | **azuresql-db-dab** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-dab` |
 | **azuresql-db-functions** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-functions` |
+| **azuresql-db-seed** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-seed` |
+| **azuresql-db-testing** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-testing` |
+| **azuresql-db-connections** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-connections` |
 | **azuresql-db-faq** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-faq` |
 | **azuresql-db-feedback** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-feedback` |
 
