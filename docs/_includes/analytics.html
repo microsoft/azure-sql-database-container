@@ -1,0 +1,17 @@
+{%- comment -%}
+  Analytics router. Emits a provider's snippet only when analytics is enabled and that provider
+  is configured, so the site ships tracking-free until an id/connection string is set. Custom
+  events are fired from assets/js/main.js via a small track() helper that fans out to whatever
+  provider loaded. Consent-safe: providers run cookieless by default (no consent banner yet).
+{%- endcomment -%}
+{%- if site.analytics.enabled -%}
+  {%- if site.analytics.app_insights_connection_string and site.analytics.app_insights_connection_string != "" -%}
+    {%- include analytics/app-insights.html -%}
+  {%- endif -%}
+  {%- comment -%}
+    Microsoft Clarity and Google Analytics 4 slot in here when site.analytics.clarity_id /
+    site.analytics.ga4_id are set (each in its own analytics/<provider>.html partial). See the
+    analytics implementation plan. Clarity additionally requires masking code/connection-string
+    content (data-clarity-mask) and a consent signal for EEA/UK/CH visitors.
+  {%- endcomment -%}
+{%- endif -%}

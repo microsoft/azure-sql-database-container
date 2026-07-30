@@ -44,6 +44,17 @@
     }
   }
 
+  // ---- analytics: fan a custom event out to whatever provider loaded ----
+  // No-ops until an analytics provider is configured (see _includes/analytics.html).
+  function track(name, props) {
+    try {
+      if (window.appInsights && typeof window.appInsights.trackEvent === "function") {
+        window.appInsights.trackEvent({ name: name }, props || {});
+      }
+      // Microsoft Clarity and GA4 fan-out slot in here when those providers are added.
+    } catch (e) {}
+  }
+
   // shareable anchors on doc-page headings (kramdown already gives them ids)
   document.querySelectorAll(".prose h2[id], .prose h3[id]").forEach(function (h) {
     if (h.querySelector(".head-anchor")) return;
@@ -108,6 +119,7 @@
         text = target ? target.innerText : "";
       }
       copyText(normalizeCommand(text), btn);
+      track("copy_command", { kind: /npx skills add/.test(text || "") ? "install" : "command" });
     });
   });
 
@@ -121,6 +133,7 @@
     btn.addEventListener("click", function () {
       var code = pre.querySelector("code") || pre;
       copyText(normalizeCommand(code.innerText), btn);
+      track("copy_code", {});
     });
     pre.appendChild(btn);
   });
@@ -129,6 +142,7 @@
   document.querySelectorAll("[data-prompt]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       var url = btn.getAttribute("data-prompt");
+      track("copy_prompt", { prompt: url });
       fetch(url).then(function (r) { return r.text(); }).then(function (text) {
         copyText(text, btn);
       }).catch(function () {});
@@ -189,6 +203,9 @@
     if (href && href.charAt(0) !== "#" && !inNav) {
       a.setAttribute("target", "_blank");
       a.setAttribute("rel", "noopener noreferrer");
+      var host = "";
+      try { host = new URL(a.href, location.href).hostname; } catch (e) {}
+      a.addEventListener("click", function () { track("outbound_click", { host: host, href: href }); });
     }
   });
 })();
