@@ -11,7 +11,7 @@
     {
       "name": "azure-sql-developer",
       "source": ".",
-      "description": "Sixteen skills that teach an AI coding agent to use Azure SQL Developer correctly: start the engine, connect, migrate schemas, import data, scaffold apps, build local RAG, wire CI, run as a sidecar, go local-to-cloud, build no-code REST/GraphQL APIs with Data API Builder, build serverless and event-driven Azure Functions, seed realistic test data, integration-test with Testcontainers, add connection pooling and retry, answer FAQs, and report issues.",
+      "description": "Seventeen skills that teach an AI coding agent to use Azure SQL Developer correctly: start the engine, connect, migrate schemas, import data, scaffold apps, build local RAG, wire CI, run as a sidecar, go local-to-cloud, build no-code REST/GraphQL APIs with Data API Builder, build serverless and event-driven Azure Functions, seed realistic test data, integration-test with Testcontainers, add connection pooling and retry, connect securely with a least-privilege user and the right auth per environment, answer FAQs, and report issues.",
       "version": "1.0.0"
     }
   ]

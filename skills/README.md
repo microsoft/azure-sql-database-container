@@ -33,6 +33,7 @@ EngineEdition `5` and Edition `'SQL Azure'` are the cloud engine's fingerprint. 
 | **azuresql-db-seed** | Populate the local dev database with realistic sample/test data: multi-table inserts in foreign-key order, generating N rows, and per-stack seeders (T-SQL + `bcp`/`BULK INSERT`, Node/Python fake data). |
 | **azuresql-db-testing** | Integration-test in code against a real engine spun up per test with Testcontainers (.NET/Node/Python/Java), then torn down. Distinct from the CI-pipeline skill. |
 | **azuresql-db-connections** | Make app connections reliable: connection pooling plus retry / transient-fault handling per stack, so the same code survives Azure SQL Database in the cloud. |
+| **azuresql-db-auth** | Connect the app with a least-privilege database user instead of `sa`, pick the right auth method per environment (SQL locally, Microsoft Entra or managed identity in the cloud), secure the connection, and keep the secret out of source. |
 | **azuresql-db-faq** | Answer questions about what the container can and cannot do, and why it differs from the cloud (backups, `USE`, vector index, GUI tooling, registry). Sorts each into engine vs. managed-service vs. SQL Server, and links the live Known limitations. |
 | **azuresql-db-feedback** | Report a bug or request a feature without leaving the agent. Builds a complete, prefilled GitHub issue from context the agent already has (image tag, host OS, runtime, the failing command, the error), redacts secrets, and hands it to you to review and submit. It never submits anything without your explicit confirmation. |
 
@@ -109,6 +110,7 @@ npx skills add microsoft/azure-sql-database-container --skill <skill-name>
 | **azuresql-db-seed** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-seed` |
 | **azuresql-db-testing** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-testing` |
 | **azuresql-db-connections** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-connections` |
+| **azuresql-db-auth** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-auth` |
 | **azuresql-db-faq** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-faq` |
 | **azuresql-db-feedback** | `npx skills add microsoft/azure-sql-database-container --skill azuresql-db-feedback` |
 
