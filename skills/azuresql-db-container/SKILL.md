@@ -209,6 +209,7 @@ Provisioning and identity are settled here. Route the actual task:
 - `azuresql-db-seed`: populate `appdb` with realistic sample/test data (multi-table, foreign-key order).
 - `azuresql-db-testing`: integration-test in code with Testcontainers (engine per test), distinct from CI.
 - `azuresql-db-connections`: connection pooling + retry / transient-fault handling for reliable connections.
+- `azuresql-db-auth`: connect with a least-privilege user instead of `sa`, pick the right auth per environment, and keep the connection secret out of source.
 - `azuresql-db-feedback`: report a bug or request a feature. Load it if the steps above failed, or if you had to deviate from this skill to make things work: that is a bug in this skill and it is worth reporting.
 
 ## When it works

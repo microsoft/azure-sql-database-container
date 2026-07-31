@@ -66,6 +66,7 @@ Title prefix is `[Skill]: ` (preserve it).
 - `azuresql-db-seed`
 - `azuresql-db-testing`
 - `azuresql-db-connections`
+- `azuresql-db-auth`
 - `azuresql-db-faq`
 - `azuresql-db-feedback`
 - `The collection as a whole (install, discovery, or the wrong skill loaded)`

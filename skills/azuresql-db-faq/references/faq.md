@@ -120,6 +120,19 @@ invalid statement can succeed locally. Validate against a real Azure SQL Databas
 once before declaring readiness; the `azuresql-db-local-to-cloud` skill can provision
 a target database for a one-shot validation pass.
 
+**How do I create a least-privilege app user, and why does `CREATE USER ... WITH
+PASSWORD` fail?** On the container, a SQL **contained** user
+(`CREATE USER appuser WITH PASSWORD = '...'`) fails with **Msg 15007**, and trying
+to enable it with `ALTER DATABASE appdb SET CONTAINMENT = PARTIAL` fails with
+**Msg 12824**. Create the app identity as a **server login mapped to a database
+user** instead: `CREATE LOGIN applogin WITH PASSWORD = '...'` on a `master`
+connection, then `CREATE USER appuser FOR LOGIN applogin` plus role grants
+(`db_datareader` / `db_datawriter`) on the `appdb` connection. This is the inverse
+of Azure SQL Database in the cloud, where a contained user is preferred and server
+logins are limited; the app code and connection string are identical either way.
+Microsoft Entra contained users (`CREATE USER [name] FROM EXTERNAL PROVIDER`) do
+work on the container once Entra is enabled. Full recipes: the `azuresql-db-auth` skill.
+
 **Are session/database defaults identical to the cloud?** Mostly. Some defaults
 (collation, transaction isolation, ANSI settings) do not match the cloud exactly and
 can cause subtle edge-case differences. Set the ones you depend on explicitly.
