@@ -12,6 +12,7 @@ description: "Go from pulling the Azure SQL Developer image to your first query 
   - [Step 1: sign in and pull the image](#step-1-sign-in-and-pull-the-image)
   - [Step 2: start the container](#step-2-start-the-container)
   - [Step 3: connect and run your first query](#step-3-connect-and-run-your-first-query)
+- [Microsoft Entra ID authentication](#microsoft-entra-id-authentication)
 - [Troubleshooting](#troubleshooting)
   - [Let your AI agent diagnose it](#let-your-ai-agent-diagnose-it)
   - [Start here: check your container runtime](#start-here-check-your-container-runtime)
@@ -156,6 +157,32 @@ docker rm -f sqldb
 # or, if you used docker compose (add -v to also remove the data volume):
 docker compose down
 ```
+
+## Microsoft Entra ID authentication
+
+Microsoft Entra ID authentication works on Azure SQL Developer. Configure it with the `MSSQL_AAD_*` variables and a mounted certificate. SQL authentication (`sa`) remains the simple default above; use Entra when you want closer parity with Azure SQL Database in the cloud.
+
+For app registration and certificate setup, follow the Learn tutorial: [Configure Microsoft Entra ID authentication for SQL Server on containers](https://learn.microsoft.com/sql/linux/security/authentication/container-kubernetes-microsoft-entra-deployment). Mount a `.pfx` with an empty export password, then pass:
+
+- `MSSQL_AAD_CLIENT_ID`
+- `MSSQL_AAD_PRIMARY_TENANT`
+- `MSSQL_AAD_CERTIFICATE_FILE_PATH`
+
+```bash
+docker run -d --name sqldb \
+  -e "ACCEPT_EULA=Y" \
+  -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
+  -e "MSSQL_AAD_CLIENT_ID=<client-id>" \
+  -e "MSSQL_AAD_PRIMARY_TENANT=<tenant-id>" \
+  -e "MSSQL_AAD_CERTIFICATE_FILE_PATH=/var/opt/mssql/mssql-entra-id.pfx" \
+  -v /path/to/mssql-entra-id.pfx:/var/opt/mssql/mssql-entra-id.pfx:ro \
+  -p "1433:1433" \
+  sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
+```
+
+Optionally bootstrap an Entra server admin at start (no post-init `CREATE LOGIN` or `sp_addsrvrolemember`) with `MSSQL_AAD_SERVER_ADMIN_NAME`, `MSSQL_AAD_SERVER_ADMIN_TYPE` (`0` for user, `1` for group), and `MSSQL_AAD_SERVER_ADMIN_SID` (the user or group object ID).
+
+Agent-oriented detail lives in the [entra-auth skill reference](https://github.com/microsoft/azure-sql-database-container/blob/main/skills/azuresql-db-container/references/entra-auth.md).
 
 ## Troubleshooting
 

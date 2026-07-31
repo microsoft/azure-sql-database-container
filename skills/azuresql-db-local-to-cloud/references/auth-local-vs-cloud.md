@@ -7,7 +7,7 @@ third stack (Python) and a deployment checklist.
 ## Contents
 
 - [The principle](#the-principle)
-- [Local: SA auth](#local-sa-auth)
+- [Local: SA auth (default) and optional Entra](#local-sa-auth-default-and-optional-entra)
 - [Cloud: Microsoft Entra auth](#cloud-microsoft-entra-auth)
 - [Token flow, plainly](#token-flow-plainly)
 - [Per-stack auth setup](#per-stack-auth-setup)
@@ -24,14 +24,15 @@ and the cloud are the same engine (`EngineEdition = 5`, `Edition = 'SQL Azure'`)
 the queries, schema, and driver calls are byte-for-byte identical. Only the
 connection string moves.
 
-## Local: SA auth
+## Local: SA auth (default) and optional Entra
 
 The container is bootstrapped with a single login, `sa`, whose password comes
 from the `MSSQL_SA_PASSWORD` environment variable you set at `docker run`. There
-is no identity provider in front of a container on your machine, so the practical
-local choice is username/password over a trusted self-signed certificate.
+is no identity provider required in front of a container on your machine, so the
+practical local default is username/password over a trusted self-signed
+certificate.
 
-Local string:
+Local string (SQL auth):
 
 ```
 Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
@@ -42,6 +43,22 @@ fine on localhost; it is not what you ship to the cloud.
 
 The `sa` login is a bootstrap and provisioning identity. Use it to create
 `appdb` and the schema; your application does its real work against `appdb`.
+
+Microsoft Entra ID authentication also works on the container. Configure it with
+the `MSSQL_AAD_*` variables and a mounted certificate (see the
+`azuresql-db-container` skill, `references/entra-auth.md`). For cloud parity,
+create a contained user in `appdb` (same pattern as in the cloud):
+
+```sql
+CREATE USER [my-app-identity] FROM EXTERNAL PROVIDER;
+ALTER ROLE db_datareader ADD MEMBER [my-app-identity];
+ALTER ROLE db_datawriter ADD MEMBER [my-app-identity];
+```
+
+For a server-scoped Entra login (server admin path), use
+`CREATE LOGIN ... FROM EXTERNAL PROVIDER` on a **master** connection. Most
+local-to-cloud flows still start with SQL auth locally and switch only the
+connection string for Entra in the cloud.
 
 ## Cloud: Microsoft Entra auth
 

@@ -22,6 +22,15 @@ docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_P
   -p "1433:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
+## Optional: Microsoft Entra ID (`MSSQL_AAD_*`)
+
+Entra authentication works on this image. When you want Entra locally, set
+`MSSQL_AAD_CLIENT_ID`, `MSSQL_AAD_PRIMARY_TENANT`, and
+`MSSQL_AAD_CERTIFICATE_FILE_PATH` (required) plus optional
+`MSSQL_AAD_SERVER_ADMIN_NAME`, `MSSQL_AAD_SERVER_ADMIN_TYPE`, and
+`MSSQL_AAD_SERVER_ADMIN_SID`, with a mounted `.pfx`. SQL auth remains the
+default. Full variable table and recipe: [entra-auth.md](entra-auth.md).
+
 ## App convention: SQL_CONNECTION_STRING
 
 Applications read a single environment variable, `SQL_CONNECTION_STRING`, for
