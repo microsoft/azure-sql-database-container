@@ -173,6 +173,7 @@ title: Azure SQL Developer
               <button class="runtime-tab is-active" type="button" data-runtime="docker">Docker</button>
               <button class="runtime-tab" type="button" data-runtime="podman">Podman</button>
               <button class="runtime-tab" type="button" data-runtime="containerd">containerd (nerdctl)</button>
+              <button class="runtime-tab" type="button" data-runtime="wslc">WSL container</button>
             </div>
             <div class="qstep-cmd" data-runtime-panel="docker">
               <code><span class="cmd-p">$</span> docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u &lt;username&gt;</code>
@@ -185,6 +186,10 @@ title: Azure SQL Developer
             <div class="qstep-cmd" data-runtime-panel="containerd" hidden>
               <code><span class="cmd-p">$</span> nerdctl login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u &lt;username&gt;</code>
               <button class="copy-btn" type="button" data-copy-text="nerdctl login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>"><span class="copy-label">Copy</span></button>
+            </div>
+            <div class="qstep-cmd" data-runtime-panel="wslc" hidden>
+              <code><span class="cmd-p">$</span> wslc login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io &lt;username&gt;</code>
+              <button class="copy-btn" type="button" data-copy-text="wslc login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io <username>"><span class="copy-label">Copy</span></button>
             </div>
           </div>
         </div>
@@ -199,6 +204,7 @@ title: Azure SQL Developer
               <button class="runtime-tab is-active" type="button" data-runtime="docker">Docker</button>
               <button class="runtime-tab" type="button" data-runtime="podman">Podman</button>
               <button class="runtime-tab" type="button" data-runtime="containerd">containerd (nerdctl)</button>
+              <button class="runtime-tab" type="button" data-runtime="wslc">WSL container</button>
             </div>
             <div class="qstep-cmd" data-runtime-panel="docker">
               <code><span class="cmd-p">$</span> docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
@@ -215,6 +221,11 @@ title: Azure SQL Developer
     -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest</code>
               <button class="copy-btn" type="button" data-copy-text="nerdctl run --name sqldb -e &quot;ACCEPT_EULA=Y&quot; -e &quot;MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd&quot; \&#10;    -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest"><span class="copy-label">Copy</span></button>
             </div>
+            <div class="qstep-cmd" data-runtime-panel="wslc" hidden>
+              <code><span class="cmd-p">$</span> wslc run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
+    -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest</code>
+              <button class="copy-btn" type="button" data-copy-text="wslc run --name sqldb -e &quot;ACCEPT_EULA=Y&quot; -e &quot;MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd&quot; \&#10;    -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest"><span class="copy-label">Copy</span></button>
+            </div>
           </div>
         </div>
       </div>
@@ -228,6 +239,7 @@ title: Azure SQL Developer
               <button class="runtime-tab is-active" type="button" data-runtime="docker">Docker</button>
               <button class="runtime-tab" type="button" data-runtime="podman">Podman</button>
               <button class="runtime-tab" type="button" data-runtime="containerd">containerd (nerdctl)</button>
+              <button class="runtime-tab" type="button" data-runtime="wslc">WSL container</button>
             </div>
             <div class="qstep-cmd" data-runtime-panel="docker">
               <code><span class="cmd-p">$</span> docker exec sqldb /opt/mssql-tools18/bin/sqlcmd \
@@ -243,6 +255,11 @@ title: Azure SQL Developer
               <code><span class="cmd-p">$</span> nerdctl exec sqldb /opt/mssql-tools18/bin/sqlcmd \
     -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -Q "SELECT @@VERSION;"</code>
               <button class="copy-btn" type="button" data-copy-text="nerdctl exec sqldb /opt/mssql-tools18/bin/sqlcmd \&#10;    -S localhost -U sa -P &quot;YourStr0ng_Passw0rd&quot; -C -Q &quot;SELECT @@VERSION;&quot;"><span class="copy-label">Copy</span></button>
+            </div>
+            <div class="qstep-cmd" data-runtime-panel="wslc" hidden>
+              <code><span class="cmd-p">$</span> wslc exec sqldb /opt/mssql-tools18/bin/sqlcmd \
+    -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -Q "SELECT @@VERSION;"</code>
+              <button class="copy-btn" type="button" data-copy-text="wslc exec sqldb /opt/mssql-tools18/bin/sqlcmd \&#10;    -S localhost -U sa -P &quot;YourStr0ng_Passw0rd&quot; -C -Q &quot;SELECT @@VERSION;&quot;"><span class="copy-label">Copy</span></button>
             </div>
           </div>
         </div>
