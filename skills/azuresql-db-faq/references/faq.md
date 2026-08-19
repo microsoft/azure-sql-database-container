@@ -133,6 +133,14 @@ logins are limited; the app code and connection string are identical either way.
 Microsoft Entra contained users (`CREATE USER [name] FROM EXTERNAL PROVIDER`) do
 work on the container once Entra is enabled. Full recipes: the `azuresql-db-auth` skill.
 
+**Why does `BULK INSERT` (or `OPENROWSET(BULK ...)`) fail with Msg 12713 on a local file?**
+Because the engine reads bulk data only from **Azure Blob Storage**, not the local filesystem,
+exactly as Azure SQL Database in the cloud. Pointing `BULK INSERT` at a path inside the container
+returns `Msg 12713` ("OPENROWSET is not allowed to read local files"). To load a **local** CSV,
+use the `bcp` utility (it streams rows over the connection instead of reading a server-side file)
+or a driver/ORM; use `BULK INSERT` only against Blob Storage via a `DATABASE SCOPED CREDENTIAL` +
+`EXTERNAL DATA SOURCE`. Recipes: the `azuresql-db-seed` skill.
+
 **Are session/database defaults identical to the cloud?** Mostly. Some defaults
 (collation, transaction isolation, ANSI settings) do not match the cloud exactly and
 can cause subtle edge-case differences. Set the ones you depend on explicitly.

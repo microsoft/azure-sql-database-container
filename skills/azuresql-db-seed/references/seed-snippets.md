@@ -22,8 +22,8 @@ parameters for programmatic inserts.
 
 - [T-SQL: multi-table seed in FK order](#t-sql-multi-table-seed-in-fk-order)
 - [T-SQL: generate 1000 rows (set-based tally)](#t-sql-generate-1000-rows-set-based-tally)
-- [Bulk load: BULK INSERT from a CSV](#bulk-load-bulk-insert-from-a-csv)
-- [Bulk load: the bcp utility](#bulk-load-the-bcp-utility)
+- [Bulk load: BULK INSERT reads from Azure Blob Storage, not local files](#bulk-load-bulk-insert-reads-from-azure-blob-storage-not-local-files)
+- [Bulk load: the bcp utility (local files, client-side)](#bulk-load-the-bcp-utility-local-files-client-side)
 - [Node: @faker-js/faker + mssql driver](#node-faker-jsfaker--mssql-driver)
 - [Python: Faker + pyodbc](#python-faker--pyodbc)
 
@@ -131,69 +131,66 @@ SELECT COUNT(*) AS total_books FROM dbo.book;
 The `CROSS JOIN` of a system view against itself guarantees far more than 1000 candidate rows;
 `TOP (1000)` trims to the count you want. Change `1000` to scale.
 
-## Bulk load: BULK INSERT from a CSV
+## Bulk load: BULK INSERT reads from Azure Blob Storage, not local files
 
-`BULK INSERT` reads a file **from inside the container**, so copy the CSV in first. Insert order
-still matters: load parent CSVs before child CSVs.
+`BULK INSERT` and `OPENROWSET(BULK ...)` do **not** read a local path on the container: pointing
+them at a file inside the container fails with **`Msg 12713` "OPENROWSET is not allowed to read
+local files."** This is Azure SQL Database parity: the engine reads bulk data only from **Azure
+Blob Storage**. There is no local-file `BULK INSERT` here.
 
-```bash
-docker cp authors.csv sqldb:/tmp/authors.csv
-```
-
-`authors.csv` (header row, comma-delimited):
-
-```
-full_name,country
-Ada Sample,UK
-Grace Fixture,US
-Alan Seed,UK
-```
+From Blob Storage it works exactly as in the cloud: create a `DATABASE SCOPED CREDENTIAL` (a SAS
+token) and an `EXTERNAL DATA SOURCE`, then reference it with `DATA_SOURCE`:
 
 ```sql
--- Load into the parent table. FIRSTROW = 2 skips the header.
-BULK INSERT dbo.author
-FROM '/tmp/authors.csv'
-WITH (
-    FORMAT = 'CSV',
-    FIRSTROW = 2,
-    FIELDTERMINATOR = ',',
-    ROWTERMINATOR = '0x0a',   -- LF line endings; use '\r\n' for CRLF files
-    TABLOCK
-);
+CREATE DATABASE SCOPED CREDENTIAL BlobCred
+  WITH IDENTITY = 'SHARED ACCESS SIGNATURE', SECRET = 'sv=...';   -- SAS token, no leading '?'
+CREATE EXTERNAL DATA SOURCE SeedBlob
+  WITH (TYPE = BLOB_STORAGE, LOCATION = 'https://<account>.blob.core.windows.net/seed', CREDENTIAL = BlobCred);
+
+-- Stage first (no identity column), then INSERT ... SELECT so author_id auto-generates.
+DROP TABLE IF EXISTS dbo.author_stage;
+CREATE TABLE dbo.author_stage (full_name NVARCHAR(200), country NVARCHAR(100));
+BULK INSERT dbo.author_stage FROM 'authors.csv'
+  WITH (DATA_SOURCE = 'SeedBlob', FORMAT = 'CSV', FIRSTROW = 2, FIELDTERMINATOR = ',', ROWTERMINATOR = '0x0a', TABLOCK);
+INSERT INTO dbo.author (full_name, country) SELECT full_name, country FROM dbo.author_stage;
+DROP TABLE dbo.author_stage;
 ```
 
-Run it against appdb:
+Always stage when the target has an identity/computed column or the CSV column order differs, then
+`INSERT ... SELECT` into the real tables in FK order.
 
-```bash
-docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd \
-  -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -d appdb -i /dev/stdin <<'SQL'
-BULK INSERT dbo.author
-FROM '/tmp/authors.csv'
-WITH (FORMAT='CSV', FIRSTROW=2, FIELDTERMINATOR=',', ROWTERMINATOR='0x0a', TABLOCK);
-SELECT COUNT(*) AS loaded FROM dbo.author;
-SQL
-```
+To load a **local** CSV into the container, use `bcp` (below) or the driver seeders further down:
+they stream rows over the connection instead of asking the engine to read a server-side file.
 
-If the CSV column order does not match the table, load into a staging table first, then
-`INSERT ... SELECT` into the real table in FK order.
+## Bulk load: the bcp utility (local files, client-side)
 
-## Bulk load: the bcp utility
-
-`bcp` streams a data file into a table from the command line and is the fastest path for large
-files. It ships in the same tools image, so run it via `docker exec`. Copy the file in first.
+`bcp` streams a data file into a table over the connection (it does not hit the server-side
+local-file restriction above), so it is the tool for loading a **local** CSV. It ships in the
+tools image, so run it via `docker exec`. Copy the file in first, and stage into a table whose
+columns match the CSV so the `IDENTITY` column is not in the mapping:
 
 ```bash
 docker cp authors.csv sqldb:/tmp/authors.csv
+
+# Create a staging table that matches the CSV (no identity column).
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -d appdb \
+  -Q "DROP TABLE IF EXISTS dbo.author_stage; CREATE TABLE dbo.author_stage (full_name NVARCHAR(200), country NVARCHAR(100));"
 
 # -c character mode, -t field terminator, -F 2 first data row (skip header), -d appdb target db,
 # -u trusts the container's self-signed cert (bcp uses ODBC Driver 18, which validates certs by default).
-docker exec sqldb /opt/mssql-tools18/bin/bcp dbo.author in /tmp/authors.csv \
+docker exec sqldb /opt/mssql-tools18/bin/bcp dbo.author_stage in /tmp/authors.csv \
   -S localhost -U sa -P "YourStr0ng_Passw0rd" -d appdb -u \
   -c -t ',' -F 2 -b 10000
+
+# Move staged rows into the real table so author_id auto-generates.
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -d appdb \
+  -Q "INSERT INTO dbo.author (full_name, country) SELECT full_name, country FROM dbo.author_stage; DROP TABLE dbo.author_stage;"
 ```
 
 `-b 10000` commits in batches of 10000 rows so a very large load does not build one giant
-transaction. Load parent files before child files. To export instead, use `bcp dbo.author out ...`.
+transaction. Load parent files before child files. `bcp` must trust the self-signed cert (`-u`);
+if it still cannot connect on the preview image, fall back to the driver seeders below, which use
+the same connection any app does.
 
 ## Node: @faker-js/faker + mssql driver
 

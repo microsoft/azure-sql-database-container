@@ -34,7 +34,7 @@ before declaring readiness.
 - `CREATE VECTOR INDEX` (DiskANN) is still in development. For now, use a
   full-scan top-k query with `VECTOR_DISTANCE` instead of an index.
 
-See the `azuresql-db-vectors` task skill for full patterns.
+See the `azuresql-db-rag` task skill for full patterns.
 
 ## Current preview limitations
 

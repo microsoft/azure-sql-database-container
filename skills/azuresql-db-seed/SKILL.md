@@ -50,7 +50,7 @@ docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0n
 ```
 
 If the container is not running yet, start it and provision appdb using the canonical start recipe
-in the **azuresql-db-scaffold** skill, then come back here.
+in the **azuresql-db-container** skill, then come back here.
 
 ## Step 2: insert in foreign-key order (parents before children)
 
@@ -84,7 +84,7 @@ Per-stack seed recipes live in [references/seed-snippets.md](references/seed-sni
 
 - **T-SQL**: multi-table seed in FK order (`dbo.author` -> `dbo.book`) run via
   `docker exec -i sqldb ... -d appdb -i seed.sql`, plus the set-based "generate 1000 rows" example.
-- **Bulk load**: `BULK INSERT` from a CSV and the `bcp` utility for large data files.
+- **Bulk load**: `bcp` for local CSV files, and `BULK INSERT` from Azure Blob Storage (the engine does not read local files: local `BULK INSERT` fails with `Msg 12713`, Azure-parity).
 - **Node**: `@faker-js/faker` generating rows, inserted with the `mssql` driver using parameters.
 - **Python**: `Faker` generating rows, inserted with `pyodbc` (ODBC Driver 18) using parameters.
 
@@ -110,7 +110,7 @@ Per-stack seed recipes live in [references/seed-snippets.md](references/seed-sni
 
 ## References
 
-- [references/seed-snippets.md](references/seed-snippets.md): copy-pasteable seed recipes: multi-table T-SQL in FK order, a set-based generate-1000-rows example, `BULK INSERT` and `bcp` for CSV/large data, and Node (`@faker-js/faker` + `mssql`) and Python (`Faker` + `pyodbc`) parameterized inserts. Read it once you know your data source and stack.
+- [references/seed-snippets.md](references/seed-snippets.md): copy-pasteable seed recipes: multi-table T-SQL in FK order, a set-based generate-1000-rows example, `bcp` for local CSVs and Blob-based `BULK INSERT`, and Node (`@faker-js/faker` + `mssql`) and Python (`Faker` + `pyodbc`) parameterized inserts. Read it once you know your data source and stack.
 
 ## Staying current
 
