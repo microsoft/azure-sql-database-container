@@ -77,9 +77,9 @@ This is emulation, not native support. On an x64 host, omit `--platform`.
 
 ## Msg 40508 on USE
 
-Avoid `USE` to switch databases. In a user-database (SDS) session (the
+Avoid `USE` to switch databases. In a user-database session (the
 Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly as
-in Azure SQL Database in the cloud. A `master` connection is a non-SDS
+in Azure SQL Database in the cloud. A `master` connection is a provisioning
 provisioning session where the Azure statement filter is not enforced, so `USE` appears to work there, but `master` is for provisioning
 only, not application work. Always select the target database in the connection
 string (`Database=appdb`, or `-d appdb` for sqlcmd). Remove any `USE` line from

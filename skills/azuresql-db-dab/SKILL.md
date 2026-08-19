@@ -37,7 +37,7 @@ feature is needed.**
   upper/lower/digit/symbol). Engine listens on 1433.
 - The engine does **NOT** auto-create databases. Run `CREATE DATABASE appdb` on
   a **master** connection before DAB connects with `Database=appdb`. Do not use
-  `USE` to switch databases (in a user-database SDS session it returns
+  `USE` to switch databases (in a user-database session it returns
   `Msg 40508`); select the database in the connection string.
 - On a non-x64 host add `--platform linux/amd64`.
 

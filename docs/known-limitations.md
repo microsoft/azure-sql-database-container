@@ -50,7 +50,7 @@ Some session-level and database-level defaults (collation, transaction isolation
 
 ### 4. Two-step provisioning
 
-Two-step provisioning is a current limitation: you provision a database on a master connection, then reconnect directly to it. Public preview will let the container set a default startup database (for example `MSSQL_DB=appdb`) so you connect straight into an Azure-faithful (SDS) session without going through master.
+Two-step provisioning is a current limitation: you provision a database on a master connection, then reconnect directly to it. Public preview will let the container set a default startup database (for example `MSSQL_DB=appdb`) so you connect straight into an Azure-faithful session without going through master.
 
 ### 5. GUI tooling compatibility (MSSQL extension and SSMS)
 
@@ -67,7 +67,7 @@ The following gaps are functional differences from Azure SQL Database in the clo
 - **Always Encrypted with secure enclaves.** Always Encrypted basic functionality works. Secure enclaves require host TEE support and are not validated for the container.
 - **Auditing to Log Analytics or Storage.** Audit-to-file works. Audit-to-cloud-targets is not applicable on the container.
 - **Resource governance.** The container does not enforce the per-database DTU or vCore caps that exist in Azure SQL Database SKUs.
-- **Connection model: two session types.** A connection to a user database is an SDS (Azure-faithful) session and enforces Azure SQL Database semantics, including `USE` returning Msg 40508. A connection to master is a non-SDS provisioning session where the Azure statement filter (`USE`, `SHUTDOWN`, `RECONFIGURE`) is NOT enforced, so `USE` works there. (`BACKUP` / `RESTORE` are not supported in either session; they return Msg 40510. Azure SQL Database in the cloud likewise does not support them.) Use master only to `CREATE`/`DROP DATABASE`; do all application work on the user database.
+- **Connection model: two session types.** A connection to a user database is an Azure-faithful session and enforces Azure SQL Database semantics, including `USE` returning Msg 40508. A connection to master is a provisioning session where the Azure statement filter (`USE`, `SHUTDOWN`, `RECONFIGURE`) is NOT enforced, so `USE` works there. (`BACKUP` / `RESTORE` are not supported in either session; they return Msg 40510. Azure SQL Database in the cloud likewise does not support them.) Use master only to `CREATE`/`DROP DATABASE`; do all application work on the user database.
 - **Container-only preview.** The image is not published to public registries (MCR / Docker Hub). The shared registry credentials are pull-only and may be rotated during the preview.
 
 ## Out of scope by design

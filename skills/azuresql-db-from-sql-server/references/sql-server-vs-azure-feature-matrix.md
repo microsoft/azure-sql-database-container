@@ -37,7 +37,7 @@ Database container. Use this when auditing a project for migration.
 | Behavior | Box image | Azure SQL Developer | What to do |
 |---|---|---|---|
 | Database creation | apps often auto-create or use a pre-created DB | engine does NOT auto-create on connect | `CREATE DATABASE appdb` on a master connection first |
-| Switching DBs | `USE appdb` works | a user-database (SDS) session returns `Msg 40508` on `USE`, exactly as in the cloud; a `master` connection is a non-SDS provisioning session where the filter is not enforced, so `USE` appears to work there | select DB in the connection string (`Database=appdb` / `-d appdb`); avoid `USE`; use `master` for provisioning only |
+| Switching DBs | `USE appdb` works | a user-database session returns `Msg 40508` on `USE`, exactly as in the cloud; a `master` connection is a provisioning session where the filter is not enforced, so `USE` appears to work there | select DB in the connection string (`Database=appdb` / `-d appdb`); avoid `USE`; use `master` for provisioning only |
 | master DB | used freely | provisioning only | do real work on the user DB |
 | Auto init scripts | many setups copy SQL into the image | `/docker-entrypoint-initdb.d/*.sql` NOT honored | seed with `sqlcmd -d appdb -i seed.sql` after provisioning |
 | Readiness | varies | not ready when `docker run` returns | retry loop with `sqlcmd -C -b -l 2`; provision appdb in the loop |

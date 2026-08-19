@@ -141,9 +141,9 @@ These bite every newcomer. Full workflow in [references/connection-model.md](ref
    a database. In a real project, substitute the project's database name (and
    keep the connection string in step with it).
 2. **Select the database in the connection string, not with `USE`.** Avoid
-   `USE` to switch databases. In a user-database (SDS) session (the
+   `USE` to switch databases. In a user-database session (the
    Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly
-   as in Azure SQL Database in the cloud. A `master` connection is a non-SDS
+   as in Azure SQL Database in the cloud. A `master` connection is a provisioning
    provisioning session where the Azure statement filter is not enforced, so
    `USE` appears to work there, but `master` is for
    provisioning only, not application work. Always select the target database in

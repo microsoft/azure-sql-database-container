@@ -40,9 +40,9 @@ For full engine detail (readiness, vectors, troubleshooting) see the **azuresql-
 
 1. The engine does **NOT** auto-create databases. You must `CREATE DATABASE appdb` on a
    **master** connection before connecting with `Database=appdb`.
-2. Avoid `USE` to switch databases. In a user-database (SDS) session (the Azure-faithful
+2. Avoid `USE` to switch databases. In a user-database session (the Azure-faithful
    context where you develop), `USE` returns `Msg 40508`, exactly as in Azure SQL Database in
-   the cloud. A `master` connection is a non-SDS provisioning session where the Azure statement
+   the cloud. A `master` connection is a provisioning session where the Azure statement
    filter is not enforced, so `USE` appears to work there, but `master`
    is for provisioning only, not application work. Always select the target database in the
    connection string (`Database=appdb`, or `-d appdb` for sqlcmd).

@@ -53,7 +53,7 @@ until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "You
 done
 ```
 
-Re-point connection strings from `Database=master` to `Database=appdb`. Do not switch databases with `USE`: in a user-database (SDS) session `USE` returns `Msg 40508`, exactly as in Azure SQL Database in the cloud (a `master` connection is a non-SDS provisioning session where it appears to work, but `master` is for provisioning only). Select the database in the connection string.
+Re-point connection strings from `Database=master` to `Database=appdb`. Do not switch databases with `USE`: in a user-database session `USE` returns `Msg 40508`, exactly as in Azure SQL Database in the cloud (a `master` connection is a provisioning session where it appears to work, but `master` is for provisioning only). Select the database in the connection string.
 
 ### 5. Flag SQL Server-only features to remove
 

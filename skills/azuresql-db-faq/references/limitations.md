@@ -21,7 +21,7 @@ https://aka.ms/azuresql-developer-bug to file an issue.
 - **Always Encrypted with secure enclaves.** Basic Always Encrypted works; secure enclaves need host TEE support and are not validated.
 - **Auditing to Log Analytics or Storage.** Audit-to-file works; audit-to-cloud-targets is not applicable on the container.
 - **Resource governance.** No per-database DTU or vCore caps (those are cloud SKU properties).
-- **Connection model: two session types.** A user-database connection is an SDS (Azure-faithful) session that enforces Azure semantics (`USE` -> Msg 40508). A `master` connection is a non-SDS provisioning session where `USE` works (the filter is not enforced). `BACKUP`/`RESTORE` are not supported in either session (Msg 40510). Use `master` only to `CREATE`/`DROP DATABASE`; do app work on the user database.
+- **Connection model: two session types.** A user-database connection is an Azure-faithful session that enforces Azure semantics (`USE` -> Msg 40508). A `master` connection is a provisioning session where `USE` works (the filter is not enforced). `BACKUP`/`RESTORE` are not supported in either session (Msg 40510). Use `master` only to `CREATE`/`DROP DATABASE`; do app work on the user database.
 - **Container-only preview.** The image is not on public registries (MCR / Docker Hub); shared pull-only credentials may rotate.
 
 ## Out of scope by design

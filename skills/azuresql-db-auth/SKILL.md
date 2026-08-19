@@ -31,7 +31,7 @@ keeps the secret out of source control.
   `ACCEPT_EULA=Y` + a complex `MSSQL_SA_PASSWORD`. Engine listens on 1433.
 - The engine does **NOT** auto-create databases. `CREATE DATABASE appdb` on a
   **master** connection first; do not `USE` to switch databases (a user-database
-  SDS session returns `Msg 40508`); select the database in the connection string.
+  session returns `Msg 40508`); select the database in the connection string.
 - Apps read one `SQL_CONNECTION_STRING` env var; strings use `User Id=` /
   `Password=` / `Database=` and `TrustServerCertificate=true` for the local
   self-signed cert.

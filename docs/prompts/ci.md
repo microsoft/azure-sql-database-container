@@ -77,7 +77,7 @@ Under repository Settings → Secrets and variables → Actions, add:
 
 ### 3. Make the test suite use the environment connection string
 
-Ensure tests read `process.env.SQL_CONNECTION_STRING` (Node) or the equivalent, and isolate each run with its own schema or a unique table prefix on the `appdb` connection. If you want a throwaway *database* instead, create and drop it on a separate `master` connection: `CREATE DATABASE` / `DROP DATABASE` are not allowed on a user-database (SDS) connection like `appdb`.
+Ensure tests read `process.env.SQL_CONNECTION_STRING` (Node) or the equivalent, and isolate each run with its own schema or a unique table prefix on the `appdb` connection. If you want a throwaway *database* instead, create and drop it on a separate `master` connection: `CREATE DATABASE` / `DROP DATABASE` are not allowed on a user-database connection like `appdb`.
 
 ---
 

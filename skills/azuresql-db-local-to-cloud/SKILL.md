@@ -99,9 +99,9 @@ Just enough to run the examples on a fresh container. For full detail see the
   `CREATE DATABASE appdb` on a **master** connection before connecting with
   `Database=appdb`. The `master` connection is for provisioning only; do real
   work on `appdb`.
-- Avoid `USE` to switch databases. In a user-database (SDS) session (the
+- Avoid `USE` to switch databases. In a user-database session (the
   Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly
-  as in Azure SQL Database in the cloud. A `master` connection is a non-SDS
+  as in Azure SQL Database in the cloud. A `master` connection is a provisioning
   provisioning session where the Azure statement filter is not enforced, so `USE` appears to work there, but `master` is for provisioning
   only, not application work. Always select the target database in the connection
   string (`Database=appdb`, or `-d appdb` for sqlcmd).
@@ -229,10 +229,10 @@ body stays an overview.
   were about to, stop and use the image above; this is the Azure SQL engine.
 - Do not connect to `Database=appdb` before creating it on `master`.
 - Do not use `USE appdb` to switch databases; set the database in the connection
-  string (`Database=appdb`, or `-d appdb` for sqlcmd). In a user-database (SDS)
+  string (`Database=appdb`, or `-d appdb` for sqlcmd). In a user-database
   session (the Azure-faithful context where you develop), `USE` returns
   `Msg 40508`, exactly as in Azure SQL Database in the cloud. A `master`
-  connection is a non-SDS provisioning session where the Azure statement filter is
+  connection is a provisioning session where the Azure statement filter is
   not enforced, so `USE` appears to work there, but
   `master` is for provisioning only, not application work. Always select the
   target database in the connection string (`Database=appdb`, or `-d appdb` for
