@@ -42,7 +42,7 @@ Verify identity once running: `SELECT SERVERPROPERTY('EngineEdition')` returns *
 - Required env: `ACCEPT_EULA=Y` and a complex `MSSQL_SA_PASSWORD` (example literal:
   `YourStr0ng_Passw0rd`). The engine listens on 1433.
 - The engine does **NOT** auto-create databases. `CREATE DATABASE appdb` on a **master**
-  connection first. Do not `USE` to switch databases: a user-database (SDS) session returns
+  connection first. Do not `USE` to switch databases: a user-database session returns
   `Msg 40508`. Select the database in the connection string (`Database=appdb`).
 - Apps read **one** env var, `SQL_CONNECTION_STRING`. Strings use `User Id=` / `Password=` /
   `Database=` and `TrustServerCertificate=true`. sqlcmd uses `-C`.

@@ -34,7 +34,7 @@ for restoring an existing `.bacpac` use **azuresql-db-import**.
 - On a non-x64 host add `--platform linux/amd64` to `docker run`.
 - The engine does **NOT** auto-create databases. You must `CREATE DATABASE appdb` on a **master**
   connection before you seed anything.
-- Do **NOT** use `USE appdb` to switch databases. In a user-database (SDS) session `USE` returns
+- Do **NOT** use `USE appdb` to switch databases. In a user-database session `USE` returns
   `Msg 40508`. Always select the target database in the connection string (`Database=appdb`, or
   `-d appdb` for sqlcmd).
 - Apps read one env var, `SQL_CONNECTION_STRING`. Strings use `User Id=` / `Password=` /

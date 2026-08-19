@@ -37,8 +37,8 @@ For the full readiness loop, connection model, vectors, seeding, and registry de
 - **Provision appdb first.** The engine does **NOT** auto-create databases on connect. You must
   `CREATE DATABASE appdb` on a **master** connection before anything connects with `Database=appdb`.
 - **Prefer the connection string over `USE`.** Avoid `USE` to switch databases. In a user-database
-  (SDS) session (the Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly as
-  in Azure SQL Database in the cloud. A `master` connection is a non-SDS provisioning session where
+  session (the Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly as
+  in Azure SQL Database in the cloud. A `master` connection is a provisioning session where
   the Azure statement filter is not enforced, so `USE` appears to work there,
   but `master` is for provisioning only, not application work. Always select the target database in
   the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
@@ -178,9 +178,9 @@ echo "ready on localhost,$HOST_PORT"
 - Do not use the SQL Server image `mcr.microsoft.com/mssql/server`; use the Azure SQL DB image.
 - Do not connect with `Database=appdb` before provisioning appdb on master; the engine will not
   auto-create it.
-- Do not `USE appdb` to switch databases. In a user-database (SDS) session (the Azure-faithful
+- Do not `USE appdb` to switch databases. In a user-database session (the Azure-faithful
   context where you develop), `USE` returns `Msg 40508`, exactly as in Azure SQL Database in the
-  cloud. A `master` connection is a non-SDS provisioning session where the Azure statement filter is
+  cloud. A `master` connection is a provisioning session where the Azure statement filter is
   not enforced, so `USE` appears to work there, but `master` is for
   provisioning only, not application work. Always select the target database in the connection string
   (`Database=appdb`, or `-d appdb` for sqlcmd).

@@ -26,7 +26,7 @@ local dev matches Azure SQL Database behavior. The two are not the same engine:
 | Image | `mcr.microsoft.com/mssql/server` | `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest` |
 | `SERVERPROPERTY('EngineEdition')` | 2/3/4/8 | **5** |
 | `SERVERPROPERTY('Edition')` | e.g. 'Developer Edition' | **'SQL Azure'** |
-| DB model | one instance, many DBs, `USE` works | master for provisioning only; user DB for work; a user-database (SDS) session returns `Msg 40508` on `USE`, exactly as in the cloud; a `master` connection is a non-SDS provisioning session where the filter is not enforced |
+| DB model | one instance, many DBs, `USE` works | master for provisioning only; user DB for work; a user-database session returns `Msg 40508` on `USE`, exactly as in the cloud; a `master` connection is a provisioning session where the filter is not enforced |
 
 If a project is using the SQL Server image but wants Azure-faithful local dev, **stop
 and switch to Azure SQL Developer.** This skill is self-contained;
@@ -102,9 +102,9 @@ A `master` connection is for provisioning only; do real work on `appdb`.
 
 SQL Server projects often connect straight to `master` (or rely on a DB that SQL Server auto-creates). Azure SQL Database will not auto-create a database. Select the
 target database in the connection string (`Database=appdb`, or `-d appdb` for
-sqlcmd). Avoid `USE` to switch databases. In a user-database (SDS) session (the
+sqlcmd). Avoid `USE` to switch databases. In a user-database session (the
 Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly as
-in Azure SQL Database in the cloud. A `master` connection is a non-SDS
+in Azure SQL Database in the cloud. A `master` connection is a provisioning
 provisioning session where the Azure statement filter is not enforced, so `USE` appears to work there, but `master` is for provisioning
 only, not application work. Always select the target database in the connection
 string (`Database=appdb`, or `-d appdb` for sqlcmd). Standardize on one
@@ -162,7 +162,7 @@ development; use a full-scan top-k query for now.
 - Image is `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`, not `mcr.microsoft.com/mssql/server`.
 - `appdb` is created on a master connection before any app connects to it.
 - App connection strings use `Database=appdb`, never `Database=master` for real work.
-- No `USE <db>` statements: in a user-database (SDS) session, `USE` returns `Msg 40508`, exactly as in Azure SQL Database in the cloud; a `master` connection is a non-SDS provisioning session where the filter is not enforced, but `master` is for provisioning only. Select the database in the connection string.
+- No `USE <db>` statements: in a user-database session, `USE` returns `Msg 40508`, exactly as in Azure SQL Database in the cloud; a `master` connection is a provisioning session where the filter is not enforced, but `master` is for provisioning only. Select the database in the connection string.
 - `--platform linux/amd64` present on non-x64 hosts only.
 - `EngineEdition` returns 5.
 - If a validation rule above fails, or you had to deviate from this skill to make the task work, that is a bug in this skill: load the **azuresql-db-feedback** skill and offer to file a report.

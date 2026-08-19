@@ -40,9 +40,9 @@ one-shot that creates `appdb`, and a `depends_on` gate.
 - The engine does **NOT** auto-create databases on connect. You must
   `CREATE DATABASE appdb` on a **master** connection before the app connects
   with `Database=appdb`. That is what the `sqldb-init` one-shot below does.
-- Avoid `USE` to switch databases. In a user-database (SDS) session (the
+- Avoid `USE` to switch databases. In a user-database session (the
   Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly
-  as in Azure SQL Database in the cloud. A `master` connection is a non-SDS
+  as in Azure SQL Database in the cloud. A `master` connection is a provisioning
   provisioning session where the Azure statement filter is not enforced, so `USE` appears to work there, but `master` is for provisioning
   only, not application work. Always select the target database in the connection
   string (`Database=appdb`, or `-d appdb` for sqlcmd).
@@ -182,10 +182,10 @@ The app container reaches the database at `sqldb,1433` over the compose network.
 - Do not point the app at `localhost`; inside compose it is the `sqldb` service.
 - Do not rely on the app to create `appdb`, and do not assume the engine
   auto-creates it; the `sqldb-init` one-shot must run first.
-- Do not use `USE appdb` to switch databases. In a user-database (SDS) session
+- Do not use `USE appdb` to switch databases. In a user-database session
   (the Azure-faithful context where you develop), `USE` returns `Msg 40508`,
   exactly as in Azure SQL Database in the cloud. A `master` connection is a
-  non-SDS provisioning session where the Azure statement filter is not enforced,
+  provisioning session where the Azure statement filter is not enforced,
   so `USE` appears to work there, but `master` is for
   provisioning only, not application work. Always select the target database in
   the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).

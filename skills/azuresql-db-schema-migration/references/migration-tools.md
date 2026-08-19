@@ -5,9 +5,9 @@ Database container. Every section assumes `appdb` was already provisioned on a
 **master** connection (see SKILL.md, "Start the container and provision appdb").
 The engine does not auto-create databases, so the database must exist and be
 selected in the connection string. Avoid `USE` to switch databases. In a
-user-database (SDS) session (the Azure-faithful context where you develop), `USE`
+user-database session (the Azure-faithful context where you develop), `USE`
 returns `Msg 40508`, exactly as in Azure SQL Database in the cloud. A `master`
-connection is a non-SDS provisioning session where the Azure statement filter is not
+connection is a provisioning session where the Azure statement filter is not
 enforced, so `USE` appears to work there, but `master` is
 for provisioning only, not application work. Always select the target database in
 the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
@@ -186,8 +186,8 @@ Notes:
 - "Cannot open database 'appdb' requested by the login": `appdb` was not
   provisioned. Run the master provisioning step first.
 - `Msg 40508` (USE statement not supported): something issued `USE appdb` in a
-  user-database (SDS) session, which returns this exactly as in Azure SQL Database in
-  the cloud. `USE` appears to work only on a `master` non-SDS provisioning session
+  user-database session, which returns this exactly as in Azure SQL Database in
+  the cloud. `USE` appears to work only on a `master` provisioning session
   where the Azure statement filter is not enforced; select the database in the
   connection string instead so code behaves identically in the cloud.
 - `Msg 913` / connection refused right after `docker run`: the engine was not

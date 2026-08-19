@@ -60,7 +60,7 @@ run `docker login` as a step before the tests (see **azuresql-db-ci**).
 2. **The engine does NOT auto-create databases.** After the wait passes, run
    `CREATE DATABASE appdb` on a **master** connection before any test connects with
    `Database=appdb`. Testcontainers gives you a container, not a database.
-3. **Avoid `USE` to switch databases.** In a user-database (SDS) session `USE` returns
+3. **Avoid `USE` to switch databases.** In a user-database session `USE` returns
    `Msg 40508`, exactly as in Azure SQL in the cloud. Select the database in the
    connection string (`Database=appdb`). A `master` connection is for provisioning only.
 4. **Map the port; do not assume 1433 on the host.** Testcontainers binds container port

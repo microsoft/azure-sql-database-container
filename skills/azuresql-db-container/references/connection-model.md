@@ -8,21 +8,21 @@ The single most common source of failures. Read this before connecting an app.
    `Database=appdb` when `appdb` does not exist fails. You must create it first
    on a `master` connection.
 2. **Select the database in the connection string, not with `USE`.** Avoid
-   `USE` to switch databases. In a user-database (SDS) session (the
+   `USE` to switch databases. In a user-database session (the
    Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly
-   as in Azure SQL Database in the cloud. A `master` connection is a non-SDS
+   as in Azure SQL Database in the cloud. A `master` connection is a provisioning
    provisioning session where the Azure statement filter is not enforced, so
    `USE` appears to work there, but `master` is for
    provisioning only, not application work. Always select the target database in
    the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
-3. **A `master` connection is for provisioning only.** `master` is a non-SDS
+3. **A `master` connection is for provisioning only.** `master` is a provisioning
    session: the Azure SQL statement filter (`USE`, `SHUTDOWN`, `RECONFIGURE`) is
    not enforced there, so `USE` works. (`BACKUP`/`RESTORE` are a separate case:
    they are not supported in any session and return `Msg 40510`; Azure SQL Database
    in the cloud likewise does not support them, so do not rely on them on `master`
    either.) Never develop or validate
    against `master`; use it only to `CREATE`/`DROP DATABASE`, then connect
-   directly to the user database (SDS), which enforces Azure SQL Database semantics.
+   directly to the user database, which enforces Azure SQL Database semantics.
 
 ## Provision-then-connect workflow
 
@@ -52,9 +52,9 @@ issue `USE`. See `connect-and-query.md` for the full connection string.
 
 ## Why to avoid USE
 
-Avoid `USE` to switch databases. In a user-database (SDS) session (the
+Avoid `USE` to switch databases. In a user-database session (the
 Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly as
-in Azure SQL Database in the cloud. A `master` connection is a non-SDS
+in Azure SQL Database in the cloud. A `master` connection is a provisioning
 provisioning session where the Azure statement filter is not enforced, so `USE` appears to work there, but `master` is for provisioning
 only, not application work. Always select the target database in the connection
 string (`Database=appdb`, or `-d appdb` for sqlcmd). The fix is always to set the
@@ -86,9 +86,9 @@ database is already selected by `-d appdb`.
 
 - Do not assume a database appears just because you put it in the connection
   string.
-- Do not use `USE appdb;` anywhere; a user-database (SDS) session rejects it
+- Do not use `USE appdb;` anywhere; a user-database session rejects it
   with `Msg 40508`, exactly as in Azure SQL Database in the cloud. It only
-  appears to work on a `master` (non-SDS) connection, where the Azure statement
+  appears to work on a `master` connection, where the Azure statement
   filter is not enforced.
 - Do not run application workloads on the `master` connection.
 - Do not rely on an init/seed directory.

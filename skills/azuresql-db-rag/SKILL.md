@@ -46,9 +46,9 @@ wrong image. Use the image below instead.
 1. The engine does NOT auto-create databases on connect. You must
    `CREATE DATABASE appdb` on a **master** connection before connecting with
    `Database=appdb`.
-2. Avoid `USE` to switch databases. In a user-database (SDS) session (the
+2. Avoid `USE` to switch databases. In a user-database session (the
    Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly
-   as in Azure SQL Database in the cloud. A `master` connection is a non-SDS
+   as in Azure SQL Database in the cloud. A `master` connection is a provisioning
    provisioning session where the Azure statement filter is not enforced, so
    `USE` appears to work there, but `master` is for
    provisioning only, not application work. Always select the target database in
@@ -208,9 +208,9 @@ the same; you just add the index.
   not this engine.
 - Do not pass the vector dimension as a bind parameter; it fails with
   `Incorrect syntax near '@P3'`. Interpolate it as a literal.
-- Avoid `USE` to switch databases. In a user-database (SDS) session (the
+- Avoid `USE` to switch databases. In a user-database session (the
   Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly
-  as in Azure SQL Database in the cloud. A `master` connection is a non-SDS
+  as in Azure SQL Database in the cloud. A `master` connection is a provisioning
   provisioning session where the Azure statement filter is not enforced, so `USE` appears to work there, but `master` is for provisioning
   only, not application work. Always select the target database in the connection
   string (`Database=appdb`, or `-d appdb` for sqlcmd).
