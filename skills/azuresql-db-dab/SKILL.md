@@ -164,6 +164,6 @@ Authoritative, version-pinned references for the tools this skill uses (read the
 
 - [Data API Builder configuration reference](https://learn.microsoft.com/en-us/azure/data-api-builder/configuration/): every config key (data-source, runtime, entities, autoentities), with examples.
 - [DAB config JSON schema (pinned v2.0.9)](https://github.com/Azure/data-api-builder/releases/download/v2.0.9/dab.draft.schema.json): the machine-readable schema dab validate checks against.
-- [Data API Builder MCP (SQL MCP Server)](https://learn.microsoft.com/en-us/azure/data-api-builder/mcp/overview): the built-in MCP endpoint, DML tools, transports, and RBAC.
+- [Data API Builder built-in MCP endpoint](https://learn.microsoft.com/en-us/azure/data-api-builder/mcp/overview): the built-in MCP endpoint, DML tools, transports, and RBAC.
 
 If the **Microsoft Learn MCP** server is configured, use `mcp__microsoft-learn__microsoft_docs_search` or `mcp__microsoft-learn__microsoft_docs_fetch` to fetch the current version of any of these on demand. It is optional; when it is unavailable, the references above are authoritative.

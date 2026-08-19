@@ -88,15 +88,25 @@ Install: `npm install mssql`. Configure a bounded pool once and reuse it for the
 ```js
 import sql from "mssql";
 
-// Parse the single env var into a mssql config, then set pool bounds.
-const raw = process.env.SQL_CONNECTION_STRING; // Server=localhost,1433;Database=appdb;User Id=sa;Password=...;TrustServerCertificate=true
+// Parse the single SQL_CONNECTION_STRING (ADO.NET style) into an mssql config, then set pool bounds.
+// e.g. Server=localhost,1433;Database=appdb;User Id=sa;Password=...;Encrypt=true;TrustServerCertificate=true
+const kv = Object.fromEntries(
+  (process.env.SQL_CONNECTION_STRING || "").split(";").filter(Boolean).map((p) => {
+    const i = p.indexOf("=");
+    return [p.slice(0, i).trim().toLowerCase(), p.slice(i + 1).trim()];
+  })
+);
+const [server, port] = (kv["server"] || "localhost,1433").split(",");
 const config = {
-  server: "localhost",
-  port: 1433,
-  database: "appdb",
-  user: "sa",
-  password: "YourStr0ng_Passw0rd",
-  options: { trustServerCertificate: true, encrypt: true },
+  server,
+  port: Number(port) || 1433,
+  database: kv["database"],
+  user: kv["user id"] || kv["uid"],
+  password: kv["password"] || kv["pwd"],
+  options: {
+    encrypt: (kv["encrypt"] ?? "true").toLowerCase() !== "false",
+    trustServerCertificate: (kv["trustservercertificate"] ?? "false").toLowerCase() === "true",
+  },
   pool: { max: 10, min: 2, idleTimeoutMillis: 30000 }, // bounded pool, warm minimum
 };
 

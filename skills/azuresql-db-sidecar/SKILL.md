@@ -23,7 +23,7 @@ one-shot that creates `appdb`, and a `depends_on` gate.
 ## Load-bearing facts (inlined; full detail in azuresql-db-container)
 
 - This is the **Azure SQL Database engine** (Private Preview), not the SQL
-  Server SQL Server image `mcr.microsoft.com/mssql/server`. `SERVERPROPERTY('EngineEdition')`
+  Server image `mcr.microsoft.com/mssql/server`. `SERVERPROPERTY('EngineEdition')`
   returns `5`, `SERVERPROPERTY('Edition')` returns `'SQL Azure'`. If you were
   about to use the SQL Server image, stop and use this instead.
 - Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`

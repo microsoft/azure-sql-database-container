@@ -16,7 +16,7 @@ description: "Go from pulling the Azure SQL Developer image to your first query 
 - [Troubleshooting](#troubleshooting)
   - [Let your AI agent diagnose it](#let-your-ai-agent-diagnose-it)
   - [Start here: check your container runtime](#start-here-check-your-container-runtime)
-  - [The container exits immediately](#the-container-exits-immediately)
+  - [The container exits immediately](#the-container-will-not-start-or-starts-but-will-not-accept-connections)
   - [Platform and port problems](#no-matching-manifest-or-exec-format-error)
   - [Connection and database problems](#connection-fails-right-after-the-container-starts)
   - [Skills did not load](#skills-did-not-load)

@@ -33,7 +33,8 @@ Copy-and-run prompts to hand your AI coding agent, each building a scenario agai
 - Connection: TCP port 1433; SQL login (sa) locally, Microsoft Entra in the cloud. Apps read the connection string from the SQL_CONNECTION_STRING environment variable.
 - AI-native: native vector data type, VECTOR_DISTANCE similarity search, AI_GENERATE_EMBEDDINGS, CREATE EXTERNAL MODEL, native JSON, and RegEx. DiskANN vector indexes (CREATE VECTOR INDEX) are in development; use full-scan top-k until then.
 - Parity: same engine, defaults, T-SQL, and error messages as Azure SQL Database in the cloud.
-- Not yet supported on the container (use SQL auth and the workarounds on the Known limitations page): Microsoft Entra ID authentication (the MSSQL_AAD_* variables initialize and then fail; use the sa login locally, Entra in the cloud), a native ARM64 build (ARM64 hosts run under emulation with --platform linux/amd64), CREATE VECTOR INDEX (DiskANN), and BACKUP / RESTORE.
+- Microsoft Entra ID authentication is supported on the container: configure it with the MSSQL_AAD_* variables and a mounted certificate (see the Getting started page). SQL auth (sa) remains the simple local default.
+- Not yet supported on the container (use the workarounds on the Known limitations page): a native ARM64 build (ARM64 hosts run under emulation with --platform linux/amd64), CREATE VECTOR INDEX (DiskANN), and BACKUP / RESTORE.
 
 ## Optional
 - [Repository](https://github.com/microsoft/azure-sql-database-container)

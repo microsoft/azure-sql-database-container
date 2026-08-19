@@ -73,7 +73,7 @@ Notes:
   ```
 - Generate an idempotent script to review before applying:
   `dotnet ef migrations script -i -o migrate.sql`, then apply with
-  `sqlcmd -C -b -d appdb -i migrate.sql`.
+  `sqlcmd -S localhost,1433 -U sa -P "YourStr0ng_Passw0rd" -C -b -d appdb -i migrate.sql`.
 
 ## Prisma (Node)
 
