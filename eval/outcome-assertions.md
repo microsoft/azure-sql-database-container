@@ -8,7 +8,7 @@ The scenario prompts below can be run as written, or replaced with the correspon
 
 ## Scenario 1: provision a local database (prompt: T1 or T3 from trigger-evals.md)
 
-- [ ] Plan uses the Azure SQL Developer image from the preview registry, not mcr.microsoft.com/mssql/server
+- [ ] Plan uses the Azure SQL Database container image from the preview registry, not mcr.microsoft.com/mssql/server
 - [ ] ACCEPT_EULA=Y is set
 - [ ] MSSQL_SA_PASSWORD meets the documented complexity requirement, and the plan does not reuse a published literal password verbatim
 - [ ] Plan includes a readiness wait (retry loop) rather than querying immediately after docker run

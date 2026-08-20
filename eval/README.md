@@ -12,7 +12,7 @@ The suite is designed to run by hand with no additional tooling: a person runs t
 - **Condition A (baseline)**: a fresh agent session with none of these skills installed.
 - **Condition B (skilled)**: an identical session with all skills from this repository correctly installed.
 - **Trial**: one execution of one prompt in one condition. Agents are non-deterministic, so each prompt is run 3 times per condition.
-- **Assertion**: a single yes/no check applied to a transcript (for example: "the plan uses the Azure SQL Developer image, not mcr.microsoft.com/mssql/server"). A run's score is the percentage of assertions passed.
+- **Assertion**: a single yes/no check applied to a transcript (for example: "the plan uses the Azure SQL Database container image, not mcr.microsoft.com/mssql/server"). A run's score is the percentage of assertions passed.
 - **Lift**: the Condition B average score minus the Condition A average score, per scenario. Lift is the headline measure of whether the skills changed behavior.
 
 ## Before you run anything: verify the skills are actually loaded
