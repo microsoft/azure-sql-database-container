@@ -165,10 +165,10 @@ Install as a native plugin. In Claude Code, run:
 
 ```text
 /plugin marketplace add microsoft/azure-sql-database-container
-/plugin install azure-sql-developer@azure-sql-developer
+/plugin install azure-sql-database-container@azure-sql-database-container
 ```
 
-The first command registers this repository as a plugin marketplace; the second installs the `azure-sql-developer` plugin, which contains all 17 skills. Run `/plugin` any time to manage it, and `/reload-plugins` to activate it in the current session. The portable `npx skills add microsoft/azure-sql-database-container` works too.
+The first command registers this repository as a plugin marketplace; the second installs the `azure-sql-database-container` plugin, which contains all 17 skills. Run `/plugin` any time to manage it, and `/reload-plugins` to activate it in the current session. The portable `npx skills add microsoft/azure-sql-database-container` works too.
 
 ### Codex
 
@@ -176,7 +176,7 @@ Install as a native plugin:
 
 ```bash
 codex plugin marketplace add microsoft/azure-sql-database-container
-codex plugin add azure-sql-developer@azure-sql-developer
+codex plugin add azure-sql-database-container@azure-sql-database-container
 ```
 
 Or with the portable command: `npx skills add microsoft/azure-sql-database-container`.

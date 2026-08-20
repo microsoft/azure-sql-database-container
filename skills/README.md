@@ -50,7 +50,7 @@ These skills work in **Claude Code, Codex, Cursor, and VS Code with GitHub Copil
 ```bash
 # in Claude Code:
 /plugin marketplace add microsoft/azure-sql-database-container
-/plugin install azure-sql-developer@azure-sql-developer
+/plugin install azure-sql-database-container@azure-sql-database-container
 # or, anywhere:
 npx skills add microsoft/azure-sql-database-container
 ```
@@ -59,7 +59,7 @@ npx skills add microsoft/azure-sql-database-container
 
 ```bash
 codex plugin marketplace add microsoft/azure-sql-database-container
-codex plugin add azure-sql-developer@azure-sql-developer
+codex plugin add azure-sql-database-container@azure-sql-database-container
 # or:
 npx skills add microsoft/azure-sql-database-container
 ```
