@@ -32,8 +32,8 @@ links exist for humans opening an empty form.
 | Template | For | Human short link |
 | --- | --- | --- |
 | `skill_feedback.yml` | a problem with an `azuresql-db-*` **skill** | https://aka.ms/sql-agent-skills-feedback |
-| `bug_report.yml` | a problem with the **container** | https://aka.ms/azuresql-developer-bug |
-| `feature_request.yml` | a missing **container** capability | https://aka.ms/azuresql-developer-feature-request |
+| `bug_report.yml` | a problem with the **container** | https://aka.ms/azuresqldb-container-bug |
+| `feature_request.yml` | a missing **container** capability | https://aka.ms/azuresqldb-container-feature-request |
 
 ## Skill feedback fields (`skill_feedback.yml`)
 

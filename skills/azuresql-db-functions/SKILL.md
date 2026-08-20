@@ -2,7 +2,7 @@
 name: azuresql-db-functions
 description: >-
   Builds a serverless API and event-driven handlers over the local Azure SQL
-  Developer using Azure Functions with the Azure SQL bindings. Use when a user
+  Database container using Azure Functions with the Azure SQL bindings. Use when a user
   wants "a serverless API over SQL", "Azure Functions with a database", "HTTP
   CRUD with SQL input/output bindings", "run code when a row changes", "react to
   inserts/updates/deletes", "event-driven on Azure SQL", or "SQL trigger
@@ -14,10 +14,10 @@ description: >-
   change-driven logic on the local Azure SQL engine.
 ---
 
-# Azure SQL Developer: serverless API + event-driven with Azure Functions
+# Serverless API + event-driven on the Azure SQL Database container with Azure Functions
 
 Build HTTP CRUD endpoints and change-driven handlers over the local **Azure SQL
-Developer** (Private Preview) using **Azure Functions** and the first-party
+Database container** (Private Preview) using **Azure Functions** and the first-party
 **Azure SQL bindings**. Two capabilities:
 
 - **API:** HTTP-triggered functions with SQL **input** and **output** bindings

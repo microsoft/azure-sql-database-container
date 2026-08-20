@@ -2,7 +2,7 @@
 name: azuresql-db-import
 description: >-
   Imports an existing Azure SQL Database or SQL Server schema and data INTO the
-  local Azure SQL Developer using SqlPackage. Use when asked to "import a
+  local Azure SQL Database container using SqlPackage. Use when asked to "import a
   bacpac", "load my existing database locally", "restore a dacpac into the
   container", "bring my prod schema into the dev container", "run my
   .bacpac/.dacpac against the local Azure SQL engine", or migrate an existing
@@ -12,9 +12,9 @@ description: >-
   the container" request instead of hand-writing SqlPackage flags.
 ---
 
-# Azure SQL Developer: import a database
+# The Azure SQL Database container: import a database
 
-Bring an existing database INTO the local Azure SQL Developer from a
+Bring an existing database INTO the local container from a
 `.bacpac` (schema + data) or `.dacpac` (schema only) using SqlPackage.
 
 ## What this is (load-bearing facts)

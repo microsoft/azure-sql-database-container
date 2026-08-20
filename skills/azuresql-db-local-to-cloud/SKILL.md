@@ -14,9 +14,9 @@ description: >-
   does not change, only the connection string does.
 ---
 
-# Azure SQL Developer to Azure SQL Database: same code, local to cloud
+# From the Azure SQL Database container to Azure SQL Database: same code, local to cloud
 
-Build and test against the local Azure SQL Developer, then deploy the
+Build and test against the local container, then deploy the
 **same application code** to Azure SQL Database in the cloud. Only the
 connection string changes. Nothing else.
 

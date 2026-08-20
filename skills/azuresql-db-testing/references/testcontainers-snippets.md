@@ -1,7 +1,7 @@
 # Testcontainers snippets
 
-Per-language recipes that start a **real Azure SQL Developer** engine from a generic
-container, wait until it answers, provision `appdb`, hand the connection string to the
+Per-language recipes that start a **real Azure SQL Database container** via the generic
+Testcontainers API, wait until it answers, provision `appdb`, hand the connection string to the
 test, and dispose after. Image is
 `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest` (NOT the Testcontainers
 `MsSql` preset / `mcr.microsoft.com/mssql/server` SQL Server image). Every recipe assumes

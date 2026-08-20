@@ -1,7 +1,7 @@
 ---
 name: azuresql-db-schema-migration
 description: >-
-  Runs database schema migrations against the local Azure SQL Developer so the
+  Runs database schema migrations against the local Azure SQL Database container so the
   same migrations apply identically on the local engine and in the Azure cloud.
   Use when asked to "run my migrations against the local SQL", "apply schema to
   the container", "apply EF Core / dotnet ef database update", "Prisma migrate
@@ -13,7 +13,7 @@ description: >-
   container.
 ---
 
-# Azure SQL Developer: schema migrations
+# Schema migrations on the Azure SQL Database container
 
 Apply schema migrations to the local **Azure SQL Database** container the same way
 you would against the cloud, so dev and prod stay identical. This is the Azure SQL

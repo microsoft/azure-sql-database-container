@@ -1,7 +1,7 @@
 ---
 name: azuresql-db-feedback
 description: >-
-  Reports a bug or files feedback about the azuresql-db-* agent skills themselves, or about Azure SQL Developer (the local Azure SQL Database engine in a container, Private Preview). Use when the user says a skill or the container "did not work", hit an error, behaved unexpectedly, or is missing something; and when they say "report a bug", "file an issue", "open a GitHub issue", "request a feature", "give feedback", or "tell the team". Also use when you, the agent, had to deviate from an azuresql-db-* skill or work around a defect in one to finish a task: that is a bug in the skill and it is worth reporting, even if the task ultimately succeeded. Decides whether the problem belongs to the SKILL or to the CONTAINER, since they use different issue templates, then builds a complete prefilled GitHub issue from context you already have. Never submits anything without explicit confirmation from the user.
+  Reports a bug or files feedback about the azuresql-db-* agent skills themselves, or about the Azure SQL Database container (the local Azure SQL Database engine, Private Preview). Use when the user says a skill or the container "did not work", hit an error, behaved unexpectedly, or is missing something; and when they say "report a bug", "file an issue", "open a GitHub issue", "request a feature", "give feedback", or "tell the team". Also use when you, the agent, had to deviate from an azuresql-db-* skill or work around a defect in one to finish a task: that is a bug in the skill and it is worth reporting, even if the task ultimately succeeded. Decides whether the problem belongs to the SKILL or to the CONTAINER, since they use different issue templates, then builds a complete prefilled GitHub issue from context you already have. Never submits anything without explicit confirmation from the user.
 ---
 
 # Report a problem with the skills, or with the container
@@ -106,7 +106,7 @@ dropdown values, and worked examples for all three templates are in
 - Do not include the SA password, registry credentials, or access tokens in any field. Ever.
 - Do not file a skill problem on the container template, or the reverse. They are triaged by different people.
 - Do not guess a dropdown value. Leave the field out if you are unsure; an omitted dropdown renders unselected, but a wrong one misroutes triage.
-- Do not use an `aka.ms` short link to carry a prefilled report. Those links drop query strings, so every field you filled in is silently lost. Use the full `github.com` URL. (The `aka.ms` links are for humans opening an empty form: [skills feedback](https://aka.ms/sql-agent-skills-feedback), [container bug](https://aka.ms/azuresql-developer-bug), [container feature](https://aka.ms/azuresql-developer-feature-request).)
+- Do not use an `aka.ms` short link to carry a prefilled report. Those links drop query strings, so every field you filled in is silently lost. Use the full `github.com` URL. (The `aka.ms` links are for humans opening an empty form: [skills feedback](https://aka.ms/sql-agent-skills-feedback), [container bug](https://aka.ms/azuresqldb-container-bug), [container feature](https://aka.ms/azuresqldb-container-feature-request).)
 - Do not open an issue for something already on the [Known limitations](https://microsoft.github.io/azure-sql-database-container/known-limitations.html) page, or already in [open issues](https://github.com/microsoft/azure-sql-database-container/issues). Point the user there instead.
 - Do not nag. Offer once, take no for an answer, and move on.
 

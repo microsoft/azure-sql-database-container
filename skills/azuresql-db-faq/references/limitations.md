@@ -4,14 +4,14 @@ This is a snapshot for offline use. The **live, always-current list is the sourc
 truth**: https://microsoft.github.io/azure-sql-database-container/known-limitations.html
 (repo: `docs/known-limitations.md`). If they disagree, trust the live page and report
 the drift. When a user hits something not listed, point them to
-https://aka.ms/azuresql-developer-bug to file an issue.
+https://aka.ms/azuresqldb-container-bug to file an issue.
 
 ## Active issues being fixed
 
 1. **Restriction enforcement gaps.** Some PaaS restrictions enforced in the cloud are not yet enforced locally, so an invalid statement can succeed locally and fail at deployment. Workaround: validate against a real Azure SQL Database once before declaring readiness.
 2. **Default value alignment.** Some session/database defaults (collation, transaction isolation, ANSI defaults) do not match the cloud exactly. Workaround: set the ones you depend on explicitly.
 3. **Vector index DDL.** `CREATE VECTOR INDEX` is in development. The `VECTOR` type and `VECTOR_DISTANCE` work; use full-scan top-k for now.
-4. **x64 image only; no native ARM64 build.** The image is `linux/amd64`. On an ARM64 host it runs under emulation: add `--platform linux/amd64` (Docker) or `platform: linux/amd64` (compose). Never say ARM64 is "supported", and do not promise a native build or a date. Feature requests: https://aka.ms/azuresql-developer-feature-request
+4. **x64 image only; no native ARM64 build.** The image is `linux/amd64`. On an ARM64 host it runs under emulation: add `--platform linux/amd64` (Docker) or `platform: linux/amd64` (compose). Never say ARM64 is "supported", and do not promise a native build or a date. Feature requests: https://aka.ms/azuresqldb-container-feature-request
 5. **Two-step provisioning.** Provision a database on a `master` connection, then reconnect to it. Public Preview plans a default startup database (e.g. `MSSQL_DB=appdb`).
 6. **GUI tooling compatibility.** The VS Code MSSQL extension UI and SSMS are not yet 100% compatible (UI errors), being fixed. Use `sqlcmd` or a driver; the MSSQL extension's GitHub Copilot integration works (https://aka.ms/vscode-mssql-copilot-docs).
 
