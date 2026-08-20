@@ -108,13 +108,13 @@ code, pre { font-family: var(--font-mono); }
   backdrop-filter: saturate(160%) blur(12px);
   border-bottom: 1px solid var(--line);
 }
-.nav-inner { display: flex; align-items: center; justify-content: space-between; height: 66px; }
-.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font-family: var(--font-display); font-weight: 600; font-size: 1.02rem; }
+.nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 66px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font-family: var(--font-display); font-weight: 600; font-size: 1.02rem; white-space: nowrap; flex-shrink: 0; }
 .brand:hover { text-decoration: none; }
 .brand-name em { font-style: normal; color: var(--azure); }
 .brand-mark { display: block; width: 28px; height: 28px; }
-.nav-links { display: flex; align-items: center; gap: 26px; }
-.nav-links a { color: var(--muted); font-weight: 500; font-size: .95rem; }
+.nav-links { display: flex; align-items: center; gap: 20px; }
+.nav-links a { color: var(--muted); font-weight: 500; font-size: .95rem; white-space: nowrap; }
 .nav-links a:hover { color: var(--ink); text-decoration: none; }
 .nav-links a.btn-primary { color: #fff; }
 .nav-links a.nav-gh-btn { color: var(--ink); }
@@ -554,16 +554,9 @@ section[id] { scroll-margin-top: 84px; }
 /* ============================================================
    Responsive
    ============================================================ */
-@media (max-width: 960px) {
-  .hero-inner { grid-template-columns: 1fr; gap: 40px; padding: 64px 24px 72px; }
-  .hero-visual { order: -1; }
-  .grid-3 { grid-template-columns: repeat(2, 1fr); }
-  .grid-4 { grid-template-columns: repeat(2, 1fr); }
-  .agents { grid-template-columns: repeat(2, 1fr); }
-  .skill-cards { grid-template-columns: repeat(2, 1fr); }
-  .codeflow { grid-template-columns: 1fr; }
-  .footer-grid { grid-template-columns: 1fr 1fr; }
-
+/* The nav collapses to the burger earlier than the page layout: with the full
+   "Azure SQL Database container" lockup, the single-row nav needs ~1120px. */
+@media (max-width: 1120px) {
   .nav-burger { display: flex; flex-direction: column; justify-content: center; gap: 5px; width: 42px; height: 42px; cursor: pointer; }
   .nav-burger span { display: block; height: 2px; width: 22px; background: var(--ink); border-radius: 2px; transition: transform .2s ease, opacity .2s ease; }
   .nav-links {
@@ -580,8 +573,24 @@ section[id] { scroll-margin-top: 84px; }
   .nav-toggle:checked ~ .nav-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 }
 
+@media (max-width: 960px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 40px; padding: 64px 24px 72px; }
+  .hero-visual { order: -1; }
+  .grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .agents { grid-template-columns: repeat(2, 1fr); }
+  .skill-cards { grid-template-columns: repeat(2, 1fr); }
+  .codeflow { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+
 @media (max-width: 620px) {
   body { font-size: 16.5px; }
+  /* Keep the long lockup from pushing the burger off-screen: shrink it a
+     notch and let it ellipsize on very narrow devices instead of clipping. */
+  .brand { font-size: .88rem; gap: 8px; flex-shrink: 1; min-width: 0; }
+  .brand-name { overflow: hidden; text-overflow: ellipsis; }
+  .brand-mark { width: 24px; height: 24px; }
   .section { padding: 52px 0; }
   .hero-stats { grid-template-columns: 1fr; padding-bottom: 28px; }
   .stat { padding: 16px 0; }
