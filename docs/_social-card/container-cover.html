@@ -1,0 +1,78 @@
+<!doctype html>
+<!--
+  Source for docs/assets/img/container-cover.png (video cover on the hero and
+  README, 1280x720). A stand-in in the site's design language until the
+  official video title card is re-authored with the new brand.
+  This directory is underscore-prefixed, so Jekyll does NOT publish it.
+  Regenerate the PNG after editing:
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+      --headless --disable-gpu --hide-scrollbars --force-device-scale-factor=1 \
+      --window-size=1280,720 \
+      --screenshot="../assets/img/container-cover.png" \
+      "container-cover.html"
+  (run from this directory; then verify the PNG is 1280x720).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1280px; height: 720px; }
+  .card {
+    width: 1280px; height: 720px; position: relative; overflow: hidden;
+    background: #0b1533;
+    background-image:
+      linear-gradient(rgba(120,150,220,0.09) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(120,150,220,0.09) 1px, transparent 1px);
+    background-size: 52px 52px;
+    font-family: 'Inter', -apple-system, Segoe UI, Roboto, sans-serif;
+    color: #eef2fb;
+    padding: 92px 104px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .glow { position: absolute; width: 860px; height: 860px; right: -260px; top: -320px;
+    background: radial-gradient(circle, rgba(34,211,238,0.16), transparent 62%); }
+  .glow2 { position: absolute; width: 700px; height: 700px; left: -280px; bottom: -380px;
+    background: radial-gradient(circle, rgba(19,102,224,0.22), transparent 60%); }
+  .top { display: flex; align-items: center; gap: 20px; position: relative; }
+  .logo { width: 56px; height: 56px; border-radius: 13px;
+    background: linear-gradient(135deg, #0a7bd4, #22d3ee);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 32px; color: #04101f; }
+  .eyebrow { font-weight: 600; font-size: 24px; letter-spacing: 0.14em; text-transform: uppercase; color: #9fb2d6; }
+  .mid { position: relative; }
+  .brand { font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+    font-size: 96px; line-height: 1.04; letter-spacing: -0.02em; }
+  .brand .accent { color: #22d3ee; }
+  .tagline { margin-top: 32px; font-size: 36px; line-height: 1.35; color: #c7d3ea; max-width: 950px; font-weight: 400; }
+  .bottom { display: flex; align-items: center; gap: 22px; position: relative; }
+  .play { display: inline-flex; align-items: center; gap: 14px;
+    background: #1366e0; color: #fff; border-radius: 12px; padding: 18px 30px;
+    font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 26px;
+    box-shadow: 0 14px 40px -12px rgba(19,102,224,.9); }
+  .play-glyph { width: 0; height: 0; border-style: solid; border-width: 9px 0 9px 15px;
+    border-color: transparent transparent transparent #fff; }
+  .tag { font-size: 22px; font-weight: 600; letter-spacing: 0.04em;
+    padding: 12px 24px; border: 1px solid rgba(159,178,214,0.4); border-radius: 999px; color: #cbd7ee; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="glow"></div>
+    <div class="glow2"></div>
+    <div class="top">
+      <div class="logo">S</div>
+      <div class="eyebrow">Microsoft Azure SQL</div>
+    </div>
+    <div class="mid">
+      <div class="brand">Azure SQL&nbsp;Database<br><span class="accent">container</span></div>
+      <div class="tagline">The Azure SQL Database engine, running locally. Same engine as the cloud, no subscription required.</div>
+    </div>
+    <div class="bottom">
+      <span class="play"><span class="play-glyph"></span>Watch the demo</span>
+      <span class="tag">Private Preview</span>
+    </div>
+  </div>
+</body>
+</html>
