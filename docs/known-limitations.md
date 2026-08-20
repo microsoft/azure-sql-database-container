@@ -15,7 +15,7 @@ description: "Current gaps and rough edges in the Private Preview, with workarou
 
 ## Development use only
 
-Azure SQL Developer, the Azure SQL Database engine running locally in a container, is for **local development**: development, testing, CI, and demos (the inner loop). It is **not a production database**, and it is not meant to be deployed to Azure or run as a production service. For production, deploy the same code to **Azure SQL Database** in the Microsoft Azure cloud (the outer loop), where backups, high availability, scaling, and security are managed for you. The Private Preview license is scoped to development, testing, CI, and demos.
+The Azure SQL Database container, the Azure SQL Database engine running locally, is for **local development**: development, testing, CI, and demos (the inner loop). It is **not a production database**, and it is not meant to be deployed to Azure or run as a production service. For production, deploy the same code to **Azure SQL Database** in the Microsoft Azure cloud (the outer loop), where backups, high availability, scaling, and security are managed for you. The Private Preview license is scoped to development, testing, CI, and demos.
 
 ## How to read this page
 
@@ -24,7 +24,7 @@ This page lists the limitations we know about as of the version date above. Two 
 - **Active issues we are fixing** are blockers we are working on now. If you hit one, the workaround is listed inline and the fix is tracked.
 - **Known behavior gaps** are functional differences from Azure SQL Database in the cloud. They may close, or they may not, depending on Private Preview feedback.
 
-If you hit a limitation that is not on this page, please file a [GitHub issue](https://aka.ms/azuresql-developer-bug) so we can either add it here or fix it.
+If you hit a limitation that is not on this page, please file a [GitHub issue](https://aka.ms/azuresqldb-container-bug) so we can either add it here or fix it.
 
 ## Active issues we are fixing
 
@@ -40,7 +40,7 @@ Some PaaS restrictions that are enforced in Azure SQL Database in the cloud are 
 
 Some session-level and database-level defaults (collation, transaction isolation, ANSI defaults) do not match the cloud database defaults exactly. This may cause subtle behavior differences in edge cases.
 
-**Workaround:** Set the defaults explicitly in your connection string or session. The [Getting Started](getting-started.md) connection example covers the safe defaults.
+**Workaround:** Set the defaults explicitly in your connection string or session. The [Getting started](getting-started.md) connection example covers the safe defaults.
 
 ### 3. Vector index DDL
 
@@ -62,7 +62,7 @@ Graphical tools are not yet 100% compatible with the container. The [VS Code MSS
 
 The following gaps are functional differences from Azure SQL Database in the cloud that we are aware of. They may or may not close before Public Preview.
 
-- **x64 image only; no native ARM64 build.** The image is x64 (`linux/amd64`). On an ARM64 host (for example an Apple Silicon Mac) it runs under emulation: add `--platform linux/amd64` (see [Step 2: start the container](getting-started.md#step-2-start-the-container)), or `platform: linux/amd64` in compose. Emulation is slower than a native build would be. If you want a native ARM64 build, [file a feature request](https://aka.ms/azuresql-developer-feature-request): that is how we count demand.
+- **x64 image only; no native ARM64 build.** The image is x64 (`linux/amd64`). On an ARM64 host (for example an Apple Silicon Mac) it runs under emulation: add `--platform linux/amd64` (see [Step 2: start the container](getting-started.md#step-2-start-the-container)), or `platform: linux/amd64` in compose. Emulation is slower than a native build would be. If you want a native ARM64 build, [file a feature request](https://aka.ms/azuresqldb-container-feature-request): that is how we count demand.
 - **Backup and restore.** `BACKUP DATABASE` and `RESTORE DATABASE` are not supported on the container (they return `Msg 40510`). Azure SQL Database in the cloud likewise does not support them, because backups there are managed by the platform. For local data persistence, use a Docker named volume (`-v sqldb-data:/var/opt/mssql`); for managed backups, point-in-time restore, and geo-replication, use Azure SQL Database in the cloud.
 - **Always Encrypted with secure enclaves.** Always Encrypted basic functionality works. Secure enclaves require host TEE support and are not validated for the container.
 - **Auditing to Log Analytics or Storage.** Audit-to-file works. Audit-to-cloud-targets is not applicable on the container.
@@ -85,10 +85,10 @@ These are intentional non-goals for the container:
 
 ## Related content
 
-- [What is Azure SQL Developer](what-is-the-container.md)
+- [What is the Azure SQL Database container](what-is-the-container.md)
 - [Get started](getting-started.md)
 - [Prerequisites](prerequisites.md)
 - [Agent skills](agent-skills.md)
 - [Feedback and how to engage](feedback-and-how-to-engage.md)
-- [Report a bug](https://aka.ms/azuresql-developer-bug)
-- [Request a feature](https://aka.ms/azuresql-developer-feature-request)
+- [Report a bug](https://aka.ms/azuresqldb-container-bug)
+- [Request a feature](https://aka.ms/azuresqldb-container-feature-request)

@@ -1,4 +1,4 @@
-title: Azure SQL Developer
+title: Azure SQL Database container
 description: >-
   Azure SQL Database, running on your laptop. Build, test, and ship against the
   real engine. No Azure subscription, no shared instance, no connection-string
@@ -12,7 +12,7 @@ repo: "https://github.com/microsoft/azure-sql-database-container"
 # once it exists (the current repo is private and 404s for external users).
 public_repo: "https://github.com/microsoft/azure-sql-database-container"
 youtube_id: "S6PWxUAUspY"
-demo_link: "https://aka.ms/azuresql-developer-demo"
+demo_link: "https://aka.ms/azuresqldb-container-demo"
 
 # Web analytics (client-side). Loads only when `enabled` is true and a provider is configured.
 # The Application Insights connection string is browser-embeddable and is not a secret.
@@ -48,3 +48,4 @@ exclude:
   - Gemfile.lock
   - Dockerfile.preview
   - vendor
+  - _social-card

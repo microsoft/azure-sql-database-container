@@ -1,0 +1,68 @@
+<!doctype html>
+<!--
+  Source for docs/assets/img/social-card.png (Open Graph / Twitter card, 1200x630).
+  This directory is underscore-prefixed, so Jekyll does NOT publish it.
+  Regenerate the PNG after editing:
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+      --headless --disable-gpu --hide-scrollbars --force-device-scale-factor=1 \
+      --window-size=1200,630 --default-background-color=00000000 \
+      --screenshot="../assets/img/social-card.png" \
+      "social-card.html"
+  (run from this directory; then verify the PNG is 1200x630).
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; }
+  .card {
+    width: 1200px; height: 630px; position: relative; overflow: hidden;
+    background: #0b1533;
+    background-image:
+      linear-gradient(rgba(120,150,220,0.09) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(120,150,220,0.09) 1px, transparent 1px);
+    background-size: 48px 48px;
+    font-family: 'Inter', -apple-system, Segoe UI, Roboto, sans-serif;
+    color: #eef2fb;
+    padding: 84px 96px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .glow { position: absolute; width: 720px; height: 720px; right: -220px; top: -260px;
+    background: radial-gradient(circle, rgba(34,211,238,0.16), transparent 62%); }
+  .top { display: flex; align-items: center; gap: 18px; position: relative; }
+  .logo { width: 52px; height: 52px; border-radius: 12px;
+    background: linear-gradient(135deg, #0a7bd4, #22d3ee);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 30px; color: #04101f; }
+  .eyebrow { font-weight: 600; font-size: 22px; letter-spacing: 0.14em; text-transform: uppercase; color: #9fb2d6; }
+  .mid { position: relative; }
+  .brand { font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+    font-size: 92px; line-height: 1.02; letter-spacing: -0.02em; }
+  .brand .accent { color: #22d3ee; }
+  .tagline { margin-top: 30px; font-size: 34px; line-height: 1.35; color: #c7d3ea; max-width: 900px; font-weight: 400; }
+  .bottom { display: flex; align-items: center; gap: 20px; position: relative; }
+  .tag { font-size: 20px; font-weight: 600; letter-spacing: 0.04em;
+    padding: 10px 20px; border: 1px solid rgba(159,178,214,0.4); border-radius: 999px; color: #cbd7ee; }
+  .mono { font-family: 'Space Grotesk', ui-monospace, monospace; font-size: 22px; color: #7f92b8; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="glow"></div>
+    <div class="top">
+      <div class="logo">S</div>
+      <div class="eyebrow">Microsoft Azure SQL</div>
+    </div>
+    <div class="mid">
+      <div class="brand">Azure SQL&nbsp;Database<br><span class="accent">container</span></div>
+      <div class="tagline">The Azure SQL Database engine, running locally. Build, test, and ship against the real engine.</div>
+    </div>
+    <div class="bottom">
+      <span class="tag">Private Preview</span>
+      <span class="mono">docker run &rarr; localhost,1433</span>
+    </div>
+  </div>
+</body>
+</html>

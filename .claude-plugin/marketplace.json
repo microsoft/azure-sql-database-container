@@ -1,18 +1,18 @@
 {
-  "name": "azure-sql-developer",
+  "name": "azure-sql-database-container",
   "owner": {
     "name": "Microsoft",
     "url": "https://github.com/microsoft/azure-sql-database-container"
   },
   "metadata": {
-    "description": "Agent skills for Azure SQL Developer: the Azure SQL Database engine, running locally in a container."
+    "description": "Agent skills for the Azure SQL Database container: the Azure SQL Database engine, running locally."
   },
   "plugins": [
     {
-      "name": "azure-sql-developer",
+      "name": "azure-sql-database-container",
       "source": ".",
-      "description": "Seventeen skills that teach an AI coding agent to use Azure SQL Developer correctly: start the engine, connect, migrate schemas, import data, scaffold apps, build local RAG, wire CI, run as a sidecar, go local-to-cloud, build no-code REST/GraphQL APIs with Data API Builder, build serverless and event-driven Azure Functions, seed realistic test data, integration-test with Testcontainers, add connection pooling and retry, connect securely with a least-privilege user and the right auth per environment, answer FAQs, and report issues.",
-      "version": "1.0.0"
+      "description": "Seventeen skills that teach an AI coding agent to use the Azure SQL Database container correctly: start the engine, connect, migrate schemas, import data, scaffold apps, build local RAG, wire CI, run as a sidecar, go local-to-cloud, build no-code REST/GraphQL APIs with Data API Builder, build serverless and event-driven Azure Functions, seed realistic test data, integration-test with Testcontainers, add connection pooling and retry, connect securely with a least-privilege user and the right auth per environment, answer FAQs, and report issues.",
+      "version": "1.1.0"
     }
   ]
 }

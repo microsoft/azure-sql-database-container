@@ -1,10 +1,10 @@
 # AGENTS.md
 
-Guidance for AI coding agents working **in this repository** (the Azure SQL Developer Private Preview). If you instead want your own agent to run and build against the container in your project, install the skill: `npx skills add microsoft/azure-sql-database-container`. This file is about contributing to the repo, not about using the container.
+Guidance for AI coding agents working **in this repository** (the Azure SQL Database container Private Preview). If you instead want your own agent to run and build against the container in your project, install the skill: `npx skills add microsoft/azure-sql-database-container`. This file is about contributing to the repo, not about using the container.
 
 ## What this project is
 
-Azure SQL Developer is the Azure SQL Database engine, running locally in a container for development and CI. It is wire-compatible with Azure SQL Database in the Microsoft Azure cloud: same drivers, same T-SQL, same migrations, so deploying to the cloud is a connection-string change, not a code change. This repository ships the documentation site, the installable agent skills, and the copy-and-run build prompts; the engine image itself lives in a private preview registry.
+The Azure SQL Database container is the Azure SQL Database engine, running locally for development and CI. It is wire-compatible with Azure SQL Database in the Microsoft Azure cloud: same drivers, same T-SQL, same migrations, so deploying to the cloud is a connection-string change, not a code change. This repository ships the documentation site, the installable agent skills, and the copy-and-run build prompts; the engine image itself lives in a private preview registry.
 
 ## Repository layout
 
@@ -20,7 +20,7 @@ These drift easily; keep them aligned everywhere when you edit:
 - **The engine does not auto-create databases.** Provision `appdb` on a `master` connection before connecting to it. In a user-database session USE returns Msg 40508 (Azure-faithful); a master connection is a provisioning session where USE is not blocked. Select the database in the connection string and develop in the user database.
 - **Registry / image:** `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`. Registry, tag, and credentials are provisional during Private Preview.
 - **Do not advertise things that do not exist** (no empty sample folders, no unbuilt skill collections).
-- **Feedback links:** bug reports go to `https://aka.ms/azuresql-developer-bug`, feature requests to `https://aka.ms/azuresql-developer-feature-request`.
+- **Feedback links:** bug reports go to `https://aka.ms/azuresqldb-container-bug`, feature requests to `https://aka.ms/azuresqldb-container-feature-request`.
 
 ## Conventions for changes in this repository
 

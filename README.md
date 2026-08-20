@@ -1,21 +1,21 @@
-# Azure SQL Developer
+# Azure SQL Database container
 
 Run and build against Azure SQL Database, right on your local environment. Try it before you deploy, run your tests in CI, and ship with no code change. Free for development, with no Azure subscription and no credit card required.
 
 [![Sign Up](https://img.shields.io/badge/Sign%20Up-brightgreen?logo=github)](https://aka.ms/sqldbcontainerpreview-signup)
-[![Documentation](https://img.shields.io/badge/Documentation-blue?logo=github)](https://aka.ms/azuresql-developer)
-[![Report Bug](https://img.shields.io/badge/Report%20Bug-red?logo=github)](https://aka.ms/azuresql-developer-bug)
-[![Request Feature](https://img.shields.io/badge/Request%20Feature-blue?logo=github)](https://aka.ms/azuresql-developer-feature-request)
+[![Documentation](https://img.shields.io/badge/Documentation-blue?logo=github)](https://aka.ms/azuresqldb-container)
+[![Report Bug](https://img.shields.io/badge/Report%20Bug-red?logo=github)](https://aka.ms/azuresqldb-container-bug)
+[![Request Feature](https://img.shields.io/badge/Request%20Feature-blue?logo=github)](https://aka.ms/azuresqldb-container-feature-request)
 [![Discussions](https://img.shields.io/badge/Discussions-blueviolet?logo=github)](../../discussions)
 [![Skills](https://skills.sh/b/microsoft/azure-sql-database-container)](https://skills.sh/microsoft/azure-sql-database-container)
 
-<a href="https://aka.ms/azuresql-developer-demo">
-  <img src="docs/assets/img/Azure SQL Developer cover page.png" alt="Watch the Azure SQL Developer demo" width="760">
+<a href="https://aka.ms/azuresqldb-container-demo">
+  <img src="docs/assets/img/container-cover.png" alt="Watch the Azure SQL Database container demo" width="760">
 </a>
 
-<a href="https://aka.ms/azuresql-developer-demo">**▶ Watch the demo**</a>
+<a href="https://aka.ms/azuresqldb-container-demo">**▶ Watch the demo**</a>
 
-Azure SQL Developer is the Azure SQL Database engine, running locally in a container. It runs on any modern container runtime (Docker, Podman, containerd, Rancher Desktop) on macOS, Linux, and Windows, and works with the drivers, ORMs, and editors developers already use. It supports the same AI-native capabilities as Azure SQL Database in the Microsoft Azure cloud: the native vector type, vector search with `VECTOR_DISTANCE`, and in-database embeddings (DiskANN vector indexes are in development).
+The Azure SQL Database container is the Azure SQL Database engine, running locally. It runs on any modern container runtime (Docker, Podman, containerd, Rancher Desktop) on macOS, Linux, and Windows, and works with the drivers, ORMs, and editors developers already use. It supports the same AI-native capabilities as Azure SQL Database in the Microsoft Azure cloud: the native vector type, vector search with `VECTOR_DISTANCE`, and in-database embeddings (DiskANN vector indexes are in development).
 
 For the first time, developers can build, test, and ship applications against the Azure SQL Database engine without an Azure subscription and without a shared cloud instance. When you deploy to Azure SQL Database in the Microsoft Azure cloud, it is a connection-string change, not a code change.
 
@@ -24,7 +24,7 @@ For the first time, developers can build, test, and ship applications against th
 
 ## Global Table of Contents
 
-- [What is Azure SQL Developer?](docs/what-is-the-container.md)
+- [What is the Azure SQL Database container?](docs/what-is-the-container.md)
 - [Goals of the Private Preview](docs/goals-of-the-private-preview.md)
 - [Prerequisites](docs/prerequisites.md)
 - [Getting Started](docs/getting-started.md)
@@ -34,7 +34,7 @@ For the first time, developers can build, test, and ship applications against th
 
 ## Agent skills
 
-Point your AI coding agent at Azure SQL Developer and let it start the container, provision the database, scaffold the schema, write the migrations, and build the data layer. The repo ships [16 agent skills](docs/agent-skills.md) that work in **Claude Code, Codex, Cursor, and VS Code with GitHub Copilot**:
+Point your AI coding agent at the container and let it start the engine, provision the database, scaffold the schema, write the migrations, and build the data layer. The repo ships [17 agent skills](docs/agent-skills.md) that work in **Claude Code, Codex, Cursor, and VS Code with GitHub Copilot**:
 
 ```bash
 npx skills add microsoft/azure-sql-database-container
@@ -46,11 +46,11 @@ Each skill carries its knowledge in layers (instructions, bundled `references/` 
 
 ## Feedback
 
-- File a bug: [GitHub Issues](https://aka.ms/azuresql-developer-bug)
-- Request a feature: [GitHub Issues](https://aka.ms/azuresql-developer-feature-request)
+- File a bug: [GitHub Issues](https://aka.ms/azuresqldb-container-bug)
+- Request a feature: [GitHub Issues](https://aka.ms/azuresqldb-container-feature-request)
 - Report a problem with an [agent skill](skills/README.md): [Skill feedback](https://aka.ms/sql-agent-skills-feedback)
 - Ask a question, share a build, suggest an idea: [GitHub Discussions](../../discussions)
-- Connect with the team: [book a session](https://aka.ms/azuresql-developer-meet) or email [azuresqldb-container@microsoft.com](mailto:azuresqldb-container@microsoft.com)
+- Connect with the team: [book a session](https://aka.ms/azuresqldb-container-meet) or email [azuresqldb-container@microsoft.com](mailto:azuresqldb-container@microsoft.com)
 - Real-time conversation: the private Teams channel shared via the early-access feedback channel
 
 See [Feedback and how to engage](docs/feedback-and-how-to-engage.md) for the full guide on which channel fits which question, and [SUPPORT.md](SUPPORT.md) for how to get help.

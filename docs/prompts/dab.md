@@ -1,10 +1,10 @@
-# AI Prompt: Add an instant REST + GraphQL API over Azure SQL Developer with Data API Builder
+# AI Prompt: Add an instant REST + GraphQL API over the Azure SQL Database container with Data API Builder
 
-**Role:** You are an expert agent standing up a no-code REST and GraphQL API over the project's local Azure SQL Developer database using Microsoft Data API Builder (DAB).
+**Role:** You are an expert agent standing up a no-code REST and GraphQL API over the project's local database using Microsoft Data API Builder (DAB).
 
 **Purpose:** Expose existing tables as a working API - REST at `/api/<Entity>` and GraphQL at `/graphql` - driven entirely by `dab-config.json`, with the connection string supplied through an environment variable and no application code. Optionally expose DAB's built-in MCP endpoint (an API surface DAB provides, not a standalone SQL MCP server).
 
-**Scope:** Assumes the Azure SQL Developer container is running and the application database (`appdb`) exists with at least one table. If it is not running, start it and provision `appdb` first (the engine does not auto-create databases).
+**Scope:** Assumes the container is running and the application database (`appdb`) exists with at least one table. If it is not running, start it and provision `appdb` first (the engine does not auto-create databases).
 
 Read the entire instruction set before executing.
 

@@ -1,11 +1,11 @@
 {
-  "name": "azure-sql-developer",
+  "name": "azure-sql-database-container",
   "interface": {
-    "displayName": "Azure SQL Developer"
+    "displayName": "Azure SQL Database container"
   },
   "plugins": [
     {
-      "name": "azure-sql-developer",
+      "name": "azure-sql-database-container",
       "source": {
         "source": "local",
         "path": "."

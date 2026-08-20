@@ -1,13 +1,13 @@
-# Azure SQL Developer
+# Azure SQL Database container
 
 > The Azure SQL Database engine, running locally for development and CI. Build and test against the same engine, defaults, and T-SQL you run in the Microsoft Azure cloud, with AI-native capabilities built in. Free for local development; no Azure subscription required. Lift and shift to Azure SQL Database in the cloud is a connection-string change, not a code change. Status: Private Preview.
 
-_Last updated: July 2026._
+_Last updated: August 2026._
 
 > Layered knowledge: each skill bundles its instructions and version-pinned config shapes, and can optionally use the public [Microsoft Learn MCP](https://learn.microsoft.com/api/mcp) (`microsoft_docs_search` / `microsoft_docs_fetch`) to fetch current Microsoft docs on demand.
 
 ## Documentation
-- [What is Azure SQL Developer](https://microsoft.github.io/azure-sql-database-container/what-is-the-container.html): the engine surface, AI-native capabilities, drivers and ORMs, and supported runtimes and platforms.
+- [What is the Azure SQL Database container](https://microsoft.github.io/azure-sql-database-container/what-is-the-container.html): the engine surface, AI-native capabilities, drivers and ORMs, and supported runtimes and platforms.
 - [Goals of the Private Preview](https://microsoft.github.io/azure-sql-database-container/goals-of-the-private-preview.html): what this preview sets out to learn and validate.
 - [Prerequisites](https://microsoft.github.io/azure-sql-database-container/prerequisites.html): supported hosts, container runtimes, system resources, and tooling.
 - [Getting started](https://microsoft.github.io/azure-sql-database-container/getting-started.html): pull the image, start the container, and run your first query in under a minute.
@@ -16,7 +16,7 @@ _Last updated: July 2026._
 - [Feedback and how to engage](https://microsoft.github.io/azure-sql-database-container/feedback-and-how-to-engage.html): GitHub Issues and Discussions, the team email, and office hours.
 
 ## Build prompts
-Copy-and-run prompts to hand your AI coding agent, each building a scenario against Azure SQL Developer:
+Copy-and-run prompts to hand your AI coding agent, each building a scenario against the container:
 - [Build locally, ship to Azure (Node.js)](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/local-to-cloud.md)
 - [Prototype AI / RAG with vector search (Python + Ollama)](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/ai-rag.md)
 - [Run integration tests in CI](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/ci.md)

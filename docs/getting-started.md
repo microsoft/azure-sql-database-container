@@ -1,6 +1,6 @@
 ---
 title: "Getting started"
-description: "Go from pulling the Azure SQL Developer image to your first query in under a minute, either with your AI agent or by hand. No sqlcmd install required."
+description: "Go from pulling the Azure SQL Database container image to your first query in under a minute, either with your AI agent or by hand. No sqlcmd install required."
 ---
 
 ## Table of Contents
@@ -32,7 +32,7 @@ Confirm you have:
 - Port `1433` available on the host.
 - The registry username and password, provided when you sign up at [aka.ms/sqldbcontainerpreview-signup](https://aka.ms/sqldbcontainerpreview-signup) (pull-only; may be rotated during the preview).
 
-You do **not** need sqlcmd or any database tool installed: the container brings its own. Everything below works the same on macOS, Linux, and Windows.
+You do **not** need sqlcmd or any database tool installed: the Azure SQL Database container brings its own. Everything below works the same on macOS, Linux, and Windows.
 
 ## Step 0: sign up for the Private Preview
 
@@ -147,7 +147,7 @@ You should see `Microsoft SQL Azure`, confirming you are on the Azure SQL Databa
 **Other ways to query:**
 
 - **Already have [sqlcmd](https://learn.microsoft.com/sql/tools/sqlcmd/sqlcmd-utility) on the host?** Connect directly: `sqlcmd -S localhost,1433 -U sa -P "YourStr0ng_Passw0rd" -C -Q "SELECT @@VERSION;"`.
-- **Ask your AI agent, no T-SQL required.** With the [container skill](prerequisites.md#agent-skill) installed, ask in plain English, for example: *"Connect to my local Azure SQL Database and show the version and edition."* It already knows the connection details and runs the query for you.
+- **Ask your AI agent, no T-SQL required.** With the [container skill](prerequisites.md#agent-skills-optional-for-ai-driven-setup) installed, ask in plain English, for example: *"Connect to my local Azure SQL Database and show the version and edition."* It already knows the connection details and runs the query for you.
 - **Use the VS Code MSSQL extension with GitHub Copilot.** Its [GitHub Copilot integration](https://aka.ms/vscode-mssql-copilot-docs) works against the container today, for example writing SQL from natural language or opening the schema designer. Connect with server `localhost,1433`, SQL Login, user `sa`, your password, and **Trust server certificate: Yes**. The extension's graphical UI is not yet fully compatible with the container, so some UI features may error; see [known limitations](known-limitations.md).
 
 ### Stop and clean up
@@ -160,7 +160,7 @@ docker compose down
 
 ## Microsoft Entra ID authentication
 
-Microsoft Entra ID authentication works on Azure SQL Developer. Configure it with the `MSSQL_AAD_*` variables and a mounted certificate. SQL authentication (`sa`) remains the simple default above; use Entra when you want closer parity with Azure SQL Database in the cloud.
+Microsoft Entra ID authentication works on the container. Configure it with the `MSSQL_AAD_*` variables and a mounted certificate. SQL authentication (`sa`) remains the simple default above; use Entra when you want closer parity with Azure SQL Database in the cloud.
 
 For app registration and certificate setup, follow the Learn tutorial: [Configure Microsoft Entra ID authentication for SQL Server on containers](https://learn.microsoft.com/sql/linux/security/authentication/container-kubernetes-microsoft-entra-deployment). Mount a `.pfx` with an empty export password, then pass:
 
@@ -305,12 +305,12 @@ This is a known issue in the installer ([vercel-labs/skills#1355](https://github
 2. **Is it your runtime, not the container?** If the container never starts, if `docker info` fails, or if the runtime cannot pull any image at all, it is a runtime problem and their documentation will fix it faster than we can: [Docker](https://docs.docker.com/desktop/troubleshoot-and-support/troubleshoot/), [Podman](https://podman.io/docs), [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/), [WSL containers](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers).
 3. **Still nothing? Tell us.** We would rather hear about it than have you work around it in silence.
 
-- **Something wrong with the container:** [report a bug](https://aka.ms/azuresql-developer-bug). Include the image tag, your host OS, your container runtime and version, and the container logs.
+- **Something wrong with the container:** [report a bug](https://aka.ms/azuresqldb-container-bug). Include the image tag, your host OS, your container runtime and version, and the container logs.
 - **Something wrong with an agent skill** (it told your agent the wrong thing, or no skill loaded): [report it here](https://aka.ms/sql-agent-skills-feedback). Tell us which skill, which agent, and what you had to do instead.
 
 ## Next: build something
 
-Pick a job and let your AI coding agent build it against Azure SQL Developer. Each links to a ready-made prompt you can copy.
+Pick a job and let your AI coding agent build it against the container. Each links to a ready-made prompt you can copy.
 
 - [Build locally, ship to Azure]({{ '/prompts/local-to-cloud.md' | relative_url }}): develop and test locally, then deploy the same code to Azure SQL Database with a connection-string change.
 - [Prototype AI and RAG apps]({{ '/prompts/ai-rag.md' | relative_url }}): vector search and embeddings with a local model, then Azure OpenAI in the cloud.
@@ -321,14 +321,14 @@ Pick a job and let your AI coding agent build it against Azure SQL Developer. Ea
 - [Instant REST + GraphQL API]({{ '/prompts/dab.md' | relative_url }}): expose your tables as a no-code API (and an MCP endpoint) with Data API Builder.
 - [Serverless and event-driven]({{ '/prompts/functions.md' | relative_url }}): an Azure Functions HTTP API with the Azure SQL bindings, plus the SQL trigger for reacting to row changes locally.
 
-Haven't installed the skill yet? See [Agent skill](prerequisites.md#agent-skill).
+Haven't installed the skill yet? See [Agent skills](prerequisites.md#agent-skills-optional-for-ai-driven-setup).
 
 ## Related content
 
-- [What is Azure SQL Developer](what-is-the-container.md)
+- [What is the Azure SQL Database container](what-is-the-container.md)
 - [Prerequisites](prerequisites.md)
 - [Known limitations](known-limitations.md)
 - [Agent skills](agent-skills.md)
 - [Feedback and how to engage](feedback-and-how-to-engage.md)
-- [Report a bug](https://aka.ms/azuresql-developer-bug)
-- [Request a feature](https://aka.ms/azuresql-developer-feature-request)
+- [Report a bug](https://aka.ms/azuresqldb-container-bug)
+- [Request a feature](https://aka.ms/azuresqldb-container-feature-request)

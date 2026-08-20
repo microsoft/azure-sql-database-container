@@ -8,7 +8,7 @@ body:
       value: |
         This is for feedback about the **agent skills**: the `azuresql-db-*` instructions your AI agent loads.
 
-        If the **container** is what misbehaved (it will not start, a query fails, the engine does something unexpected), that belongs in a [bug report](https://aka.ms/azuresql-developer-bug) instead. Rule of thumb: if the skill told your agent to do the right thing and the container still failed, it is a container bug. If the skill told your agent to do the *wrong* thing, or did not tell it enough, it is a skill bug and it belongs here.
+        If the **container** is what misbehaved (it will not start, a query fails, the engine does something unexpected), that belongs in a [bug report](https://aka.ms/azuresqldb-container-bug) instead. Rule of thumb: if the skill told your agent to do the right thing and the container still failed, it is a container bug. If the skill told your agent to do the *wrong* thing, or did not tell it enough, it is a skill bug and it belongs here.
 
   - type: dropdown
     id: skill

@@ -1,10 +1,10 @@
-# AI Prompt: Build a serverless API and event-driven handlers over Azure SQL Developer with Azure Functions
+# AI Prompt: Build a serverless API and event-driven handlers over the Azure SQL Database container with Azure Functions
 
-**Role:** You are an expert agent building Azure Functions over the project's local Azure SQL Developer database using the first-party Azure SQL bindings.
+**Role:** You are an expert agent building Azure Functions over the project's local database using the first-party Azure SQL bindings.
 
 **Purpose:** Create HTTP CRUD endpoints (SQL input/output bindings) and, where the app needs to react to data changes, an event-driven handler using the SQL trigger binding (backed by Change Tracking). Everything runs locally against the container; no cloud services.
 
-**Scope:** Assumes the Azure SQL Developer container is running and `appdb` exists. If it is not running, start it and provision `appdb` first (the engine does not auto-create databases). Change Event Streaming (CES) is cloud-only and out of scope for local work.
+**Scope:** Assumes the container is running and `appdb` exists. If it is not running, start it and provision `appdb` first (the engine does not auto-create databases). Change Event Streaming (CES) is cloud-only and out of scope for local work.
 
 Read the entire instruction set before executing.
 
