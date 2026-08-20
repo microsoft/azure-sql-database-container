@@ -305,7 +305,7 @@ This is a known issue in the installer ([vercel-labs/skills#1355](https://github
 2. **Is it your runtime, not the container?** If the container never starts, if `docker info` fails, or if the runtime cannot pull any image at all, it is a runtime problem and their documentation will fix it faster than we can: [Docker](https://docs.docker.com/desktop/troubleshoot-and-support/troubleshoot/), [Podman](https://podman.io/docs), [Rancher Desktop](https://docs.rancherdesktop.io/getting-started/installation/), [WSL containers](https://learn.microsoft.com/en-us/windows/wsl/tutorials/wsl-containers).
 3. **Still nothing? Tell us.** We would rather hear about it than have you work around it in silence.
 
-- **Something wrong with the container:** [report a bug](https://aka.ms/azuresql-developer-bug). Include the image tag, your host OS, your container runtime and version, and the container logs.
+- **Something wrong with the container:** [report a bug](https://aka.ms/azuresqldb-container-bug). Include the image tag, your host OS, your container runtime and version, and the container logs.
 - **Something wrong with an agent skill** (it told your agent the wrong thing, or no skill loaded): [report it here](https://aka.ms/sql-agent-skills-feedback). Tell us which skill, which agent, and what you had to do instead.
 
 ## Next: build something
@@ -330,5 +330,5 @@ Haven't installed the skill yet? See [Agent skill](prerequisites.md#agent-skill)
 - [Known limitations](known-limitations.md)
 - [Agent skills](agent-skills.md)
 - [Feedback and how to engage](feedback-and-how-to-engage.md)
-- [Report a bug](https://aka.ms/azuresql-developer-bug)
-- [Request a feature](https://aka.ms/azuresql-developer-feature-request)
+- [Report a bug](https://aka.ms/azuresqldb-container-bug)
+- [Request a feature](https://aka.ms/azuresqldb-container-feature-request)

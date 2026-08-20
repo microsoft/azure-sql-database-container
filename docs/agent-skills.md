@@ -211,7 +211,7 @@ If the folder is empty while `.agents/skills/` has the skills in it, the `npx` i
 
 ## Report a problem with a skill
 
-If a skill tells your agent the wrong thing, or no skill loads when one should, tell us: [aka.ms/sql-agent-skills-feedback](https://aka.ms/sql-agent-skills-feedback). Say which skill, which agent, and what you had to do instead. That is the feedback we are least able to get any other way. For problems with the container itself, [file a bug](https://aka.ms/azuresql-developer-bug) instead.
+If a skill tells your agent the wrong thing, or no skill loads when one should, tell us: [aka.ms/sql-agent-skills-feedback](https://aka.ms/sql-agent-skills-feedback). Say which skill, which agent, and what you had to do instead. That is the feedback we are least able to get any other way. For problems with the container itself, [file a bug](https://aka.ms/azuresqldb-container-bug) instead.
 
 ## Related content
 
@@ -219,5 +219,5 @@ If a skill tells your agent the wrong thing, or no skill loads when one should, 
 - [Prerequisites](prerequisites.md)
 - [Known limitations](known-limitations.md)
 - [Browse the skills on GitHub](https://github.com/microsoft/azure-sql-database-container/tree/main/skills)
-- [Report a bug](https://aka.ms/azuresql-developer-bug)
+- [Report a bug](https://aka.ms/azuresqldb-container-bug)
 - [Skill feedback](https://aka.ms/sql-agent-skills-feedback)

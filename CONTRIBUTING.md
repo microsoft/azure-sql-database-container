@@ -6,9 +6,9 @@ Thanks for your interest in the Azure SQL Database container. This repository ho
 
 During the Private Preview, the most valuable contributions are:
 
-- **Bug reports about the container.** Something behaves differently from Azure SQL Database in the cloud, or does not work at all: [file a bug](https://aka.ms/azuresql-developer-bug).
+- **Bug reports about the container.** Something behaves differently from Azure SQL Database in the cloud, or does not work at all: [file a bug](https://aka.ms/azuresqldb-container-bug).
 - **Feedback on the agent skills.** A skill told your agent the wrong thing, or no skill loaded when one should have: [tell us](https://aka.ms/sql-agent-skills-feedback). This is the feedback we are least able to get any other way.
-- **Feature requests.** Something missing that would change how you use it: [request it](https://aka.ms/azuresql-developer-feature-request). Filing one also lets us count how many people need the same thing, which is a real input to what we prioritize.
+- **Feature requests.** Something missing that would change how you use it: [request it](https://aka.ms/azuresqldb-container-feature-request). Filing one also lets us count how many people need the same thing, which is a real input to what we prioritize.
 - **Documentation fixes.** Typos, unclear steps, broken commands, missing platform notes. Send a pull request.
 
 ## Before you open a pull request
