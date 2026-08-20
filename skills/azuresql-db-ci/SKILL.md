@@ -1,7 +1,7 @@
 ---
 name: azuresql-db-ci
 description: >-
-  Runs integration tests against Azure SQL Developer (Private Preview, local
+  Runs integration tests against the Azure SQL Database container (Private Preview, local
   engine) in CI. Use when setting up GitHub Actions, Azure Pipelines, or GitLab
   CI to test against Azure SQL DB; when adding a database service container to a
   CI workflow; when tests need a real Azure SQL engine in the pipeline; or when
@@ -15,7 +15,7 @@ description: >-
   user database not master.
 ---
 
-# Azure SQL Developer in CI
+# The Azure SQL Database container in CI
 
 Run integration tests against the **Azure SQL Database engine** (Private Preview) as a CI
 service container. This is the local Azure SQL engine, not the SQL Server image

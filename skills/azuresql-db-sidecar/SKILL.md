@@ -1,7 +1,7 @@
 ---
 name: azuresql-db-sidecar
 description: >-
-  Adds Azure SQL Developer as a sidecar service in an existing Docker Compose
+  Adds the Azure SQL Database container as a sidecar service in an existing Docker Compose
   stack or Dev Container. Use when wiring the local Azure SQL Database engine
   into compose or devcontainer.json, when an app needs a SQL backend via a
   service name (not localhost), or for prompts like "add SQL to my compose",
@@ -13,9 +13,9 @@ description: >-
   this for any compose or Dev Container SQL wiring.
 ---
 
-# Azure SQL Developer as a sidecar (Compose / Dev Container)
+# The Azure SQL Database container as a sidecar (Compose / Dev Container)
 
-Wire Azure SQL Developer into an existing Docker Compose stack or
+Wire the container into an existing Docker Compose stack or
 Dev Container as a service the app reaches by **service name** (`sqldb,1433`),
 never `localhost`. Keep existing services intact; add the database, an init
 one-shot that creates `appdb`, and a `depends_on` gate.

@@ -2,7 +2,7 @@
 name: azuresql-db-scaffold
 description: >-
   Scaffolds a NEW app (.NET Aspire, FastAPI, Next.js, NestJS) wired to the local
-  Azure SQL Developer as its default dev database. Use when
+  Azure SQL Database container as its default dev database. Use when
   starting/bootstrapping/initializing a project that needs SQL Server or Azure
   SQL locally, or when adding "set up the database", "docker compose for the db",
   "create the local DB", ".env connection string", "first migration", or a
@@ -13,9 +13,9 @@ description: >-
   even when the user only says "add a database" to a fresh project.
 ---
 
-# Azure SQL Developer: scaffold a new project
+# Scaffold a new project on the Azure SQL Database container
 
-Bootstrap a new app with the **Azure SQL Developer** (Private Preview) as the default
+Bootstrap a new app with the **Azure SQL Database container** (Private Preview) as the default
 local database. This is the **Azure SQL engine**, not the SQL Server image.
 
 ## Use the right image (interception point)

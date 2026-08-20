@@ -1,7 +1,7 @@
 ---
 name: azuresql-db-faq
 description: >-
-  Answers questions about what Azure SQL Developer (Private Preview)
+  Answers questions about what the Azure SQL Database container (Private Preview)
   can and cannot do, and WHY it differs from Azure SQL Database in the Microsoft
   Azure cloud. Use when a user asks "can I take a backup", "why does USE fail",
   "is X supported", "why can't I create a vector index", "why does SSMS error",
@@ -12,7 +12,7 @@ description: >-
   and link the user to the live Known limitations page for the current full list.
 ---
 
-# Azure SQL Developer: capabilities, limits, and why
+# The Azure SQL Database container: capabilities, limits, and why
 
 Use this skill to answer "can I / why can't I / is X supported / what's different
 from the cloud" questions accurately, instead of guessing from general SQL Server
@@ -46,7 +46,7 @@ managed cloud service, and it is not the SQL Server. Sort almost any
 - **"Can I take a backup?"** No: `BACKUP DATABASE` and `RESTORE DATABASE` return **Msg 40510 ("not supported in this version")** on the container, in every session. Azure SQL Database in the cloud likewise does not support them, because backups there are managed by the platform (not run with the `BACKUP` statement). For local data persistence, use a Docker named volume (`-v sqldb-data:/var/opt/mssql`); for managed backups, point-in-time restore, or geo-replication, use Azure SQL Database in the cloud.
 - **"Why does `USE otherdb` fail with Msg 40508?"** Because a connection to a user database is an Azure-faithful session that enforces the same restriction as Azure SQL Database in the cloud. Select the database in the connection string (`Database=appdb`), do not switch with `USE`. (`USE` "works" only on a `master` connection, which is a provisioning session.)
 - **"Why does connecting fail until I create the database?"** The engine does **not** auto-create databases on connect. Provision once on a `master` connection (`CREATE DATABASE appdb`), then connect with `Database=appdb`.
-- **"Is a non-x64 host supported? / Is there an ARM64 build?"** The image is x64 only; there is no native ARM64 build. On an ARM64 host it runs under emulation: add `--platform linux/amd64` (Docker) or `platform: linux/amd64` (compose). Say "runs under emulation", never "ARM64 is supported", and do not promise a native build or a date. If the user wants one, point them at https://aka.ms/azuresql-developer-feature-request.
+- **"Is a non-x64 host supported? / Is there an ARM64 build?"** The image is x64 only; there is no native ARM64 build. On an ARM64 host it runs under emulation: add `--platform linux/amd64` (Docker) or `platform: linux/amd64` (compose). Say "runs under emulation", never "ARM64 is supported", and do not promise a native build or a date. If the user wants one, point them at https://aka.ms/azuresqldb-container-feature-request.
 - **"Why can't I `CREATE VECTOR INDEX`?"** That DDL is still in development. The `VECTOR` type and `VECTOR_DISTANCE` work today; use a full-scan top-k query for now (fine for prototype-sized corpora).
 - **"Is Microsoft Entra ID (Azure AD) authentication supported?"** Yes. Configure it with `MSSQL_AAD_CLIENT_ID`, `MSSQL_AAD_PRIMARY_TENANT`, and `MSSQL_AAD_CERTIFICATE_FILE_PATH` plus a mounted `.pfx` (empty export password). Optionally set `MSSQL_AAD_SERVER_ADMIN_NAME`, `MSSQL_AAD_SERVER_ADMIN_TYPE` (`0` = user, `1` = group), and `MSSQL_AAD_SERVER_ADMIN_SID` to bootstrap an Entra server admin at start. SQL auth (`sa`) remains the simple local default. Full recipe: the `azuresql-db-container` skill (`references/entra-auth.md`). Also see [Getting started: Microsoft Entra ID authentication](https://microsoft.github.io/azure-sql-database-container/getting-started.html#microsoft-entra-id-authentication).
 - **"Why does SSMS / the MSSQL extension throw errors?"** Graphical tooling is not yet 100% compatible; it is being fixed. Use `sqlcmd` or a driver, which work today. The MSSQL extension's GitHub Copilot integration also works (https://aka.ms/vscode-mssql-copilot-docs).

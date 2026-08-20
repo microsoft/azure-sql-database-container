@@ -1,7 +1,7 @@
 ---
 name: azuresql-db-auth
 description: >-
-  Connects an app to Azure SQL Developer securely, with a least-privilege
+  Connects an app to the Azure SQL Database container securely, with a least-privilege
   database user instead of the sa login, the right auth method per environment,
   and safe handling of the connection secret. Use when a user asks "don't use sa
   in my app", "create a least-privilege database user", "app login for SQL",
@@ -13,7 +13,7 @@ description: >-
   app to connect as sa, or before committing a connection string to source.
 ---
 
-# Azure SQL Developer: connect securely (least-privilege user, auth, secrets)
+# Connect securely to the Azure SQL Database container (least-privilege user, auth, secrets)
 
 `sa` is a bootstrap/admin login for provisioning, not what your application should
 connect as. This skill wires the app to a **least-privilege user**, picks the

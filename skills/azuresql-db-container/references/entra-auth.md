@@ -1,6 +1,6 @@
 # Microsoft Entra ID authentication
 
-Microsoft Entra ID authentication works on Azure SQL Developer. Configure it
+Microsoft Entra ID authentication works on the Azure SQL Database container. Configure it
 with the `MSSQL_AAD_*` environment variables and a mounted certificate. SQL
 authentication (`sa`) remains the simple default for local development; use
 Entra when you want closer parity with Azure SQL Database in the cloud.

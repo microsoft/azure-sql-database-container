@@ -1,6 +1,6 @@
 # Retry and pooling snippets
 
-Copy-pasteable connection pooling and transient-only retry wired to Azure SQL Developer. Every
+Copy-pasteable connection pooling and transient-only retry wired to the Azure SQL Database container. Every
 snippet assumes the container is running and **appdb is already provisioned on a master
 connection** (see the start recipe in SKILL.md). Apps read `SQL_CONNECTION_STRING`. Image is
 `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest` (NOT the
