@@ -32,7 +32,7 @@ Confirm you have:
 - Port `1433` available on the host.
 - The registry username and password, provided when you sign up at [aka.ms/sqldbcontainerpreview-signup](https://aka.ms/sqldbcontainerpreview-signup) (pull-only; may be rotated during the preview).
 
-You do **not** need sqlcmd or any database tool installed: the container brings its own. Everything below works the same on macOS, Linux, and Windows.
+You do **not** need sqlcmd or any database tool installed: the Azure SQL Database container brings its own. Everything below works the same on macOS, Linux, and Windows.
 
 ## Step 0: sign up for the Private Preview
 
@@ -147,7 +147,7 @@ You should see `Microsoft SQL Azure`, confirming you are on the Azure SQL Databa
 **Other ways to query:**
 
 - **Already have [sqlcmd](https://learn.microsoft.com/sql/tools/sqlcmd/sqlcmd-utility) on the host?** Connect directly: `sqlcmd -S localhost,1433 -U sa -P "YourStr0ng_Passw0rd" -C -Q "SELECT @@VERSION;"`.
-- **Ask your AI agent, no T-SQL required.** With the [container skill](prerequisites.md#agent-skill) installed, ask in plain English, for example: *"Connect to my local Azure SQL Database and show the version and edition."* It already knows the connection details and runs the query for you.
+- **Ask your AI agent, no T-SQL required.** With the [container skill](prerequisites.md#agent-skills-optional-for-ai-driven-setup) installed, ask in plain English, for example: *"Connect to my local Azure SQL Database and show the version and edition."* It already knows the connection details and runs the query for you.
 - **Use the VS Code MSSQL extension with GitHub Copilot.** Its [GitHub Copilot integration](https://aka.ms/vscode-mssql-copilot-docs) works against the container today, for example writing SQL from natural language or opening the schema designer. Connect with server `localhost,1433`, SQL Login, user `sa`, your password, and **Trust server certificate: Yes**. The extension's graphical UI is not yet fully compatible with the container, so some UI features may error; see [known limitations](known-limitations.md).
 
 ### Stop and clean up
@@ -321,7 +321,7 @@ Pick a job and let your AI coding agent build it against the container. Each lin
 - [Instant REST + GraphQL API]({{ '/prompts/dab.md' | relative_url }}): expose your tables as a no-code API (and an MCP endpoint) with Data API Builder.
 - [Serverless and event-driven]({{ '/prompts/functions.md' | relative_url }}): an Azure Functions HTTP API with the Azure SQL bindings, plus the SQL trigger for reacting to row changes locally.
 
-Haven't installed the skill yet? See [Agent skill](prerequisites.md#agent-skill).
+Haven't installed the skill yet? See [Agent skills](prerequisites.md#agent-skills-optional-for-ai-driven-setup).
 
 ## Related content
 

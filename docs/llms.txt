@@ -2,7 +2,7 @@
 
 > The Azure SQL Database engine, running locally for development and CI. Build and test against the same engine, defaults, and T-SQL you run in the Microsoft Azure cloud, with AI-native capabilities built in. Free for local development; no Azure subscription required. Lift and shift to Azure SQL Database in the cloud is a connection-string change, not a code change. Status: Private Preview.
 
-_Last updated: July 2026._
+_Last updated: August 2026._
 
 > Layered knowledge: each skill bundles its instructions and version-pinned config shapes, and can optionally use the public [Microsoft Learn MCP](https://learn.microsoft.com/api/mcp) (`microsoft_docs_search` / `microsoft_docs_fetch`) to fetch current Microsoft docs on demand.
 

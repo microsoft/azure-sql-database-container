@@ -3,8 +3,6 @@ title: Privacy and analytics
 description: What this site measures, how, and how to opt out.
 ---
 
-# Privacy and analytics
-
 This site uses privacy-preserving analytics to understand which content and scenarios help developers, so the team can improve them. This page explains what is collected and how to opt out.
 
 ## What we measure

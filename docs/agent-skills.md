@@ -18,7 +18,7 @@ description: "Install the Azure SQL Database container agent skills in Claude Co
 
 ## Install
 
-The skills teach your AI coding agent to use the Azure SQL Database container, the Azure SQL Database engine running locally, the right way: start the engine, connect, provision the database, apply migrations, import data, scaffold a new app, build local RAG, wire CI, and move the same code to Azure SQL Database in the cloud. They encode what a model does not otherwise know: the private preview registry, that the engine reports `EngineEdition` 5, that it does not auto-create databases, and that it is not the SQL Server image.
+The Azure SQL Database container is the Azure SQL Database engine, running locally. The skills teach your AI coding agent to use it the right way: start the engine, connect, provision the database, apply migrations, import data, scaffold a new app, build local RAG, wire CI, and move the same code to Azure SQL Database in the cloud. They encode what a model does not otherwise know: the private preview registry, that the engine reports `EngineEdition` 5, that it does not auto-create databases, and that it is not the SQL Server image.
 
 Install the whole collection with one command. It works in **Claude Code, Codex, Cursor, and VS Code with GitHub Copilot**:
 

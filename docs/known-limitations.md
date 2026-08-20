@@ -40,7 +40,7 @@ Some PaaS restrictions that are enforced in Azure SQL Database in the cloud are 
 
 Some session-level and database-level defaults (collation, transaction isolation, ANSI defaults) do not match the cloud database defaults exactly. This may cause subtle behavior differences in edge cases.
 
-**Workaround:** Set the defaults explicitly in your connection string or session. The [Getting Started](getting-started.md) connection example covers the safe defaults.
+**Workaround:** Set the defaults explicitly in your connection string or session. The [Getting started](getting-started.md) connection example covers the safe defaults.
 
 ### 3. Vector index DDL
 
