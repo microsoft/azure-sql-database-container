@@ -2,7 +2,7 @@
 
 ## How to get help
 
-Azure SQL Developer is in **Private Preview**. It is supported through this repository and the preview channels below, not through standard Azure support.
+The Azure SQL Database container is in **Private Preview**. It is supported through this repository and the preview channels below, not through standard Azure support.
 
 ### Something is broken
 
@@ -31,4 +31,4 @@ npx skills add microsoft/azure-sql-database-container
 
 ## Support policy
 
-Support for this project is limited to the resources listed above. Azure SQL Developer is for **local development** (development, testing, CI, and demos). It is not a production database and is not covered by an Azure SLA. For production, deploy to [Azure SQL Database](https://learn.microsoft.com/azure/azure-sql/database/) in the Microsoft Azure cloud, which has full Azure support.
+Support for this project is limited to the resources listed above. The container is for **local development** (development, testing, CI, and demos). It is not a production database and is not covered by an Azure SLA. For production, deploy to [Azure SQL Database](https://learn.microsoft.com/azure/azure-sql/database/) in the Microsoft Azure cloud, which has full Azure support.

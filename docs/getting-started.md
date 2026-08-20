@@ -1,6 +1,6 @@
 ---
 title: "Getting started"
-description: "Go from pulling the Azure SQL Developer image to your first query in under a minute, either with your AI agent or by hand. No sqlcmd install required."
+description: "Go from pulling the Azure SQL Database container image to your first query in under a minute, either with your AI agent or by hand. No sqlcmd install required."
 ---
 
 ## Table of Contents
@@ -160,7 +160,7 @@ docker compose down
 
 ## Microsoft Entra ID authentication
 
-Microsoft Entra ID authentication works on Azure SQL Developer. Configure it with the `MSSQL_AAD_*` variables and a mounted certificate. SQL authentication (`sa`) remains the simple default above; use Entra when you want closer parity with Azure SQL Database in the cloud.
+Microsoft Entra ID authentication works on the container. Configure it with the `MSSQL_AAD_*` variables and a mounted certificate. SQL authentication (`sa`) remains the simple default above; use Entra when you want closer parity with Azure SQL Database in the cloud.
 
 For app registration and certificate setup, follow the Learn tutorial: [Configure Microsoft Entra ID authentication for SQL Server on containers](https://learn.microsoft.com/sql/linux/security/authentication/container-kubernetes-microsoft-entra-deployment). Mount a `.pfx` with an empty export password, then pass:
 
@@ -310,7 +310,7 @@ This is a known issue in the installer ([vercel-labs/skills#1355](https://github
 
 ## Next: build something
 
-Pick a job and let your AI coding agent build it against Azure SQL Developer. Each links to a ready-made prompt you can copy.
+Pick a job and let your AI coding agent build it against the container. Each links to a ready-made prompt you can copy.
 
 - [Build locally, ship to Azure]({{ '/prompts/local-to-cloud.md' | relative_url }}): develop and test locally, then deploy the same code to Azure SQL Database with a connection-string change.
 - [Prototype AI and RAG apps]({{ '/prompts/ai-rag.md' | relative_url }}): vector search and embeddings with a local model, then Azure OpenAI in the cloud.
@@ -325,7 +325,7 @@ Haven't installed the skill yet? See [Agent skill](prerequisites.md#agent-skill)
 
 ## Related content
 
-- [What is Azure SQL Developer](what-is-the-container.md)
+- [What is the Azure SQL Database container](what-is-the-container.md)
 - [Prerequisites](prerequisites.md)
 - [Known limitations](known-limitations.md)
 - [Agent skills](agent-skills.md)

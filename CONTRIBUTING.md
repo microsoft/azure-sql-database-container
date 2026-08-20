@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for your interest in Azure SQL Developer. This repository holds the documentation, the ready-made prompts, and the `azuresql-db-*` agent skills for the Private Preview. **The container image itself is not built from this repository**, so code changes here affect the docs, the site, and the skills, not the engine.
+Thanks for your interest in the Azure SQL Database container. This repository holds the documentation, the ready-made prompts, and the `azuresql-db-*` agent skills for the Private Preview. **The container image itself is not built from this repository**, so code changes here affect the docs, the site, and the skills, not the engine.
 
 ## What we are looking for
 
@@ -49,7 +49,7 @@ Then open `http://localhost:4000`.
 
 - Write for a developer who is new to the product. Explain the why, not just the what.
 - Prefer plain language over internal jargon. No severity labels, no codenames.
-- The product is **Azure SQL Developer**. The thing you run is still **a container**: keep the technical language technical.
+- The product is the **Azure SQL Database container** — the Azure SQL Database engine shipped as a container for local development. Establish the full name on first mention, then just call it **the container**: keep the technical language technical.
 - Commands should be copy-pasteable and correct on macOS, Linux, and Windows. Note when a command differs by container runtime.
 
 ## Contributor License Agreement

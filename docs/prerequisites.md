@@ -1,6 +1,6 @@
 ---
 title: "Prerequisites"
-description: "Supported host platforms, container runtimes, system resources, and tooling for running Azure SQL Developer."
+description: "Supported host platforms, container runtimes, system resources, and tooling for running the Azure SQL Database container."
 ---
 
 ## Table of Contents
@@ -89,7 +89,7 @@ Even with the skills installed, sign in to the registry yourself first with `doc
 
 ## Related content
 
-- [What is Azure SQL Developer](what-is-the-container.md)
+- [What is the Azure SQL Database container](what-is-the-container.md)
 - [Get started](getting-started.md)
 - [Known limitations](known-limitations.md)
 - [Agent skills](agent-skills.md)

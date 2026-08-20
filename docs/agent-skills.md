@@ -1,6 +1,6 @@
 ---
 title: "Agent skills"
-description: "Install the Azure SQL Developer agent skills in Claude Code, Codex, Cursor, or VS Code with GitHub Copilot, and let your AI agent run, connect to, and build against the local engine."
+description: "Install the Azure SQL Database container agent skills in Claude Code, Codex, Cursor, or VS Code with GitHub Copilot, and let your AI agent run, connect to, and build against the local engine."
 ---
 
 ## Table of Contents
@@ -18,7 +18,7 @@ description: "Install the Azure SQL Developer agent skills in Claude Code, Codex
 
 ## Install
 
-The skills teach your AI coding agent to use Azure SQL Developer, the Azure SQL Database engine running locally in a container, the right way: start the engine, connect, provision the database, apply migrations, import data, scaffold a new app, build local RAG, wire CI, and move the same code to Azure SQL Database in the cloud. They encode what a model does not otherwise know: the private preview registry, that the engine reports `EngineEdition` 5, that it does not auto-create databases, and that it is not the SQL Server image.
+The skills teach your AI coding agent to use the Azure SQL Database container, the Azure SQL Database engine running locally, the right way: start the engine, connect, provision the database, apply migrations, import data, scaffold a new app, build local RAG, wire CI, and move the same code to Azure SQL Database in the cloud. They encode what a model does not otherwise know: the private preview registry, that the engine reports `EngineEdition` 5, that it does not auto-create databases, and that it is not the SQL Server image.
 
 Install the whole collection with one command. It works in **Claude Code, Codex, Cursor, and VS Code with GitHub Copilot**:
 
@@ -82,7 +82,7 @@ Seventeen skills ship in the collection. Each one stands alone and teaches your 
   <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-scaffold" rel="noopener">
     <span class="skill-tag">azuresql-db-scaffold</span>
     <h4>Scaffold <span class="arrow">&rarr;</span></h4>
-    <p>Bootstrap a new app with Azure SQL Developer as the default local database.</p>
+    <p>Bootstrap a new app with the container as the default local database.</p>
   </a>
   <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-dab" rel="noopener">
     <span class="skill-tag">azuresql-db-dab</span>
@@ -117,7 +117,7 @@ Seventeen skills ship in the collection. Each one stands alone and teaches your 
   <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-faq" rel="noopener">
     <span class="skill-tag">azuresql-db-faq</span>
     <h4>Answer questions <span class="arrow">&rarr;</span></h4>
-    <p>What Azure SQL Developer can and can't do, and why it differs from the cloud: backups, <code>USE</code>, vector index, x64-only, tooling.</p>
+    <p>What the container can and can't do, and why it differs from the cloud: backups, <code>USE</code>, vector index, x64-only, tooling.</p>
   </a>
   <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-feedback" rel="noopener">
     <span class="skill-tag">azuresql-db-feedback</span>

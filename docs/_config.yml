@@ -1,4 +1,4 @@
-title: Azure SQL Developer
+title: Azure SQL Database container
 description: >-
   Azure SQL Database, running on your laptop. Build, test, and ship against the
   real engine. No Azure subscription, no shared instance, no connection-string
@@ -48,3 +48,4 @@ exclude:
   - Gemfile.lock
   - Dockerfile.preview
   - vendor
+  - _social-card
