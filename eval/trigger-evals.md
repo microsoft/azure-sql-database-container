@@ -18,6 +18,16 @@ Prompts T1 to T3 are deliberately ambiguous between related skills; they exist t
 | T8 | will this code work unchanged in Azure? | azuresql-db-local-to-cloud | none |
 | T9 | store embeddings and do similarity search locally in SQL | azuresql-db-rag | none |
 | T10 | I'm using mcr.microsoft.com/mssql/server in my docker-compose | azuresql-db-from-sql-server | none |
+| T11 | give me a REST and GraphQL API over these tables without writing code | azuresql-db-dab | none |
+| T12 | build a serverless HTTP API over my SQL tables with Azure Functions | azuresql-db-functions | none |
+| T13 | fill my local database with realistic sample data across related tables | azuresql-db-seed | none |
+| T14 | run my integration tests against a real database that starts and stops per test | azuresql-db-testing | azuresql-db-ci |
+| T15 | my app keeps dropping the SQL connection under load, add retry and pooling | azuresql-db-connections | none |
+| T16 | my app connects as sa, set up a least-privilege database user instead | azuresql-db-auth | none |
+| T17 | the skill told my agent the wrong thing, how do I report it | azuresql-db-feedback | none |
+
+T14 is deliberately ambiguous between per-test containers (`azuresql-db-testing`) and pipeline
+setup (`azuresql-db-ci`); record which loads, as with T1 to T3.
 
 Recording format per trial:
 
