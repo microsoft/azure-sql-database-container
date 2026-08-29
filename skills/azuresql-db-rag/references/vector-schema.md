@@ -155,10 +155,21 @@ For programmatic seeding, loop over your documents in application code calling
 
 ## Indexing status
 
-`CREATE VECTOR INDEX` (DiskANN approximate nearest neighbor) is still in
-development in this preview. Do not depend on it. Use full-scan top-k for now.
-The query shape does not change when the index ships; you add the index and keep
-the same `ORDER BY VECTOR_DISTANCE(...)`.
+`CREATE VECTOR INDEX` (DiskANN approximate nearest neighbor) works on this image.
+Measured 2026-08-29 on `12.0.2000.8`, `EngineEdition` 5: 2000 rows of `VECTOR(3)`
+indexed in 478 ms, visible in `sys.indexes` as `type_desc` `VECTOR`, and queried
+through `vector_search(...)`.
+
+It needs `SET QUOTED_IDENTIFIER ON`, which is off by default in `sqlcmd`. Without
+it you get `Msg 1934`, whose text names indexed views, computed columns, filtered
+indexes, query notifications, XML methods and spatial indexes, and never the
+session setting that caused it.
+
+Once the index exists, `vector_search(...)` rejects an explicit `TOP_N` with
+`Msg 42274`. Use `SELECT TOP (k)` with `ORDER BY s.distance`.
+
+Full-scan top-k with `ORDER BY VECTOR_DISTANCE(...)` stays exact and stays the
+right choice for a small table.
 
 ## Troubleshooting
 

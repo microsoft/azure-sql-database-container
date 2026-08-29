@@ -10,7 +10,7 @@ description: >-
   store when the data already lives in (or can live in) Azure SQL. Covers the
   VECTOR(n) column type, inserting embeddings with CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n)) where the
   dimension is a literal, a pluggable embed() so only the endpoint changes for
-  cloud, and the honest current state of CREATE VECTOR INDEX. Provisions appdb on
+  cloud, and a working CREATE VECTOR INDEX with the two errors that block it. Provisions appdb on
   master first so every script runs on a fresh container.
 ---
 
@@ -182,14 +182,43 @@ with pyodbc.connect(CONN) as conn:
 For the full RAG loop, glue these retrieved rows into your prompt as context.
 That LLM call is separate from this skill.
 
-## Indexing: honest current state
+## Indexing: measured current state
 
-`CREATE VECTOR INDEX` (DiskANN approximate nearest neighbor) is **still in
-development** in this preview. Do not rely on it yet. For now, use the
-**full-scan top-k** shown above: `ORDER BY VECTOR_DISTANCE(...)` over the whole
-table. This is exact and correct; it scans every row, so it is fine for
-thousands-to-tens-of-thousands of rows. When DiskANN ships, the query shape stays
-the same; you just add the index.
+`CREATE VECTOR INDEX` (DiskANN approximate nearest neighbor) **works on this
+image.** Measured on 2026-08-29 against `12.0.2000.8`, `EngineEdition` 5: an
+index over 2000 rows of `VECTOR(3)` built in **478 ms**, appears in
+`sys.indexes` with `type_desc` of `VECTOR`, and `vector_search(...)` returns
+ranked results against it.
+
+```sql
+SET QUOTED_IDENTIFIER ON;   -- required, see below
+CREATE VECTOR INDEX vi_docs ON dbo.docs(v) WITH (METRIC = 'cosine', TYPE = 'diskann');
+```
+
+**Two things will stop you, and neither error says what is wrong.**
+
+`SET QUOTED_IDENTIFIER ON` is required, and it is off by default in a `sqlcmd`
+session. Without it the statement fails with:
+
+```
+Msg 1934: CREATE VECTOR INDEX failed because the following SET options have
+incorrect settings: 'QUOTED_IDENTIFIER'. Verify that SET options are correct for
+use with indexed views and/or indexes on computed columns and/or filtered
+indexes and/or query notifications and/or XML data type methods and/or spatial
+index operations.
+```
+
+Nothing in that message mentions the session setting that actually caused it, and
+everything it does mention is irrelevant here.
+
+Second, `vector_search(...)` no longer accepts an explicit `TOP_N` once the index
+is built. Passing it fails with `Msg 42274, Vector search with newer index
+version does not support explicit TOP_N parameter`. Use `SELECT TOP (k)` and
+`ORDER BY s.distance` instead.
+
+Full-scan top-k with `ORDER BY VECTOR_DISTANCE(...)` is still exact and still
+correct, and it remains the right choice for small tables. The index is the
+choice once the table is large enough for a full scan to hurt.
 
 ## Validation rules
 
@@ -214,7 +243,8 @@ the same; you just add the index.
   provisioning session where the Azure statement filter is not enforced, so `USE` appears to work there, but `master` is for provisioning
   only, not application work. Always select the target database in the connection
   string (`Database=appdb`, or `-d appdb` for sqlcmd).
-- Do not rely on `CREATE VECTOR INDEX` yet; use full-scan top-k.
+- Do not run `CREATE VECTOR INDEX` without `SET QUOTED_IDENTIFIER ON`; the error it raises
+  names indexed views and spatial indexes and never mentions the setting.
 - Do not expect `/docker-entrypoint-initdb.d/*.sql` to auto-run; seed by running
   `sqlcmd -d appdb -i seed.sql` after provisioning appdb.
 - Do not call a non-x64 host "supported"; just add `--platform linux/amd64`
