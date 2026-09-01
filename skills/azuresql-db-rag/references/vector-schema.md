@@ -171,6 +171,35 @@ Once the index exists, `vector_search(...)` rejects an explicit `TOP_N` with
 Full-scan top-k with `ORDER BY VECTOR_DISTANCE(...)` stays exact and stays the
 right choice for a small table.
 
+## The rules the index imposes once it exists
+
+Measured 2026-08-31 on `12.0.2000.8` unless marked as documented.
+
+| Rule | Evidence |
+|---|---|
+| At least **100 rows with non-null vectors**. 99 is refused, 100 succeeds, and 120 rows with 60 nulls is refused | `Msg 42266`, measured at the boundary |
+| `TRUNCATE TABLE` is refused while the index exists | `Msg 42232`, measured. Drop the index, truncate, reload 100 rows, recreate |
+| `DROP VECTOR INDEX` is not a statement | `Msg 102, Incorrect syntax near 'VECTOR'`. Use `DROP INDEX name ON table` |
+| `INSERT`, `UPDATE`, `DELETE` all work with the index in place | measured. Older index versions made the table read only |
+| The table needs a primary key clustered index | documented |
+| Vector indexes cannot be partitioned and are not replicated to subscribers | documented |
+
+## Two things that will bite later, both documented rather than measured
+
+**Indexes built on the earlier data structure are deprecated.** They still work in
+the current release and will be retired. They cannot be upgraded in place: drop
+and recreate is the only path, and dropping disables approximate search on that
+table until the new one is built, so it belongs in a maintenance window. The
+older structure also made the table read only after index creation and applied
+filters only after retrieval, which is why the migration is worth doing rather
+than deferring.
+
+**A vector index cannot be deployed with DacPac or BACPAC.** The import creates
+schema objects before loading data, so the index is created against an empty
+table, hits the 100 row minimum, and the import fails. The workaround is to drop
+vector indexes before exporting and recreate them after importing. This is worth
+knowing before someone plans a migration around an export.
+
 ## Troubleshooting
 
 | Symptom                               | Cause and fix                                                                 |

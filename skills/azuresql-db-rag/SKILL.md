@@ -216,6 +216,41 @@ is built. Passing it fails with `Msg 42274, Vector search with newer index
 version does not support explicit TOP_N parameter`. Use `SELECT TOP (k)` and
 `ORDER BY s.distance` instead.
 
+### It needs 100 rows, and NULLs do not count
+
+Measured on 2026-08-31, walking the boundary:
+
+| Rows with a vector | Result |
+|---|---|
+| 99 | `Msg 42266` refused |
+| 100 | index created |
+| 120 rows, 60 of them NULL | `Msg 42266` refused |
+
+```
+Msg 42266: Cannot create a vector index. The table contains only 50 rows with
+non-null vectors, but at least 100 are required for vector index creation.
+```
+
+**This message is good, and worth saying so**, because the other two on this page
+are not. It names the rule, the actual count, and the column condition. A reader
+who hits it needs nothing else. Note the wording: **rows with non-null vectors**,
+not rows. A table of 120 rows where 60 have no embedding yet is refused.
+
+### `TRUNCATE TABLE` is refused while the index exists
+
+```
+Msg 42232: TRUNCATE TABLE statement failed because table 'd' has a vector index on it.
+```
+
+Measured 2026-08-31. To empty the table: drop the index, truncate, reload at least
+100 rows, recreate the index. `DELETE FROM` works and is not affected.
+
+**`DROP VECTOR INDEX` is not a statement.** It fails with `Msg 102, Incorrect
+syntax near 'VECTOR'`. Use `DROP INDEX vi_name ON dbo.table`.
+
+`INSERT`, `UPDATE` and `DELETE` all work with the index in place, measured. Older
+vector indexes made the table read only; this image does not.
+
 Full-scan top-k with `ORDER BY VECTOR_DISTANCE(...)` is still exact and still
 correct, and it remains the right choice for small tables. The index is the
 choice once the table is large enough for a full scan to hurt.
