@@ -1,0 +1,114 @@
+{
+  "$schema": "https://github.com/microsoft/azure-sql-skills-lab/spec/schemas/skill.spec.schema.json",
+  "id": "azuresql-db-seed",
+  "domain": "azure-sql-database-container",
+  "value": [
+    "corrects-a-wrong-assumption",
+    "multi-step-with-silent-failures"
+  ],
+  "correction": "Asked to load a CSV into this engine, an agent writes BULK INSERT against a path on the machine and expects it to read the file. It cannot. This engine reads bulk data only from Azure Blob Storage, through a database scoped credential and an external data source, and a local path is refused with Msg 12713. That is Azure SQL Database parity rather than a container limitation, so the workaround is not to find the right path, it is to change tool: bcp streams the file over the connection from the client side, and the driver seeders do the same. The second habit is seeding in whatever order the tables were written, which fails on the first child row whose parent does not exist yet with Msg 547, and the repair an agent then reaches for is to disable the constraints, which loads the data and leaves the referential integrity of the fixture unproven. The third is generating volume with a row-by-row loop, where a set-based tally produces the same thousand rows in one statement. Underneath all three sits the container's own rule: appdb does not exist until it is created on a master connection, and no seed can run before it does.",
+  "posture": [
+    "write",
+    "execute"
+  ],
+  "maturity": "draft",
+  "applies_to": [
+    "azure-sql-db-container"
+  ],
+  "related": [
+    "azuresql-db-container",
+    "azuresql-db-import",
+    "azuresql-db-scaffold"
+  ],
+  "validation": {
+    "target": "container",
+    "probes": [
+      {
+        "sql": "SELECT CAST(SERVERPROPERTY('EngineEdition') AS int) AS engine_edition, CAST(SERVERPROPERTY('Edition') AS nvarchar(128)) AS edition;",
+        "expect": {
+          "rows": [
+            [
+              5,
+              "SQL Azure"
+            ]
+          ]
+        },
+        "why": "The self-check the skill puts in front of every other instruction. Engine edition 5 with edition 'SQL Azure' is the Azure SQL Database engine; the SQL Server image mcr.microsoft.com/mssql/server returns different values, so any other answer means the lane ran against the wrong engine and every probe below it is measuring something else."
+      },
+      {
+        "sql": "CREATE TABLE dbo.probe_seed_bulk_stage (full_name nvarchar(200) NULL, country nvarchar(100) NULL);\nBULK INSERT dbo.probe_seed_bulk_stage FROM '/tmp/probe_authors.csv'\n  WITH (FORMAT = 'CSV', FIRSTROW = 2, FIELDTERMINATOR = ',', ROWTERMINATOR = '0x0a');",
+        "expect": {
+          "error": 12713
+        },
+        "why": "The strongest claim in this skill, and the one an agent gets wrong by default because it is right on SQL Server. Measured in a sibling project on this image: BULK INSERT from a local path fails with Msg 12713, and only Azure Blob Storage is a valid source. The path deliberately does not exist, because the point is that the engine refuses to read local files at all rather than failing to find one: a missing-file error here instead of 12713 would mean the restriction has been lifted and the skill's routing to bcp needs revisiting."
+      },
+      {
+        "sql": "SELECT * FROM OPENROWSET(BULK N'/tmp/probe_authors.csv', SINGLE_CLOB) AS probe_file;",
+        "expect": {
+          "error": 12713
+        },
+        "why": "references/seed-snippets.md extends the same claim to OPENROWSET(BULK ...) and quotes the message text, OPENROWSET is not allowed to read local files, against Msg 12713. The BULK INSERT form is the one measured directly in the sibling project; this is the skill's own claim about the second spelling of the same operation, and it is separated so a divergence between the two shows up as a divergence rather than being hidden inside one probe."
+      },
+      {
+        "sql": "CREATE TABLE dbo.probe_seed_author (author_id int NOT NULL PRIMARY KEY);\nCREATE TABLE dbo.probe_seed_book (book_id int NOT NULL PRIMARY KEY, author_id int NOT NULL CONSTRAINT FK_probe_seed_book_author REFERENCES dbo.probe_seed_author(author_id));\nINSERT INTO dbo.probe_seed_book (book_id, author_id) VALUES (1, 999);",
+        "expect": {
+          "error": 547
+        },
+        "why": "The skill states that referential integrity is enforced and that a child row inserted before its parent fails with Msg 547, which is the whole reason seeds are written parent first. This builds the smallest fixture that can prove it and inserts the orphan. If it ever succeeded, the foreign-key ordering rule would be advice with nothing behind it, and a seed that is quietly wrong is exactly the failure this skill is meant to prevent."
+      },
+      {
+        "sql": "CREATE TABLE dbo.probe_seed_volume_author (author_id int IDENTITY(1,1) PRIMARY KEY, full_name nvarchar(200) NOT NULL);\nDECLARE @authors TABLE (author_id int, full_name nvarchar(200));\nINSERT INTO dbo.probe_seed_volume_author (full_name)\nOUTPUT inserted.author_id, inserted.full_name INTO @authors (author_id, full_name)\nVALUES (N'Ada Sample'), (N'Grace Fixture'), (N'Alan Seed');\nSELECT COUNT(*) AS captured FROM @authors;",
+        "expect": {
+          "rows": [
+            [
+              3
+            ]
+          ]
+        },
+        "why": "The multi-table recipe in references/seed-snippets.md depends on capturing generated identity values with OUTPUT ... INTO a table variable, so children can be resolved against the parents just inserted. That is the step that makes the seed idempotent and order-correct, and it is the step most likely to be refused by a restricted surface. This runs the pattern exactly as the reference writes it and counts what came back."
+      },
+      {
+        "sql": "SELECT COUNT(*) AS generated FROM (SELECT TOP (1000) ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS rn FROM sys.all_objects AS a CROSS JOIN sys.all_objects AS b) AS t;",
+        "expect": {
+          "rows": [
+            [
+              1000
+            ]
+          ]
+        },
+        "why": "The generate-a-thousand-rows recipe fans out set-based from a tally built by cross joining sys.all_objects with itself, and the reference asserts that this guarantees far more than a thousand candidate rows. On a trimmed platform catalogue that is an assumption rather than a certainty, and if the catalogue were small enough the recipe would silently produce fewer rows than asked for rather than failing. This measures the count the recipe promises."
+      },
+      {
+        "cmd": "/opt/mssql-tools18/bin/bcp -v",
+        "where": "container",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "bcp is the answer this skill gives once BULK INSERT has refused the local file, so the claim that the image ships it matters as much as the refusal itself. Where this probe runs is half the claim: bcp is in the image and not on the host, so run on the host it fails with command not found, which is the finding rather than a bug. -v prints the version and needs no connection, so this measures the presence of the tool and says nothing about it reaching the engine."
+      }
+    ]
+  },
+  "triggering": {
+    "explicit": [
+      "Seed appdb with realistic sample data",
+      "Write a seed script for these tables",
+      "Generate a thousand rows of test data in the local database",
+      "Bulk load this CSV into the container database",
+      "Add fixtures so the app has something to render"
+    ],
+    "implicit": [
+      "My BULK INSERT cannot find the file even though the path is right there in the container",
+      "The insert fails complaining about a foreign key and I do not see why",
+      "The app runs but every list page is empty",
+      "I need believable customer names and addresses for a demo, not real ones",
+      "My seed script doubles the rows every time I run it"
+    ],
+    "negative": [
+      "Import my production bacpac into the local container",
+      "Create a least-privilege login for the application",
+      "Set up a CI job that runs the tests against a database service container",
+      "Write a migration that adds a column without downtime",
+      "Explain how connection pooling works"
+    ]
+  }
+}

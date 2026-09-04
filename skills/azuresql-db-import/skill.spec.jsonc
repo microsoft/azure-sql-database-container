@@ -1,0 +1,95 @@
+{
+  "$schema": "https://github.com/microsoft/azure-sql-skills-lab/spec/schemas/skill.spec.schema.json",
+  "id": "azuresql-db-import",
+  "domain": "azure-sql-database-container",
+  "value": [
+    "not-in-training-data",
+    "corrects-a-wrong-assumption",
+    "multi-step-with-silent-failures"
+  ],
+  "correction": "Asked to get an existing database into the local container, an agent reaches for a backup file and RESTORE DATABASE, because that is how a database gets into SQL Server. There is no restore path here. This is the Azure SQL Database engine, BACKUP and RESTORE are refused in every session with Msg 40510, and the supported route is SqlPackage against a .bacpac for schema and data or a .dacpac for schema alone. Two more beliefs turn that route into wasted time. The first is that the import creates its target: it does not, the database has to exist and be empty on a master connection before SqlPackage is pointed at it, and the tool must target that user database rather than master. The second is that a successful exit means a faithful copy. This engine does not carry SQL Server Agent jobs, server-scoped logins, linked servers, filestream, explicit filegroup placement or cross-database three-part-name references, and an import that meets them reports them in its log rather than in its exit path, so an unread log is the difference between a database that matches the source and one that merely finished importing. SqlPackage itself is a host tool installed with dotnet tool install; the image does not ship it, so the command belongs on the developer's machine and not inside a docker exec.",
+  "posture": [
+    "provision",
+    "write",
+    "execute"
+  ],
+  "maturity": "draft",
+  "applies_to": [
+    "azure-sql-db-container"
+  ],
+  "related": [
+    "azuresql-db-container",
+    "azuresql-db-from-sql-server",
+    "azuresql-db-schema-migration"
+  ],
+  "validation": {
+    "target": "container",
+    "probes": [
+      {
+        "sql": "SELECT CAST(SERVERPROPERTY('EngineEdition') AS int) AS engine_edition, CAST(SERVERPROPERTY('Edition') AS nvarchar(128)) AS edition;",
+        "expect": {
+          "rows": [
+            [
+              5,
+              "SQL Azure"
+            ]
+          ]
+        },
+        "why": "The self-check the skill puts in front of every other instruction. Engine edition 5 with edition 'SQL Azure' is the Azure SQL Database engine; the SQL Server image mcr.microsoft.com/mssql/server returns different values, so any other answer means the lane ran against the wrong engine and every probe below it is measuring something else."
+      },
+      {
+        "sql": "USE master;",
+        "expect": {
+          "error": 40508
+        },
+        "why": "The skill states that in a user-database session USE returns Msg 40508, exactly as in Azure SQL Database in the cloud, and that the fix is always to select the database in the connection string. Every probe here runs against a scratch user database, which is the session where the Azure statement filter is enforced. If this ever succeeds, the filter is not being applied to the lane's session and the skill's central connection-model rule has stopped being true locally."
+      },
+      {
+        "sql": "DECLARE @stmt nvarchar(max) = N'RESTORE DATABASE ' + QUOTENAME(DB_NAME()) + N' FROM DISK = ''/var/opt/mssql/data/probe_restore.bak''';\nEXEC (@stmt);",
+        "expect": {
+          "error": 40510
+        },
+        "why": "This skill exists because there is no restore path on this engine, and an agent's first instinct is a .bak file. The azuresql-db-container skill records BACKUP and RESTORE as unsupported in any session with Msg 40510, the number that refuses a whole statement rather than one option of a supported one, and matching Azure SQL Database in the cloud. The database name is built from DB_NAME() so the refusal is measured against the scratch database this lane holds. If this ever stops being 40510, the recommendation to reach for SqlPackage stops being forced and the skill should say so."
+      },
+      {
+        "cmd": "SqlPackage /version",
+        "where": "host",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "SqlPackage is a host tool, installed with dotnet tool install -g microsoft.sqlpackage, and the skill's import commands are written to run on the developer's machine against the mapped host port. Declaring host here is the point of the probe: five probes elsewhere in this corpus shipped without the field and every one failed with command not found, because they were written by running the tool on a laptop and then executed inside a container. A red here means the lane's host has no SqlPackage installed, which is a finding about the lane rather than about the engine."
+      },
+      {
+        "cmd": "test ! -e /opt/sqlpackage",
+        "where": "container",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "references/sqlpackage-import.md states plainly that the container image does not ship SqlPackage and that the simplest supported path is to install it on the host. This is the container half of that claim, and it is evidence rather than proof: a future image could ship the tool at some other path and this probe would still pass. Read a red here as the image having gained a bundled SqlPackage, which would make the reference's container-based fallback section wrong in a useful direction."
+      }
+    ]
+  },
+  "triggering": {
+    "explicit": [
+      "Import this bacpac into the local container",
+      "Publish my dacpac to the container database",
+      "Load my existing production database into the local engine",
+      "Bring the prod schema down into my dev database",
+      "What SqlPackage flags do I need to import into the container"
+    ],
+    "implicit": [
+      "I have a .bak of the database, how do I get it running locally",
+      "SqlPackage says the target database does not exist",
+      "The import finished but half my objects are missing",
+      "How do I get my real data into the local engine so I can debug against it",
+      "My import fails on a statement that references another database by three-part name"
+    ],
+    "negative": [
+      "Generate a thousand rows of fake data for the empty tables",
+      "Write an EF Core migration for this model change",
+      "Create a least-privilege user for the application to connect as",
+      "Set up connection retry for transient faults",
+      "Start the container and give me a connection string"
+    ]
+  }
+}
