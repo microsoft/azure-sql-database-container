@@ -1,11 +1,11 @@
 # PaaS parity checklist
 
-This container is the Azure SQL Database engine (EngineEdition 5), not the SQL
-Server SQL Server. Some SQL Server features are intentionally absent because
+This container is the Azure SQL Database engine (EngineEdition 5), not SQL
+Server. Some SQL Server features are intentionally absent because
 they are not part of the PaaS surface. Validate features against the cloud
 before declaring readiness.
 
-## Not present (vs the SQL Server)
+## Not present (vs SQL Server)
 
 - **SQL Server Agent**: no Agent jobs/schedules. Use an external scheduler.
 - **FILESTREAM / FileTable**: not available.

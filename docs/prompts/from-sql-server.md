@@ -42,7 +42,7 @@ docker run -d --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASS
 
 ### 4. Fix the connection model
 
-The Azure SQL Database engine does **not** auto-create databases, and the connection model differs from the SQL Server. Provision the application database on a `master` connection, then point the app at that database:
+The Azure SQL Database engine does **not** auto-create databases, and the connection model differs from SQL Server. Provision the application database on a `master` connection, then point the app at that database:
 
 ```bash
 # The engine is not ready the instant docker run returns; retry until it accepts connections.
@@ -57,7 +57,7 @@ Re-point connection strings from `Database=master` to `Database=appdb`. Do not s
 
 ### 5. Flag SQL Server-only features to remove
 
-These exist in the SQL Server but **not** in Azure SQL Database; remove or replace any usage so the app works against the engine and the cloud:
+These exist in SQL Server but **not** in Azure SQL Database; remove or replace any usage so the app works against the engine and the cloud:
 
 - SQL Server Agent jobs (`msdb.dbo.sp_add_job`, etc.)
 - FILESTREAM / FileTable
