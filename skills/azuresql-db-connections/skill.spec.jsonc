@@ -21,6 +21,26 @@
     "azuresql-db-auth",
     "azuresql-db-local-to-cloud"
   ],
+  "value_probe": {
+    "task": "Our API talks to a SQL database, a container on our laptops and Azure SQL Database in production. It never misbehaves locally, but a few times a day in production users get an error about a transport-level error receiving results, and last week one customer ended up with two identical orders. Harden the data access layer so this stops.",
+    "gate": "The answer must retry only the transient faults and name what it refuses to retry, and must make the retried write idempotent rather than re-running an INSERT that may already have committed.",
+    "states": [
+      "Azure SQL Database throttles, fails over and closes idle connections, so transient faults are routine platform behaviour rather than defects, and a client without retry turns them into user-visible errors.",
+      "The retryable set is the transient numbers, 40501, 40613, 49918, 49919, 49920, 4060, 10928, 10929, 40197 and 233, with exponential backoff and jitter and a bounded attempt count.",
+      "Login failure Msg 18456, syntax errors and constraint violations are never retried, because retrying them buries the real fault and burns the attempt budget.",
+      "A non-idempotent write needs an idempotency key, or a retry that checks whether the first attempt committed, because a connection can drop after the server committed and before the client heard about it.",
+      "One connection string built once per process, so the driver keeps one pool, with bounded Max Pool Size and connections opened late and closed early back into the pool.",
+      "The framework's own facility is preferred where it exists, such as EnableRetryOnFailure in EF Core, rather than a hand-rolled catch-all wrapper."
+    ],
+    "refutes": [
+      "That a catch-all retry around every SqlException or every exception is adequate. A blanket retry re-runs a login failure, a syntax error and a constraint violation until the budget is gone, and it double-applies a non-idempotent INSERT whose first attempt already committed.",
+      "That pooling and retry are cloud concerns that can be left out of code exercised locally. The container almost never drops a connection, so the absence of retry is invisible until the same code meets the cloud.",
+      "That building the connection string per request, or per tenant, is harmless because pooling is automatic. Each distinct string gets its own pool, which defeats pooling entirely while every individual call still succeeds.",
+      "That opening a connection per query is a leak to be fixed by holding one connection open for the process lifetime. The correct shape is open late, close early, and let the pool do the holding.",
+      "That the local container can be used to verify that the retry policy works. It does not throttle, and sys.dm_db_resource_stats and sys.dm_user_db_resource_governance are not present on it at all, so a local diagnostic written against either view cannot even run.",
+      "That Msg 10929 should be dropped from the retry list because it does not appear in the container's message catalogue. It is the elastic pool and per database governance throttle, a container has no elastic pool and no service objective, and the number belongs in a policy that will meet the cloud."
+    ]
+  },
   "validation": {
     "target": "container",
     "probes": [

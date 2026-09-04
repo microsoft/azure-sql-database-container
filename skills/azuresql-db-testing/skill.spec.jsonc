@@ -20,6 +20,28 @@
     "azuresql-db-ci",
     "azuresql-db-seed"
   ],
+  "value_probe": {
+    "task": "Add integration tests for our repository layer that run against a real database started from the test code and torn down afterwards, instead of the mocks we have now. It has to be the same engine we run in Azure, and two developers must be able to run the suite at the same time on one machine.",
+    "gate": "The fixture must start the Azure SQL Database container image through the generic Testcontainers container API, not through the MsSql preset module, because that preset pulls a different product.",
+    "states": [
+      "There is no Testcontainers preset for this image, so the fixture uses the generic container API with the image name, ACCEPT_EULA and a password that satisfies the complexity policy set by hand.",
+      "The wait strategy waits for the engine, not the container: a command-based wait that runs /opt/mssql-tools18/bin/sqlcmd inside the container until it answers.",
+      "The database is created on a master connection after the wait passes and before any test connects, because the engine creates none.",
+      "The host port is read back from the started container, because 1433 inside is bound to a random host port, which is what lets suites run in parallel.",
+      "The test connection string selects the database, because USE is refused in a user-database session with Msg 40508.",
+      "The container is disposed when the fixture ends, or an engine leaks per run.",
+      "The identity of the engine is asserted in the fixture, EngineEdition 5 and Edition 'SQL Azure', so a wrong image fails the suite instead of passing it."
+    ],
+    "refutes": [
+      "That the Testcontainers MsSql module, MsSqlBuilder or MSSQLServerContainer, gives you Azure SQL Database. It pulls mcr.microsoft.com/mssql/server, which is SQL Server, so the suite proves the code works against a different product.",
+      "That the preset can be pointed at this image by overriding the image name and otherwise left alone.",
+      "That the engine is ready when Start returns. Start returns while the engine is still initialising.",
+      "That a fixed sleep is an acceptable wait. It is a guess that gets slower or wrong on someone else's machine and reads later as a flaky suite.",
+      "That the container comes with a database, or that connecting with a database name in the string creates one.",
+      "That the fixture should bind host port 1433, which makes parallel suites collide on the port.",
+      "That a test can switch database with USE."
+    ]
+  },
   "validation": {
     "target": "container",
     "probes": [
