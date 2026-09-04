@@ -1,0 +1,100 @@
+{
+  "$schema": "https://github.com/microsoft/azure-sql-skills-lab/spec/schemas/skill.spec.schema.json",
+  "id": "azuresql-db-sidecar",
+  "domain": "azure-sql-database-container",
+  "value": [
+    "not-in-training-data",
+    "corrects-a-wrong-assumption",
+    "multi-step-with-silent-failures"
+  ],
+  "correction": "Adding a SQL database to an existing Compose stack, an agent writes a service for mcr.microsoft.com/mssql/server, gives the application a plain depends_on, and points the application's connection string at localhost. Every one of those is wrong here. The image is a different product: the Azure SQL Database container reports EngineEdition 5 and Edition 'SQL Azure'. Inside a Compose network the application reaches the engine by service name, and localhost inside the application container is the application container, so a connection string carried over from a laptop setup connects to nothing. A plain depends_on waits only for the container to be created, not for the engine to accept a login, so the application starts first and its startup connection fails against an engine that is merely still starting. And the database itself has to be created: this engine does not auto-create one on connect, and mounting a seed script at /docker-entrypoint-initdb.d does nothing because that is a Postgres and MySQL convention this image does not honour. The shape that actually works is a health check that runs the engine image's own sqlcmd from /opt/mssql-tools18/bin inside the container, a one-shot init service gated on service_healthy that creates the database and exits, and an application gated on both service_healthy and service_completed_successfully.",
+  "posture": [
+    "read",
+    "write",
+    "execute",
+    "provision"
+  ],
+  "maturity": "draft",
+  "applies_to": [
+    "azure-sql-db-container"
+  ],
+  "related": [
+    "azuresql-db-container",
+    "azuresql-db-scaffold",
+    "azuresql-db-ci",
+    "azuresql-db-seed",
+    "azuresql-db-connections"
+  ],
+  "validation": {
+    "target": "container",
+    "setup": [
+      "a Docker Compose implementation on the host that can parse a file without a running daemon, since both compose probes below are pure configuration parsing",
+      "the Azure SQL Database container image, for the one probe that asserts what the image itself carries"
+    ],
+    "assert": [
+      "the application's connection string names the database service by its Compose service name and never localhost",
+      "the database service declares a health check that runs sqlcmd inside the container rather than on the host",
+      "a one-shot init service creates the user database and the application waits for it with service_completed_successfully",
+      "both the database service and the init service declare the linux/amd64 platform, because the image is x64 only",
+      "existing services in the stack are left unchanged apart from the depends_on that was added"
+    ],
+    "probes": [
+      {
+        "where": "host",
+        "cmd": "d=$(mktemp -d) && cd \"$d\" && printf 'services:\\n  sqldb:\\n    image: example/engine:latest\\n    platform: linux/amd64\\n    healthcheck:\\n      test: [\"CMD-SHELL\", \"/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \\\\\"$$MSSQL_SA_PASSWORD\\\\\" -C -b -l 2 -Q \\\\\"SELECT 1\\\\\" || exit 1\"]\\n      interval: 5s\\n      timeout: 10s\\n      retries: 30\\n      start_period: 30s\\n  sqldb-init:\\n    image: example/engine:latest\\n    platform: linux/amd64\\n    depends_on:\\n      sqldb:\\n        condition: service_healthy\\n    restart: \"no\"\\n  app:\\n    image: example/app:latest\\n    depends_on:\\n      sqldb:\\n        condition: service_healthy\\n      sqldb-init:\\n        condition: service_completed_successfully\\n' > compose.yaml && docker compose -f compose.yaml config > /dev/null",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "The shape this skill emits, put in front of the parser that will read it. It asserts that every key the skill depends on is still accepted by the Compose Specification implementation the reader has: the platform override the x64-only image needs, a CMD-SHELL health check carrying the doubled dollar sign that keeps Compose from interpolating the password variable, and both depends_on conditions including service_completed_successfully for the init one-shot. Measured 2026-09-04 on the Docker Compose CLI on this host, exit 0. The image names are deliberately placeholders and no image is pulled, no container is created and no daemon is contacted: config only parses. If a future Compose release renames or drops one of these keys, the snippet the skill hands a reader stops parsing and this probe is the first thing that says so."
+      },
+      {
+        "where": "host",
+        "cmd": "d=$(mktemp -d) && cd \"$d\" && printf 'services:\\n  sqldb:\\n    image: example/engine:latest\\n  app:\\n    image: example/app:latest\\n    depends_on:\\n      sqldb:\\n        condition: service_finished_ok\\n' > bad.yaml && docker compose -f bad.yaml config > /dev/null 2>&1 && exit 1 || exit 0",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "The half that stops the probe above from being vacuous. If Compose accepted any string as a depends_on condition, a green run there would prove only that the file is YAML. It does not: an invented condition name is rejected, measured 2026-09-04 on this host with exit 1 from the config parse. So the previous probe's green means the two condition values the skill actually uses are real ones, not merely well-formed text."
+      },
+      {
+        "where": "container",
+        "cmd": "test -x /opt/mssql-tools18/bin/sqlcmd",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "Both the health check and the init one-shot invoke sqlcmd at this absolute path inside the engine image, and the init service does it by running a second copy of the engine image purely as a client. If the image ever stops carrying the tools at this path, the health check never turns healthy, the init service never runs, and the application waits on a gate that will not open, with nothing in the Compose output naming a missing binary. This is a container probe on purpose: the path does not exist on a developer's host and asserting it there would be the mistake that cost five probes a red run on 2026-09-02."
+      }
+    ]
+  },
+  "triggering": {
+    "explicit": [
+      "Use the azuresql-db-sidecar skill",
+      "add the Azure SQL Database container as a service in my compose file",
+      "wire an Azure SQL Database sidecar into my Dev Container",
+      "add a database service my app can reach by service name",
+      "give my compose stack a SQL healthcheck and a depends_on gate"
+    ],
+    "implicit": [
+      "my app container cannot reach the database at localhost",
+      "the app starts before the database is ready and crashes on the first connection",
+      "add a database to this compose stack without breaking the other services",
+      "how do I create the database once when the stack comes up",
+      "devcontainer with a SQL backend"
+    ],
+    "routing": [
+      "what condition should the app depends_on use",
+      "which host name does the app use inside compose",
+      "does the seed script in the mounted init directory run by itself",
+      "why does the health check need the platform flag"
+    ],
+    "negative": [
+      "scaffold a brand new project with a local database",
+      "start the Azure SQL Database container with docker run and connect from my laptop",
+      "add the database as a service container in my GitHub Actions workflow",
+      "run my Prisma migrations against the container",
+      "expose these tables as a REST API",
+      "connect my app to Azure SQL Database in the cloud",
+      "write a serverless function triggered by row changes",
+      "why is this query slow"
+    ]
+  }
+}
