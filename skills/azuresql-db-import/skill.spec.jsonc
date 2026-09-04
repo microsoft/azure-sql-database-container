@@ -7,6 +7,22 @@
     "multi-step-with-silent-failures"
   ],
   "correction": "Asked to get an existing database into the local container, an agent reaches for a backup file and RESTORE DATABASE, because that is how a database gets into SQL Server. There is no restore path here. This is the Azure SQL Database engine, BACKUP and RESTORE are refused in every session with Msg 40510, and the supported route is SqlPackage against a .bacpac for schema and data or a .dacpac for schema alone. Two more beliefs turn that route into wasted time. The first is that every action creates its target. /Action:Import does not, so the database has to exist and be empty on a master connection before SqlPackage is pointed at it. /Action:Publish does create the database when it is absent, which is why the .dacpac route behaves differently from the .bacpac route. Either way the tool must target that user database rather than master. The second is that a successful exit means a faithful copy. This engine does not carry SQL Server Agent jobs, server-scoped logins, linked servers, filestream, explicit filegroup placement or cross-database three-part-name references, and an import that meets them reports them in its log rather than in its exit path, so an unread log is the difference between a database that matches the source and one that merely finished importing. SqlPackage itself is a host tool installed with dotnet tool install; the image does not ship it, so the command belongs on the developer's machine and not inside a docker exec.",
+  "value_declaration": {
+    "rationale": "This skill's kernel is that the route an agent reaches for does not exist here, and that two actions of the replacement tool differ in whether they create the target. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach SqlPackage command-line syntax and the bacpac and dacpac formats, which are publicly documented, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted.",
+    "covers": [
+      "there being no restore path on this engine, with BACKUP and RESTORE refused with Msg 40510",
+      "/Action:Import not creating its target, so the database must exist and be empty first, where /Action:Publish does create it",
+      "SqlPackage not being present inside the image, so it runs from the host against the published port",
+      "USE being refused with Msg 40508 during provisioning"
+    ],
+    "does_not_cover": [
+      "SqlPackage command-line syntax and the bacpac and dacpac formats",
+      "general data-migration sequencing advice"
+    ],
+    "decided_by": "Carlos Robles",
+    "decided_on": "2026-09-04",
+    "expires_when": "the-container-reaches-public-preview"
+  },
   "posture": [
     "provision",
     "write",

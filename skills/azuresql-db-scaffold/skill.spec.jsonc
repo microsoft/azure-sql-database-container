@@ -7,6 +7,23 @@
     "multi-step-with-silent-failures"
   ],
   "correction": "Asked to bootstrap a new project with a local SQL database, an agent reaches for mcr.microsoft.com/mssql/server and a compose service copied from a Postgres skeleton, and the result looks right and is wrong in four ways at once. The image is a different product from the one the application will run against in Azure: the Azure SQL Database container reports EngineEdition 5 and Edition 'SQL Azure', and a scaffold built against the SQL Server image can use statements that this engine and the cloud both refuse. The database is assumed into existence: this engine does not auto-create a database on connect, so the first migration run fails against an engine that is working perfectly. The seed file is assumed to run itself, because the mounted /docker-entrypoint-initdb.d directory is a Postgres and MySQL convention that this image does not honour, so the scaffold reports success with an empty schema and nobody is told. And the database context is assumed to be switchable with USE, which in a user-database session is refused with error 40508 exactly as in Azure SQL Database in the cloud, so the target database belongs in the connection string and nowhere else.",
+  "value_declaration": {
+    "rationale": "This skill's kernel is four assumptions a copied skeleton carries in, each of which is false on this engine. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach project scaffolding, Compose skeletons and directory layout, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted.",
+    "covers": [
+      "the image being the Azure SQL Database engine at EngineEdition 5, not mcr.microsoft.com/mssql/server",
+      "the engine not auto-creating a database on connect, so the first migration run fails against an engine that is working perfectly",
+      "USE being refused with Msg 40508",
+      "the seed file not being run by the image, because the init-directory convention does not exist here",
+      "the native vector column type being available to a scaffold on this build"
+    ],
+    "does_not_cover": [
+      "project scaffolding, Compose skeletons and directory layout",
+      "choice of application framework or ORM"
+    ],
+    "decided_by": "Carlos Robles",
+    "decided_on": "2026-09-04",
+    "expires_when": "the-container-reaches-public-preview"
+  },
   "posture": [
     "read",
     "write",

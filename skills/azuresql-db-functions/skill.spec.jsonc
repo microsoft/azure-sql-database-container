@@ -7,6 +7,22 @@
     "multi-step-with-silent-failures"
   ],
   "correction": "Asked to run code when a row changes in Azure SQL Database, an agent reaches for the cloud streaming path and tries to make it work locally. It cannot: that path is unsupported on the local engine and streams only to a public Azure endpoint, so no amount of configuration will make it fire against a container. The local mechanism is the SQL trigger binding, and it is not self-configuring. It is backed by change tracking, which has to be turned on twice, once for the database and once for each table, and a table with no primary key cannot be tracked at all, so a function that is wired perfectly simply never fires and nothing explains why. The same silence surrounds the output binding, which upserts through MERGE over OPENJSON and therefore needs a primary key on the target table and a database compatibility level of at least 130. Two smaller things are wrong by habit rather than by reasoning. The binding names its connection setting with a connection-string-setting keyword, not the Connection keyword that the Storage and Event Hubs bindings use, and an agent that carries the wrong keyword over gets a binding that resolves nothing. And the local tooling advertises SQL templates that it cannot create: the templates listing offers a SQL trigger, while asking for it by name is refused as an unknown template, so the bindings have to be written into the function by hand after scaffolding an HTTP one.",
+  "value_declaration": {
+    "rationale": "This skill's kernel is that the mechanism an agent reaches for does not exist locally, and the one that does fails silently when misconfigured. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach Azure Functions project scaffolding, host configuration and the handler code itself, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted.",
+    "covers": [
+      "the cloud streaming path being unavailable against a local engine, so the SQL trigger binding is the only local mechanism",
+      "change tracking having to be enabled twice, once for the database and again for each table",
+      "a table with no primary key not being trackable at all, so a correctly wired function simply never fires",
+      "the compatibility level and OPENJSON behaviour this build actually reports, rather than a remembered one"
+    ],
+    "does_not_cover": [
+      "Azure Functions project scaffolding, host configuration and handler code",
+      "the general idea of event-driven processing over a database"
+    ],
+    "decided_by": "Carlos Robles",
+    "decided_on": "2026-09-04",
+    "expires_when": "the-container-reaches-public-preview"
+  },
   "posture": [
     "read",
     "write",
