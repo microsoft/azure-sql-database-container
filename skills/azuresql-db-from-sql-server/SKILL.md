@@ -139,6 +139,14 @@ Flag and fix every hit. Full table in [references/sql-server-vs-azure-feature-ma
 - **Full Service Broker** cross-instance messaging: not supported.
 - **Cross-server distributed transactions** (MS DTC, linked servers): not supported.
 - **Windows Auth / NTLM / Integrated Security**: not supported; use SA / SQL auth.
+- **`BACKUP` / `RESTORE`**: refused in every session with `Msg 40510`, exactly as
+  in Azure SQL Database in the cloud. A `.bak` is not a migration route into this
+  engine; use SqlPackage with a bacpac or dacpac (see the **azuresql-db-import**
+  skill).
+- **`ALTER DATABASE ... SET RECOVERY`**: refused with `Msg 40517`, which is the
+  other refusal shape. `ALTER DATABASE SET` itself is supported and only this
+  option is refused, so a carried-over configuration script can be half accepted
+  and leave the database in a state nobody intended. Drop the recovery-model step.
 
 ### 8. Verify identity
 
@@ -182,6 +190,7 @@ skill carries the rules the index imposes.
 - Prefer `User Id=` / `Password=` in the .NET-style string. That is house style, not a requirement: `Uid=` / `Pwd=` are valid synonyms.
 - Do not pass the vector dimension as a bind parameter.
 - Do not keep SQL Agent, FILESTREAM, full Service Broker, cross-server distributed transactions, or Windows Auth.
+- Do not carry over a `BACKUP`/`RESTORE` step (`Msg 40510`) or an `ALTER DATABASE ... SET RECOVERY` step (`Msg 40517`).
 
 ## References
 

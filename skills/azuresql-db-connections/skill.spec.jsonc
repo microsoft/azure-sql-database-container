@@ -11,8 +11,7 @@
     "covers": [
       "USE being refused with Msg 40508 locally exactly as in the cloud, so the database is named in the connection string",
       "which transient error numbers this engine actually carries in sys.messages, checked rather than recalled",
-      "which platform dynamic management views this engine exposes, so a local diagnostic is not written against one that is absent",
-      "the transport this engine reports, which decides what a local connection diagnostic can conclude"
+      "sys.dm_db_resource_stats and sys.dm_user_db_resource_governance being absent from this engine, so a local throttling diagnostic written against either does not run"
     ],
     "does_not_cover": [
       "connection pooling and retry with backoff as patterns, which are ordinary driver material",

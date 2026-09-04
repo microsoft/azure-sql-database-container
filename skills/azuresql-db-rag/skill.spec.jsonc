@@ -10,7 +10,7 @@
       "the dimension floor this build enforces and the number it answers with, Msg 42266",
       "the dimension ceiling and the truncation behaviour this build actually has",
       "the vector index being refused against a table under row level security, with Msg 37579",
-      "exact and approximate vector search both building and running on this build, and the database scoped configuration they depend on"
+      "exact and approximate vector search both building and running on this build"
     ],
     "does_not_cover": [
       "chunking strategy, embedding model choice and prompt construction",
