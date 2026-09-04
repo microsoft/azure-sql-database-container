@@ -1,0 +1,63 @@
+{
+  "$schema": "https://github.com/microsoft/azure-sql-skills-lab/spec/schemas/skill.spec.schema.json",
+  "id": "azuresql-db-feedback",
+  "domain": "azure-sql-database-container",
+  "value": ["corrects-a-wrong-assumption", "multi-step-with-silent-failures"],
+  "correction": "Told that something went wrong, an agent says to file an issue and hands the work back to the user, who is the one person in the room without the facts. The agent already holds all of them: which skill it was following, the instruction it followed, what it actually had to do instead, the image tag, the host, the runtime, the failing command and the error text. So the report gets built rather than requested. Three things about building it are not obvious and each one is a real failure. The report goes to one of two different issue templates, and the test that settles which is not what broke but whether the instructions were right: if the skill said the correct thing and the engine still failed, it is a product bug, and if the skill said the wrong thing, said nothing, or was not loaded at all, it is a skill bug, including the case where the task succeeded anyway because the agent worked around the skill. That last case is the one nobody files, and it is the most useful report there is. Everything submitted is world readable, so the SA password, registry credentials, whole connection strings, access tokens and any customer data come out before anything is shown. And a prefilled report has to travel on a full github.com URL: an aka.ms short link drops the entire query string, so every field the agent filled in is lost silently and the user opens an empty form with no indication anything was dropped. Above all, nothing is ever submitted without an explicit yes, the offer is made once, and no is an answer.",
+  "posture": ["read"],
+  "maturity": "draft",
+  "applies_to": ["azure-sql-db-container"],
+  "validation": {
+    "target": "container",
+    "setup": [
+      "network access from the host, for the redirect probe only"
+    ],
+    "assert": [
+      "no issue is created, commented on or closed without an explicit yes from the user",
+      "the full report is shown to the user before anything is submitted, with the blank fields named",
+      "the SA password, registry credentials, whole connection strings and access tokens are absent from every field including logs",
+      "a skill problem uses skill_feedback.yml and a product problem uses bug_report.yml, and never both",
+      "a prefilled report travels on a full github.com URL and never on an aka.ms short link",
+      "a dropdown value is omitted rather than guessed",
+      "nothing already on the known limitations page or already in open issues is filed again"
+    ],
+    "probes": [
+      {
+        "cmd": "sh -c 'curl -fsS -o /dev/null -w \"%{redirect_url}\" \"https://aka.ms/sql-agent-skills-feedback?title=PROBE&labels=PROBE\" | grep -q \"issues/new?template=skill_feedback.yml$\"'",
+        "where": "host",
+        "expect": { "succeeds": true },
+        "why": "The one claim in this skill an engine of any kind can settle, and the reason it is worth a probe is that being wrong about it fails silently: the user opens a form, sees it empty, and has no way to know a filled report was dropped on the way. Measured on 2026-09-04, aka.ms/sql-agent-skills-feedback answers 301 to https://github.com/microsoft/azure-sql-database-container/issues/new?template=skill_feedback.yml, with title and labels gone. The grep anchors on the end of the redirect target, so the probe fails both if a query string survives, which would mean the skill's prohibition is now unnecessary, and if the short link is ever repointed at a different template, which would misroute every report this skill files. It runs on the host because it is a link, not a database: nothing about it involves the engine, and the container has no reason to carry curl."
+      }
+    ]
+  },
+  "triggering": {
+    "explicit": [
+      "Use the azuresql-db-feedback skill",
+      "Report a bug in one of the azuresql-db skills",
+      "File a GitHub issue about the Azure SQL Database container",
+      "Request a feature for the Azure SQL Database container"
+    ],
+    "implicit": [
+      "the skill told my agent the wrong thing, how do I report it",
+      "that did not work, can you tell the team",
+      "this container will not start and I want somebody to look at it",
+      "I want to give feedback on these skills",
+      "you had to work around the instructions to get that done, is that worth reporting",
+      "no skill loaded when it obviously should have"
+    ],
+    "routing": [
+      "turn what just failed into a complete report the maintainers can act on",
+      "decide whether this belongs to the skill or to the product before filing"
+    ],
+    "negative": [
+      "Set up a local PostgreSQL database with docker compose",
+      "Provision an Azure SQL Database in my Azure subscription",
+      "Connect to SQL Server on my company network",
+      "Explain what the container cannot do compared with the cloud service",
+      "Start the Azure SQL Database container and check it is ready",
+      "Open a pull request for the change we just made",
+      "Is there an ARM64 build of this image",
+      "Store embeddings and run a similarity search locally"
+    ]
+  }
+}
