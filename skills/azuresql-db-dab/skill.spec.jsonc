@@ -79,6 +79,23 @@
       }
     ]
   },
+  "value_probe": {
+    "task": "I have a handful of tables in a local Azure SQL Database container and the front end team needs both REST and GraphQL over them this week. What is the least amount of code I can write to get there, and how do I keep the password out of the repo?",
+    "gate": "The answer must reach a configuration driven engine that serves both surfaces from one file with no application code, and must provision the database before that engine is started.",
+    "states": [
+      "the configuration is generated with dab init and tables are exposed with dab add, where the entity name and the source object are two different things",
+      "the connection string reaches the configuration through an @env indirection so no password is written into the file",
+      "the default paths are /api for REST and /graphql for GraphQL, and development host mode enables the friendlier errors and the Swagger surface",
+      "the user database must already exist, created on a master connection, and the connection string needs the trust server certificate setting for the container's self signed certificate",
+      "anonymous:* is unauthenticated create, read, update and delete, so it belongs to local development only"
+    ],
+    "refutes": [
+      "that the only way to serve REST and GraphQL over these tables is a hand written controller layer plus an ORM model per table",
+      "that starting the tool against the container creates or migrates the database, when the engine does not auto create a database on connect and the tool will simply fail to reach one that was never provisioned",
+      "that the Model Context Protocol endpoint this tool publishes from the same configuration is a standalone Microsoft SQL MCP server, rather than a surface this tool provides over the configured entities",
+      "that the engine needs change tracking, a feature flag or any other enablement before it can be served this way, when it is reached over the ordinary protocol with a plain connection string"
+    ]
+  },
   "triggering": {
     "explicit": [
       "Use the azuresql-db-dab skill",

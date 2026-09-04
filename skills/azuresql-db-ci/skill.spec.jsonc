@@ -79,6 +79,23 @@
       }
     ]
   },
+  "value_probe": {
+    "task": "Our integration tests hit a real database instead of mocks. Add a GitHub Actions workflow that stands up the Azure SQL Database container on the runner and runs the test suite against it on every pull request.",
+    "gate": "The answer must gate the test step on the engine actually accepting a login, and must create the application database on a master connection before any test connects to it.",
+    "states": [
+      "the service container runs the Azure SQL Database container image, not mcr.microsoft.com/mssql/server, and the engine reports EngineEdition 5 with Edition 'SQL Azure'",
+      "readiness comes from a health check that runs sqlcmd from /opt/mssql-tools18/bin inside the service container, because the hosted runner ships no SQL client of its own",
+      "a CREATE DATABASE statement runs on a master connection before the first test, and the tests then name the user database in their connection string",
+      "the service needs ACCEPT_EULA and a complex MSSQL_SA_PASSWORD, and the image is x64 only"
+    ],
+    "refutes": [
+      "that the engine creates the database named in the connection string on first connect, so the job can go straight from starting the service to running tests with Database=appdb",
+      "that a service container reported as started means the engine accepts logins, so no readiness gate is needed",
+      "that sqlcmd or the mssql-tools package is present on a GitHub hosted runner and can be called from the health check or a wait loop on the runner",
+      "that mcr.microsoft.com/mssql/server is an equivalent stand-in for this engine in CI",
+      "that leaving the suite pointed at master is harmless, when a suite that quietly runs against master passes and proves nothing about the application database"
+    ]
+  },
   "triggering": {
     "explicit": [
       "Use the azuresql-db-ci skill",

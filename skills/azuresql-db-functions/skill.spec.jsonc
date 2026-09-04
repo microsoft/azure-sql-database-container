@@ -97,6 +97,24 @@
       }
     ]
   },
+  "value_probe": {
+    "task": "I want a function to run automatically whenever a row is inserted or updated in one of my tables, and I need it working locally against my Azure SQL Database container before it ever goes to Azure. Set it up for me.",
+    "gate": "The answer must reach the SQL trigger binding and enable change tracking at both the database scope and the table scope, rather than sending the reader to a cloud only streaming path that cannot fire against a container.",
+    "states": [
+      "change tracking has to be turned on twice, once with ALTER DATABASE and once for each tracked table",
+      "a table with no primary key cannot be tracked, so a perfectly wired function silently never fires",
+      "the binding names its connection setting with the connection-string-setting keyword",
+      "the output binding upserts through MERGE over OPENJSON, so the target table needs a primary key and a database compatibility level of at least 130",
+      "the function is scaffolded from an HTTP template and the SQL bindings are written in by hand afterwards"
+    ],
+    "refutes": [
+      "that func new --template SqlTrigger creates the function, when func templates list advertises the SQL Trigger template and asking for it by name is refused as an unknown template",
+      "that the binding uses the Connection keyword the Storage and Event Hubs bindings use, which resolves nothing here",
+      "that the cloud change streaming path can be configured to fire against a local container, when it is unsupported on the local engine and streams only to a public Azure endpoint",
+      "that enabling change tracking on the database alone is enough, without enabling it per table",
+      "that a table without a primary key will still deliver change events"
+    ]
+  },
   "triggering": {
     "explicit": [
       "Use the azuresql-db-functions skill",

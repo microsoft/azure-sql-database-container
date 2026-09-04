@@ -61,6 +61,23 @@
       }
     ]
   },
+  "value_probe": {
+    "task": "We built this service against the local Azure SQL Database container and we deploy to Azure SQL Database next sprint. What do we have to change in the data access layer, and how much of what we tested locally still counts once it is in Azure?",
+    "gate": "The answer must keep one connection string and one code path across both targets, treat the authentication switch as configuration rather than code, and still require one confirming run against a real Azure SQL Database before calling it ready.",
+    "states": [
+      "the local container is the Azure SQL Database engine, reporting EngineEdition 5 and Edition 'SQL Azure', and it enforces the same statement filter, so USE is refused with Msg 40508 and BACKUP and RESTORE with Msg 40510 in both places",
+      "the application reads one connection string from one environment variable, and only the server, the authentication fields and the TLS posture differ between the two values",
+      "the driver reads the Authentication keyword and acquires a token, so moving from the local SA login to a Microsoft Entra identity changes a string and not a code path",
+      "automated backup, point in time restore, geo replication and elastic pools have no local equivalent, and some platform restrictions the service enforces are not yet enforced by the container"
+    ],
+    "refutes": [
+      "that the cloud target needs a second driver, a separate query set, or a branch on an environment variable in the data layer",
+      "that switching to Microsoft Entra ID requires a different data access code path rather than different connection string fields",
+      "that a green local test run is by itself evidence the application is ready for the service, when something the service refuses can still succeed locally",
+      "that Microsoft Entra ID authentication can be rehearsed end to end against the container, when CREATE USER FROM EXTERNAL PROVIDER on a container with no Microsoft Entra configuration fails with Msg 37525",
+      "that the local container gives you the managed service features around the engine, such as automated backup or point in time restore"
+    ]
+  },
   "triggering": {
     "explicit": [
       "Use the azuresql-db-local-to-cloud skill",
