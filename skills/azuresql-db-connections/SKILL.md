@@ -69,10 +69,6 @@ Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;Tru
 
 ## Pooling: reuse connections, do not reopen per query
 
-A connection pool keeps a set of open connections and hands one back on each `Open()`. Opening
-a pooled connection is cheap; opening a brand-new physical connection per query is not, and it
-exhausts server resources under load.
-
 - Keep pooling **on** (it is on by default in most drivers) and let one pool serve the app.
 - Set a **bounded** `Max Pool Size` (default 100 in .NET) so a spike cannot open unlimited
   connections. Size it to real concurrency, not a guess.
@@ -84,20 +80,19 @@ exhausts server resources under load.
 
 ## Retry: only for transient faults, with backoff
 
-A **transient fault** is a temporary condition (throttling, a brief failover, a dropped idle
-connection) that succeeds on a retry. In Azure SQL these arrive as specific error numbers (for
-example 40501 throttling, 40613 database unavailable, 49918/49919/49920 busy, 4060, 10928,
-10929, 40197, 233, and connection-timeout / broken-pipe socket errors).
+Retry only a transient fault: throttling, a brief failover, a dropped idle connection. In Azure
+SQL these arrive as specific error numbers: 40501 throttling, 40613 database unavailable,
+49918/49919/49920 busy, 4060, 10928, 10929, 40197, 233, plus connection-timeout and broken-pipe
+socket errors.
 
 - Retry **only** transient errors. Retrying a non-transient error (login failure 18456, syntax
   error, constraint violation, permission denied) just fails slower and hides the real bug.
 - Use **exponential backoff** with a cap and a small jitter, and a bounded attempt count (for
   example 5 attempts). Do not hammer a throttled server.
-- Be careful with **non-idempotent writes**. A retry can double-apply an `INSERT` if the first
-  attempt actually committed before the connection dropped. Make writes idempotent (natural or
-  client-generated keys, `MERGE`, or wrap the unit of work in a transaction that a retry can
-  safely re-run as a whole). The built-in EF Core execution strategy handles this for you when
-  work is wrapped in its `Execute`/transaction API.
+- **Non-idempotent writes**: a retry can double-apply an `INSERT` that committed before the
+  connection dropped. Use client-generated keys, `MERGE`, or a transaction the retry re-runs as a
+  whole. EF Core's execution strategy handles this when the work goes through its
+  `Execute`/transaction API.
 - Prefer a framework retry policy over hand-rolled loops where one exists (EF Core
   `EnableRetryOnFailure` for .NET). Hand-roll only for raw drivers.
 
