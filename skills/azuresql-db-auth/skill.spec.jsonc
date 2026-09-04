@@ -1,0 +1,110 @@
+{
+  "$schema": "https://github.com/microsoft/azure-sql-skills-lab/spec/schemas/skill.spec.schema.json",
+  "id": "azuresql-db-auth",
+  "domain": "azure-sql-database-container",
+  "value": [
+    "not-in-training-data",
+    "corrects-a-wrong-assumption"
+  ],
+  "correction": "Two wrong beliefs meet here. The first is that sa is a reasonable identity for an application, because it is the credential the container start recipe hands out and everything works with it. sa is a bootstrap and provisioning login; an application that connects with it holds every permission in the engine, and there is no smaller blast radius left to fall back to when something goes wrong. The second belief is the expensive one, because it is right about the cloud and wrong about the container. In Azure SQL Database a contained database user, CREATE USER ... WITH PASSWORD, is the norm and a server login is the exception. On the container that inverts: the contained user fails, and the recipe that works is a server login on master mapped to a database user in the application database. An agent that carries the cloud pattern here writes a statement the engine refuses and then blames its own syntax. Two more beliefs cost less but cost often: that TrustServerCertificate=true is part of the connection string rather than a local-only concession to a self-signed certificate, so it gets copied to the cloud and quietly turns off certificate validation on a real certificate; and that Active Directory Default is the production Entra setting, when it walks a credential chain that is slower and ambiguous about which identity actually connected, where Active Directory Managed Identity names one.",
+  "posture": [
+    "admin",
+    "provision",
+    "read"
+  ],
+  "maturity": "draft",
+  "applies_to": [
+    "azure-sql-db",
+    "azure-sql-db-container"
+  ],
+  "related": [
+    "azuresql-db-container",
+    "azuresql-db-connections",
+    "azuresql-db-local-to-cloud"
+  ],
+  "validation": {
+    "target": "container",
+    "probes": [
+      {
+        "sql": "SELECT CAST(SERVERPROPERTY('EngineEdition') AS int) AS engine_edition, CAST(SERVERPROPERTY('Edition') AS nvarchar(128)) AS edition;",
+        "expect": {
+          "rows": [
+            [
+              5,
+              "SQL Azure"
+            ]
+          ]
+        },
+        "why": "The self-check the skill puts in front of every other instruction. Engine edition 5 with edition 'SQL Azure' is the Azure SQL Database engine; the SQL Server image mcr.microsoft.com/mssql/server returns different values, so any other answer means the lane ran against the wrong engine and every probe below it is measuring something else."
+      },
+      {
+        "sql": "CREATE USER probe_contained_user WITH PASSWORD = 'An0ther_Str0ng_Passw0rd';",
+        "expect": {
+          "error": 15007
+        },
+        "why": "The headline correction, made executable. The skill states, and marks as container-specific and verified, that a SQL contained user does not work on the container and returns Msg 15007, which is why the local recipe is a server login plus a mapped database user. This is the exact inverse of Azure SQL Database in the cloud, where this same statement is the recommended path, so the day this probe starts succeeding is the day the skill's central instruction should change rather than be defended."
+      },
+      {
+        "sql": "ALTER DATABASE CURRENT SET CONTAINMENT = PARTIAL;",
+        "expect": {
+          "error": 12824
+        },
+        "why": "The obvious repair for the refusal above is to turn containment on, and the skill records that this fails too, with Msg 12824, contained database authentication must be configured. Without this probe an agent reading only the first refusal will spend its next step trying exactly this statement. CURRENT is used so the claim is measured against the scratch database the lane holds rather than a database named in advance."
+      },
+      {
+        "sql": "CREATE USER [probe-app@contoso.com] FROM EXTERNAL PROVIDER;",
+        "expect": {
+          "error": 40530
+        },
+        "why": "Measured in a sibling project: on a container started with no MSSQL_AAD_* configuration, CREATE USER ... FROM EXTERNAL PROVIDER is refused with Msg 40530, and the message text blames the batch, which is not the cause. The cause is that Microsoft Entra was never configured on the engine. That mismatch between the number and its text is precisely why this deserves a probe: an agent that reads the text edits its statement, and the statement was never the problem. This probe assumes the lane's container carries no Entra configuration. If the lane ever starts one with the MSSQL_AAD_* variables set, this probe measures a different thing and must be rewritten, not deleted."
+      },
+      {
+        "sql": "CREATE USER probe_app_user WITHOUT LOGIN;\nALTER ROLE db_datareader ADD MEMBER probe_app_user;\nALTER ROLE db_datawriter ADD MEMBER probe_app_user;\nSELECT IS_ROLEMEMBER('db_datareader', 'probe_app_user') AS reader, IS_ROLEMEMBER('db_datawriter', 'probe_app_user') AS writer, IS_ROLEMEMBER('db_owner', 'probe_app_user') AS owner;",
+        "expect": {
+          "rows": [
+            [
+              1,
+              1,
+              0
+            ]
+          ]
+        },
+        "why": "The database half of the least-privilege recipe: the fixed roles the skill grants exist on this engine, ALTER ROLE ... ADD MEMBER is the statement that grants them, and membership of db_datareader and db_datawriter does not drag db_owner along with it. The server half, CREATE LOGIN on a master connection, cannot be probed from a scratch user database, so WITHOUT LOGIN stands in for the identity while the grants themselves are measured exactly as the skill writes them. A zero in either of the first two columns means the recipe no longer produces a usable application user; a one in the third means it produces an over-privileged one, which is the failure the skill exists to prevent."
+      },
+      {
+        "sql": "SELECT CAST(encrypt_option AS nvarchar(10)) AS encrypt_option FROM sys.dm_exec_connections WHERE session_id = @@SPID;",
+        "expect": {
+          "rows": [
+            [
+              "TRUE"
+            ]
+          ]
+        },
+        "why": "The skill says Encrypt=true belongs on every connection string in both environments, and that TrustServerCertificate=true is a local-only concession to the container's self-signed certificate, never a substitute for encryption and never used against the cloud. This asserts that the session actually reached the engine over an encrypted channel. A FALSE here is a finding about the lane's own client configuration rather than about the engine, and it would mean the encryption half of the skill's advice is not being exercised at all."
+      }
+    ]
+  },
+  "triggering": {
+    "explicit": [
+      "Create a least-privilege database user so my app stops connecting as sa",
+      "Which authentication method should my app use against Azure SQL Database",
+      "Set up managed identity authentication for my app",
+      "Grant only the roles my app needs on appdb",
+      "Where should I keep the connection string so it is not in source control"
+    ],
+    "implicit": [
+      "My CREATE USER with a password fails on the local container but the same statement works in Azure",
+      "The connection string is sitting in appsettings.json and I am about to commit it",
+      "Security review says the application must not be an administrator on the database",
+      "Do I need TrustServerCertificate when I point this at the cloud",
+      "Token acquisition is slow on the first request in production"
+    ],
+    "negative": [
+      "Add retry logic for transient connection faults",
+      "Start the container and give me a connection string for local development",
+      "Load this bacpac into the local database",
+      "Write a seed script with a thousand rows of sample data",
+      "Speed up this query that scans the whole orders table"
+    ]
+  }
+}

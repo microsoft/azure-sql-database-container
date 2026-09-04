@@ -1,0 +1,112 @@
+{
+  "$schema": "https://github.com/microsoft/azure-sql-skills-lab/spec/schemas/skill.spec.schema.json",
+  "id": "azuresql-db-testing",
+  "domain": "azure-sql-database-container",
+  "value": [
+    "not-in-training-data",
+    "corrects-a-wrong-assumption"
+  ],
+  "correction": "Asked for integration tests against a real database, an agent reaches for the Testcontainers MsSql module, because that is the preset every example uses. The preset pulls mcr.microsoft.com/mssql/server, which is SQL Server and not the engine the application will run on, so the suite proves the code works against a different product. The Azure SQL Database container has no preset: it is started from the generic container API with the image, ACCEPT_EULA and a complex password set by hand. Three habits then break the fixture in ways that look like flaky tests. Waiting for the container instead of the engine, because Start returns while the engine is still initialising and a fixed sleep is a guess that gets slower or wrong on someone else's laptop. Assuming a database exists, because the engine creates none, so appdb has to be created on a master connection after the wait passes and before any test connects. And hardcoding host port 1433, when the whole point of an ephemeral engine is a random mapped port that lets suites run in parallel. USE is refused in a user-database session, so the fixture selects the database in the connection string, and the container is disposed when the fixture ends or the engines leak one per run.",
+  "posture": [
+    "provision",
+    "execute",
+    "read"
+  ],
+  "maturity": "draft",
+  "applies_to": [
+    "azure-sql-db-container"
+  ],
+  "related": [
+    "azuresql-db-container",
+    "azuresql-db-ci",
+    "azuresql-db-seed"
+  ],
+  "validation": {
+    "target": "container",
+    "probes": [
+      {
+        "sql": "SELECT CAST(SERVERPROPERTY('EngineEdition') AS int) AS engine_edition, CAST(SERVERPROPERTY('Edition') AS nvarchar(128)) AS edition;",
+        "expect": {
+          "rows": [
+            [
+              5,
+              "SQL Azure"
+            ]
+          ]
+        },
+        "why": "The self-check the skill puts in front of every other instruction. Engine edition 5 with edition 'SQL Azure' is the Azure SQL Database engine; the SQL Server image mcr.microsoft.com/mssql/server returns different values, so any other answer means the lane ran against the wrong engine and every probe below it is measuring something else."
+      },
+      {
+        "sql": "USE master;",
+        "expect": {
+          "error": 40508
+        },
+        "why": "The skill states that in a user-database session USE returns Msg 40508, exactly as in Azure SQL Database in the cloud, and that the fix is always to select the database in the connection string. Every probe here runs against a scratch user database, which is the session where the Azure statement filter is enforced. If this ever succeeds, the filter is not being applied to the lane's session and the skill's central connection-model rule has stopped being true locally."
+      },
+      {
+        "sql": "SELECT local_tcp_port FROM sys.dm_exec_connections WHERE session_id = @@SPID;",
+        "expect": {
+          "rows": [
+            [
+              1433
+            ]
+          ]
+        },
+        "why": "Every recipe binds container port 1433 to a random host port and builds the connection string from the mapped port it reads back. That mapping only works because the engine inside the container listens on 1433, which is the one end of it a test author cannot see and never checks. This asserts it from inside the session. If the engine ever listened elsewhere, every fixture in the reference would map a port with nothing behind it and the failure would look like a readiness problem."
+      },
+      {
+        "sql": "SELECT DB_ID(N'probe_testing_database_nobody_created') AS db_id;",
+        "expect": {
+          "rows": [
+            [
+              null
+            ]
+          ]
+        },
+        "why": "Fact two of the four the skill says bite every test setup: Testcontainers gives you a container, not a database, and this engine creates none on connect. A name no recipe ever creates must resolve to nothing. This is a weak form of the claim, since the strong form is that connecting to a missing database fails, which cannot be expressed from inside an established session. A non-null here would mean something in the lane is creating databases nobody asked for, which is worth knowing on its own."
+      },
+      {
+        "sql": "SELECT name FROM sys.types WHERE name = 'vector';",
+        "expect": {
+          "rows": [
+            [
+              "vector"
+            ]
+          ]
+        },
+        "why": "The skill tells test authors that code under test using embeddings can be exercised against this engine because the native VECTOR(n) type is present, with the dimension written as a literal and never as a bind parameter. If the type were absent, that section would be sending people to write fixtures that cannot compile. The parameterised-dimension failure it also describes is a client-side parse error with no engine error number attached, so it is not made executable here."
+      },
+      {
+        "cmd": "/opt/mssql-tools18/bin/sqlcmd -?",
+        "where": "container",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "The .NET recipe's wait strategy is UntilCommandIsCompleted against this exact absolute path inside the container, and the other recipes wait on the same tool. A wait strategy pointed at a path that does not exist does not fail quickly, it hangs until the test host's timeout, which reads as a slow or flaky engine rather than as a wrong path. Where this runs is the claim: the image ships sqlcmd there, and -? prints usage without needing an engine."
+      }
+    ]
+  },
+  "triggering": {
+    "explicit": [
+      "Write integration tests that run against a real database container",
+      "Set up Testcontainers for my test suite",
+      "Give me a pytest fixture that starts a database and tears it down",
+      "Add an xUnit fixture with an ephemeral database per test class",
+      "Spin up a database from code for these tests"
+    ],
+    "implicit": [
+      "My tests connect before the database is ready and fail about a third of the time",
+      "I want each test class to get its own clean database instead of sharing one",
+      "Running two test suites at once makes both fail on the port",
+      "The tests pass against the container in CI and I am not sure it is the same engine as production",
+      "How do I stop mocking the database in these tests"
+    ],
+    "negative": [
+      "Write a GitHub Actions workflow that runs my tests against a database service container",
+      "Seed the development database with sample data",
+      "Import a bacpac into the local container",
+      "Create a least-privilege user for the application",
+      "Add retry logic for transient connection faults"
+    ]
+  }
+}
