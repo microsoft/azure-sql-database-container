@@ -137,6 +137,11 @@ Flag and fix every hit. Full table in [references/sql-server-vs-azure-feature-ma
 - **Full Service Broker** cross-instance messaging: not supported.
 - **Cross-server distributed transactions** (MS DTC, linked servers): not supported.
 - **Windows Auth / NTLM / Integrated Security**: not supported; use SA / SQL auth.
+- **Instance-level tuning with `sp_configure`**: the procedure is **absent**, not
+  blocked. Calling it returns `Msg 2812` ("Could not find stored procedure
+  'sp_configure'"), which is a missing object rather than a refusal, so there is no
+  permission to grant and no flag to unblock. Delete the inherited tuning step; it
+  has no translation on this engine.
 
 ### 8. Verify identity
 
@@ -180,6 +185,7 @@ skill carries the rules the index imposes.
 - Prefer `User Id=` / `Password=` in the .NET-style string. That is house style, not a requirement: `Uid=` / `Pwd=` are valid synonyms.
 - Do not pass the vector dimension as a bind parameter.
 - Do not keep SQL Agent, FILESTREAM, full Service Broker, cross-server distributed transactions, or Windows Auth.
+- Do not go looking for a permission or a flag that makes `sp_configure` run. `Msg 2812` says the procedure is not there, so there is nothing to grant.
 
 ## References
 
