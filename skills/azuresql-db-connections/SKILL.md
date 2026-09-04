@@ -31,6 +31,13 @@ Verify identity once running: `SELECT SERVERPROPERTY('EngineEdition')` returns *
 `SERVERPROPERTY('Edition')` returns **'SQL Azure'**. For full engine detail see the
 **azuresql-db-container** skill.
 
+The container does not carry the throttling telemetry the cloud does, so do not write a local
+diagnostic against it. `sys.dm_db_resource_stats` and `sys.dm_user_db_resource_governance` are
+**absent from this engine**: `OBJECT_ID` returns `NULL` for both, and a query against either
+does not run at all here. Their absence is not evidence that the cloud does not throttle. It is
+the reason the retry policy below has to be built without being able to provoke the fault
+locally.
+
 ## The engine and the connection contract
 
 - Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest` (x64 /
@@ -134,6 +141,7 @@ driver-specific keywords, not by inventing new env vars.
   transaction).
 - Do not set an unbounded pool; do not open a new connection per query instead of pooling.
 - Do not invent extra env vars; keep the single `SQL_CONNECTION_STRING` contract.
+- Do not write a local throttling diagnostic against `sys.dm_db_resource_stats` or `sys.dm_user_db_resource_governance`; neither view exists on this engine.
 - Do not use the `mcr.microsoft.com/mssql/server` SQL Server image, and do not call a non-x64
   host "supported".
 

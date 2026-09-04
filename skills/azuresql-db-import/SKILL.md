@@ -31,6 +31,10 @@ and use this instead.
 - On a non-x64 host, add `--platform linux/amd64`.
 - The engine does **NOT** auto-create databases. You must `CREATE DATABASE appdb`
   on a **master** connection before importing into it.
+- **There is no restore path.** `BACKUP` and `RESTORE` are refused in every
+  session with `Msg 40510`, exactly as in Azure SQL Database in the cloud, so a
+  `.bak` file is not a way in no matter where it is copied. SqlPackage with a
+  bacpac or dacpac is the import path, which is what the rest of this skill does.
 - Avoid `USE` to switch databases. In a user-database session (the
   Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly as
   in Azure SQL Database in the cloud. A `master` connection is a provisioning
@@ -143,6 +147,7 @@ Read SqlPackage output for skipped/blocking items. See
 ## Do not
 
 - Do not use the `mcr.microsoft.com/mssql/server` SQL Server image.
+- Do not reach for `RESTORE DATABASE ... FROM DISK`; it is refused with `Msg 40510` and copying the `.bak` into the container does not change that.
 - Do not import into `master`; import into the provisioned user database.
 - Do not put `USE appdb` in any pre/post script; select the DB in the connection
   string instead.
