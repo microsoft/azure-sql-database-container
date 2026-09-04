@@ -6,6 +6,23 @@
     "corrects-a-wrong-assumption"
   ],
   "correction": "Asked for integration tests against a real database, an agent reaches for the Testcontainers MsSql module, because that is the preset every example uses. The preset pulls mcr.microsoft.com/mssql/server, which is SQL Server and not the engine the application will run on, so the suite proves the code works against a different product. The Azure SQL Database container has no preset: it is started from the generic container API with the image, ACCEPT_EULA and a complex password set by hand. Three habits then break the fixture in ways that look like flaky tests. Waiting for the container instead of the engine, because Start returns while the engine is still initialising and a fixed sleep is a guess that gets slower or wrong on someone else's laptop. Assuming a database exists, because the engine creates none, so appdb has to be created on a master connection after the wait passes and before any test connects. And hardcoding host port 1433, when the whole point of an ephemeral engine is a random mapped port that lets suites run in parallel. USE is refused in a user-database session, so the fixture selects the database in the connection string, and the container is disposed when the fixture ends or the engines leak one per run.",
+  "value_declaration": {
+    "rationale": "This skill's kernel is that the preset every example uses pulls the wrong product, and there is no preset for the right one. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach test framework choice, fixture lifecycle and assertion style, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted.",
+    "covers": [
+      "there being no Testcontainers preset for this image, so it is started from the generic container API with the image, ACCEPT_EULA and a complex password set by hand",
+      "the container being ready before the engine is, so the fixture has to poll the engine with a real query rather than sleep",
+      "the engine not creating a test database on connect, so the fixture creates it on a master connection first",
+      "USE being refused with Msg 40508",
+      "the native vector type being present, so a fixture can exercise it on this build"
+    ],
+    "does_not_cover": [
+      "test framework choice, fixture lifecycle and assertion style",
+      "the general argument for integration tests against a real database"
+    ],
+    "decided_by": "Carlos Robles",
+    "decided_on": "2026-09-04",
+    "expires_when": "the-container-reaches-public-preview"
+  },
   "posture": [
     "provision",
     "execute",
