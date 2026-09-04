@@ -111,8 +111,10 @@ docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourSt
 
 Native `VECTOR(n)` column type and `VECTOR_DISTANCE('cosine', a, b)`. Insert with
 `CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n))` where **n is a LITERAL, never a bind parameter** (a parameter dimension
-fails with "Incorrect syntax near '@P3'"). `CREATE VECTOR INDEX` (DiskANN) is still in
-development; use full-scan top-k for now.
+fails with "Incorrect syntax near '@P3'"). `CREATE VECTOR INDEX` (DiskANN) **works on this image**, measured, and the Known
+limitations page has not caught up. It needs `SET QUOTED_IDENTIFIER ON` and at least 100 rows with
+non-null vectors (`Msg 42266` below that). Full-scan top-k stays exact and stays the right choice
+for a small table. The `azuresql-db-rag` skill carries the rules the index imposes.
 
 ## Validation rules
 

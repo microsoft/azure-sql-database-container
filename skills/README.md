@@ -24,7 +24,7 @@ EngineEdition `5` and Edition `'SQL Azure'` are the cloud engine's fingerprint. 
 | **azuresql-db-local-to-cloud** | Take a database that works against the local engine and move it to Azure SQL Database in the cloud. Because it is the same engine, parity is the default, not a porting exercise. |
 | **azuresql-db-schema-migration** | Apply and version schema changes against the engine: idempotent DDL, ordered migration scripts, run against `appdb` (never `master`). |
 | **azuresql-db-import** | Load data into `appdb` after provisioning: bulk and script-based import. Does **not** rely on auto-run init directories (that convention is not honored here). |
-| **azuresql-db-rag** | Build retrieval-augmented generation on the engine's native `VECTOR(n)` type and `VECTOR_DISTANCE('cosine', a, b)`, using full-scan top-k while DiskANN vector indexing is still in development. |
+| **azuresql-db-rag** | Build retrieval-augmented generation on the engine's native `VECTOR(n)` type and `VECTOR_DISTANCE('cosine', a, b)`, using full-scan top-k for a small corpus and a DiskANN vector index once a full scan starts to hurt. |
 | **azuresql-db-ci** | Run the engine in continuous integration: ephemeral container, ready-wait, provision, seed, test, tear down. Fails closed on the wrong image. |
 | **azuresql-db-sidecar** | Run the engine as a sidecar alongside an app (compose-style), with `platform: linux/amd64` on non-x64 hosts and a single `SQL_CONNECTION_STRING` contract. |
 | **azuresql-db-scaffold** | Scaffold a new app wired to the engine: connection string via one `SQL_CONNECTION_STRING` env var, provisioning step, and seed step in the correct order. |
@@ -281,7 +281,7 @@ House style spells the keywords `User Id=` / `Password=` / `Database=`, so every
 
 ### Vectors
 
-Native `VECTOR(n)` column type and `VECTOR_DISTANCE('cosine', a, b)`. Insert with `CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n))` where **n is a literal, never a bind parameter** (a parameter dimension fails with "Incorrect syntax near '@P3'"). The inner `CAST(? AS NVARCHAR(MAX))` is required because a real embedding's JSON string (~16 KB for 768 dims) exceeds the driver's 4000-char threshold and is otherwise sent as ntext, which the engine rejects ("Explicit conversion from data type ntext to vector is not allowed (529)"). `CREATE VECTOR INDEX` (DiskANN) is still in development; use full-scan top-k for now.
+Native `VECTOR(n)` column type and `VECTOR_DISTANCE('cosine', a, b)`. Insert with `CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n))` where **n is a literal, never a bind parameter** (a parameter dimension fails with "Incorrect syntax near '@P3'"). The inner `CAST(? AS NVARCHAR(MAX))` is required because a real embedding's JSON string (~16 KB for 768 dims) exceeds the driver's 4000-char threshold and is otherwise sent as ntext, which the engine rejects ("Explicit conversion from data type ntext to vector is not allowed (529)"). `CREATE VECTOR INDEX` (DiskANN) **works on this image**, measured, and the Known limitations page has not caught up. It needs `SET QUOTED_IDENTIFIER ON` and at least 100 rows with non-null vectors (`Msg 42266` below that). Full-scan top-k stays exact and stays the right choice for a small table. The `azuresql-db-rag` skill carries the rules the index imposes.
 
 ### Canonical start recipe
 

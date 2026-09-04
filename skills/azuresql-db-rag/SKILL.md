@@ -10,7 +10,7 @@ description: >-
   store when the data already lives in (or can live in) Azure SQL. Covers the
   VECTOR(n) column type, inserting embeddings with CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n)) where the
   dimension is a literal, a pluggable embed() so only the endpoint changes for
-  cloud, and the honest current state of CREATE VECTOR INDEX. Provisions appdb on
+  cloud, and a working CREATE VECTOR INDEX with the two errors that block it. Provisions appdb on
   master first so every script runs on a fresh container.
 ---
 
@@ -186,14 +186,136 @@ with pyodbc.connect(CONN) as conn:
 For the full RAG loop, glue these retrieved rows into your prompt as context.
 That LLM call is separate from this skill.
 
-## Indexing: honest current state
+## Indexing: measured current state
 
-`CREATE VECTOR INDEX` (DiskANN approximate nearest neighbor) is **still in
-development** in this preview. Do not rely on it yet. For now, use the
-**full-scan top-k** shown above: `ORDER BY VECTOR_DISTANCE(...)` over the whole
-table. This is exact and correct; it scans every row, so it is fine for
-thousands-to-tens-of-thousands of rows. When DiskANN ships, the query shape stays
-the same; you just add the index.
+`CREATE VECTOR INDEX` (DiskANN approximate nearest neighbor) **works on this
+image.** Measured on 2026-08-29 against `12.0.2000.8`, `EngineEdition` 5: an
+index over 2000 rows of `VECTOR(3)` built in **478 ms**, appears in
+`sys.indexes` with `type_desc` of `VECTOR`, and `vector_search(...)` returns
+ranked results against it.
+
+```sql
+SET QUOTED_IDENTIFIER ON;   -- required, see below
+CREATE VECTOR INDEX vi_docs ON dbo.docs(v) WITH (METRIC = 'cosine', TYPE = 'diskann');
+```
+
+**Two things will stop you, and neither error says what is wrong.**
+
+`SET QUOTED_IDENTIFIER ON` is required, and it is off by default in a `sqlcmd`
+session. Without it the statement fails with:
+
+```
+Msg 1934: CREATE VECTOR INDEX failed because the following SET options have
+incorrect settings: 'QUOTED_IDENTIFIER'. Verify that SET options are correct for
+use with indexed views and/or indexes on computed columns and/or filtered
+indexes and/or query notifications and/or XML data type methods and/or spatial
+index operations.
+```
+
+Nothing in that message mentions the session setting that actually caused it, and
+everything it does mention is irrelevant here.
+
+Second, `vector_search(...)` no longer accepts an explicit `TOP_N` once the index
+is built. Passing it fails with `Msg 42274, Vector search with newer index
+version does not support explicit TOP_N parameter`. Use `SELECT TOP (k)` and
+`ORDER BY s.distance` instead.
+
+### It needs 100 rows, and NULLs do not count
+
+Measured on 2026-08-31, walking the boundary:
+
+| Rows with a vector | Result |
+|---|---|
+| 99 | `Msg 42266` refused |
+| 100 | index created |
+| 120 rows, 60 of them NULL | `Msg 42266` refused |
+
+```
+Msg 42266: Cannot create a vector index. The table contains only 50 rows with
+non-null vectors, but at least 100 are required for vector index creation.
+```
+
+**This message is good, and worth saying so**, because the other two on this page
+are not. It names the rule, the actual count, and the column condition. A reader
+who hits it needs nothing else. Note the wording: **rows with non-null vectors**,
+not rows. A table of 120 rows where 60 have no embedding yet is refused.
+
+### `TRUNCATE TABLE` is refused while the index exists
+
+```
+Msg 42232: TRUNCATE TABLE statement failed because table 'd' has a vector index on it.
+```
+
+Measured 2026-08-31. To empty the table: drop the index, truncate, reload at least
+100 rows, recreate the index. `DELETE FROM` works and is not affected.
+
+**`DROP VECTOR INDEX` is not a statement.** It fails with `Msg 102, Incorrect
+syntax near 'VECTOR'`. Use `DROP INDEX vi_name ON dbo.table`.
+
+`INSERT`, `UPDATE` and `DELETE` all work with the index in place, measured. Older
+vector indexes made the table read only; this image does not, and Microsoft Learn
+describes the same full DML support for latest-version indexes.
+
+### The index and a security policy cannot share a table here
+
+This is the expensive one for RAG, and it is not on any Microsoft Learn
+limitations list. Measured on the container, in **both** orders:
+
+| Order | Statement | Result |
+|---|---|---|
+| Index first | `CREATE SECURITY POLICY ... ADD FILTER PREDICATE ... ON dbo.chunks` | `Msg 37579` |
+| Policy first | `CREATE VECTOR INDEX ... ON dbo.chunks(emb)` | `Msg 42244` |
+
+```
+Msg 37579: The security policy 'p_chunks' cannot reference tables with vector indexes.
+Table 'dbo.chunks' has a vector index.
+
+Msg 42244: A vector index cannot be created on tables with security policies.
+Table 'dbo.chunks' has security policy 'p_chunks'.
+```
+
+**The documentation and the engine disagree here, and the documentation is
+silent rather than wrong.** As of 2026-09-03 the `CREATE VECTOR INDEX`
+limitations list names partitioning, the clustered primary key, replication,
+`TRUNCATE TABLE` and data-tier package import, and the `vector` type's
+limitations page names constraints, indexes, ledger tables and Always Encrypted.
+Neither mentions security policies. This pair is a measurement, not a citation.
+
+Why it matters for retrieval: a chunk table is a **second copy** of the source
+text, so the row-level security policy that protects the original table does not
+reach it. If the chunk table carries a vector index, no policy can be put on it
+at all, and the tenant filter in the retrieval query's `WHERE` clause is the
+entire boundary. That boundary is held up by a test rather than by the engine, so
+write the test: run the retrieval with the filter and without it and require
+different row counts.
+
+Three ways to live with it, cheapest first:
+
+1. Keep the tenant filter in the query and wrap the test above around it. That
+   test is security code now.
+2. Drop the vector index on the tenant-scoped table. Exact search over
+   `VECTOR_DISTANCE` still works, and a policy can then be created.
+3. Split the table: the vector column and its index on a table with no policy,
+   the chunk text and tenant column on a policy-bearing table joined back.
+
+If you are prototyping locally for the cloud, note this is a **parity gap**, not
+a design rule. The two coexist on Azure SQL Database. So the isolation control is
+exactly the part of the design that cannot be rehearsed on the container beside
+the index it will meet in production. Rehearse the predicate unindexed locally,
+and run the isolation test again on the cloud database once the index exists.
+
+### The dimension ceiling decides the embedding model, before any of this
+
+A `vector(n)` column tops out at **1998 dimensions**, which Microsoft Learn states
+and the engine enforces: `vector(1999)` is refused with `Msg 2717, The size (1999)
+given to the column 'v' exceeds the maximum allowed (1998)`. A 3072-dimension
+model does not fit and no index setting changes that. The dimension also cannot be
+widened later: `ALTER COLUMN` cannot change it even on an empty table, so the fix
+is a second column and a re-embed. Pick the dimension budget before the schema.
+
+Full-scan top-k with `ORDER BY VECTOR_DISTANCE(...)` is still exact and still
+correct, and it remains the right choice for small tables. The index is the
+choice once the table is large enough for a full scan to hurt.
 
 ## Validation rules
 
@@ -218,7 +340,13 @@ the same; you just add the index.
   session where the Azure statement filter is not enforced, so `USE` appears to work there, but `master` is for provisioning
   only, not application work. Always select the target database in the connection
   string (`Database=appdb`, or `-d appdb` for sqlcmd).
-- Do not rely on `CREATE VECTOR INDEX` yet; use full-scan top-k.
+- Do not run `CREATE VECTOR INDEX` without `SET QUOTED_IDENTIFIER ON`; the error it raises
+  names indexed views and spatial indexes and never mentions the setting.
+- Do not plan a vector index and a security policy on the same table on the container.
+  Both orders are refused, `Msg 37579` and `Msg 42244`, and neither is documented. If the
+  chunk table needs per-tenant filtering, decide that before you decide to index it.
+- Do not declare `VECTOR(3072)`. The ceiling is 1998 (`Msg 2717` above it) and the
+  dimension cannot be widened later, so the fix belongs at embedding time.
 - Do not expect `/docker-entrypoint-initdb.d/*.sql` to auto-run; seed by running
   `sqlcmd -d appdb -i seed.sql` after provisioning appdb.
 - Do not call a non-x64 host "supported"; just add `--platform linux/amd64`

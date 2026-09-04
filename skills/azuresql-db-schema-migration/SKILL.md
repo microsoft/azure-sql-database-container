@@ -140,7 +140,22 @@ When inserting via `CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n))`, `n` must be a
 literal, never a bind parameter (a parameter dimension fails with "Incorrect
 syntax near '@P3'"); the inner `NVARCHAR(MAX)` cast keeps a real embedding's
 JSON from being sent as ntext, which the engine rejects (error 529).
-`CREATE VECTOR INDEX` (DiskANN) is still in development; use full-scan top-k for now.
+`CREATE VECTOR INDEX` (DiskANN) **works on this image**, measured, and the Known
+limitations page has not caught up. Three things matter in a migration:
+
+- It needs `SET QUOTED_IDENTIFIER ON` in the session running the DDL, and it refuses
+  to build on fewer than 100 rows with non-null vectors (`Msg 42266`). So the index
+  belongs in a migration step that runs **after** the corpus is loaded, not beside the
+  `CREATE TABLE`.
+- `TRUNCATE TABLE` is refused while the index exists (`Msg 42232`). A migration that
+  reloads a table has to drop the index first, and `DROP VECTOR INDEX` is not a
+  statement: use `DROP INDEX name ON dbo.table`.
+- Microsoft Learn documents that a vector index cannot be carried through a data-tier
+  package import, because the import creates the schema before loading rows and the
+  index then hits the 100-row minimum. Drop vector indexes before exporting and
+  recreate them after importing.
+
+Full-scan top-k stays exact and stays the right choice for a small table.
 
 ## Seeding after migration
 

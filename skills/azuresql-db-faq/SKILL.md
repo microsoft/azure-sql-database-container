@@ -36,9 +36,10 @@ managed cloud service, and it is not SQL Server. Sort almost any
    SQL Database either): SQL Agent jobs, FILESTREAM / FileTable, full cross-instance
    Service Broker, linked servers, cross-server distributed transactions, Windows
    Authentication / NTLM.
-4. **In-progress in this preview -> works with a caveat:** `CREATE VECTOR INDEX`
-   DDL, the VS Code MSSQL extension UI and SSMS, and full PaaS restriction
-   enforcement are still being completed.
+4. **In-progress in this preview -> works with a caveat:** the VS Code MSSQL
+   extension UI and SSMS, and full PaaS restriction enforcement, are still being
+   completed. `CREATE VECTOR INDEX` used to belong here and no longer does: it
+   works, and the Known limitations page has not caught up. See below.
 
 ## Most-asked questions (quick answers)
 
@@ -47,7 +48,7 @@ managed cloud service, and it is not SQL Server. Sort almost any
 - **"Why does `USE otherdb` fail with Msg 40508?"** Because a connection to a user database is an Azure-faithful session that enforces the same restriction as Azure SQL Database in the cloud. Select the database in the connection string (`Database=appdb`), do not switch with `USE`. (`USE` "works" only on a `master` connection, which is a provisioning session.)
 - **"Why does connecting fail until I create the database?"** The engine does **not** auto-create databases on connect. Provision once on a `master` connection (`CREATE DATABASE appdb`), then connect with `Database=appdb`.
 - **"Is a non-x64 host supported? / Is there an ARM64 build?"** The image is x64 only; there is no native ARM64 build. On an ARM64 host it runs under emulation: add `--platform linux/amd64` (Docker) or `platform: linux/amd64` (compose). Say "runs under emulation", never "ARM64 is supported", and do not promise a native build or a date. If the user wants one, point them at https://aka.ms/azuresqldb-container-feature-request.
-- **"Why can't I `CREATE VECTOR INDEX`?"** That DDL is still in development. The `VECTOR` type and `VECTOR_DISTANCE` work today; use a full-scan top-k query for now (fine for prototype-sized corpora).
+- **"Why can't I `CREATE VECTOR INDEX`?"** You probably can, and this is a place where the documentation and the engine disagree. The Known limitations page still lists vector index DDL as an active issue; measured on this image, the DiskANN index builds and `VECTOR_SEARCH` returns ranked results against it. Two things stop the statement: `SET QUOTED_IDENTIFIER ON` is required and is off by default in `sqlcmd` (without it, **Msg 1934**, whose text never names the setting), and the table needs at least **100 rows with non-null vectors** (below that, **Msg 42266**). Once the index exists, `TRUNCATE TABLE` on that table is refused (**Msg 42232**) and `DROP VECTOR INDEX` is not a statement (use `DROP INDEX name ON dbo.table`). Full-scan top-k stays exact and stays the right choice for a small table. Full detail: the `azuresql-db-rag` skill.
 - **"Is Microsoft Entra ID (Azure AD) authentication supported?"** Yes. Configure it with `MSSQL_AAD_CLIENT_ID`, `MSSQL_AAD_PRIMARY_TENANT`, and `MSSQL_AAD_CERTIFICATE_FILE_PATH` plus a mounted `.pfx` (empty export password). Optionally set `MSSQL_AAD_SERVER_ADMIN_NAME`, `MSSQL_AAD_SERVER_ADMIN_TYPE` (`0` = user, `1` = group), and `MSSQL_AAD_SERVER_ADMIN_SID` to bootstrap an Entra server admin at start. SQL auth (`sa`) remains the simple local default. Full recipe: the `azuresql-db-container` skill (`references/entra-auth.md`). Also see [Getting started: Microsoft Entra ID authentication](https://microsoft.github.io/azure-sql-database-container/getting-started.html#microsoft-entra-id-authentication).
 - **"Why does SSMS / the MSSQL extension throw errors?"** Graphical tooling is not yet 100% compatible; it is being fixed. Use `sqlcmd` or a driver, which work today. The MSSQL extension's GitHub Copilot integration also works (https://aka.ms/vscode-mssql-copilot-docs).
 - **"Why isn't the image on Docker Hub / MCR?"** This is a container-only Private Preview; the image is in a private registry with shared pull-only credentials provided when you sign up for the Private Preview at https://aka.ms/sqldbcontainerpreview-signup (they may rotate).
