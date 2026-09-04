@@ -61,9 +61,22 @@ current limitation. Public Preview plans a default startup database (for example
 
 ## Vectors / AI
 
-**Why can't I `CREATE VECTOR INDEX`?** The vector index DDL is still in development.
-The `VECTOR(n)` type and `VECTOR_DISTANCE('cosine', ...)` work today; run a full-scan
-top-k query for now, which is fine for prototype-sized corpora.
+**Why can't I `CREATE VECTOR INDEX`?** You probably can. The Known limitations page
+still lists vector index DDL as an active issue, and the engine disagrees: measured on
+this image, the DiskANN index builds and `VECTOR_SEARCH` returns ranked results against
+it. Say so, and give the reader the two things that actually stop the statement:
+
+1. `SET QUOTED_IDENTIFIER ON` is required and is off by default in a `sqlcmd` session.
+   Without it the statement fails with `Msg 1934`, whose text lists indexed views,
+   computed columns, filtered indexes, query notifications, XML methods and spatial
+   indexes, and never names the session setting that caused it.
+2. The table needs at least **100 rows with non-null vectors**. Below that it is
+   `Msg 42266`, which does name the rule and the actual count.
+
+Once the index exists, `TRUNCATE TABLE` on that table is refused (`Msg 42232`), and
+`DROP VECTOR INDEX` is not a statement (use `DROP INDEX name ON dbo.table`). Full-scan
+top-k with `ORDER BY VECTOR_DISTANCE(...)` stays exact and stays the right choice for a
+small table. The `azuresql-db-rag` skill has the full list.
 
 **Why does my embedding insert fail with "ntext to vector is not allowed (529)"?**
 A long JSON embedding bound as a parameter is sent as ntext. Cast it to NVARCHAR(MAX)

@@ -37,7 +37,7 @@ The scenario prompts below can be run as written, or replaced with the correspon
 
 - [ ] Uses the native VECTOR(n) type and VECTOR_DISTANCE, not an external vector store (pgvector, FAISS, Chroma, Pinecone) when the data lives in SQL
 - [ ] Insert pattern uses the documented double CAST (CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n))) with a literal dimension
-- [ ] Does not rely on CREATE VECTOR INDEX; uses full-scan top-k as documented while the index is in development
+- [ ] Treats CREATE VECTOR INDEX as working: does not repeat the "still in development" claim, and if it creates one, sets QUOTED_IDENTIFIER ON and loads at least 100 rows with non-null vectors first
 
 ## Scenario 5: migrate off the SQL Server image (prompt: T10)
 

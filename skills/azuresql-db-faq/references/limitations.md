@@ -10,13 +10,13 @@ https://aka.ms/azuresqldb-container-bug to file an issue.
 
 1. **Restriction enforcement gaps.** Some PaaS restrictions enforced in the cloud are not yet enforced locally, so an invalid statement can succeed locally and fail at deployment. Workaround: validate against a real Azure SQL Database once before declaring readiness.
 2. **Default value alignment.** Some session/database defaults (collation, transaction isolation, ANSI defaults) do not match the cloud exactly. Workaround: set the ones you depend on explicitly.
-3. **Vector index DDL.** `CREATE VECTOR INDEX` is in development. The `VECTOR` type and `VECTOR_DISTANCE` work; use full-scan top-k for now.
-4. **x64 image only; no native ARM64 build.** The image is `linux/amd64`. On an ARM64 host it runs under emulation: add `--platform linux/amd64` (Docker) or `platform: linux/amd64` (compose). Never say ARM64 is "supported", and do not promise a native build or a date. Feature requests: https://aka.ms/azuresqldb-container-feature-request
-5. **Two-step provisioning.** Provision a database on a `master` connection, then reconnect to it. Public Preview plans a default startup database (e.g. `MSSQL_DB=appdb`).
-6. **GUI tooling compatibility.** The VS Code MSSQL extension UI and SSMS are not yet 100% compatible (UI errors), being fixed. Use `sqlcmd` or a driver; the MSSQL extension's GitHub Copilot integration works (https://aka.ms/vscode-mssql-copilot-docs).
+3. **Vector index DDL.** The live page lists this as an active issue, and the engine disagrees: measured on this image, `CREATE VECTOR INDEX` (DiskANN) builds and `VECTOR_SEARCH` returns ranked results against it. Tell the reader it works, name the rules it imposes (`SET QUOTED_IDENTIFIER ON`, at least 100 rows with non-null vectors, no `TRUNCATE TABLE` while it exists), and say that the published list has not caught up. The `azuresql-db-rag` skill carries the detail. Full-scan top-k stays exact and stays the right choice for a small table.
+4. **Two-step provisioning.** Provision a database on a `master` connection, then reconnect to it. Public Preview plans a default startup database (e.g. `MSSQL_DB=appdb`).
+5. **GUI tooling compatibility.** The VS Code MSSQL extension UI and SSMS are not yet 100% compatible (UI errors), being fixed. Use `sqlcmd` or a driver; the MSSQL extension's GitHub Copilot integration works (https://aka.ms/vscode-mssql-copilot-docs).
 
 ## Known behavior gaps (differences from the cloud)
 
+- **x64 image only; no native ARM64 build.** The image is `linux/amd64`. On an ARM64 host it runs under emulation: add `--platform linux/amd64` (Docker) or `platform: linux/amd64` (compose). Never say ARM64 is "supported", and do not promise a native build or a date. Feature requests: https://aka.ms/azuresqldb-container-feature-request
 - **Backup and restore.** `BACKUP DATABASE` / `RESTORE DATABASE` are not supported on the container (return `Msg 40510` in any session). Azure SQL Database in the cloud likewise does not support them. Use a Docker named volume for local persistence; use Azure SQL Database in the cloud for managed backups, point-in-time restore, and geo-replication.
 - **Always Encrypted with secure enclaves.** Basic Always Encrypted works; secure enclaves need host TEE support and are not validated.
 - **Auditing to Log Analytics or Storage.** Audit-to-file works; audit-to-cloud-targets is not applicable on the container.
