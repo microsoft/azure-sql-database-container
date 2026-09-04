@@ -1,0 +1,112 @@
+{
+  "$schema": "https://github.com/microsoft/azure-sql-skills-lab/spec/schemas/skill.spec.schema.json",
+  "id": "azuresql-db-from-sql-server",
+  "domain": "azure-sql-database-container",
+  "value": ["not-in-training-data", "corrects-a-wrong-assumption", "multi-step-with-silent-failures"],
+  "correction": "Shown a project that runs mcr.microsoft.com/mssql/server in Docker, an agent treats the two images as interchangeable and carries the whole configuration across: swap the image name, keep everything else. They are not interchangeable. The SQL Server image is the boxed engine and reports EngineEdition 2, 3, 4 or 8; the Azure SQL Database container is the Azure SQL Database engine and reports 5 with an Edition of 'SQL Azure', and it enforces the same statement filter the cloud service does. The consequence is that a working local setup stops working in five specific places, and four of them fail at a different time than the developer expects. The engine does not auto-create a database on connect, so an application pointed at a database that the SQL Server image would have made for it simply cannot connect. USE is refused in a user database session with Msg 40508, so every script that switches context has to select the database in its connection string instead, and the same script appears to work when it is run against master because master is a provisioning session where the filter is not enforced. A whole class of statement the boxed engine accepts is refused outright with Msg 40510, backup and restore being the ones a migrating project hits first, and instance level configuration such as sp_configure with it. Options of otherwise supported statements are refused separately with Msg 40517, so a statement can be half accepted. And the auto-init convention, dropping SQL files in /docker-entrypoint-initdb.d, is a PostgreSQL and MySQL convention that this image never honoured, so the seed silently never runs and the failure surfaces as an empty table rather than as an error. On top of that, SQL Server Agent, FILESTREAM and FileTable, cross-instance Service Broker, linked servers and cross-server distributed transactions, and Windows authentication are absent, because they are absent from Azure SQL Database. Being wrong here costs a migration that looks finished, passes a smoke test against master, and fails on the first real deployment.",
+  "posture": ["read", "write", "inspect", "provision"],
+  "maturity": "draft",
+  "applies_to": ["azure-sql-db-container"],
+  "related": [
+    "azuresql-db-container",
+    "azuresql-db-local-to-cloud",
+    "azuresql-db-seed",
+    "azuresql-db-connections",
+    "azuresql-db-feedback"
+  ],
+  "validation": {
+    "target": "container",
+    "setup": [
+      "the Azure SQL Database container running, with a provisioned user database",
+      "an existing project that uses the SQL Server image, for the detection step"
+    ],
+    "assert": [
+      "no file in the repository still references mcr.microsoft.com/mssql/server or mssql/server",
+      "the user database is created on a master connection before any application connects to it",
+      "no application connection string names master",
+      "no script contains USE",
+      "the seed runs as an explicit step after provisioning, and nothing depends on /docker-entrypoint-initdb.d",
+      "every SQL Server-only feature found in the audit is either removed or has a named replacement"
+    ],
+    "probes": [
+      {
+        "sql": "SELECT CAST(SERVERPROPERTY('EngineEdition') AS int) AS engine_edition, CAST(SERVERPROPERTY('Edition') AS nvarchar(128)) AS edition;",
+        "expect": { "rows": [[5, "SQL Azure"]] },
+        "why": "The whole migration is worthless if the project ends up on the wrong image, and this is the check the skill tells the user to run last. It is first here so that a run against the SQL Server image fails on this probe rather than confusing every refusal probe below, all of which would succeed on the boxed engine."
+      },
+      {
+        "sql": "USE master;",
+        "expect": { "error": 40508 },
+        "why": "The single most common thing carried over unchanged from a SQL Server setup, and the reason connection strings have to be re-pointed rather than scripts re-ordered. The probe runs in the scratch user database, which is an Azure-faithful session. If it succeeds, the runner is connected to master, which is a provisioning session where the Azure statement filter is not enforced, and the from-master detection step in this skill is exactly the trap that hides."
+      },
+      {
+        "sql": "BACKUP DATABASE master TO DISK = N'/var/opt/mssql/data/probe_from_sql_server.bak';",
+        "expect": { "error": 40510 },
+        "why": "The clearest example of a whole statement the boxed engine accepts and this engine refuses, and the one a migrating project hits first because SQL Server setups routinely script a backup into their teardown. Msg 40510 for BACKUP and RESTORE on this container is stated in the azuresql-db-faq skill's own text and again in its references/limitations.md. The database named is master rather than the scratch database because the statement filter refuses the statement before it resolves the name."
+      },
+      {
+        "sql": "EXEC sp_configure 'show advanced options', 1;",
+        "expect": { "error": 40510 },
+        "why": "The other half of the 40510 claim, and the one that matters for migration scripts rather than for teardown scripts: instance level configuration does not exist on this engine, so any tuning step inherited from a SQL Server setup has to be deleted rather than translated. Microsoft Learn lists sp_configure and RECONFIGURE among the T-SQL not supported in Azure SQL Database, and a sibling project measured Msg 40510 for sp_configure on this container while chasing a managed identity remedy that named it."
+      },
+      {
+        "sql": "ALTER DATABASE CURRENT SET RECOVERY SIMPLE;",
+        "expect": { "error": 40517 },
+        "why": "Msg 40517 is the other refusal shape and the one that surprises people: ALTER DATABASE SET is a supported statement, and only this option of it is refused, so a script can be half accepted. Recovery models are on Microsoft Learn's list of syntax not supported in Azure SQL Database, under high availability and database recovery. Being explicit about the limit of the evidence: 40517 is the documented message for a refused statement option, but no source consulted for this pass pins that number to this exact statement, so this probe is the hypothesis and the first live run settles it. If the engine answers with a different number, correct the number here rather than deleting the probe, because the claim is still true."
+      },
+      {
+        "sql": "DECLARE @cross_database_refused int = 0;\nBEGIN TRY\n  EXEC(N'SELECT TOP (1) name FROM master.sys.objects;');\nEND TRY\nBEGIN CATCH\n  SET @cross_database_refused = 1;\nEND CATCH\nSELECT @cross_database_refused AS cross_database_refused;",
+        "expect": { "rows": [[1]] },
+        "why": "The single database model, made executable. A SQL Server project that keeps lookup tables in one database and application tables in another migrates by merging them, not by rewriting the joins, and this is the probe that shows the three-part name is not merely discouraged. Refusal is asserted rather than a number because neither this skill's text nor its feature matrix states one, and Microsoft Learn documents the restriction without pinning a number to this statement."
+      },
+      {
+        "sql": "CREATE TABLE dbo.probe_fss_seed (id int IDENTITY(1,1) NOT NULL PRIMARY KEY CLUSTERED, title nvarchar(200) NOT NULL);\nINSERT INTO dbo.probe_fss_seed (title) OUTPUT inserted.id VALUES (N'seeded after provisioning');",
+        "expect": { "rows": [[1]] },
+        "why": "The positive control for the whole migration: once the database is provisioned and the connection selects it, ordinary DDL and DML from the SQL Server project run unchanged. Without a probe like this the sidecar reads as a list of things that break, and the skill's actual promise is that everything else carries over."
+      },
+      {
+        "cmd": "sh -c '! test -e /docker-entrypoint-initdb.d'",
+        "where": "container",
+        "expect": { "succeeds": true },
+        "why": "The auto-init folder is a PostgreSQL and MySQL convention that this image does not honour, and it is the failure in this skill that produces no error at all: the container starts, the application connects, and the tables are empty. Asserting that the path does not exist in the image is the cheapest available evidence for that, and it is honest about what it measures: the absence of the directory, not the absence of an entrypoint hook. It runs in the container because the claim is about the image."
+      },
+      {
+        "cmd": "/opt/mssql-tools18/bin/sqlcmd -?",
+        "where": "container",
+        "expect": { "succeeds": true },
+        "why": "Every rewritten command in this skill hardcodes this absolute path inside the image, including the readiness loop the whole migration depends on. A SQL Server setup that called sqlcmd from PATH will not have noticed the path; if a future image moves it, every code block here breaks and this probe is what says so. It runs in the container, not on the host, because the path is the image's."
+      }
+    ]
+  },
+  "triggering": {
+    "explicit": [
+      "Use the azuresql-db-from-sql-server skill",
+      "Move my local SQL Server container setup to the Azure SQL Database container",
+      "Rewrite my docker-compose from mcr.microsoft.com/mssql/server to the Azure SQL Database container",
+      "Make my local database match Azure SQL Database instead of SQL Server"
+    ],
+    "implicit": [
+      "I am using mcr.microsoft.com/mssql/server in my docker-compose",
+      "spin up a local mssql container for this project",
+      "my app connects to master and it worked fine before",
+      "my seed scripts in docker-entrypoint-initdb.d are not running",
+      "USE started failing after we changed images",
+      "our nightly backup step stopped working locally",
+      "we deploy to Azure SQL Database but develop against SQL Server, is that a problem"
+    ],
+    "routing": [
+      "audit this repository for SQL Server specific setup before we move to Azure",
+      "make local development catch Azure differences before deployment"
+    ],
+    "negative": [
+      "Set up a local PostgreSQL database with docker compose",
+      "Provision an Azure SQL Database in my Azure subscription",
+      "Connect to SQL Server on my company network",
+      "Migrate a production SQL Server database's data into Azure SQL Database",
+      "Start the Azure SQL Database container and check it is ready",
+      "Store embeddings and run a similarity search locally",
+      "Take my working local application and run it against Azure SQL Database in the cloud",
+      "Report a bug in the container"
+    ]
+  }
+}
