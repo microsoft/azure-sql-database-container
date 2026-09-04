@@ -45,15 +45,21 @@
         "why": "The skill states that in a user-database session USE returns Msg 40508, exactly as in Azure SQL Database in the cloud, and that the fix is always to select the database in the connection string. Every probe here runs against a scratch user database, which is the session where the Azure statement filter is enforced. If this ever succeeds, the filter is not being applied to the lane's session and the skill's central connection-model rule has stopped being true locally."
       },
       {
-        "sql": "SELECT COUNT(*) AS transient_numbers_known\nFROM sys.messages\nWHERE language_id = 1033\n  AND message_id IN (40501, 40613, 49918, 49919, 49920, 4060, 10928, 10929, 40197, 233);",
+        "sql": "SELECT message_id\nFROM sys.messages\nWHERE language_id = 1033\n  AND message_id IN (40501, 40613, 49918, 49919, 49920, 4060, 10928, 10929, 40197, 233)\nORDER BY message_id;",
         "expect": {
           "rows": [
-            [
-              10
-            ]
+            [ 233 ],
+            [ 4060 ],
+            [ 10928 ],
+            [ 40197 ],
+            [ 40501 ],
+            [ 40613 ],
+            [ 49918 ],
+            [ 49919 ],
+            [ 49920 ]
           ]
         },
-        "why": "The skill names these ten numbers as the transient faults a retry policy may retry, and names 18456 and constraint and syntax errors as the ones it must not. The list is the load-bearing content of the skill and the thing most likely to rot, because a retry predicate built from a stale list either misses a real transient fault or retries something fatal. This asserts the engine still knows all ten by number. A count below ten does not by itself mean a retry policy is wrong, but it does mean this catalogue no longer backs the list and the list needs re-checking against Microsoft Learn before it is shipped again. It is the probe in this sidecar most likely to go red first."
+        "why": "The skill names ten numbers as the transient faults a retry policy may retry, and names 18456 and constraint and syntax errors as the ones it must not. NINE of the ten are in this engine's message catalogue and one is not. CORRECTED 2026-09-04 by the first live run, which counted 9 where the probe asserted 10. The absentee is Msg 10929, and it is absent from sys.messages entirely rather than merely from language_id 1033: SELECT COUNT(*) FROM sys.messages WHERE message_id = 10929 returns 0 on build 12.0.2000.8, EngineEdition 5, Edition 'SQL Azure'. THE SKILL IS NOT CONTRADICTED BY THIS AND THE NUMBER SHOULD STAY IN ITS RETRY LIST. 10929 is the elastic pool and per database resource governance throttle, and a container has no elastic pool and no service objective, so its absence is what a local engine ought to look like. A cloud only claim cannot be settled by a container, and this probe does not pretend otherwise: it pins the nine the container does carry, so a future disappearance goes red, and leaves 10929 to a run against a real logical server, where it is still UNVERIFIED. Rows rather than a count on purpose: a count of 9 would stay green if one number vanished and another appeared."
       },
       {
         "sql": "SELECT OBJECT_ID('sys.dm_db_resource_stats') AS dm_db_resource_stats, OBJECT_ID('sys.dm_user_db_resource_governance') AS dm_user_db_resource_governance;",

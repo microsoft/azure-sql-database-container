@@ -44,15 +44,12 @@
         "why": "The skill states that in a user-database session USE returns Msg 40508, exactly as in Azure SQL Database in the cloud, and that the fix is always to select the database in the connection string. Every probe here runs against a scratch user database, which is the session where the Azure statement filter is enforced. If this ever succeeds, the filter is not being applied to the lane's session and the skill's central connection-model rule has stopped being true locally."
       },
       {
-        "sql": "SELECT local_tcp_port FROM sys.dm_exec_connections WHERE session_id = @@SPID;",
+        "where": "container",
+        "cmd": "/opt/mssql-tools18/bin/sqlcmd -S tcp:localhost,1433 -U sa -P \"$MSSQL_SA_PASSWORD\" -C -N -I -b -h-1 -W -Q \"SELECT 1;\"",
         "expect": {
-          "rows": [
-            [
-              1433
-            ]
-          ]
+          "succeeds": true
         },
-        "why": "Every recipe binds container port 1433 to a random host port and builds the connection string from the mapped port it reads back. That mapping only works because the engine inside the container listens on 1433, which is the one end of it a test author cannot see and never checks. This asserts it from inside the session. If the engine ever listened elsewhere, every fixture in the reference would map a port with nothing behind it and the failure would look like a readiness problem."
+        "why": "Every recipe binds container port 1433 to a random host port and builds the connection string from the mapped port it reads back. That mapping only works because the engine inside the container listens on 1433, which is the one end of it a test author cannot see and never checks. THE INSTRUMENT CHANGED 2026-09-04, not the claim. This probe used to read local_tcp_port from sys.dm_exec_connections, and on build 12.0.2000.8 that column is NULL for the current session, as is local_net_address, while net_transport still reports TCP. So the first live run failed a claim that is true: the DMV does not populate the column on this engine, which makes it the wrong instrument rather than the claim being wrong. The engine's own errorlog carries \"Server is listening on [ 'any' <ipv4> 1433]\", and opening a connection to tcp:localhost,1433 from inside the container succeeds, which is a direct measurement of the thing the port mapping depends on rather than an inference from a view. Deliberately a container probe: the host has no such listener and asserting it there would measure the docker port publish instead."
       },
       {
         "sql": "SELECT DB_ID(N'probe_testing_database_nobody_created') AS db_id;",

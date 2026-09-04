@@ -47,16 +47,16 @@
       {
         "sql": "ALTER DATABASE CURRENT SET CONTAINMENT = PARTIAL;",
         "expect": {
-          "error": 12824
+          "error": 12844
         },
-        "why": "The obvious repair for the refusal above is to turn containment on, and the skill records that this fails too, with Msg 12824, contained database authentication must be configured. Without this probe an agent reading only the first refusal will spend its next step trying exactly this statement. CURRENT is used so the claim is measured against the scratch database the lane holds rather than a database named in advance."
+        "why": "The obvious repair for the refusal above is to turn containment on, and the skill records that this fails too. CORRECTED 2026-09-04: the shipped body says Msg 12824 with the text 'contained database authentication must be configured', and the engine says Msg 12844, 'ALTER DATABASE statement failed; this functionality is not available in the current edition of SQL Server.' Measured on build 12.0.2000.8, EngineEdition 5, Edition 'SQL Azure', in a scratch container. 12824 was never run against an engine; it survived weeks of review because a plausible number reads like a measured one. SKILL.md line 41, SKILL.md line 128 and references/auth-and-secrets.md line 52 still carry 12824 and the wrong text, and are owned elsewhere. Without this probe an agent reading only the first refusal will spend its next step trying exactly this statement. CURRENT is used so the claim is measured against the scratch database the lane holds rather than a database named in advance."
       },
       {
         "sql": "CREATE USER [probe-app@contoso.com] FROM EXTERNAL PROVIDER;",
         "expect": {
-          "error": 40530
+          "error": 37525
         },
-        "why": "Measured in a sibling project: on a container started with no MSSQL_AAD_* configuration, CREATE USER ... FROM EXTERNAL PROVIDER is refused with Msg 40530, and the message text blames the batch, which is not the cause. The cause is that Microsoft Entra was never configured on the engine. That mismatch between the number and its text is precisely why this deserves a probe: an agent that reads the text edits its statement, and the statement was never the problem. This probe assumes the lane's container carries no Entra configuration. If the lane ever starts one with the MSSQL_AAD_* variables set, this probe measures a different thing and must be rewritten, not deleted."
+        "why": "CORRECTED 2026-09-04 by the first live run. The probe asserted Msg 40530 on the strength of a sibling project's note, and the engine says Msg 37525: \"Command 'CREATE USER FROM EXTERNAL PROVIDER' is not supported as Azure Active Directory is not configured for this instance.\" Measured on build 12.0.2000.8, EngineEdition 5, Edition 'SQL Azure', on a container started with no MSSQL_AAD_* configuration. 37525 is the number this repository already knew: azuresql-db-container/references/entra-auth.md line 102 names it, and names Msg 33134 as the answer once Entra IS configured, which is how a reader tells the two states apart. The old why also argued that the message text blames the batch and hides the cause. On this build it does not: the text names the missing Entra configuration outright, so that rationale was wrong as well as the number. No SKILL.md or reference in this repository ever shipped 40530, so nothing published was wrong; only this probe was. If the lane ever starts a container with MSSQL_AAD_* set, this probe measures a different thing and must be rewritten to expect Msg 33134, not deleted."
       },
       {
         "sql": "CREATE USER probe_app_user WITHOUT LOGIN;\nALTER ROLE db_datareader ADD MEMBER probe_app_user;\nALTER ROLE db_datawriter ADD MEMBER probe_app_user;\nSELECT IS_ROLEMEMBER('db_datareader', 'probe_app_user') AS reader, IS_ROLEMEMBER('db_datawriter', 'probe_app_user') AS writer, IS_ROLEMEMBER('db_owner', 'probe_app_user') AS owner;",
@@ -81,6 +81,17 @@
           ]
         },
         "why": "The skill says Encrypt=true belongs on every connection string in both environments, and that TrustServerCertificate=true is a local-only concession to the container's self-signed certificate, never a substitute for encryption and never used against the cloud. This asserts that the session actually reached the engine over an encrypted channel. A FALSE here is a finding about the lane's own client configuration rather than about the engine, and it would mean the encryption half of the skill's advice is not being exercised at all."
+      },
+      {
+        "sql": "SELECT COUNT(*) AS contained FROM sys.database_principals WHERE authentication_type_desc = 'DATABASE';",
+        "expect": {
+          "rows": [
+            [
+              0
+            ]
+          ]
+        },
+        "why": "Carried across on 2026-09-04 from the lane's standalone probes/azuresql-db-auth.json when the sidecar became the single home for probes, so no measured work was lost in the move. The two refusals above are error probes and an error probe cannot show that nothing slipped through: this reads the outcome instead. A contained principal is one whose authentication_type_desc is DATABASE, and after both refusals there must be none. The WITHOUT LOGIN user the probe above creates has authentication_type_desc NONE and is deliberately not counted here, because it is a database principal with no password and is exactly the shape the skill does recommend."
       }
     ]
   },
