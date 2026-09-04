@@ -1,0 +1,133 @@
+{
+  "$schema": "https://github.com/microsoft/azure-sql-skills-lab/spec/schemas/skill.spec.schema.json",
+  "id": "azuresql-db-functions",
+  "domain": "azure-sql-database-container",
+  "value": [
+    "not-in-training-data",
+    "corrects-a-wrong-assumption",
+    "multi-step-with-silent-failures"
+  ],
+  "correction": "Asked to run code when a row changes in Azure SQL Database, an agent reaches for the cloud streaming path and tries to make it work locally. It cannot: that path is unsupported on the local engine and streams only to a public Azure endpoint, so no amount of configuration will make it fire against a container. The local mechanism is the SQL trigger binding, and it is not self-configuring. It is backed by change tracking, which has to be turned on twice, once for the database and once for each table, and a table with no primary key cannot be tracked at all, so a function that is wired perfectly simply never fires and nothing explains why. The same silence surrounds the output binding, which upserts through MERGE over OPENJSON and therefore needs a primary key on the target table and a database compatibility level of at least 130. Two smaller things are wrong by habit rather than by reasoning. The binding names its connection setting with a connection-string-setting keyword, not the Connection keyword that the Storage and Event Hubs bindings use, and an agent that carries the wrong keyword over gets a binding that resolves nothing. And the local tooling advertises SQL templates that it cannot create: the templates listing offers a SQL trigger, while asking for it by name is refused as an unknown template, so the bindings have to be written into the function by hand after scaffolding an HTTP one.",
+  "posture": [
+    "read",
+    "write",
+    "execute"
+  ],
+  "maturity": "draft",
+  "applies_to": [
+    "azure-sql-db-container"
+  ],
+  "related": [
+    "azuresql-db-container",
+    "azuresql-db-dab",
+    "azuresql-db-scaffold",
+    "azuresql-db-connections",
+    "azuresql-db-local-to-cloud"
+  ],
+  "validation": {
+    "target": "container",
+    "setup": [
+      "the Azure Functions Core Tools on the host, since the three tooling probes below are about what the local scaffolder can and cannot create",
+      "a scratch user database on the container, because change tracking is a database-scoped setting and every SQL probe below changes it"
+    ],
+    "assert": [
+      "the connection string lives in local settings or app settings and is referenced by a binding's connection-string-setting keyword, never the Connection keyword",
+      "the connection string names the user database and carries the trust-server-certificate setting the container's self-signed certificate needs",
+      "change tracking is enabled on both the database and every table a trigger binds to",
+      "any table an output binding writes to has a primary key",
+      "the event-driven design uses the SQL trigger locally and does not attempt the cloud streaming path against the container",
+      "the local settings file is not committed, because it holds the connection string and the administrator password"
+    ],
+    "probes": [
+      {
+        "sql": "ALTER DATABASE CURRENT SET CHANGE_TRACKING = ON (CHANGE_RETENTION = 2 DAYS, AUTO_CLEANUP = ON);\nCREATE TABLE dbo.probe_todo (Id INT NOT NULL CONSTRAINT pk_probe_todo PRIMARY KEY CLUSTERED, Title NVARCHAR(200) NULL);\nALTER TABLE dbo.probe_todo ENABLE CHANGE_TRACKING;\nSELECT COUNT(*) AS tracked_tables FROM sys.change_tracking_tables WHERE object_id = OBJECT_ID('dbo.probe_todo');",
+        "expect": {
+          "rows": [
+            [
+              1
+            ]
+          ]
+        },
+        "why": "The single hardest claim in this skill made executable: the trigger binding is the local event-driven mechanism precisely because change tracking works on this engine, and it has to be enabled at both scopes before a trigger will ever fire. The batch builds its own fixture with a primary key, which is itself a requirement change tracking imposes, and then reads the catalog view rather than trusting that the ALTER returned quietly. Microsoft Learn documents the change-tracking option of ALTER DATABASE SET as applying to Azure SQL Database, documents ALTER TABLE ENABLE CHANGE_TRACKING the same way, and documents CURRENT as designating the database in use, which is what lets this statement run without naming the scratch database. If this goes red, the skill's whole event-driven section is describing something the local engine cannot do."
+      },
+      {
+        "sql": "SELECT CAST(CASE WHEN (SELECT compatibility_level FROM sys.databases WHERE database_id = DB_ID()) >= 130 THEN 1 ELSE 0 END AS INT) AS compat_130_or_higher;",
+        "expect": {
+          "rows": [
+            [
+              1
+            ]
+          ]
+        },
+        "why": "The output binding's stated precondition, checked as the skill states it. The body tells a reader the compatibility level must be 130 or higher and that the engine is fully capable, so the only thing they need to arrange is the primary key. This probe is what turns that reassurance into a measurement instead of a promise. It compares rather than returning the level itself, because the exact level is free to move upward and the claim is a floor."
+      },
+      {
+        "sql": "SELECT [key] AS json_key FROM OPENJSON(N'{\"Id\":1}');",
+        "expect": {
+          "rows": [
+            [
+              "Id"
+            ]
+          ]
+        },
+        "why": "The reason the compatibility floor above exists, rather than the floor itself. The output binding upserts through MERGE over OPENJSON, so if OPENJSON is not available on this engine the binding fails at run time with a parsing error that names neither the binding nor the compatibility level. Probing the mechanism and the stated floor separately means a red run can be told apart: one says the number moved, the other says the function is gone."
+      },
+      {
+        "where": "host",
+        "cmd": "func templates list | grep -q '^  SQL Trigger$'",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "The first half of the trap this skill routes around. The local tooling advertises a SQL trigger template in its own listing, which is why an agent reaches for it. Measured 2026-09-04 on Core Tools 4.12.0, exit 0. Paired with the next probe, this is the evidence that the advertisement and the capability disagree; on its own it proves only that the listing still says what it said."
+      },
+      {
+        "where": "host",
+        "cmd": "d=$(mktemp -d) && cd \"$d\" && func init MyApi --worker-runtime dotnet-isolated > /dev/null 2>&1; cd MyApi && func new --name ProbeSqlTrigger --template SqlTrigger 2>&1 | grep -q \"Unknown template 'SqlTrigger'\"",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "The second half, and the reason the body scaffolds an HTTP function and then writes the bindings in by hand rather than asking for a SQL template. Measured 2026-09-04 on Core Tools 4.12.0: the command exits 1 and prints \"Unknown template 'SqlTrigger' (Parameter 'templateName')\" even though the listing above offers it. This probe deliberately asserts the failure, so it goes red the day the tooling starts honouring its own listing, which would make the body's workaround unnecessary rather than wrong. The init step's exit code is ignored on purpose: a package restore can fail without stopping the project files from being written, and the claim under test is about the template, not the restore."
+      },
+      {
+        "where": "host",
+        "cmd": "d=$(mktemp -d) && cd \"$d\" && func init MyApi --worker-runtime dotnet-isolated > /dev/null 2>&1; cd MyApi && func new --name ProbeHttp --template HttpTrigger --authlevel anonymous > /dev/null 2>&1 && test -f ProbeHttp.cs",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "The control that stops the probe above from being read as a broken toolchain. The same scaffolder in the same freshly initialised project creates an HTTP-triggered function without complaint, so the refusal is specific to the SQL template and not a symptom of the project, the runtime or the machine. Measured 2026-09-04 on Core Tools 4.12.0, exit 0 with the file written. This is also exactly the step the body tells a reader to take before adding the bindings by hand."
+      }
+    ]
+  },
+  "triggering": {
+    "explicit": [
+      "Use the azuresql-db-functions skill",
+      "build an Azure Functions API over my local Azure SQL Database container",
+      "add a SQL input binding to this HTTP function",
+      "write a SQL trigger function that runs when a row changes in the container",
+      "upsert rows with a SQL output binding"
+    ],
+    "implicit": [
+      "run code when a row is inserted or updated in this table",
+      "serverless API over SQL without the ADO.NET boilerplate",
+      "my SQL trigger function never fires and there is nothing in the log",
+      "react to inserts and deletes on the local engine",
+      "how do I stream row changes from the container"
+    ],
+    "routing": [
+      "which setting name do the SQL bindings read the connection string from",
+      "does the trigger need change tracking turned on",
+      "why does my output binding fail on this table",
+      "can the cloud change streaming path run against the container"
+    ],
+    "negative": [
+      "expose these tables as a REST and GraphQL API with no code",
+      "scaffold a new project with a local database",
+      "run my EF Core migrations against the container",
+      "start the Azure SQL Database container and connect with sqlcmd",
+      "deploy my function app to Azure",
+      "add the database as a service container in my CI workflow",
+      "load a CSV into this table",
+      "write the T-SQL MERGE statement for this upsert myself"
+    ]
+  }
+}

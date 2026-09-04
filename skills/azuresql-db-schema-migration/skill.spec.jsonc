@@ -1,0 +1,132 @@
+{
+  "$schema": "https://github.com/microsoft/azure-sql-skills-lab/spec/schemas/skill.spec.schema.json",
+  "id": "azuresql-db-schema-migration",
+  "domain": "azure-sql-database-container",
+  "value": [
+    "not-in-training-data",
+    "corrects-a-wrong-assumption",
+    "multi-step-with-silent-failures"
+  ],
+  "correction": "Pointing a migration tool at a local SQL container, an agent assumes what every other engine has taught it: that connecting creates the database if it is missing, and that the tool can switch database context on its own. Neither holds here. The Azure SQL Database container does not auto-create a database on connect, so the migration run fails on its first connection against an engine that is healthy, and the failure reads as a connectivity or credentials problem rather than a missing database. The target database has to be created on a master connection first, and then named in the connection string, because switching context with USE is refused in a user-database session with error 40508 exactly as it is in Azure SQL Database in the cloud. The timing is a second trap: the engine is not ready the moment the container starts, so a migration fired straight after the container command sees a transient startup error rather than a schema problem, and a readiness loop that does not make a SQL error set the exit code will treat that error as success and move on. The engine is also the cloud engine and not the SQL Server image, reporting EngineEdition 5 and Edition 'SQL Azure', which is the entire reason a migration proved here is worth anything about production.",
+  "posture": [
+    "read",
+    "write",
+    "execute",
+    "provision"
+  ],
+  "maturity": "draft",
+  "applies_to": [
+    "azure-sql-db-container"
+  ],
+  "related": [
+    "azuresql-db-container",
+    "azuresql-db-scaffold",
+    "azuresql-db-ci",
+    "azuresql-db-seed",
+    "azuresql-db-local-to-cloud",
+    "azuresql-db-connections"
+  ],
+  "validation": {
+    "target": "container",
+    "setup": [
+      "the Azure SQL Database container running, with a scratch user database created on a master connection, because that provisioning step is the precondition the skill exists to teach",
+      "SqlPackage on the host as a dotnet tool, and the Entity Framework Core command-line tools, for the two host probes below"
+    ],
+    "assert": [
+      "the target database is created on a master connection before the migration tool is invoked",
+      "the migration tool is pointed at the user database and never at master",
+      "the connection string uses the User Id, Password and Database keywords rather than the Uid and Pwd aliases, and carries the trust-server-certificate setting",
+      "the readiness loop makes a SQL error set the exit code and sets a login timeout, so a transient startup error is retried rather than read as success",
+      "no migration or seed step relies on a mounted init directory running itself",
+      "any vector dimension is written as a literal in the migration's DDL rather than bound as a parameter"
+    ],
+    "probes": [
+      {
+        "sql": "SELECT CAST(SERVERPROPERTY('EngineEdition') AS INT) AS engine_edition, CAST(SERVERPROPERTY('Edition') AS NVARCHAR(128)) AS edition;",
+        "expect": {
+          "rows": [
+            [
+              5,
+              "SQL Azure"
+            ]
+          ]
+        },
+        "why": "The premise of the whole skill: a migration is worth running here only because the local engine is the same engine the migration will meet in Azure. These two properties are the only thing that distinguishes it from the SQL Server image at run time. If they ever read differently, a migration that passes locally proves nothing about the cloud and the skill's opening claim is gone."
+      },
+      {
+        "sql": "USE master;",
+        "expect": {
+          "error": 40508
+        },
+        "why": "The rule the skill repeats in three places, made executable. Microsoft Learn documents error 40508, severity 16, 'USE statement is not supported to switch between databases. Use a new connection to connect to a different database.', and states the refusal applies when a database other than the current one is named, which is why this probe names master rather than the scratch database the session already sits in. A migration script carried over from SQL Server that opens with a USE will stop here, and this probe is what proves the skill is right to insist the database belongs in the connection string."
+      },
+      {
+        "sql": "CREATE TABLE dbo.probe_migration_vec (id INT IDENTITY PRIMARY KEY CLUSTERED, embedding VECTOR(1536) NOT NULL);\nSELECT COUNT(*) AS vector_columns FROM sys.columns WHERE object_id = OBJECT_ID('dbo.probe_migration_vec') AND name = 'embedding';",
+        "expect": {
+          "rows": [
+            [
+              1
+            ]
+          ]
+        },
+        "why": "The vectors section as a migration author meets it: the dimension is a literal in the DDL, and a migration that emits this column is accepted by the engine rather than failing partway through a run. The dimension is written as 1536 rather than something smaller because that is the size the body uses and the size a real embedding column will carry. This probe deliberately stops at the DDL, since the parameter-binding failure the body warns about belongs to a client driver and cannot be reproduced through an administrative batch."
+      },
+      {
+        "where": "host",
+        "cmd": "sqlpackage /Action:Publish /help:True | grep -q '^/TargetServerName:<string>$' && sqlpackage /Action:Publish /help:True | grep -q '^/TargetDatabaseName:<string>$' && sqlpackage /Action:Publish /help:True | grep -q '^/SourceFile:<string>$'",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "The three parameters that make the body's SqlPackage command line address the container rather than a cloud server, checked against the build's own help rather than remembered. Measured 2026-09-04 on SqlPackage 170.4.83.3, all three present in the Publish help. A renamed parameter here does not fail loudly in a useful way: SqlPackage rejects the whole invocation, and the reader is left comparing a command line against documentation for a different build."
+      },
+      {
+        "where": "host",
+        "cmd": "sqlpackage /Action:Publish /help:True | grep -q '^/TargetTrustServerCertificate:\\[True|False\\]$'",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "The one parameter in that command line that exists only because this is a container: the engine presents a self-signed certificate, so a publish that does not trust it fails on the handshake before it reaches any schema. Measured 2026-09-04 on 170.4.83.3, present in the Publish help with the True or False form. Probed separately from the three above because it is the parameter a reader is most likely to drop when adapting the line for the cloud, and the one whose absence produces the least recognisable error."
+      },
+      {
+        "where": "host",
+        "cmd": "dotnet ef database --help | grep -q '^  update'",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "The Entity Framework Core command the body prints is dotnet ef database update, and the tool is a separately installed global tool rather than part of the SDK, so its presence and the shape of its command tree are both real preconditions. Measured 2026-09-04 against Entity Framework Core .NET command-line tools 9.0.19, exit 0. This probe says nothing about whether the migration succeeds, only that the command the reader is handed exists on the machine they are on."
+      }
+    ]
+  },
+  "triggering": {
+    "explicit": [
+      "Use the azuresql-db-schema-migration skill",
+      "run my EF Core migrations against the Azure SQL Database container",
+      "apply Prisma migrations to the local container",
+      "publish this dacpac to the Azure SQL Database container",
+      "run alembic upgrade head against the local engine"
+    ],
+    "implicit": [
+      "apply my schema to the local database",
+      "dotnet ef database update fails saying it cannot open the database",
+      "my migration tool cannot find the database it is supposed to migrate",
+      "the migration works against the cloud but not against the container",
+      "the first migration after starting the container always fails"
+    ],
+    "routing": [
+      "does the migration tool create the database for me",
+      "which database should the migration connection string name",
+      "how do I wait for the engine before migrating",
+      "how is a vector column written in a migration"
+    ],
+    "negative": [
+      "scaffold a brand new project and give it a local database",
+      "deploy my database project to Azure SQL Database from a GitHub Actions workflow",
+      "add the container as a service in my compose stack",
+      "seed this table with sample rows",
+      "should this column change be done as expand and contract",
+      "expose the migrated tables as a REST API",
+      "start the container and connect with sqlcmd",
+      "move my on-premises SQL Server database to Azure SQL Database"
+    ]
+  }
+}

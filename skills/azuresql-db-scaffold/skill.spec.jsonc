@@ -1,0 +1,108 @@
+{
+  "$schema": "https://github.com/microsoft/azure-sql-skills-lab/spec/schemas/skill.spec.schema.json",
+  "id": "azuresql-db-scaffold",
+  "domain": "azure-sql-database-container",
+  "value": [
+    "not-in-training-data",
+    "corrects-a-wrong-assumption",
+    "multi-step-with-silent-failures"
+  ],
+  "correction": "Asked to bootstrap a new project with a local SQL database, an agent reaches for mcr.microsoft.com/mssql/server and a compose service copied from a Postgres skeleton, and the result looks right and is wrong in four ways at once. The image is a different product from the one the application will run against in Azure: the Azure SQL Database container reports EngineEdition 5 and Edition 'SQL Azure', and a scaffold built against the SQL Server image can use statements that this engine and the cloud both refuse. The database is assumed into existence: this engine does not auto-create a database on connect, so the first migration run fails against an engine that is working perfectly. The seed file is assumed to run itself, because the mounted /docker-entrypoint-initdb.d directory is a Postgres and MySQL convention that this image does not honour, so the scaffold reports success with an empty schema and nobody is told. And the database context is assumed to be switchable with USE, which in a user-database session is refused with error 40508 exactly as in Azure SQL Database in the cloud, so the target database belongs in the connection string and nowhere else.",
+  "posture": [
+    "read",
+    "write",
+    "execute",
+    "provision"
+  ],
+  "maturity": "draft",
+  "applies_to": [
+    "azure-sql-db-container"
+  ],
+  "related": [
+    "azuresql-db-container",
+    "azuresql-db-schema-migration",
+    "azuresql-db-seed",
+    "azuresql-db-connections",
+    "azuresql-db-sidecar",
+    "azuresql-db-dab"
+  ],
+  "validation": {
+    "target": "container",
+    "setup": [
+      "the Azure SQL Database container image pulled from the private preview registry with the pull-only credentials issued to the Private Preview cohort",
+      "a scratch user database, since the scaffold's whole point is that application work happens in a user database and never in master"
+    ],
+    "assert": [
+      "the generated compose file or run command names the Azure SQL Database engine image and never mcr.microsoft.com/mssql/server",
+      "the user database is created on a master connection before the ORM or migration tool opens a connection to it",
+      "the application reads one connection string from a single environment variable and the string names the user database",
+      "the connection string uses the User Id, Password and Database keywords rather than the Uid and Pwd aliases",
+      "every generated data access path is parameterised, and any vector dimension is written as a literal rather than bound",
+      "the seed step runs explicitly after the database exists rather than being mounted and assumed to run itself"
+    ],
+    "probes": [
+      {
+        "sql": "SELECT CAST(SERVERPROPERTY('EngineEdition') AS INT) AS engine_edition, CAST(SERVERPROPERTY('Edition') AS NVARCHAR(128)) AS edition;",
+        "expect": {
+          "rows": [
+            [
+              5,
+              "SQL Azure"
+            ]
+          ]
+        },
+        "why": "The identity check the skill tells the reader to run once the scaffold is up, and the only thing that distinguishes a correct scaffold from one pointed at the SQL Server image. The skill's central interception is worthless if these two properties do not read this way, because then the scaffold has quietly wired the project to a different product."
+      },
+      {
+        "sql": "USE master;",
+        "expect": {
+          "error": 40508
+        },
+        "why": "One of the three facts the skill says bites every scaffold. Microsoft Learn documents error 40508, severity 16, 'USE statement is not supported to switch between databases. Use a new connection to connect to a different database.', and states the refusal applies when a database other than the current one is named, which is why this probe names master rather than the scratch database the session is already in. If this ever succeeds the skill's advice to put the database in the connection string loses its reason."
+      },
+      {
+        "sql": "CREATE TABLE dbo.probe_scaffold_vec (id INT IDENTITY PRIMARY KEY CLUSTERED, embedding VECTOR(3) NOT NULL);\nINSERT INTO dbo.probe_scaffold_vec (embedding) VALUES (CAST(CAST(N'[1,0,0]' AS NVARCHAR(MAX)) AS VECTOR(3)));\nSELECT CAST(CASE WHEN VECTOR_DISTANCE('cosine', embedding, CAST(CAST(N'[0,1,0]' AS NVARCHAR(MAX)) AS VECTOR(3))) = 1 THEN 1 ELSE 0 END AS INT) AS orthogonal FROM dbo.probe_scaffold_vec;",
+        "expect": {
+          "rows": [
+            [
+              1
+            ]
+          ]
+        },
+        "why": "The vector section of this skill in one statement: the native VECTOR column type exists with a literal dimension in the DDL, the double cast through NVARCHAR(MAX) that the skill prescribes for inserts is accepted, and VECTOR_DISTANCE with the cosine metric is available. Two orthogonal unit vectors have cosine distance exactly 1, so the comparison returns an integer and does not turn the probe into a float equality argument. If the type or the function is not present, a scaffold that generates an embedding column produces a schema the engine will reject at migration time."
+      }
+    ]
+  },
+  "triggering": {
+    "explicit": [
+      "Use the azuresql-db-scaffold skill",
+      "scaffold a new app with the Azure SQL Database container as its local database",
+      "bootstrap a FastAPI project wired to a local Azure SQL Database",
+      "create a new Next.js project with Prisma against Azure SQL Database locally",
+      "start a .NET Aspire project with a local Azure SQL Database"
+    ],
+    "implicit": [
+      "add a database to this new project",
+      "set up the local dev database for the app I am about to write",
+      "docker compose for the db and a first migration",
+      "my first migration fails saying it cannot open the database",
+      "wire up an ORM to SQL Server locally"
+    ],
+    "routing": [
+      "which image should the compose database service use",
+      "where does the connection string live in a fresh project",
+      "does the database get created for me when the app connects",
+      "how do I seed the schema on first run"
+    ],
+    "negative": [
+      "add a SQL database service to my existing compose stack without touching the other services",
+      "run my existing EF Core migrations against the container",
+      "put the Azure SQL Database container in my CI workflow as a service container",
+      "expose the tables in this database as a REST and GraphQL API",
+      "connect my existing app to Azure SQL Database in the cloud",
+      "write a serverless function that reacts to row changes",
+      "load a large CSV into an existing table",
+      "tune this slow query"
+    ]
+  }
+}
