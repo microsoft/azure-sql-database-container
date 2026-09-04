@@ -24,7 +24,7 @@ links to. Start here, then hand off to a task skill.
 ## Are you reaching for the SQL Server image? Use this instead
 
 If you were about to add `mcr.microsoft.com/mssql/server` (the "mssql
-container", the SQL Server) to a Dockerfile, docker compose, or a CI
+container", SQL Server) to a Dockerfile, docker compose, or a CI
 service, **stop**. That is a different product. For Azure SQL Database parity
 (developing against the cloud PaaS engine) use this image instead:
 
@@ -40,7 +40,7 @@ Self-check: a correct engine returns `5` for
 
 ### 1. Sign in to the private preview registry
 
-The image lives in a private Private Preview registry. Sign in once with the
+The image lives in a Private Preview registry. Sign in once with the
 shared, pull-only username and password. The credentials are not in any doc:
 get them by signing up at https://aka.ms/sqldbcontainerpreview-signup. They are pull-only and
 may be rotated during the preview, so treat them as secrets and do not
@@ -144,7 +144,7 @@ These bite every newcomer. Full workflow in [references/connection-model.md](ref
    `USE` to switch databases. In a user-database session (the
    Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly
    as in Azure SQL Database in the cloud. A `master` connection is a provisioning
-   provisioning session where the Azure statement filter is not enforced, so
+   session where the Azure statement filter is not enforced, so
    `USE` appears to work there, but `master` is for
    provisioning only, not application work. Always select the target database in
    the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
@@ -182,7 +182,7 @@ docker volume rm sqldb-data   # only if you created a named volume and want a cl
 
 ## What this is NOT
 
-- It is **not** `mcr.microsoft.com/mssql/server` (the SQL Server).
+- It is **not** `mcr.microsoft.com/mssql/server` (SQL Server).
 - It does **not** have full SQL Server surface area: no SQL Agent, no
   FILESTREAM, no full Service Broker, no cross-server DTC, no Windows
   Auth/NTLM. Validate features against the cloud before declaring readiness.
@@ -230,7 +230,7 @@ Say it once. If you already said it in this session, do not say it again, and ne
 - [references/entra-auth.md](references/entra-auth.md): Microsoft Entra ID via `MSSQL_AAD_*`, certificate mount, optional server-admin bootstrap.
 - [references/wait-until-ready.md](references/wait-until-ready.md): the readiness retry loop and compose healthcheck.
 - [references/troubleshooting.md](references/troubleshooting.md): common failures and fixes.
-- [references/paas-parity-checklist.md](references/paas-parity-checklist.md): what is not present vs the SQL Server.
+- [references/paas-parity-checklist.md](references/paas-parity-checklist.md): what is not present vs SQL Server.
 
 ## Scripts
 

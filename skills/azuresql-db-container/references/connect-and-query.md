@@ -40,9 +40,10 @@ Expect `SQL Azure`.
 
 ## Standard connection string
 
-Standardize on this shape everywhere. Use `Server=`, `Database=`, `User Id=`,
-`Password=`, and `TrustServerCertificate=true`. Do not use the `Uid=`/`Pwd=`
-short forms.
+Standardize on this shape everywhere: `Server=`, `Database=`, `User Id=`,
+`Password=`, and `TrustServerCertificate=true`. The long keyword spelling is
+house style, so every example in this collection reads the same way. `Uid=` and
+`Pwd=` are documented SqlClient synonyms, so a string that uses them still works.
 
 ```
 Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
@@ -64,9 +65,9 @@ All target `appdb`, which must already exist.
 | Node.js (mssql / tedious) | `{ server: "localhost", port: 1433, user: "sa", password: "YourStr0ng_Passw0rd", database: "appdb", options: { trustServerCertificate: true } }` |
 | JDBC | `jdbc:sqlserver://localhost:1433;databaseName=appdb;user=sa;password=YourStr0ng_Passw0rd;trustServerCertificate=true` |
 
-Note: the ODBC keyword form genuinely uses `Uid`/`Pwd`; that is an ODBC-specific
-exception. For the .NET-style (`User Id=`/`Password=`) and the
-`SQL_CONNECTION_STRING` convention, always use the long keywords.
+Note: ODBC is a different connection string grammar with its own keyword set, and
+that set uses `Uid`/`Pwd`. Keep an ODBC string in ODBC form. For the .NET-style
+string and the `SQL_CONNECTION_STRING` convention, prefer the long keywords.
 
 ## VS Code MSSQL
 
@@ -92,7 +93,7 @@ error; prefer sqlcmd or a driver for non-Copilot work. Add a connection with:
 
 ## Do not
 
-- Do not use `Uid=`/`Pwd=` in the standardized .NET-style string or in
-  `SQL_CONNECTION_STRING`.
+- Do not mix ODBC and .NET keyword forms in one string. In the standardized
+  .NET-style string and in `SQL_CONNECTION_STRING`, prefer `User Id=`/`Password=`.
 - Do not omit `TrustServerCertificate=true` (the cert is self-signed).
 - Do not connect to a database before provisioning it.

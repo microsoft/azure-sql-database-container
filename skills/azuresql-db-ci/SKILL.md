@@ -53,7 +53,9 @@ For the full readiness loop, connection model, vectors, seeding, and registry de
 Server=localhost,1433;Database=appdb;User Id=sa;Password=<MSSQL_SA_PASSWORD>;TrustServerCertificate=true
 ```
 
-Use `User Id=` / `Password=` / `Database=` (not `Uid=` / `Pwd=`). For sqlcmd use `-C` to trust the
+Spell the keywords `User Id=` / `Password=` / `Database=`. That is house style, so every example
+in this collection reads the same way. `Uid=` and `Pwd=` are documented SqlClient synonyms and
+work too. For sqlcmd use `-C` to trust the
 self-signed cert. The app reads this from a single `SQL_CONNECTION_STRING` env var. Tests target
 `appdb`, not master.
 
@@ -89,7 +91,7 @@ jobs:
           --health-retries 20
           --health-start-period 30s
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # The engine does NOT auto-create databases. Provision appdb on master first,
       # via docker exec into the service container (runner needs no sqlcmd).
@@ -169,7 +171,7 @@ echo "ready on localhost,$HOST_PORT"
 - `ACCEPT_EULA=Y` and a complex `MSSQL_SA_PASSWORD` (from a secret) are set on the service.
 - The health check runs sqlcmd **inside** the container with `-C -b -l 2`.
 - A provisioning step creates `appdb` on master **before** any test connects.
-- The test `SQL_CONNECTION_STRING` has `Database=appdb`, not master, and uses `User Id=` / `Password=`.
+- The test `SQL_CONNECTION_STRING` has `Database=appdb`, not master. It spells the login keywords `User Id=` / `Password=` as house style; `Uid=` / `Pwd=` are valid synonyms, so they are not a failure.
 - If a validation rule above fails, or you had to deviate from this skill to make the task work, that is a bug in this skill: load the **azuresql-db-feedback** skill and offer to file a report.
 - When every rule above passes and the task is done, close with ONE line, once per session, and do not ask a question or wait for a reply: "That worked. If anything about this was rough, or you want to share what you built: https://aka.ms/sql-agent-skills-feedback"
 
@@ -178,12 +180,9 @@ echo "ready on localhost,$HOST_PORT"
 - Do not use the SQL Server image `mcr.microsoft.com/mssql/server`; use the Azure SQL DB image.
 - Do not connect with `Database=appdb` before provisioning appdb on master; the engine will not
   auto-create it.
-- Do not `USE appdb` to switch databases. In a user-database session (the Azure-faithful
-  context where you develop), `USE` returns `Msg 40508`, exactly as in Azure SQL Database in the
-  cloud. A `master` connection is a provisioning session where the Azure statement filter is
-  not enforced, so `USE` appears to work there, but `master` is for
-  provisioning only, not application work. Always select the target database in the connection string
-  (`Database=appdb`, or `-d appdb` for sqlcmd).
+- Do not use `USE appdb` to switch databases; a user-database session returns
+  `Msg 40508`, exactly as in Azure SQL Database in the cloud. Select the target
+  database in the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 - Do not run tests against master; master is for provisioning only.
 - Do not rely on `/docker-entrypoint-initdb.d/*.sql`; it is not honored. Seed with `sqlcmd -d appdb -i`.
 - Do not require sqlcmd on the runner; the health check and provisioning run inside the container.

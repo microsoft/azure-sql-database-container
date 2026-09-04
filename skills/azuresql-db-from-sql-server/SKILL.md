@@ -105,16 +105,16 @@ target database in the connection string (`Database=appdb`, or `-d appdb` for
 sqlcmd). Avoid `USE` to switch databases. In a user-database session (the
 Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly as
 in Azure SQL Database in the cloud. A `master` connection is a provisioning
-provisioning session where the Azure statement filter is not enforced, so `USE` appears to work there, but `master` is for provisioning
-only, not application work. Always select the target database in the connection
-string (`Database=appdb`, or `-d appdb` for sqlcmd). Standardize on one
-`SQL_CONNECTION_STRING` env var:
+session where the Azure statement filter is not enforced, so `USE` appears to work there, but `master` is for provisioning
+only, not application work. Standardize on one `SQL_CONNECTION_STRING` env var:
 
 ```
 Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
 ```
 
-Use `User Id=` / `Password=` / `Database=`, not `Uid=` / `Pwd=`. For sqlcmd use
+House style spells the keywords `User Id=` / `Password=` / `Database=`, which
+keeps the examples consistent. `Uid=` and `Pwd=` are documented SqlClient
+synonyms and work too. For sqlcmd use
 `-C` to trust the self-signed cert and `-d appdb` to pick the database.
 
 ### 6. Seed AFTER provisioning (no auto-init folder)
@@ -137,6 +137,19 @@ Flag and fix every hit. Full table in [references/sql-server-vs-azure-feature-ma
 - **Full Service Broker** cross-instance messaging: not supported.
 - **Cross-server distributed transactions** (MS DTC, linked servers): not supported.
 - **Windows Auth / NTLM / Integrated Security**: not supported; use SA / SQL auth.
+- **Instance-level tuning with `sp_configure`**: the procedure is **absent**, not
+  blocked. Calling it returns `Msg 2812` ("Could not find stored procedure
+  'sp_configure'"), which is a missing object rather than a refusal, so there is no
+  permission to grant and no flag to unblock. Delete the inherited tuning step; it
+  has no translation on this engine.
+- **`BACKUP` / `RESTORE`**: refused in every session with `Msg 40510`, exactly as
+  in Azure SQL Database in the cloud. A `.bak` is not a migration route into this
+  engine; use SqlPackage with a bacpac or dacpac (see the **azuresql-db-import**
+  skill).
+- **`ALTER DATABASE ... SET RECOVERY`**: refused with `Msg 40517`, which is the
+  other refusal shape. `ALTER DATABASE SET` itself is supported and only this
+  option is refused, so a carried-over configuration script can be half accepted
+  and leave the database in a state nobody intended. Drop the recovery-model step.
 
 ### 8. Verify identity
 
@@ -177,9 +190,11 @@ skill carries the rules the index imposes.
 - Do not rely on database auto-creation or on `/docker-entrypoint-initdb.d/*.sql`.
 - Do not use `USE appdb`; select the database in the connection string.
 - Do not call a non-x64 host "supported"; just add `--platform linux/amd64` on non-x64 hosts.
-- Do not use `Uid=` / `Pwd=`; use `User Id=` / `Password=`.
+- Prefer `User Id=` / `Password=` in the .NET-style string. That is house style, not a requirement: `Uid=` / `Pwd=` are valid synonyms.
 - Do not pass the vector dimension as a bind parameter.
 - Do not keep SQL Agent, FILESTREAM, full Service Broker, cross-server distributed transactions, or Windows Auth.
+- Do not go looking for a permission or a flag that makes `sp_configure` run. `Msg 2812` says the procedure is not there, so there is nothing to grant.
+- Do not carry over a `BACKUP`/`RESTORE` step (`Msg 40510`) or an `ALTER DATABASE ... SET RECOVERY` step (`Msg 40517`).
 
 ## References
 

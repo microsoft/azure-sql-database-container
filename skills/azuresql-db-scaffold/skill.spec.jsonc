@@ -1,0 +1,140 @@
+{
+  "id": "azuresql-db-scaffold",
+  "domain": "azure-sql-database-container",
+  "value": [
+    "not-in-training-data",
+    "corrects-a-wrong-assumption",
+    "multi-step-with-silent-failures"
+  ],
+  "correction": "Asked to bootstrap a new project with a local SQL database, an agent reaches for mcr.microsoft.com/mssql/server and a compose service copied from a Postgres skeleton, and the result looks right and is wrong in four ways at once. The image is a different product from the one the application will run against in Azure: the Azure SQL Database container reports EngineEdition 5 and Edition 'SQL Azure', and a scaffold built against the SQL Server image can use statements that this engine and the cloud both refuse. The database is assumed into existence: this engine does not auto-create a database on connect, so the first migration run fails against an engine that is working perfectly. The seed file is assumed to run itself, because the mounted /docker-entrypoint-initdb.d directory is a Postgres and MySQL convention that this image does not honour, so the scaffold reports success with an empty schema and nobody is told. And the database context is assumed to be switchable with USE, which in a user-database session is refused with error 40508 exactly as in Azure SQL Database in the cloud, so the target database belongs in the connection string and nowhere else.",
+  "value_declaration": {
+    "rationale": "This skill's kernel is four assumptions a copied skeleton carries in, each of which is false on this engine. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach project scaffolding, Compose skeletons and directory layout, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted.",
+    "covers": [
+      "the image being the Azure SQL Database engine at EngineEdition 5, not mcr.microsoft.com/mssql/server",
+      "the engine not auto-creating a database on connect, so the first migration run fails against an engine that is working perfectly",
+      "USE being refused with Msg 40508",
+      "the seed file not being run by the image, because the init-directory convention does not exist here",
+      "the native vector column type being available to a scaffold on this build"
+    ],
+    "does_not_cover": [
+      "project scaffolding, Compose skeletons and directory layout",
+      "choice of application framework or ORM"
+    ],
+    "decided_by": "Carlos Robles",
+    "decided_on": "2026-09-04",
+    "expires_when": "the-container-reaches-public-preview"
+  },
+  "posture": [
+    "read",
+    "write",
+    "execute",
+    "provision"
+  ],
+  "maturity": "preview",
+  "applies_to": [
+    "azure-sql-db-container"
+  ],
+  "related": [
+    "azuresql-db-container",
+    "azuresql-db-schema-migration",
+    "azuresql-db-seed",
+    "azuresql-db-connections",
+    "azuresql-db-sidecar",
+    "azuresql-db-dab"
+  ],
+  "validation": {
+    "target": "container",
+    "setup": [
+      "the Azure SQL Database container image pulled from the private preview registry with the pull-only credentials issued to the Private Preview cohort",
+      "a scratch user database, since the scaffold's whole point is that application work happens in a user database and never in master"
+    ],
+    "assert": [
+      "the generated compose file or run command names the Azure SQL Database engine image and never mcr.microsoft.com/mssql/server",
+      "the user database is created on a master connection before the ORM or migration tool opens a connection to it",
+      "the application reads one connection string from a single environment variable and the string names the user database",
+      "the connection string uses the User Id, Password and Database keywords rather than the Uid and Pwd aliases",
+      "every generated data access path is parameterised, and any vector dimension is written as a literal rather than bound",
+      "the seed step runs explicitly after the database exists rather than being mounted and assumed to run itself"
+    ],
+    "probes": [
+      {
+        "sql": "SELECT CAST(SERVERPROPERTY('EngineEdition') AS INT) AS engine_edition, CAST(SERVERPROPERTY('Edition') AS NVARCHAR(128)) AS edition;",
+        "expect": {
+          "rows": [
+            [
+              5,
+              "SQL Azure"
+            ]
+          ]
+        },
+        "why": "The identity check the skill tells the reader to run once the scaffold is up, and the only thing that distinguishes a correct scaffold from one pointed at the SQL Server image. The skill's central interception is worthless if these two properties do not read this way, because then the scaffold has quietly wired the project to a different product."
+      },
+      {
+        "sql": "USE master;",
+        "expect": {
+          "error": 40508
+        },
+        "why": "One of the three facts the skill says bites every scaffold. Microsoft Learn documents error 40508, severity 16, 'USE statement is not supported to switch between databases. Use a new connection to connect to a different database.', and states the refusal applies when a database other than the current one is named, which is why this probe names master rather than the scratch database the session is already in. If this ever succeeds the skill's advice to put the database in the connection string loses its reason."
+      },
+      {
+        "sql": "CREATE TABLE dbo.probe_scaffold_vec (id INT IDENTITY PRIMARY KEY CLUSTERED, embedding VECTOR(3) NOT NULL);\nINSERT INTO dbo.probe_scaffold_vec (embedding) VALUES (CAST(CAST(N'[1,0,0]' AS NVARCHAR(MAX)) AS VECTOR(3)));\nSELECT CAST(CASE WHEN VECTOR_DISTANCE('cosine', embedding, CAST(CAST(N'[0,1,0]' AS NVARCHAR(MAX)) AS VECTOR(3))) = 1 THEN 1 ELSE 0 END AS INT) AS orthogonal FROM dbo.probe_scaffold_vec;",
+        "expect": {
+          "rows": [
+            [
+              1
+            ]
+          ]
+        },
+        "why": "The vector section of this skill in one statement: the native VECTOR column type exists with a literal dimension in the DDL, the double cast through NVARCHAR(MAX) that the skill prescribes for inserts is accepted, and VECTOR_DISTANCE with the cosine metric is available. Two orthogonal unit vectors have cosine distance exactly 1, so the comparison returns an integer and does not turn the probe into a float equality argument. If the type or the function is not present, a scaffold that generates an embedding column produces a schema the engine will reject at migration time."
+      }
+    ]
+  },
+  "value_probe": {
+    "task": "Bootstrap a new web app with a local SQL database in Docker, so a teammate can clone the repo, run one command, and end up with the schema applied and the sample rows loaded. I want it to match what we run in Azure.",
+    "gate": "The answer must create the application database explicitly on a master connection before the first migration runs, and must run the seed file itself rather than relying on an entrypoint init directory to pick it up.",
+    "states": [
+      "the image is the Azure SQL Database container, which reports EngineEdition 5 and Edition 'SQL Azure', and it is set to platform linux/amd64 because the image is x64 only",
+      "the database is created on a master connection before any migration or seed step",
+      "the seed runs by invoking sqlcmd against the user database after that database exists",
+      "the target database is selected in the connection string and never with USE"
+    ],
+    "refutes": [
+      "that a SQL file mounted at /docker-entrypoint-initdb.d is executed on first start, when that is a Postgres and MySQL convention this image does not honour and the scaffold then reports success with an empty schema",
+      "that connecting with the database named in the connection string creates it, so the first migration run fails against an engine that is working perfectly",
+      "that a script can switch database context with USE, which a user database session refuses with Msg 40508 exactly as in Azure SQL Database in the cloud",
+      "that mcr.microsoft.com/mssql/server is the same product, when a scaffold built against it can use statements this engine and the cloud service both refuse"
+    ]
+  },
+  "triggering": {
+    "explicit": [
+      "Use the azuresql-db-scaffold skill",
+      "scaffold a new app with the Azure SQL Database container as its local database",
+      "bootstrap a FastAPI project wired to a local Azure SQL Database",
+      "create a new Next.js project with Prisma against Azure SQL Database locally",
+      "start a .NET Aspire project with a local Azure SQL Database"
+    ],
+    "implicit": [
+      "add a database to this new project",
+      "set up the local dev database for the app I am about to write",
+      "docker compose for the db and a first migration",
+      "my first migration fails saying it cannot open the database",
+      "wire up an ORM to SQL Server locally"
+    ],
+    "routing": [
+      "which image should the compose database service use",
+      "where does the connection string live in a fresh project",
+      "does the database get created for me when the app connects",
+      "how do I seed the schema on first run"
+    ],
+    "negative": [
+      "add a SQL database service to my existing compose stack without touching the other services",
+      "run my existing EF Core migrations against the container",
+      "put the Azure SQL Database container in my CI workflow as a service container",
+      "expose the tables in this database as a REST and GraphQL API",
+      "connect my existing app to Azure SQL Database in the cloud",
+      "write a serverless function that reacts to row changes",
+      "load a large CSV into an existing table",
+      "tune this slow query"
+    ]
+  }
+}

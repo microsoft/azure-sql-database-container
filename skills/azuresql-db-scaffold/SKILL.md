@@ -81,7 +81,8 @@ Apps read **one** env var, `SQL_CONNECTION_STRING` (replace `1433` with the `HOS
 Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
 ```
 
-Use `User Id=` / `Password=` / `Database=` (NOT `Uid=` / `Pwd=`). For sqlcmd use `-C` to trust
+House style spells the keywords `User Id=` / `Password=` / `Database=`; `Uid=` / `Pwd=` are
+documented SqlClient synonyms and work too. For sqlcmd use `-C` to trust
 the self-signed cert. For Prisma (NestJS / Next.js) the same instance is also expressed as a
 `sqlserver://` URL in `DATABASE_URL` (see snippets).
 

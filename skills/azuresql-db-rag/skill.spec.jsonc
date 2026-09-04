@@ -1,0 +1,166 @@
+{
+  "id": "azuresql-db-rag",
+  "domain": "azure-sql-database-container",
+  "value": ["not-in-training-data", "corrects-a-wrong-assumption", "multi-step-with-silent-failures"],
+  "correction": "Asked to build embeddings and similarity search against a local database, an agent adds a second datastore: pgvector, FAISS, Chroma or Pinecone. It does not need one. The Azure SQL Database container carries the native VECTOR(n) type and VECTOR_DISTANCE, so the vectors live in the same database as the rows they describe and the same transaction covers both. Three specifics are not guessable and each one fails in a way that costs an afternoon. The dimension in CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n)) is part of the type and must be a literal in the SQL text; passing it as a bind parameter is a syntax error, not a type error, so the message names the parameter and not the dimension. The declared dimension has a ceiling of 1998, which means a 3072 dimension embedding model does not fit in one vector column at all, and no ALTER COLUMN widens an existing one. And a connection to a user database is an Azure-faithful session, so USE returns Msg 40508 exactly as the cloud does and the database has to be chosen in the connection string. The second half of the correction is about the index. A DiskANN vector index is not theoretical on this engine: CREATE VECTOR INDEX builds here, at index version 3, in well under thirty seconds, and it needs no ALTER DATABASE SCOPED CONFIGURATION to do it. What it does need is at least 100 rows carrying a non-null vector, which is why a deployment that creates the index before loading data cannot work, and once it exists it takes things away: TRUNCATE TABLE, ALTER INDEX and data-tier package import are all refused for the life of the table, and a security policy can no longer be created on that table at all. The last one matters most for retrieval augmented generation, because the per tenant filter predicate on a chunk table is the whole defence against one customer retrieving another customer's text, and it cannot be added once the index is there. Finally, the ordinary ORDER BY VECTOR_DISTANCE shape does not read the index; only SELECT TOP (N) WITH APPROXIMATE over VECTOR_SEARCH does. Both return correct rows and neither raises anything, so the wrong shape passes every test at prototype scale and shows up later only as latency.",
+  "value_declaration": {
+    "rationale": "This skill's kernel is a set of vector specifics that fail with error numbers naming the wrong thing, so each costs an afternoon to rediscover. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach chunking, embedding model choice, prompt construction and retrieval-augmented generation architecture, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted.",
+    "covers": [
+      "the vector dimension being part of the type and required as a literal in the SQL text, with a bind parameter refused as a syntax error",
+      "the dimension floor this build enforces and the number it answers with, Msg 42266",
+      "the dimension ceiling and the truncation behaviour this build actually has",
+      "the vector index being refused against a table under row level security, with Msg 37579",
+      "exact and approximate vector search both building and running on this build"
+    ],
+    "does_not_cover": [
+      "chunking strategy, embedding model choice and prompt construction",
+      "retrieval-augmented generation architecture generally, which is abundant in training data"
+    ],
+    "decided_by": "Carlos Robles",
+    "decided_on": "2026-09-04",
+    "expires_when": "the-container-reaches-public-preview"
+  },
+  "posture": ["read", "write", "execute"],
+  "maturity": "preview",
+  "applies_to": ["azure-sql-db-container"],
+  "related": [
+    "azuresql-db-container",
+    "azuresql-db-local-to-cloud",
+    "azuresql-db-seed",
+    "azuresql-db-connections",
+    "azuresql-db-feedback"
+  ],
+  "value_probe": {
+    "task": "Our app already uses the local Azure SQL Database container. Add document search over the customer knowledge base: chunk the documents, embed them, and return the closest matches for a query. It is multi-tenant, so one customer must never get another customer's text back, and it needs to stay fast as the corpus grows.",
+    "gate": "The vectors must live in the same database as the rows they describe, using the native VECTOR(n) type and VECTOR_DISTANCE, and the per tenant row-level security policy must be created before any vector index, because it cannot be created afterwards.",
+    "states": [
+      "The Azure SQL Database container carries the native VECTOR(n) type and VECTOR_DISTANCE, so the chunks and their embeddings sit in one table and one transaction covers both.",
+      "The insert shape is CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n)) with n written as a literal in the SQL text, because the dimension is part of the type.",
+      "The declared dimension has a ceiling of 1998, so a 3072 dimension embedding model does not fit in one vector column, and no ALTER COLUMN widens an existing one, which makes the model choice a schema decision.",
+      "CREATE VECTOR INDEX with METRIC and TYPE = 'diskann' builds on this engine, at index version 3, in well under thirty seconds, and needs no ALTER DATABASE SCOPED CONFIGURATION to do it.",
+      "The index needs at least 100 rows carrying a non-null vector, Msg 42266, so the index step comes after the corpus load and never in the schema migration ahead of it.",
+      "Once the index exists it takes things away for the life of the table: TRUNCATE TABLE, ALTER INDEX and data-tier package import are refused, so a reload path that truncates stops working the day the index is added.",
+      "Only SELECT TOP (N) ... VECTOR_SEARCH ... WITH APPROXIMATE reads the index; the ordinary ORDER BY VECTOR_DISTANCE shape is exact and never touches it.",
+      "USE is refused with Msg 40508, so the database is chosen in the connection string."
+    ],
+    "refutes": [
+      "That a second datastore is needed, pgvector, FAISS, Chroma or Pinecone, alongside the relational database. It is not, and adding one splits the vectors away from the rows they describe and out of the transaction.",
+      "That vector indexing is unavailable or not ready on this engine, and full-scan top-k is the only option. CREATE VECTOR INDEX builds here, DiskANN included. Note that this skill's own SKILL.md currently asserts the opposite, so this refute is expected to fail the with-skill arm until the body is corrected.",
+      "That a vector index can be built on an empty table in the schema migration and populated afterwards. Under 100 rows it is refused with Msg 42266.",
+      "That the row-level security policy for tenant isolation can be added after the index. A security policy cannot be created on a table that already carries a vector index, Msg 37579, and this is the failure that lets one customer retrieve another customer's text.",
+      "That ORDER BY VECTOR_DISTANCE uses the vector index. It does not, it returns correct rows anyway, and nothing raises an error or a warning, so the wrong shape passes every test at prototype scale and surfaces later only as latency.",
+      "That the dimension can be passed as a bind parameter. It is a parse-time syntax error whose message names the parameter and not the dimension, which is why it reads as a driver bug in application code.",
+      "That a 3072 dimension model such as text-embedding-3-large fits in one vector column, or that an existing column can be widened later.",
+      "That a database scoped configuration such as PREVIEW_FEATURES has to be turned on before a vector column or a vector index will work."
+    ]
+  },
+  "validation": {
+    "target": "container",
+    "setup": [
+      "the Azure SQL Database container running, with a provisioned user database",
+      "a local embedding model reachable from application code, for the steps this skill hands to the application"
+    ],
+    "assert": [
+      "one dimension number appears in the column type, in the CAST literal and in the embedding call, and a test fails when they disagree",
+      "the dimension is never bound as a parameter",
+      "the vector index is created after the data load, never before it",
+      "any per tenant filter predicate on the chunk table is created before the vector index, because it cannot be created after",
+      "no reload path truncates a table that carries a vector index",
+      "no plan makes PREVIEW_FEATURES a precondition for a vector column or a vector index"
+    ],
+    "probes": [
+      {
+        "sql": "SELECT CAST(SERVERPROPERTY('EngineEdition') AS int) AS engine_edition, CAST(SERVERPROPERTY('Edition') AS nvarchar(128)) AS edition;",
+        "expect": { "rows": [[5, "SQL Azure"]] },
+        "why": "The identity check the skill opens with, made executable. Everything else in this sidecar is a claim about the Azure SQL Database engine, so if this probe does not return 5 and 'SQL Azure' the run happened against the wrong image and no other result in the lane means anything."
+      },
+      {
+        "sql": "CREATE TABLE dbo.probe_rag_build (id int IDENTITY(1,1) NOT NULL PRIMARY KEY CLUSTERED, content nvarchar(200) NOT NULL, embedding vector(5) NOT NULL);\nINSERT INTO dbo.probe_rag_build (content, embedding)\nSELECT CONCAT(N'chunk ', value), CAST(JSON_ARRAY(SIN(value * 1.0), COS(value * 1.0), SIN(value * 0.5), COS(value * 0.5), CAST(value * 0.001 AS float)) AS vector(5))\nFROM GENERATE_SERIES(1, 150);\nGO\nDECLARE @t0 datetime2(3) = SYSUTCDATETIME();\nCREATE VECTOR INDEX vi_probe_rag_build ON dbo.probe_rag_build (embedding) WITH (METRIC = 'cosine', TYPE = 'diskann');\nDECLARE @ms int = DATEDIFF(millisecond, @t0, SYSUTCDATETIME());\nSELECT JSON_VALUE(v.build_parameters, '$.Version') AS index_version,\n       CASE WHEN @ms < 30000 THEN 1 ELSE 0 END AS built_within_30s\nFROM sys.vector_indexes AS v\nJOIN sys.indexes AS i ON v.object_id = i.object_id AND v.index_id = i.index_id\nWHERE i.name = 'vi_probe_rag_build';",
+        "expect": { "rows": [["3", 1]] },
+        "why": "CREATE VECTOR INDEX builds on this container, at index version 3, in well under thirty seconds. SKILL.md said the opposite in two places until PR 150 corrected it on 2026-09-04; this probe is the evidence that settled it, and it stays so a future engine build that breaks the index cannot pass unnoticed. An empty result set here means the index did not build at all, which is the only outcome that would vindicate the skill's current wording."
+      },
+      {
+        "sql": "CREATE TABLE dbo.probe_rag_min (id int IDENTITY(1,1) NOT NULL PRIMARY KEY CLUSTERED, embedding vector(3) NOT NULL);\nINSERT INTO dbo.probe_rag_min (embedding)\nSELECT CAST(JSON_ARRAY(CAST(value AS float), 1.0, 2.0) AS vector(3)) FROM GENERATE_SERIES(1, 99);\nGO\nCREATE VECTOR INDEX vi_probe_rag_min ON dbo.probe_rag_min (embedding) WITH (METRIC = 'cosine', TYPE = 'diskann');",
+        "expect": { "error": 42266 },
+        "why": "99 rows is one short of the minimum. This is why a deployment script that creates the schema and its indexes before loading the corpus cannot work, and why the index step belongs after the seed step. Microsoft Learn states both the 100 row minimum and the number 42266 verbatim on the CREATE VECTOR INDEX page, including the sample message text."
+      },
+      {
+        "sql": "CREATE TABLE dbo.probe_rag_dim_ceiling (id int IDENTITY(1,1) NOT NULL PRIMARY KEY CLUSTERED, embedding vector(1998) NULL);\nDECLARE @over_ceiling_refused int = 0;\nBEGIN TRY\n  EXEC(N'CREATE TABLE dbo.probe_rag_dim_over (id int IDENTITY(1,1) NOT NULL PRIMARY KEY CLUSTERED, embedding vector(3072) NULL);');\nEND TRY\nBEGIN CATCH\n  SET @over_ceiling_refused = 1;\nEND CATCH\nSELECT @over_ceiling_refused AS over_ceiling_refused;",
+        "expect": { "rows": [[1]] },
+        "why": "The ceiling is 1998 dimensions, so a 3072 dimension embedding model does not fit in a vector column and the model choice is a schema decision, not a configuration one. The 1998 column outside the TRY block is the other half of the claim: if the ceiling were lower the batch fails before it reaches the SELECT. This probe deliberately asserts refusal rather than an error number, because the sibling project's measurement of the ceiling did not record one and inventing a number here would fail loudly for a reason nobody could check."
+      },
+      {
+        "sql": "CREATE TABLE dbo.probe_rag_trunc (id int IDENTITY(1,1) NOT NULL PRIMARY KEY CLUSTERED, embedding vector(5) NOT NULL);\nINSERT INTO dbo.probe_rag_trunc (embedding)\nSELECT CAST(JSON_ARRAY(SIN(value * 1.0), COS(value * 1.0), SIN(value * 0.5), COS(value * 0.5), CAST(value * 0.001 AS float)) AS vector(5))\nFROM GENERATE_SERIES(1, 150);\nGO\nCREATE VECTOR INDEX vi_probe_rag_trunc ON dbo.probe_rag_trunc (embedding) WITH (METRIC = 'cosine', TYPE = 'diskann');\nGO\nDECLARE @truncate_refused int = 0;\nBEGIN TRY\n  EXEC(N'TRUNCATE TABLE dbo.probe_rag_trunc;');\nEND TRY\nBEGIN CATCH\n  SET @truncate_refused = 1;\nEND CATCH\nSELECT @truncate_refused AS truncate_refused;",
+        "expect": { "rows": [[1]] },
+        "why": "What the index takes away. A corpus reload written before the index existed almost always truncates and re-inserts, and that pipeline stops working the day somebody adds the index. Refusal is asserted rather than a number: the sibling project measured a number for this, but it was not handed to this skill and Microsoft Learn states the restriction without one."
+      },
+      {
+        "sql": "CREATE TABLE dbo.probe_rag_rls (id int IDENTITY(1,1) NOT NULL PRIMARY KEY CLUSTERED, tenant sysname NOT NULL, embedding vector(5) NOT NULL);\nINSERT INTO dbo.probe_rag_rls (tenant, embedding)\nSELECT N'tenant_a', CAST(JSON_ARRAY(SIN(value * 1.0), COS(value * 1.0), SIN(value * 0.5), COS(value * 0.5), CAST(value * 0.001 AS float)) AS vector(5))\nFROM GENERATE_SERIES(1, 150);\nGO\nCREATE VECTOR INDEX vi_probe_rag_rls ON dbo.probe_rag_rls (embedding) WITH (METRIC = 'cosine', TYPE = 'diskann');\nGO\nCREATE FUNCTION dbo.fn_probe_rag_rls (@tenant AS sysname)\nRETURNS TABLE WITH SCHEMABINDING\nAS RETURN SELECT 1 AS fn_result WHERE @tenant = USER_NAME();\nGO\nCREATE SECURITY POLICY dbo.secpol_probe_rag_rls\nADD FILTER PREDICATE dbo.fn_probe_rag_rls(tenant) ON dbo.probe_rag_rls\nWITH (STATE = ON);",
+        "expect": { "error": 37579 },
+        "why": "The most expensive single fact in this skill and the one Microsoft Learn documents nowhere. A security policy cannot be created on a table that already carries a vector index, so the per tenant filter predicate that stops one customer's retrieval returning another customer's chunks has to exist before the index does. Discovered by measurement in a sibling project rather than from documentation, which is exactly why it needs a probe: if a future engine build allows the policy, this probe passing silently is the signal that the ordering constraint has been lifted."
+      },
+      {
+        "sql": "SELECT COUNT(*) AS setting_exists FROM sys.database_scoped_configurations WHERE name = 'PREVIEW_FEATURES';",
+        "expect": { "rows": [[1]] },
+        "why": "This asserts that the setting exists and deliberately asserts nothing about its value, because the value is not deterministic on this container: six freshly created databases on one container were measured reading 0, 1, 0, 1, 1, 1. The claim the skill actually needs is the index build probe above, which builds the index without anybody running ALTER DATABASE SCOPED CONFIGURATION at all. Do not turn this into a value assertion on the strength of one sample."
+      },
+      {
+        "sql": "CREATE TABLE dbo.probe_rag_exact (id int IDENTITY(1,1) NOT NULL PRIMARY KEY CLUSTERED, embedding vector(5) NOT NULL);\nINSERT INTO dbo.probe_rag_exact (embedding)\nSELECT CAST(JSON_ARRAY(SIN(value * 1.0), COS(value * 1.0), SIN(value * 0.5), COS(value * 0.5), CAST(value * 0.001 AS float)) AS vector(5))\nFROM GENERATE_SERIES(1, 150);\nGO\nCREATE VECTOR INDEX vi_probe_rag_exact ON dbo.probe_rag_exact (embedding) WITH (METRIC = 'cosine', TYPE = 'diskann');\nGO\nDECLARE @q vector(5) = (SELECT embedding FROM dbo.probe_rag_exact WHERE id = 42);\nSELECT TOP (1) id FROM dbo.probe_rag_exact ORDER BY VECTOR_DISTANCE('cosine', embedding, @q), id;",
+        "expect": { "rows": [[42]] },
+        "why": "The query shape this skill teaches. It returns the right row, and that is the point: it is exact, it is correct, and it never reads the vector index that is sitting on the table. Paired with the WITH APPROXIMATE probe below, this is the measured form of why the wrong shape survives every test at prototype scale. Row 42 is its own nearest neighbour, so the assertion is on an id rather than on a distance, which keeps sqlcmd's float formatting out of the result."
+      },
+      {
+        "sql": "CREATE TABLE dbo.probe_rag_approx (id int IDENTITY(1,1) NOT NULL PRIMARY KEY CLUSTERED, embedding vector(5) NOT NULL);\nINSERT INTO dbo.probe_rag_approx (embedding)\nSELECT CAST(JSON_ARRAY(SIN(value * 1.0), COS(value * 1.0), SIN(value * 0.5), COS(value * 0.5), CAST(value * 0.001 AS float)) AS vector(5))\nFROM GENERATE_SERIES(1, 150);\nGO\nCREATE VECTOR INDEX vi_probe_rag_approx ON dbo.probe_rag_approx (embedding) WITH (METRIC = 'cosine', TYPE = 'diskann');\nGO\nDECLARE @q vector(5) = (SELECT embedding FROM dbo.probe_rag_approx WHERE id = 42);\nSELECT TOP (1) WITH APPROXIMATE t.id\nFROM VECTOR_SEARCH(TABLE = dbo.probe_rag_approx AS t, COLUMN = embedding, SIMILAR_TO = @q, METRIC = 'cosine') AS r\nORDER BY r.distance;",
+        "expect": { "rows": [[42]] },
+        "why": "The only shape that reads the index, returning the same row as the exact scan above. Two probes rather than one because the interesting result is that they agree: the engine gives no error, no warning and no different answer to tell an author which of the two they wrote. This probe asserts the row, not the plan operator, because asserting an execution plan operator by its XML name would be guessing a token the way a wrong error number guesses a number."
+      },
+      {
+        "sql": "DECLARE @dimension_as_parameter_refused int = 0;\nBEGIN TRY\n  EXEC sp_executesql N'CREATE TABLE dbo.probe_rag_bound_dim (id int NOT NULL, embedding vector(@dim) NULL);', N'@dim int', @dim = 768;\nEND TRY\nBEGIN CATCH\n  SET @dimension_as_parameter_refused = 1;\nEND CATCH\nSELECT @dimension_as_parameter_refused AS dimension_as_parameter_refused;",
+        "expect": { "rows": [[1]] },
+        "why": "The skill's loudest instruction, made executable: the dimension is part of the type and has to be a literal in the SQL text, so a bound parameter in its place is refused at parse time. This is the server side of the same refusal a driver reports as 'Incorrect syntax near' followed by a parameter name, which is what makes it confusing in application code: the message names the parameter and never mentions the dimension. Refusal is asserted rather than a number because the skill's own text quotes message wording, not a number."
+      },
+      {
+        "sql": "USE master;",
+        "expect": { "error": 40508 },
+        "why": "The scratch database this probe runs in is a user database, which is an Azure-faithful session, so USE is refused exactly as it is in Azure SQL Database in the cloud. The skill repeats this instruction three times, and this is the one probe that settles it. If it ever succeeds, the runner connected to master, and every other probe in this file ran in a provisioning session where the Azure statement filter is not enforced."
+      },
+      {
+        "cmd": "/opt/mssql-tools18/bin/sqlcmd -?",
+        "where": "container",
+        "expect": { "succeeds": true },
+        "why": "Every command in this skill hardcodes this absolute path inside the image rather than relying on PATH. The claim is that the tools image carries sqlcmd at exactly that location, so a moved or renamed tools directory in a future image breaks every code block in the skill and this is the cheapest way to see it. It runs in the container, not on the host, because the path is the image's and not a developer's."
+      }
+    ]
+  },
+  "triggering": {
+    "explicit": [
+      "Use the azuresql-db-rag skill",
+      "Store embeddings in the Azure SQL Database container and search them",
+      "Build a local RAG prototype on the Azure SQL Database container",
+      "Add a VECTOR column and run a cosine similarity query locally"
+    ],
+    "implicit": [
+      "I want semantic search over my documents without standing up a vector database",
+      "where should I keep embeddings for a chatbot that already has a SQL database",
+      "find the most similar documents to this query, locally, with no cloud account",
+      "my insert fails with a syntax error naming a parameter when I set the vector dimension",
+      "I picked a 3072 dimension embedding model, will that work",
+      "my similarity search got slow after the corpus grew",
+      "I need per customer isolation on the chunk table my retrieval reads"
+    ],
+    "routing": [
+      "prototype retrieval augmented generation offline before any Azure subscription exists",
+      "keep the embeddings in the same transaction as the rows they describe"
+    ],
+    "negative": [
+      "Set up a local PostgreSQL database with pgvector using docker compose",
+      "Provision an Azure SQL Database in my Azure subscription",
+      "Connect to SQL Server on my company network",
+      "Start the Azure SQL Database container and check it is ready",
+      "Load a CSV of orders into my local database",
+      "Report a bug in one of the azuresql-db skills",
+      "Move my working local application to Azure SQL Database in the cloud",
+      "Write the docker-compose file for my local development database"
+    ]
+  }
+}

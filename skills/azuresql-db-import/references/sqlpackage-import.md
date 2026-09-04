@@ -61,9 +61,10 @@ Useful flags:
 - For Publish (dacpac): `/p:BlockOnPossibleDataLoss=false` only if you accept
   data loss on an existing populated target.
 
-Connection string rules (canonical): use `Server=localhost,$HOST_PORT`,
-`User Id=`, `Password=`, `Database=appdb`, `TrustServerCertificate=true`. Do NOT
-use `Uid=`/`Pwd=`. Never target `Database=master` for the import.
+Connection string shape: `Server=localhost,$HOST_PORT`, `User Id=`, `Password=`,
+`Database=appdb`, `TrustServerCertificate=true`. The long keyword spelling is
+house style; `Uid=`/`Pwd=` are valid synonyms. Never target `Database=master`
+for the import.
 
 ## Container-based fallback (no local SqlPackage)
 
@@ -91,7 +92,7 @@ Then run SqlPackage from a machine that has it, targeting `localhost,$HOST_PORT`
   Avoid `USE` to switch databases. In a user-database session (the
   Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly as
   in Azure SQL Database in the cloud. A `master` connection is a provisioning
-  provisioning session where the Azure statement filter is not enforced, so `USE` appears to work there, but `master` is for provisioning
+  session where the Azure statement filter is not enforced, so `USE` appears to work there, but `master` is for provisioning
   only, not application work. Always select the target database in the connection
   string (`Database=appdb`, or `-d appdb` for sqlcmd).
 - **"Element ... is not supported in Microsoft Azure SQL Database v12"**: the
@@ -106,13 +107,8 @@ Because this is the Azure SQL Database engine (`EngineEdition = 5`,
 `Edition = 'SQL Azure'`), SQL Server-only features will not import:
 
 - Cross-database three-part-name references and most cross-DB queries.
-- `USE <db>`: avoid `USE` to switch databases. In a user-database session
-  (the Azure-faithful context where you develop), `USE` returns `Msg 40508`,
-  exactly as in Azure SQL Database in the cloud. A `master` connection is a
-  provisioning session where the Azure statement filter is not enforced, so
-  `USE` appears to work there, but `master` is for
-  provisioning only, not application work. Always select the target database in the
-  connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
+- `USE <db>`: a user-database session returns `Msg 40508` (see the entry above).
+  Select the target database in the connection string instead.
 - Server-scoped objects: SQL Agent jobs, server logins, linked servers,
   filestream, some CLR, explicit filegroup/physical-file placement.
 - Unsupported collations or compatibility-level features from the source.

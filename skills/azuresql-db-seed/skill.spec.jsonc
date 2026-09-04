@@ -1,0 +1,149 @@
+{
+  "id": "azuresql-db-seed",
+  "domain": "azure-sql-database-container",
+  "value": [
+    "corrects-a-wrong-assumption",
+    "multi-step-with-silent-failures"
+  ],
+  "correction": "Asked to load a CSV into this engine, an agent writes BULK INSERT against a path on the machine and expects it to read the file. It cannot. This engine reads bulk data only from Azure Blob Storage, through a database scoped credential and an external data source, and a local path is refused with Msg 12713. That is Azure SQL Database parity rather than a container limitation, so the workaround is not to find the right path, it is to change tool: bcp streams the file over the connection from the client side, and the driver seeders do the same. The second habit is seeding in whatever order the tables were written, which fails on the first child row whose parent does not exist yet with Msg 547, and the repair an agent then reaches for is to disable the constraints, which loads the data and leaves the referential integrity of the fixture unproven. The third is generating volume with a row-by-row loop, where a set-based tally produces the same thousand rows in one statement. Underneath all three sits the container's own rule: appdb does not exist until it is created on a master connection, and no seed can run before it does.",
+  "value_declaration": {
+    "rationale": "This skill's kernel is that the tool an agent reaches for cannot read a local file at all, and the failure names a path rather than the rule. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach reading and generating CSV data, and driver-side batch insert code, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted.",
+    "covers": [
+      "BULK INSERT from a local path being refused with Msg 12713, because this engine reads bulk data from Azure Blob Storage only",
+      "OPENROWSET BULK from a local path being refused the same way, so it is not the workaround it looks like",
+      "bcp being present in the image and streaming from the client side, which is the change of tool the situation actually needs",
+      "parent-before-child ordering, whose failure is Msg 547 and names a constraint rather than an ordering rule"
+    ],
+    "does_not_cover": [
+      "reading and generating CSV data, and driver-side batch insert code",
+      "the general practice of seeding tables in dependency order"
+    ],
+    "decided_by": "Carlos Robles",
+    "decided_on": "2026-09-04",
+    "expires_when": "the-container-reaches-public-preview"
+  },
+  "posture": [
+    "write",
+    "execute"
+  ],
+  "maturity": "preview",
+  "applies_to": [
+    "azure-sql-db-container"
+  ],
+  "related": [
+    "azuresql-db-container",
+    "azuresql-db-import",
+    "azuresql-db-scaffold"
+  ],
+  "value_probe": {
+    "task": "I have customers.csv and orders.csv sitting on my laptop and an empty appdb in the local Azure SQL Database container. Load both files into it, then generate about a thousand more synthetic orders on top so the dashboard has something to render. Give me something I can re-run.",
+    "gate": "The file load must move off the engine and onto a client-side tool such as bcp or a driver-based seeder, and the inserts must go parents before children rather than switching the foreign keys off.",
+    "states": [
+      "This engine reads bulk data only from Azure Blob Storage, through a database scoped credential and an external data source, so a path on the developer's machine is never a valid source.",
+      "bcp ships in the image at /opt/mssql-tools18/bin/bcp and streams the file over the connection from the client side, which is why it works where the engine-side read does not.",
+      "This is Azure SQL Database parity rather than a container limitation, so the same constraint applies in the cloud.",
+      "Parents are inserted before children, and generated identity values are captured with OUTPUT ... INTO a table variable so child rows can resolve their parents.",
+      "A thousand rows are generated set-based from a tally, for example TOP (1000) ROW_NUMBER() over a cross join of sys.all_objects, in one statement.",
+      "The seed is idempotent, and appdb has to exist, created on a master connection, before any seed can run."
+    ],
+    "refutes": [
+      "That BULK INSERT can read a path on the machine, either the host path or a path inside the container. It is refused with Msg 12713 regardless of whether the file is there.",
+      "That OPENROWSET(BULK ...) is the way round the BULK INSERT refusal. It is refused the same way, with Msg 12713, and the message says OPENROWSET is not allowed to read local files.",
+      "That copying the CSV into the container with docker cp makes the path valid. The restriction is on the engine reading local files at all, not on the file being missing.",
+      "That the foreign key failure, Msg 547, is best repaired by disabling or NOCHECKing the constraints for the load. That loads the data and leaves the referential integrity of the fixture unproven.",
+      "That volume is generated with a WHILE loop of single-row INSERTs, when a set-based tally produces the same thousand rows in one statement.",
+      "That a seed can be dropped into an init directory to run at container start."
+    ]
+  },
+  "validation": {
+    "target": "container",
+    "probes": [
+      {
+        "sql": "SELECT CAST(SERVERPROPERTY('EngineEdition') AS int) AS engine_edition, CAST(SERVERPROPERTY('Edition') AS nvarchar(128)) AS edition;",
+        "expect": {
+          "rows": [
+            [
+              5,
+              "SQL Azure"
+            ]
+          ]
+        },
+        "why": "The self-check the skill puts in front of every other instruction. Engine edition 5 with edition 'SQL Azure' is the Azure SQL Database engine; the SQL Server image mcr.microsoft.com/mssql/server returns different values, so any other answer means the lane ran against the wrong engine and every probe below it is measuring something else."
+      },
+      {
+        "sql": "CREATE TABLE dbo.probe_seed_bulk_stage (full_name nvarchar(200) NULL, country nvarchar(100) NULL);\nBULK INSERT dbo.probe_seed_bulk_stage FROM '/tmp/probe_authors.csv'\n  WITH (FORMAT = 'CSV', FIRSTROW = 2, FIELDTERMINATOR = ',', ROWTERMINATOR = '0x0a');",
+        "expect": {
+          "error": 12713
+        },
+        "why": "The strongest claim in this skill, and the one an agent gets wrong by default because it is right on SQL Server. Measured in a sibling project on this image: BULK INSERT from a local path fails with Msg 12713, and only Azure Blob Storage is a valid source. The path deliberately does not exist, because the point is that the engine refuses to read local files at all rather than failing to find one: a missing-file error here instead of 12713 would mean the restriction has been lifted and the skill's routing to bcp needs revisiting."
+      },
+      {
+        "sql": "SELECT * FROM OPENROWSET(BULK N'/tmp/probe_authors.csv', SINGLE_CLOB) AS probe_file;",
+        "expect": {
+          "error": 12713
+        },
+        "why": "references/seed-snippets.md extends the same claim to OPENROWSET(BULK ...) and quotes the message text, OPENROWSET is not allowed to read local files, against Msg 12713. The BULK INSERT form is the one measured directly in the sibling project; this is the skill's own claim about the second spelling of the same operation, and it is separated so a divergence between the two shows up as a divergence rather than being hidden inside one probe."
+      },
+      {
+        "sql": "CREATE TABLE dbo.probe_seed_author (author_id int NOT NULL PRIMARY KEY);\nCREATE TABLE dbo.probe_seed_book (book_id int NOT NULL PRIMARY KEY, author_id int NOT NULL CONSTRAINT FK_probe_seed_book_author REFERENCES dbo.probe_seed_author(author_id));\nINSERT INTO dbo.probe_seed_book (book_id, author_id) VALUES (1, 999);",
+        "expect": {
+          "error": 547
+        },
+        "why": "The skill states that referential integrity is enforced and that a child row inserted before its parent fails with Msg 547, which is the whole reason seeds are written parent first. This builds the smallest fixture that can prove it and inserts the orphan. If it ever succeeded, the foreign-key ordering rule would be advice with nothing behind it, and a seed that is quietly wrong is exactly the failure this skill is meant to prevent."
+      },
+      {
+        "sql": "CREATE TABLE dbo.probe_seed_volume_author (author_id int IDENTITY(1,1) PRIMARY KEY, full_name nvarchar(200) NOT NULL);\nDECLARE @authors TABLE (author_id int, full_name nvarchar(200));\nINSERT INTO dbo.probe_seed_volume_author (full_name)\nOUTPUT inserted.author_id, inserted.full_name INTO @authors (author_id, full_name)\nVALUES (N'Ada Sample'), (N'Grace Fixture'), (N'Alan Seed');\nSELECT COUNT(*) AS captured FROM @authors;",
+        "expect": {
+          "rows": [
+            [
+              3
+            ]
+          ]
+        },
+        "why": "The multi-table recipe in references/seed-snippets.md depends on capturing generated identity values with OUTPUT ... INTO a table variable, so children can be resolved against the parents just inserted. That is the step that makes the seed idempotent and order-correct, and it is the step most likely to be refused by a restricted surface. This runs the pattern exactly as the reference writes it and counts what came back."
+      },
+      {
+        "sql": "SELECT COUNT(*) AS generated FROM (SELECT TOP (1000) ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS rn FROM sys.all_objects AS a CROSS JOIN sys.all_objects AS b) AS t;",
+        "expect": {
+          "rows": [
+            [
+              1000
+            ]
+          ]
+        },
+        "why": "The generate-a-thousand-rows recipe fans out set-based from a tally built by cross joining sys.all_objects with itself, and the reference asserts that this guarantees far more than a thousand candidate rows. On a trimmed platform catalogue that is an assumption rather than a certainty, and if the catalogue were small enough the recipe would silently produce fewer rows than asked for rather than failing. This measures the count the recipe promises."
+      },
+      {
+        "cmd": "/opt/mssql-tools18/bin/bcp -v",
+        "where": "container",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "bcp is the answer this skill gives once BULK INSERT has refused the local file, so the claim that the image ships it matters as much as the refusal itself. Where this probe runs is half the claim: bcp is in the image and not on the host, so run on the host it fails with command not found, which is the finding rather than a bug. -v prints the version and needs no connection, so this measures the presence of the tool and says nothing about it reaching the engine."
+      }
+    ]
+  },
+  "triggering": {
+    "explicit": [
+      "Seed appdb with realistic sample data",
+      "Write a seed script for these tables",
+      "Generate a thousand rows of test data in the local database",
+      "Bulk load this CSV into the container database",
+      "Add fixtures so the app has something to render"
+    ],
+    "implicit": [
+      "My BULK INSERT cannot find the file even though the path is right there in the container",
+      "The insert fails complaining about a foreign key and I do not see why",
+      "The app runs but every list page is empty",
+      "I need believable customer names and addresses for a demo, not real ones",
+      "My seed script doubles the rows every time I run it"
+    ],
+    "negative": [
+      "Import my production bacpac into the local container",
+      "Create a least-privilege login for the application",
+      "Set up a CI job that runs the tests against a database service container",
+      "Write a migration that adds a column without downtime",
+      "Explain how connection pooling works"
+    ]
+  }
+}

@@ -49,14 +49,14 @@ wrong image. Use the image below instead.
 2. Avoid `USE` to switch databases. In a user-database session (the
    Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly
    as in Azure SQL Database in the cloud. A `master` connection is a provisioning
-   provisioning session where the Azure statement filter is not enforced, so
+   session where the Azure statement filter is not enforced, so
    `USE` appears to work there, but `master` is for
    provisioning only, not application work. Always select the target database in
    the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 3. A `master` connection is for provisioning only. Do real work on `appdb`.
 
-Standard connection string (use `User Id=`/`Password=`/`Database=`, never
-`Uid=`/`Pwd=`):
+Standard connection string. House style spells it `User Id=`/`Password=`/`Database=`;
+`Uid=`/`Pwd=` are documented SqlClient synonyms and work too.
 
 ```
 Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
@@ -111,15 +111,18 @@ embedding service changes only the endpoint and the dimension `n`, nothing else.
 ```python
 import requests
 
-EMBED_URL = "http://localhost:11434/api/embeddings"
+EMBED_URL = "http://localhost:11434/api/embed"
 EMBED_MODEL = "nomic-embed-text"   # 768 dims
 EMBED_DIM = 768
 
 def embed(text: str) -> list[float]:
     # Pluggable: swap EMBED_URL/EMBED_MODEL/EMBED_DIM for a cloud endpoint.
-    r = requests.post(EMBED_URL, json={"model": EMBED_MODEL, "prompt": text})
+    # /api/embed takes "input" and returns "embeddings", a LIST of vectors (one per
+    # input), so index [0] for a single string. The older /api/embeddings route took
+    # "prompt" and returned a flat "embedding"; it still answers but is superseded.
+    r = requests.post(EMBED_URL, json={"model": EMBED_MODEL, "input": text})
     r.raise_for_status()
-    return r.json()["embedding"]
+    return r.json()["embeddings"][0]
 ```
 
 ## Step 4: insert embeddings (dimension is a LITERAL)
@@ -152,8 +155,9 @@ with pyodbc.connect(CONN) as conn:
     conn.commit()
 ```
 
-The ODBC connection string uses `Uid=`/`Pwd=` because that is ODBC's own keyword
-set; application-level config strings use the canonical `User Id=`/`Password=`.
+The ODBC connection string uses `Uid=`/`Pwd=` because ODBC is a different grammar
+with its own keyword set. Application-level config strings spell it
+`User Id=`/`Password=` as house style.
 
 ## Step 5: top-k similarity search (cosine)
 
@@ -330,12 +334,9 @@ choice once the table is large enough for a full scan to hurt.
   not this engine.
 - Do not pass the vector dimension as a bind parameter; it fails with
   `Incorrect syntax near '@P3'`. Interpolate it as a literal.
-- Avoid `USE` to switch databases. In a user-database session (the
-  Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly
-  as in Azure SQL Database in the cloud. A `master` connection is a provisioning
-  provisioning session where the Azure statement filter is not enforced, so `USE` appears to work there, but `master` is for provisioning
-  only, not application work. Always select the target database in the connection
-  string (`Database=appdb`, or `-d appdb` for sqlcmd).
+- Do not use `USE appdb` to switch databases; a user-database session returns
+  `Msg 40508`, exactly as in Azure SQL Database in the cloud. Select the target
+  database in the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 - Do not run `CREATE VECTOR INDEX` without `SET QUOTED_IDENTIFIER ON`; the error it raises
   names indexed views and spatial indexes and never mentions the setting.
 - Do not plan a vector index and a security policy on the same table on the container.

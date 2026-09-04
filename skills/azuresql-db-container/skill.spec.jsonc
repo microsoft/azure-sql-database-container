@@ -1,0 +1,177 @@
+{
+  "id": "azuresql-db-container",
+  "domain": "azure-sql-database-container",
+  "value": [
+    "not-in-training-data",
+    "corrects-a-wrong-assumption",
+    "changes-too-fast-to-memorize"
+  ],
+  "correction": "Asked to run Azure SQL Database locally, or simply to add a local SQL database to a project, an agent reaches for mcr.microsoft.com/mssql/server and calls it done. That is SQL Server, a different product with a different engine edition and a different supported surface, so code that passes locally can still fail the first time it meets the cloud. The Azure SQL Database container is a separate image in a private preview registry, and it behaves like the platform rather than like the boxed engine in three ways an agent consistently gets wrong. It does not create a database when a connection names one, so the database has to be created on a master connection first. It refuses USE in a user-database session, so the database is selected in the connection string and never in a statement. It runs no seed directory, because /docker-entrypoint-initdb.d is a Postgres and MySQL convention that this image does not honour, and a seed placed there runs silently never. A fourth belief costs the most time: that a container reporting Up is a container that is serving. A password that fails the complexity policy leaves the container Up while the engine inside it never starts, and every connection then fails in a way that reads like a networking fault.",
+  "value_declaration": {
+    "rationale": "This skill's kernel is the whole set of ways this image behaves like the platform rather than like the boxed engine. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach Docker run and Compose syntax, port publishing, volume mounts and the shape of a readiness loop, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted.",
+    "covers": [
+      "the engine never creating a database when a connection names one, so it is created on a master connection first",
+      "USE being refused in a user-database session with Msg 40508",
+      "BACKUP and RESTORE being refused with Msg 40510",
+      "sp_configure being absent rather than blocked, so the engine answers Msg 2812 and there is nothing to be permitted to call",
+      "there being no msdb and therefore no SQL Server Agent on this engine",
+      "/docker-entrypoint-initdb.d being absent from the image, so a seed placed there runs silently never",
+      "the native VECTOR(n) type and VECTOR_DISTANCE being present on this build",
+      "a container reporting Up while the engine inside it never started, which is what a password failing the complexity policy produces"
+    ],
+    "does_not_cover": [
+      "Docker run and Compose syntax, port publishing and volume mounts",
+      "retry with backoff as a pattern, as distinct from the fact that Up is not serving"
+    ],
+    "decided_by": "Carlos Robles",
+    "decided_on": "2026-09-04",
+    "expires_when": "the-container-reaches-public-preview"
+  },
+  "posture": [
+    "provision",
+    "execute",
+    "inspect"
+  ],
+  "maturity": "preview",
+  "applies_to": [
+    "azure-sql-db-container"
+  ],
+  "related": [
+    "azuresql-db-connections",
+    "azuresql-db-auth",
+    "azuresql-db-seed",
+    "azuresql-db-import",
+    "azuresql-db-testing"
+  ],
+  "value_probe": {
+    "task": "We are shipping this service on Azure SQL Database next quarter. Set up the database locally in Docker so development runs against the same thing we deploy to. Add the service to docker-compose.yml, have it create an appdb database and run my schema.sql on first start, and give me the connection string my app should use.",
+    "gate": "The answer must reach for the Azure SQL Database container image rather than mcr.microsoft.com/mssql/server, and must create appdb explicitly on a master connection because this engine creates no database on its own.",
+    "states": [
+      "The image is the Azure SQL Database container from the preview registry, and the identity is confirmed with SELECT SERVERPROPERTY('EngineEdition') returning 5 and SERVERPROPERTY('Edition') returning 'SQL Azure'.",
+      "The database is created with CREATE DATABASE appdb over a connection to master, before anything else connects.",
+      "The application selects the database in the connection string, in Initial Catalog or Database, and never with a USE statement.",
+      "Schema and seed run as an explicit step the developer or compose file invokes, because the image runs no init directory.",
+      "Readiness is a retry loop that polls the engine with a real query until it answers, not a fixed sleep and not the container reporting Up.",
+      "The SA password must satisfy the complexity policy, and Encrypt plus a local-only TrustServerCertificate belong on the local connection string."
+    ],
+    "refutes": [
+      "That mcr.microsoft.com/mssql/server is the Azure SQL Database image. It is SQL Server, a different product with a different engine edition and a different supported surface.",
+      "That a .sql file placed in /docker-entrypoint-initdb.d is executed at startup. That is a Postgres and MySQL convention, the directory is not in this image, and a seed placed there runs silently never.",
+      "That naming a database in the connection string causes the engine to create it. It does not, and the connection simply fails until the database has been created on master.",
+      "That USE appdb selects the database. In a user-database session it is refused with Msg 40508.",
+      "That a container reporting Up is a container that is serving. A password that fails the complexity policy leaves the container Up while the engine inside it never starts, and every connection then fails looking like a networking fault.",
+      "That sp_configure or RECONFIGURE is available for tuning the local engine. sp_configure is absent rather than blocked, and the engine answers Msg 2812.",
+      "That SQL Server Agent is available for scheduling local jobs. There is no Agent on this engine and no msdb database."
+    ]
+  },
+  "validation": {
+    "target": "container",
+    "probes": [
+      {
+        "sql": "SELECT CAST(SERVERPROPERTY('EngineEdition') AS int) AS engine_edition, CAST(SERVERPROPERTY('Edition') AS nvarchar(128)) AS edition;",
+        "expect": {
+          "rows": [
+            [
+              5,
+              "SQL Azure"
+            ]
+          ]
+        },
+        "why": "The self-check the skill puts in front of every other instruction. Engine edition 5 with edition 'SQL Azure' is the Azure SQL Database engine; the SQL Server image mcr.microsoft.com/mssql/server returns different values, so any other answer means the lane ran against the wrong engine and every probe below it is measuring something else."
+      },
+      {
+        "sql": "USE master;",
+        "expect": {
+          "error": 40508
+        },
+        "why": "The skill states that in a user-database session USE returns Msg 40508, exactly as in Azure SQL Database in the cloud, and that the fix is always to select the database in the connection string. Every probe here runs against a scratch user database, which is the session where the Azure statement filter is enforced. If this ever succeeds, the filter is not being applied to the lane's session and the skill's central connection-model rule has stopped being true locally."
+      },
+      {
+        "sql": "SELECT CASE WHEN DB_NAME() = 'master' THEN 1 ELSE 0 END AS running_on_master;",
+        "expect": {
+          "rows": [
+            [
+              0
+            ]
+          ]
+        },
+        "why": "The skill's third connection-model fact is that a master connection is for provisioning only and that real work happens on the user database, because master is the session where the Azure statement filter is not enforced. This probe asserts that the lane itself obeys that rule. If it returns 1, the refusal probes around it prove nothing: they would be measuring a provisioning session, which is exactly the session where the skill says the refusals do not appear."
+      },
+      {
+        "sql": "DECLARE @stmt nvarchar(max) = N'BACKUP DATABASE ' + QUOTENAME(DB_NAME()) + N' TO DISK = ''/var/opt/mssql/data/probe_backup.bak''';\nEXEC (@stmt);",
+        "expect": {
+          "error": 40510
+        },
+        "why": "references/connection-model.md and references/paas-parity-checklist.md both state that BACKUP and RESTORE are not supported in any session and return Msg 40510, and that this matches Azure SQL Database in the cloud. Msg 40510 is the refusal of a whole statement, as distinct from Msg 40517, which refuses one option of a statement the engine does support. The database name is built from DB_NAME() so the refusal is measured against the scratch database this lane actually holds, not against master, where a different rule could produce a different number."
+      },
+      {
+        "sql": "EXEC sp_configure;",
+        "expect": {
+          "error": 2812
+        },
+        "why": "Measured on this image in a sibling project: sp_configure is absent rather than refusing, so the engine answers with Msg 2812, could not find stored procedure. It is worth a round trip because the failure mode is misread constantly. An agent that sees a refusal assumes a permission or a filter and goes looking for a way to be allowed, when there is nothing there to be allowed to call. The parity checklist used to list RECONFIGURE among the statements the Azure filter blocks, which read as a refusal and blurred the two failures together; it now records the absence instead, and this probe pins it. If this ever returns a different number, the surface has changed and the parity checklist needs re-reading rather than the probe being patched."
+      },
+      {
+        "sql": "SELECT COUNT(*) AS msdb_present FROM sys.databases WHERE name = 'msdb';",
+        "expect": {
+          "rows": [
+            [
+              0
+            ]
+          ]
+        },
+        "why": "references/paas-parity-checklist.md states there is no SQL Server Agent on this engine and that an external scheduler is required. In a user-database session on this engine sys.databases lists master and the current database only, so msdb, the database every Agent job lives in, cannot appear. A non-zero result would mean the lane is on a boxed SQL Server engine, which is the same finding the identity probe makes and the reason the parity list exists at all."
+      },
+      {
+        "sql": "CREATE TABLE dbo.probe_container_vector (id int NOT NULL PRIMARY KEY, v vector(3) NOT NULL);\nINSERT INTO dbo.probe_container_vector (id, v) VALUES (1, CAST(CAST(N'[1.0,2.0,3.0]' AS nvarchar(max)) AS vector(3)));\nSELECT CASE WHEN VECTOR_DISTANCE('cosine', v, CAST(CAST(N'[1.0,2.0,3.0]' AS nvarchar(max)) AS vector(3))) < 0.000001 THEN 1 ELSE 0 END AS distance_to_self_is_zero\nFROM dbo.probe_container_vector;",
+        "expect": {
+          "rows": [
+            [
+              1
+            ]
+          ]
+        },
+        "why": "references/paas-parity-checklist.md claims the VECTOR(n) column type and VECTOR_DISTANCE('cosine', a, b) are present, and prescribes the double CAST insert shape with a literal dimension. This probe runs exactly that shape and checks the one value the maths guarantees: the cosine distance from a vector to itself is zero. A failure here means either the type is gone or the prescribed insert shape no longer compiles, and both are reasons to stop recommending it."
+      },
+      {
+        "cmd": "/opt/mssql-tools18/bin/sqlcmd -?",
+        "where": "container",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "Every command in this skill, including the readiness retry loop and the identity self-check, is written as docker exec against this exact absolute path. The claim is that the image ships sqlcmd there, so where this probe runs is half of it: on the host the path does not exist and the failure would be the developer's laptop, not the image. -? prints usage and needs no engine, so this measures the file and not a connection."
+      },
+      {
+        "cmd": "test ! -e /docker-entrypoint-initdb.d",
+        "where": "container",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "The skill states in two places that the image does not auto-run /docker-entrypoint-initdb.d/*.sql, because that is a Postgres and MySQL convention, and that a seed relying on it runs silently never. This is the closest executable form of that claim: the directory the convention depends on is not in the image. It is evidence and not proof, since a future image could carry the directory and still ignore it, so read a red here as a prompt to test the convention end to end rather than as proof that seeding now works."
+      }
+    ]
+  },
+  "triggering": {
+    "explicit": [
+      "Run Azure SQL Database locally in Docker",
+      "Start the Azure SQL Database container and give me the connection string",
+      "Add SQL Server to my docker compose file",
+      "Spin up a local mssql container for development",
+      "My SQL container will not start, what is wrong"
+    ],
+    "implicit": [
+      "I need a local database for this app and it has to behave like what we run in Azure",
+      "My app cannot open the database it is pointed at and I have no idea why",
+      "I dropped a SQL file in the init directory and nothing was created",
+      "The container says Up but every connection times out",
+      "Set up Microsoft Entra authentication against my local database engine"
+    ],
+    "negative": [
+      "Write a Postgres docker compose file for this project",
+      "Tune this slow query, the plan shows a table scan",
+      "Generate an EF Core migration for this new column",
+      "Deploy this database to Azure with Bicep",
+      "Explain what a covering index is"
+    ]
+  }
+}

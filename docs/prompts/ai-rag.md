@@ -67,7 +67,7 @@ load_dotenv()
 DIM = 768  # nomic-embed-text
 
 def embed(text: str) -> str:
-    vec = ollama.embeddings(model="nomic-embed-text", prompt=text)["embedding"]
+    vec = ollama.embed(model="nomic-embed-text", input=text)["embeddings"][0]
     return json.dumps(vec)  # the VECTOR column accepts a JSON array
 
 conn = mssql_python.connect(os.environ["SQL_CONNECTION_STRING"])

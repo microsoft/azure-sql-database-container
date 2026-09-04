@@ -9,7 +9,7 @@
 - [Platform / image / access](#platform--image--access)
 - [Tooling](#tooling)
 - [Parity with the cloud](#parity-with-the-cloud)
-- [Box-product features (intentionally absent, like the cloud)](#box-product-features-intentionally-absent-like-the-cloud)
+- [SQL Server features (intentionally absent, like the cloud)](#sql-server-features-intentionally-absent-like-the-cloud)
 - [Managed-service surfaces (not applicable to a container)](#managed-service-surfaces-not-applicable-to-a-container)
 
 Grouped by the four buckets from `SKILL.md`. When a question is not here, fall back
@@ -135,9 +135,12 @@ a target database for a one-shot validation pass.
 
 **How do I create a least-privilege app user, and why does `CREATE USER ... WITH
 PASSWORD` fail?** On the container, a SQL **contained** user
-(`CREATE USER appuser WITH PASSWORD = '...'`) fails with **Msg 15007**, and trying
-to enable it with `ALTER DATABASE appdb SET CONTAINMENT = PARTIAL` fails with
-**Msg 12824**. Create the app identity as a **server login mapped to a database
+(`CREATE USER appuser WITH PASSWORD = '...'`) fails with **Msg 15007**, and you
+cannot turn containment on. `ALTER DATABASE appdb SET CONTAINMENT = PARTIAL` fails
+with **Msg 12844**, "ALTER DATABASE statement failed; this functionality is not
+available in the current edition of SQL Server". The container's edition does not
+have partial containment, so there is nothing to configure.
+Create the app identity as a **server login mapped to a database
 user** instead: `CREATE LOGIN applogin WITH PASSWORD = '...'` on a `master`
 connection, then `CREATE USER appuser FOR LOGIN applogin` plus role grants
 (`db_datareader` / `db_datawriter`) on the `appdb` connection. This is the inverse
@@ -158,7 +161,7 @@ or a driver/ORM; use `BULK INSERT` only against Blob Storage via a `DATABASE SCO
 (collation, transaction isolation, ANSI settings) do not match the cloud exactly and
 can cause subtle edge-case differences. Set the ones you depend on explicitly.
 
-## Box-product features (intentionally absent, like the cloud)
+## SQL Server features (intentionally absent, like the cloud)
 
 **Why are SQL Agent jobs / FILESTREAM / linked servers / Windows Authentication /
 cross-server distributed transactions missing?** These exist in SQL Server but not in Azure SQL Database, so they are intentionally absent here too.

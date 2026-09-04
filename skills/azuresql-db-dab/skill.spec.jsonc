@@ -1,0 +1,146 @@
+{
+  "id": "azuresql-db-dab",
+  "domain": "azure-sql-database-container",
+  "value": [
+    "not-in-training-data",
+    "corrects-a-wrong-assumption",
+    "changes-too-fast-to-memorize"
+  ],
+  "correction": "Asked for an API over the tables in a local database, an agent writes a controller layer and an ORM by hand, because that is what almost every example in its training data does. Microsoft ships a first-party engine that serves REST and GraphQL over the same configuration file with no application code, and against the Azure SQL Database container it needs nothing special from the engine at all: it connects over the ordinary protocol with a plain connection string, so none of the change tracking or feature enablement that an event-driven design would need applies here. Two things around it are then assumed wrongly. The database is assumed to appear: this engine does not auto-create one on connect, so the tool starts and fails to reach a database that was never provisioned on a master connection. And the API surface is assumed to be the two the author asked for: current builds also publish a Model Context Protocol endpoint from the very same configuration, enabled by default, which is an API surface this tool provides over the configured entities and is not, and must not be presented as, a standalone Microsoft SQL MCP server.",
+  "value_declaration": {
+    "rationale": "This skill's kernel is what the Data API builder does and does not need from THIS engine, and one endpoint nobody asked for. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach Data API builder CLI usage, its configuration file shape, its REST and GraphQL path defaults, and API design generally, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted. Its maturity stays draft regardless, and not because of this argument. All five of its probes run the CLI on the host and no statement reaches a database, so the probe rung underneath value is unmet.",
+    "covers": [
+      "the engine not auto-creating a database, so the tool starts and fails to reach one that was never provisioned",
+      "this engine needing no change tracking and no feature enablement for this tool, unlike the event-driven path an agent reaches for",
+      "the Model Context Protocol endpoint being published from the same configuration and enabled by default, and NOT being a standalone Microsoft SQL MCP server"
+    ],
+    "does_not_cover": [
+      "Data API builder CLI usage and its configuration file shape, which are public and documented",
+      "REST and GraphQL API design, and the hand-written controller layer the skill argues against"
+    ],
+    "decided_by": "Carlos Robles",
+    "decided_on": "2026-09-04",
+    "expires_when": "the-container-reaches-public-preview"
+  },
+  "posture": [
+    "read",
+    "write",
+    "execute"
+  ],
+  "maturity": "draft",
+  "applies_to": [
+    "azure-sql-db-container"
+  ],
+  "related": [
+    "azuresql-db-container",
+    "azuresql-db-scaffold",
+    "azuresql-db-functions",
+    "azuresql-db-connections",
+    "azuresql-db-sidecar"
+  ],
+  "validation": {
+    "target": "container",
+    "setup": [
+      "the Data API builder CLI installed as a global dotnet tool, since every probe below is a CLI probe and none of them opens a database connection",
+      "the Azure SQL Database container running with a provisioned user database, for the manual checks in assert that a probe cannot make"
+    ],
+    "assert": [
+      "the user database exists, created on a master connection, before the tool is started",
+      "the connection string reaches the configuration through the environment-variable indirection rather than being written into the file",
+      "the connection string names the user database and carries the trust-server-certificate setting the container's self-signed certificate needs",
+      "a GET on the entity path returns rows from the container, proving the API is serving the intended database and not an empty configuration",
+      "if the Model Context Protocol endpoint is mentioned at all, it is described as a surface this tool provides and not as a standalone SQL MCP server"
+    ],
+    "probes": [
+      {
+        "where": "host",
+        "cmd": "dab --version | grep -q '^Microsoft.DataApiBuilder 2\\.'",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "The precondition for every other probe here and for every command in the skill body. The skill tells a reader to install the CLI as a global dotnet tool and to use the latest 2.x, and the endpoint defaults asserted below are 2.x defaults. Measured 2026-09-04, exit 0 on 2.0.9+17ae3aa8414514918b627c777026efbc135a57e9. A 1.x build here means the Model Context Protocol claim in the body does not apply and the rest needs re-reading."
+      },
+      {
+        "where": "host",
+        "cmd": "d=$(mktemp -d) && cd \"$d\" && dab init --database-type mssql --connection-string \"@env('SQL_CONNECTION_STRING')\" --host-mode Development > /dev/null 2>&1 && grep -q '\"connection-string\": \"@env(.SQL_CONNECTION_STRING.)\"' dab-config.json && grep -q '\"mode\": \"development\"' dab-config.json",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "Step 3 of the body, executed. It proves two separate claims in one run: the environment-variable indirection is written into the configuration verbatim rather than resolved at generation time, which is why no password ends up in the file, and the host-mode flag the skill passes produces the development host mode that the body says enables the Swagger surface and friendlier errors. Measured 2026-09-04 on 2.0.9. This probe opens no database connection, so it is honest about what it measures: the file the tool writes, not the API it later serves."
+      },
+      {
+        "where": "host",
+        "cmd": "d=$(mktemp -d) && cd \"$d\" && dab init --database-type mssql --connection-string \"@env('SQL_CONNECTION_STRING')\" --host-mode Development > /dev/null 2>&1 && grep -q '\"path\": \"/api\"' dab-config.json && grep -q '\"path\": \"/graphql\"' dab-config.json",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "Every URL the body hands a reader in Step 4 is built on these two prefixes: the REST calls are written as /api/<Entity> and the GraphQL calls as /graphql. They are defaults, not flags the skill passes, so they are exactly the kind of claim that rots silently when a tool moves them. Measured 2026-09-04 on 2.0.9, both present in the generated configuration. If a build changes either default, every curl line in the body is wrong and nothing else would catch it."
+      },
+      {
+        "where": "host",
+        "cmd": "d=$(mktemp -d) && cd \"$d\" && dab init --database-type mssql --connection-string \"@env('SQL_CONNECTION_STRING')\" --host-mode Development > /dev/null 2>&1 && python3 -c \"import json,sys; c=json.load(open('dab-config.json'))['runtime']['mcp']; sys.exit(0 if c['enabled'] is True and c['path'] == '/mcp' else 1)\"",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "The claim in the body that the Model Context Protocol endpoint is served from the same configuration file, at /mcp, and is enabled by default. It is the one fact in this skill a reader is most likely to disbelieve, because nobody asked for that endpoint and nothing in the startup output announces it. Measured 2026-09-04 on 2.0.9: dab init with no endpoint flags writes an mcp block with enabled true and path /mcp. This probe reads the parsed JSON rather than grepping, because /mcp and the enabled flag sit in separate lines that a text match could satisfy from the rest and graphql blocks."
+      },
+      {
+        "where": "host",
+        "cmd": "d=$(mktemp -d) && cd \"$d\" && dab init --database-type mssql --connection-string \"@env('SQL_CONNECTION_STRING')\" > /dev/null 2>&1 && dab add Book --source dbo.Books --source.type table --permissions \"anonymous:*\" > /dev/null 2>&1 && python3 -c \"import json,sys; e=json.load(open('dab-config.json'))['entities']['Book']; p=e['permissions'][0]; sys.exit(0 if e['source']['object'] == 'dbo.Books' and p['role'] == 'anonymous' and p['actions'][0]['action'] == '*' else 1)\"",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "The exact command line the body prints for exposing a table, run to the end. It settles that the entity name and the source object are two different things that land in two different places, which is the detail the body calls out, and it makes visible what anonymous:* actually writes: one role named anonymous holding the wildcard action, which is unauthenticated full create, read, update and delete. That is why the body restricts it to local development. Measured 2026-09-04 on 2.0.9."
+      }
+    ]
+  },
+  "value_probe": {
+    "task": "I have a handful of tables in a local Azure SQL Database container and the front end team needs both REST and GraphQL over them this week. What is the least amount of code I can write to get there, and how do I keep the password out of the repo?",
+    "gate": "The answer must reach a configuration driven engine that serves both surfaces from one file with no application code, and must provision the database before that engine is started.",
+    "states": [
+      "the configuration is generated with dab init and tables are exposed with dab add, where the entity name and the source object are two different things",
+      "the connection string reaches the configuration through an @env indirection so no password is written into the file",
+      "the default paths are /api for REST and /graphql for GraphQL, and development host mode enables the friendlier errors and the Swagger surface",
+      "the user database must already exist, created on a master connection, and the connection string needs the trust server certificate setting for the container's self signed certificate",
+      "anonymous:* is unauthenticated create, read, update and delete, so it belongs to local development only"
+    ],
+    "refutes": [
+      "that the only way to serve REST and GraphQL over these tables is a hand written controller layer plus an ORM model per table",
+      "that starting the tool against the container creates or migrates the database, when the engine does not auto create a database on connect and the tool will simply fail to reach one that was never provisioned",
+      "that the Model Context Protocol endpoint this tool publishes from the same configuration is a standalone Microsoft SQL MCP server, rather than a surface this tool provides over the configured entities",
+      "that the engine needs change tracking, a feature flag or any other enablement before it can be served this way, when it is reached over the ordinary protocol with a plain connection string"
+    ]
+  },
+  "triggering": {
+    "explicit": [
+      "Use the azuresql-db-dab skill",
+      "give me a REST API over the tables in my local Azure SQL Database container",
+      "generate a GraphQL API over this database with Data API builder",
+      "run dab against the Azure SQL Database container",
+      "expose dbo.Books as an API without writing code"
+    ],
+    "implicit": [
+      "expose my table as an API",
+      "CRUD API without writing a controller",
+      "put an API in front of this database so the front end can read it",
+      "I need REST and GraphQL over the same tables",
+      "serve an MCP endpoint from my database"
+    ],
+    "routing": [
+      "which command adds a table as an entity",
+      "how does the connection string stay out of the configuration file",
+      "what port does the API listen on",
+      "is the MCP endpoint a separate SQL MCP server"
+    ],
+    "negative": [
+      "write an Azure Functions HTTP endpoint with a SQL input binding",
+      "scaffold a new project with a local database",
+      "run my migrations against the container",
+      "start the Azure SQL Database container and connect with sqlcmd",
+      "build an Entity Framework Core model for these tables",
+      "add the database as a service container in my CI workflow",
+      "load a CSV into this table",
+      "which role can reach this entity after inheritance in my production configuration"
+    ]
+  }
+}

@@ -17,7 +17,7 @@
 
 ```json
 {
-  "$schema": "https://github.com/Azure/data-api-builder/releases/download/v2.0.9/dab.draft.schema.json",
+  "$schema": "https://github.com/Azure/data-api-builder/releases/download/v2.0.12/dab.draft.schema.json",
   "data-source": {
     "database-type": "mssql",
     "connection-string": "@env('SQL_CONNECTION_STRING')"
@@ -137,5 +137,5 @@ metadata) and exits nonzero on the first failure. Stages 4 and 5 connect to the
 engine and read the real tables, so a fully green run needs the container up with
 the target tables provisioned. `dab start` also fail-fasts on an invalid config.
 Run `dab validate` after any hand edit. For the current schema (this reference
-pins v2.0.9), fetch it from the Learn MCP or the `$schema` URL if the DAB version
+pins v2.0.12, the current stable release), fetch it from the Learn MCP or the `$schema` URL if the DAB version
 you install differs.

@@ -1,0 +1,146 @@
+{
+  "id": "azuresql-db-connections",
+  "domain": "azure-sql-database-container",
+  "value": [
+    "corrects-a-wrong-assumption",
+    "multi-step-with-silent-failures"
+  ],
+  "correction": "Because the local container almost never drops a connection, an agent hardening a data-access layer against it concludes that pooling and retry are cloud concerns and leaves them out, or adds a retry loop that catches every exception. Both are wrong and both look fine locally. Azure SQL Database throttles, fails over and closes idle connections, so a client with no retry turns routine platform behaviour into hard user-visible errors, and the code that never needed retry locally is the same code that meets the cloud. A blanket retry is worse than none: it re-runs a login failure, a syntax error and a constraint violation until the attempt budget is gone, so the real fault surfaces slower and wearing the wrong name, and it re-runs a non-idempotent INSERT whose first attempt already committed before the connection dropped, which double-applies the write with no error anywhere. The second habit is opening a connection per query, or building the connection string per request, which quietly creates one pool per distinct string and defeats pooling entirely while every individual call still works.",
+  "value_declaration": {
+    "rationale": "This skill's kernel is which transient error numbers and platform views this engine really carries, as opposed to a remembered list. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach connection pooling and retry with backoff, which every driver documents and every model already writes, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted.",
+    "covers": [
+      "USE being refused with Msg 40508 locally exactly as in the cloud, so the database is named in the connection string",
+      "which transient error numbers this engine actually carries in sys.messages, checked rather than recalled",
+      "sys.dm_db_resource_stats and sys.dm_user_db_resource_governance being absent from this engine, so a local throttling diagnostic written against either does not run"
+    ],
+    "does_not_cover": [
+      "connection pooling and retry with backoff as patterns, which are ordinary driver material",
+      "the general argument that a blanket catch-all retry is worse than no retry at all"
+    ],
+    "decided_by": "Carlos Robles",
+    "decided_on": "2026-09-04",
+    "expires_when": "the-container-reaches-public-preview"
+  },
+  "posture": [
+    "read",
+    "write",
+    "execute"
+  ],
+  "maturity": "preview",
+  "applies_to": [
+    "azure-sql-db",
+    "azure-sql-db-container"
+  ],
+  "related": [
+    "azuresql-db-container",
+    "azuresql-db-auth",
+    "azuresql-db-local-to-cloud"
+  ],
+  "value_probe": {
+    "task": "Our API talks to a SQL database, a container on our laptops and Azure SQL Database in production. It never misbehaves locally, but a few times a day in production users get an error about a transport-level error receiving results, and last week one customer ended up with two identical orders. Harden the data access layer so this stops.",
+    "gate": "The answer must retry only the transient faults and name what it refuses to retry, and must make the retried write idempotent rather than re-running an INSERT that may already have committed.",
+    "states": [
+      "Azure SQL Database throttles, fails over and closes idle connections, so transient faults are routine platform behaviour rather than defects, and a client without retry turns them into user-visible errors.",
+      "The retryable set is the transient numbers, 40501, 40613, 49918, 49919, 49920, 4060, 10928, 10929, 40197 and 233, with exponential backoff and jitter and a bounded attempt count.",
+      "Login failure Msg 18456, syntax errors and constraint violations are never retried, because retrying them buries the real fault and burns the attempt budget.",
+      "A non-idempotent write needs an idempotency key, or a retry that checks whether the first attempt committed, because a connection can drop after the server committed and before the client heard about it.",
+      "One connection string built once per process, so the driver keeps one pool, with bounded Max Pool Size and connections opened late and closed early back into the pool.",
+      "The framework's own facility is preferred where it exists, such as EnableRetryOnFailure in EF Core, rather than a hand-rolled catch-all wrapper."
+    ],
+    "refutes": [
+      "That a catch-all retry around every SqlException or every exception is adequate. A blanket retry re-runs a login failure, a syntax error and a constraint violation until the budget is gone, and it double-applies a non-idempotent INSERT whose first attempt already committed.",
+      "That pooling and retry are cloud concerns that can be left out of code exercised locally. The container almost never drops a connection, so the absence of retry is invisible until the same code meets the cloud.",
+      "That building the connection string per request, or per tenant, is harmless because pooling is automatic. Each distinct string gets its own pool, which defeats pooling entirely while every individual call still succeeds.",
+      "That opening a connection per query is a leak to be fixed by holding one connection open for the process lifetime. The correct shape is open late, close early, and let the pool do the holding.",
+      "That the local container can be used to verify that the retry policy works. It does not throttle, and sys.dm_db_resource_stats and sys.dm_user_db_resource_governance are not present on it at all, so a local diagnostic written against either view cannot even run.",
+      "That Msg 10929 should be dropped from the retry list because it does not appear in the container's message catalogue. It is the elastic pool and per database governance throttle, a container has no elastic pool and no service objective, and the number belongs in a policy that will meet the cloud."
+    ]
+  },
+  "validation": {
+    "target": "container",
+    "probes": [
+      {
+        "sql": "SELECT CAST(SERVERPROPERTY('EngineEdition') AS int) AS engine_edition, CAST(SERVERPROPERTY('Edition') AS nvarchar(128)) AS edition;",
+        "expect": {
+          "rows": [
+            [
+              5,
+              "SQL Azure"
+            ]
+          ]
+        },
+        "why": "The self-check the skill puts in front of every other instruction. Engine edition 5 with edition 'SQL Azure' is the Azure SQL Database engine; the SQL Server image mcr.microsoft.com/mssql/server returns different values, so any other answer means the lane ran against the wrong engine and every probe below it is measuring something else."
+      },
+      {
+        "sql": "USE master;",
+        "expect": {
+          "error": 40508
+        },
+        "why": "The skill states that in a user-database session USE returns Msg 40508, exactly as in Azure SQL Database in the cloud, and that the fix is always to select the database in the connection string. Every probe here runs against a scratch user database, which is the session where the Azure statement filter is enforced. If this ever succeeds, the filter is not being applied to the lane's session and the skill's central connection-model rule has stopped being true locally."
+      },
+      {
+        "sql": "SELECT message_id\nFROM sys.messages\nWHERE language_id = 1033\n  AND message_id IN (40501, 40613, 49918, 49919, 49920, 4060, 10928, 10929, 40197, 233)\nORDER BY message_id;",
+        "expect": {
+          "rows": [
+            [ 233 ],
+            [ 4060 ],
+            [ 10928 ],
+            [ 40197 ],
+            [ 40501 ],
+            [ 40613 ],
+            [ 49918 ],
+            [ 49919 ],
+            [ 49920 ]
+          ]
+        },
+        "why": "The skill names ten numbers as the transient faults a retry policy may retry, and names 18456 and constraint and syntax errors as the ones it must not. NINE of the ten are in this engine's message catalogue and one is not. CORRECTED 2026-09-04 by the first live run, which counted 9 where the probe asserted 10. The absentee is Msg 10929, and it is absent from sys.messages entirely rather than merely from language_id 1033: SELECT COUNT(*) FROM sys.messages WHERE message_id = 10929 returns 0 on build 12.0.2000.8, EngineEdition 5, Edition 'SQL Azure'. THE SKILL IS NOT CONTRADICTED BY THIS AND THE NUMBER SHOULD STAY IN ITS RETRY LIST. 10929 is the elastic pool and per database resource governance throttle, and a container has no elastic pool and no service objective, so its absence is what a local engine ought to look like. A cloud only claim cannot be settled by a container, and this probe does not pretend otherwise: it pins the nine the container does carry, so a future disappearance goes red, and leaves 10929 to a run against a real logical server, where it is still UNVERIFIED. Rows rather than a count on purpose: a count of 9 would stay green if one number vanished and another appeared."
+      },
+      {
+        "sql": "SELECT OBJECT_ID('sys.dm_db_resource_stats') AS dm_db_resource_stats, OBJECT_ID('sys.dm_user_db_resource_governance') AS dm_user_db_resource_governance;",
+        "expect": {
+          "rows": [
+            [
+              null,
+              null
+            ]
+          ]
+        },
+        "why": "The skill's premise is that throttling is a cloud behaviour the local container does not reproduce. Measured in a sibling project on this image: the two dynamic management views a developer reaches for to see throttling and resource governance are not present here at all. That is the executable form of the premise, and it is also a warning worth having on record, because an agent that writes a local diagnostic query against either view produces something that cannot run, and an agent that concludes from their absence that the cloud does not throttle has drawn the opposite of the right lesson."
+      },
+      {
+        "sql": "SELECT CAST(net_transport AS nvarchar(40)) AS net_transport FROM sys.dm_exec_connections WHERE session_id = @@SPID;",
+        "expect": {
+          "rows": [
+            [
+              "TCP"
+            ]
+          ]
+        },
+        "why": "Everything this skill tunes, pool bounds, connect retry counts and backoff, assumes a TCP session to a mapped port, which is what makes the same configuration correct against the cloud with only the connection string changed. If the lane reaches the engine over shared memory or a named pipe instead, the pooling and reconnect behaviour it is exercising is not the behaviour the app will get, and the parity argument the skill rests on is not being measured."
+      }
+    ]
+  },
+  "triggering": {
+    "explicit": [
+      "Add retry logic for transient faults to my database layer",
+      "How do I configure connection pooling for Azure SQL Database",
+      "Set up EnableRetryOnFailure in EF Core",
+      "What is a sensible Max Pool Size for this service",
+      "Make my data access resilient to dropped connections"
+    ],
+    "implicit": [
+      "The connection keeps dropping under load and users see errors",
+      "We get timeouts once traffic picks up but every query is fast on its own",
+      "Should I open a new connection for each query or keep one around",
+      "My retry loop made a duplicate order row appear",
+      "This works locally and falls over in Azure a few times a day"
+    ],
+    "negative": [
+      "Create a least-privilege database user for my app instead of sa",
+      "Seed appdb with a thousand sample rows",
+      "Import this bacpac into the local container",
+      "Write integration tests that start a database container per suite",
+      "Design the schema for an orders table"
+    ]
+  }
+}

@@ -32,7 +32,7 @@ assumes the target database already exists. So:
 
 Avoid `USE` to switch databases. In a user-database session (the
 Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly as in
-Azure SQL Database in the cloud. A `master` connection is a provisioning provisioning
+Azure SQL Database in the cloud. A `master` connection is a provisioning
 session where the Azure statement filter is not enforced, so `USE` appears to
 work there, but `master` is for provisioning only, not
 application work. Always select the target database in the connection string
@@ -73,7 +73,8 @@ Standardize on one form and read it from a single `SQL_CONNECTION_STRING` env va
 Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
 ```
 
-- Use `User Id=` / `Password=` / `Database=`, NOT `Uid=` / `Pwd=`.
+- Spell the keywords `User Id=` / `Password=` / `Database=` as house style. `Uid=` / `Pwd=` are
+  documented SqlClient synonyms and work too.
 - `Database=appdb`, never `master`, for migrations and app work.
 - `TrustServerCertificate=true` for the local self-signed cert.
 - If you chose a non-default `HOST_PORT` above, use `Server=localhost,<HOST_PORT>`.
@@ -106,8 +107,14 @@ npx prisma migrate deploy          # apply committed migrations (CI / prod-like)
 npx prisma migrate dev --name init # author + apply a new migration (local dev)
 ```
 
-Pinned to Prisma 6; Prisma 7 moved the datasource `url` into a prisma.config.ts and
-requires a driver adapter (@prisma/adapter-mssql). See references for the adapter wiring.
+Keep the `@6`. Prisma 7 is the current stable (7.10.0), and it **rejects** the
+`url = env("DATABASE_URL")` datasource block below: `prisma migrate` stops at
+validation with "The datasource property `url` is no longer supported in schema
+files". Prisma 7 moves the connection URL into a `prisma.config.ts` and wants a
+driver adapter (`@prisma/adapter-mssql`) on the client, so it is a config change,
+not a version bump. Pin the major explicitly rather than letting npm pick: `prisma`
+has carried 8.x prereleases on its `latest` dist-tag. See references for the
+Prisma 7 wiring.
 
 ### Alembic (Python)
 

@@ -1,0 +1,147 @@
+{
+  "id": "azuresql-db-ci",
+  "domain": "azure-sql-database-container",
+  "value": [
+    "not-in-training-data",
+    "corrects-a-wrong-assumption",
+    "multi-step-with-silent-failures"
+  ],
+  "correction": "Asked for a CI job that tests against a local SQL engine, an agent writes a service container for mcr.microsoft.com/mssql/server and treats the rest as solved, because every published example of a database service container is written that way. Three things are then wrong at once. The image is the wrong product: the Azure SQL Database container is a different engine that reports EngineEdition 5 and Edition 'SQL Azure', so a test suite that passes against the SQL Server image has not been run against the engine the application will meet in Azure. The readiness gate is wrong: docker reporting the service as started does not mean the engine accepts logins, and a health check that shells out to a client tool on the runner fails because the hosted runner has no such tool, while the health check the image can satisfy runs sqlcmd from /opt/mssql-tools18/bin inside the container itself. And the database is wrong: this engine does not auto-create a database on connect, so the first test step opening a connection with Database=appdb fails against an engine that is running perfectly, which reads as a connectivity problem and is not one. The provisioning statement has to run on a master connection before any test connects, and the tests then have to be pointed at the user database, because a suite that quietly runs against master will pass and prove nothing about the database the application uses.",
+  "value_declaration": {
+    "rationale": "This skill's kernel is which engine the CI service container is actually running and what readiness means for it. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach GitHub Actions workflow syntax, the services block, job matrices and the shape of a retry loop, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted.",
+    "covers": [
+      "the service container being the Azure SQL Database engine, EngineEdition 5 with Edition 'SQL Azure', and not the SQL Server image every published example uses",
+      "USE being refused in a user-database session with Msg 40508, so the database is selected in the connection string",
+      "sqlcmd living at /opt/mssql-tools18/bin/sqlcmd inside the image, which is the path every readiness command in the body depends on",
+      "the provisioning session on master being a different session from the one the statement filter is enforced in"
+    ],
+    "does_not_cover": [
+      "GitHub Actions workflow syntax, the services block and job matrices, all abundant in training data",
+      "retry with backoff as a pattern, as distinct from what the readiness gate has to poll"
+    ],
+    "decided_by": "Carlos Robles",
+    "decided_on": "2026-09-04",
+    "expires_when": "the-container-reaches-public-preview"
+  },
+  "posture": [
+    "read",
+    "write",
+    "execute",
+    "provision"
+  ],
+  "maturity": "preview",
+  "applies_to": [
+    "azure-sql-db-container"
+  ],
+  "related": [
+    "azuresql-db-container",
+    "azuresql-db-testing",
+    "azuresql-db-schema-migration",
+    "azuresql-db-seed",
+    "azuresql-db-scaffold",
+    "azuresql-db-connections"
+  ],
+  "validation": {
+    "target": "container",
+    "setup": [
+      "the Azure SQL Database container image pulled from the private preview registry with the pull-only credentials issued to the Private Preview cohort",
+      "a scratch user database, because every probe below other than the tools-path one asserts something about a user-database session rather than about master"
+    ],
+    "assert": [
+      "the workflow pulls the Azure SQL Database engine image and never mcr.microsoft.com/mssql/server",
+      "the service declares registry credentials, because the private preview registry refuses an anonymous pull",
+      "the health check runs sqlcmd inside the container so the hosted runner needs no client tools installed",
+      "a provisioning step creates the user database on a master connection before any test step opens a connection to it",
+      "the test connection string names the user database and not master"
+    ],
+    "probes": [
+      {
+        "sql": "SELECT CAST(SERVERPROPERTY('EngineEdition') AS INT) AS engine_edition, CAST(SERVERPROPERTY('Edition') AS NVARCHAR(128)) AS edition;",
+        "expect": {
+          "rows": [
+            [
+              5,
+              "SQL Azure"
+            ]
+          ]
+        },
+        "why": "The interception the skill exists for, made executable. The workflow is only worth writing if the service container is the Azure SQL Database engine rather than the SQL Server image, and these two properties are the only thing that tells them apart from inside a test run. If this ever returns 3 or 'Developer Edition', the pipeline is testing the wrong product and every other claim in this skill is beside the point."
+      },
+      {
+        "sql": "SELECT CAST(CASE WHEN DB_NAME() = 'master' THEN 1 ELSE 0 END AS INT) AS on_master;",
+        "expect": {
+          "rows": [
+            [
+              0
+            ]
+          ]
+        },
+        "why": "The skill's rule that tests run against the user database and never master, and the guard that makes the next probe mean something. A session that has landed on master would pass the USE probe below for the wrong reason, because master is a provisioning session where the Azure statement filter is not enforced. This probe fails first and says so."
+      },
+      {
+        "sql": "USE master;",
+        "expect": {
+          "error": 40508
+        },
+        "why": "The skill tells a reader to select the database in the connection string rather than switch with USE, and asserts the engine refuses the switch exactly as Azure SQL Database in the cloud does. Microsoft Learn documents error 40508, severity 16, 'USE statement is not supported to switch between databases. Use a new connection to connect to a different database.', and states the refusal applies when a database other than the current one is named, which is why this probe names master rather than the scratch database it is already connected to."
+      },
+      {
+        "where": "container",
+        "cmd": "test -x /opt/mssql-tools18/bin/sqlcmd",
+        "expect": {
+          "succeeds": true
+        },
+        "why": "The design the whole workflow rests on: the health check and the provisioning step both invoke sqlcmd at this absolute path inside the engine container, which is what lets the skill promise that the hosted runner needs no client tools of its own. If a future image drops the bundled tools or moves them, the health check never turns healthy and the job hangs until the retry budget runs out, with nothing in the log naming a missing binary. This is deliberately a container probe: the same path on the host does not exist and asserting it there would be the mistake that cost five probes a red run on 2026-09-02."
+      }
+    ]
+  },
+  "value_probe": {
+    "task": "Our integration tests hit a real database instead of mocks. Add a GitHub Actions workflow that stands up the Azure SQL Database container on the runner and runs the test suite against it on every pull request.",
+    "gate": "The answer must gate the test step on the engine actually accepting a login, and must create the application database on a master connection before any test connects to it.",
+    "states": [
+      "the service container runs the Azure SQL Database container image, not mcr.microsoft.com/mssql/server, and the engine reports EngineEdition 5 with Edition 'SQL Azure'",
+      "readiness comes from a health check that runs sqlcmd from /opt/mssql-tools18/bin inside the service container, because the hosted runner ships no SQL client of its own",
+      "a CREATE DATABASE statement runs on a master connection before the first test, and the tests then name the user database in their connection string",
+      "the service needs ACCEPT_EULA and a complex MSSQL_SA_PASSWORD, and the image is x64 only"
+    ],
+    "refutes": [
+      "that the engine creates the database named in the connection string on first connect, so the job can go straight from starting the service to running tests with Database=appdb",
+      "that a service container reported as started means the engine accepts logins, so no readiness gate is needed",
+      "that sqlcmd or the mssql-tools package is present on a GitHub hosted runner and can be called from the health check or a wait loop on the runner",
+      "that mcr.microsoft.com/mssql/server is an equivalent stand-in for this engine in CI",
+      "that leaving the suite pointed at master is harmless, when a suite that quietly runs against master passes and proves nothing about the application database"
+    ]
+  },
+  "triggering": {
+    "explicit": [
+      "Use the azuresql-db-ci skill",
+      "add the Azure SQL Database container as a service container in my GitHub Actions workflow",
+      "run my integration tests against a real Azure SQL Database engine in CI",
+      "set up Azure Pipelines to test against the local Azure SQL Database container",
+      "add a database service to my GitLab CI job"
+    ],
+    "implicit": [
+      "my CI job cannot find sqlcmd on the runner",
+      "the tests connect before the database engine is ready and the first one always fails",
+      "cannot open database appdb requested by the login, in CI only",
+      "the workflow pull of the database image is unauthorized",
+      "my integration tests pass locally and fail in the pipeline"
+    ],
+    "routing": [
+      "which health check actually waits for the engine to accept logins",
+      "where do the registry credentials go in a service container",
+      "do I need sqlcmd installed on the hosted runner",
+      "how does the database get created before the test step runs"
+    ],
+    "negative": [
+      "deploy my dacpac to Azure SQL Database from a GitHub Actions workflow",
+      "set up federated credentials so my workflow signs in to Azure without a password",
+      "start the Azure SQL Database container on my laptop and connect to it",
+      "add the database as a service in my compose file so my app can reach it",
+      "write the integration tests themselves for my data access layer",
+      "run my EF Core migrations against the local container",
+      "scaffold a new Next.js app with a local database",
+      "expose my tables as a REST API"
+    ]
+  }
+}
