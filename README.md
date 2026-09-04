@@ -15,7 +15,7 @@ Run and build against Azure SQL Database, right on your local environment. Try i
 
 <a href="https://aka.ms/azuresqldb-container-demo">**▶ Watch the demo**</a>
 
-The Azure SQL Database container is the Azure SQL Database engine, running locally. It runs on any modern container runtime (Docker, Podman, containerd, Rancher Desktop) on macOS, Linux, and Windows, and works with the drivers, ORMs, and editors developers already use. It supports the same AI-native capabilities as Azure SQL Database in the Microsoft Azure cloud: the native vector type, vector search with `VECTOR_DISTANCE`, and in-database embeddings (DiskANN vector indexes are in development).
+The Azure SQL Database container is the Azure SQL Database engine, running locally. It runs on any modern container runtime (Docker, Podman, containerd, Rancher Desktop) on macOS, Linux, and Windows, and works with the drivers, ORMs, and editors developers already use. It supports the same AI-native capabilities as Azure SQL Database in the Microsoft Azure cloud: the native vector type, vector search with `VECTOR_DISTANCE`, in-database embeddings, and DiskANN vector indexes with `CREATE VECTOR INDEX`.
 
 For the first time, developers can build, test, and ship applications against the Azure SQL Database engine without an Azure subscription and without a shared cloud instance. When you deploy to Azure SQL Database in the Microsoft Azure cloud, it is a connection-string change, not a code change.
 

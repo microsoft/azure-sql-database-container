@@ -42,7 +42,7 @@ The container exposes the same engine surface as Azure SQL Database:
 The container supports the same AI-native capabilities as Azure SQL Database:
 
 - **Native vector type.** Store embeddings in a native `vector` column, with the same type and storage as the cloud.
-- **DiskANN vector indexes (in development).** `CREATE VECTOR INDEX` for approximate-nearest-neighbor search at scale is in active development; run full-scan `VECTOR_DISTANCE` queries today. See [Known limitations](known-limitations.md).
+- **DiskANN vector indexes.** `CREATE VECTOR INDEX` builds on the container. We measured it on build `12.0.2000.8`. To read the index, query it with `SELECT TOP (N) WITH APPROXIMATE ... FROM VECTOR_SEARCH(...)`. A `VECTOR_DISTANCE` query is always exact and never reads the index. We have measured the index at prototype scale only, so measure recall and query time on your own corpus before you depend on it. For the rules the index imposes, including the 100-row minimum, see [Known limitations](known-limitations.md).
 - **Vector search.** Run similarity search with `VECTOR_DISTANCE` (cosine, euclidean, and dot product).
 - **In-database embeddings and models.** Generate embeddings with `AI_GENERATE_EMBEDDINGS` and bind an embedding endpoint with `CREATE EXTERNAL MODEL`. Use a local model (Ollama) while you build, then switch to Azure OpenAI in the cloud.
 - **REST from T-SQL.** Call external services with `sp_invoke_external_rest_endpoint`.

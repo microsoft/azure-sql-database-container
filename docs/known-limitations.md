@@ -42,17 +42,11 @@ Some session-level and database-level defaults (collation, transaction isolation
 
 **Workaround:** Set the defaults explicitly in your connection string or session. The [Getting started](getting-started.md) connection example covers the safe defaults.
 
-### 3. Vector index DDL
-
-`CREATE VECTOR INDEX` syntax is in active development. Vector data types and `VECTOR_DISTANCE` work today; the vector index DDL surface is incomplete and may change before Public Preview.
-
-**Workaround:** For Private Preview prototypes, run vector search without an index (full scan). This is fine for the corpus sizes typical of a prototype. For larger corpora, file a feature request and we will prioritize.
-
-### 4. Two-step provisioning
+### 3. Two-step provisioning
 
 Two-step provisioning is a current limitation: you provision a database on a master connection, then reconnect directly to it. Public preview will let the container set a default startup database (for example `MSSQL_DB=appdb`) so you connect straight into an Azure-faithful session without going through master.
 
-### 5. GUI tooling compatibility (MSSQL extension and SSMS)
+### 4. GUI tooling compatibility (MSSQL extension and SSMS)
 
 Graphical tools are not yet 100% compatible with the container. The [VS Code MSSQL extension](https://marketplace.visualstudio.com/items?itemName=ms-mssql.mssql) and SQL Server Management Studio (SSMS) can throw UI errors against it. We are actively working on full compatibility.
 
@@ -62,6 +56,9 @@ Graphical tools are not yet 100% compatible with the container. The [VS Code MSS
 
 The following gaps are functional differences from Azure SQL Database in the cloud that we are aware of. They may or may not close before Public Preview.
 
+- **Vector index restrictions.** `CREATE VECTOR INDEX` (DiskANN) works on the container. We measured it on build `12.0.2000.8`. Four rules apply before the statement succeeds. First, the session needs `SET QUOTED_IDENTIFIER ON`, which is off by default in a `sqlcmd` session. Second, the table needs at least 100 rows with non-null vectors. At 99 rows the engine returns `Msg 42266`. Third, `TRUNCATE TABLE` is refused while the index exists, with `Msg 42232`. To empty the table, drop the index, truncate, reload the rows, and recreate the index. Fourth, a security policy and a vector index cannot share a table, in either order. Adding the policy after the index returns `Msg 37579`. Adding the index after the policy returns `Msg 42244`. That pair is a parity gap, because the two coexist in Azure SQL Database in the cloud, and Microsoft Learn documents neither message number. One further limit belongs to the column, not to the index: a `vector` column tops out at 1998 dimensions, and `vector(1999)` is refused with `Msg 2717`. That ceiling applies in the cloud too.
+- **Only one query shape reads the vector index.** `SELECT TOP (N) WITH APPROXIMATE ... FROM VECTOR_SEARCH(...)` uses the index. A `VECTOR_DISTANCE` query is always exact and never uses the index, even when one exists, and Microsoft Learn states the same rule. On a small table both queries return the same rows, and the `VECTOR_DISTANCE` query raises no warning. An application that builds an index and keeps its old query therefore runs a full scan with no signal that anything is wrong.
+- **We have measured the vector index at prototype scale only.** Our measurements cover a few hundred rows of low-dimension vectors. Nothing here measures recall or query time on a production corpus at 768 or 1536 dimensions. If you plan to depend on the index, measure it on your own corpus.
 - **x64 image only; no native ARM64 build.** The image is x64 (`linux/amd64`). On an ARM64 host (for example an Apple Silicon Mac) it runs under emulation: add `--platform linux/amd64` (see [Step 2: start the container](getting-started.md#step-2-start-the-container)), or `platform: linux/amd64` in compose. Emulation is slower than a native build would be. If you want a native ARM64 build, [file a feature request](https://aka.ms/azuresqldb-container-feature-request): that is how we count demand.
 - **Backup and restore.** `BACKUP DATABASE` and `RESTORE DATABASE` are not supported on the container (they return `Msg 40510`). Azure SQL Database in the cloud likewise does not support them, because backups there are managed by the platform. For local data persistence, use a Docker named volume (`-v sqldb-data:/var/opt/mssql`); for managed backups, point-in-time restore, and geo-replication, use Azure SQL Database in the cloud.
 - **Always Encrypted with secure enclaves.** Always Encrypted basic functionality works. Secure enclaves require host TEE support and are not validated for the container.
