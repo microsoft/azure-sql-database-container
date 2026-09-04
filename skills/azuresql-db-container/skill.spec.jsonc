@@ -89,7 +89,7 @@
         "expect": {
           "error": 2812
         },
-        "why": "Measured on this image in a sibling project: sp_configure is absent rather than refusing, so the engine answers with Msg 2812, could not find stored procedure. It is worth a round trip because the failure mode is misread constantly. An agent that sees a refusal assumes a permission or a filter and goes looking for a way to be allowed, when there is nothing there to be allowed to call. The parity checklist lists RECONFIGURE among the statements the Azure filter blocks; this probe pins the companion procedure, which is the one an agent actually types first. If this ever returns a different number, the surface has changed and the parity checklist needs re-reading rather than the probe being patched."
+        "why": "Measured on this image in a sibling project: sp_configure is absent rather than refusing, so the engine answers with Msg 2812, could not find stored procedure. It is worth a round trip because the failure mode is misread constantly. An agent that sees a refusal assumes a permission or a filter and goes looking for a way to be allowed, when there is nothing there to be allowed to call. The parity checklist used to list RECONFIGURE among the statements the Azure filter blocks, which read as a refusal and blurred the two failures together; it now records the absence instead, and this probe pins it. If this ever returns a different number, the surface has changed and the parity checklist needs re-reading rather than the probe being patched."
       },
       {
         "sql": "SELECT COUNT(*) AS msdb_present FROM sys.databases WHERE name = 'msdb';",

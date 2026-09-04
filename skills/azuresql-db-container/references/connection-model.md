@@ -16,7 +16,7 @@ The single most common source of failures. Read this before connecting an app.
    provisioning only, not application work. Always select the target database in
    the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 3. **A `master` connection is for provisioning only.** `master` is a provisioning
-   session: the Azure SQL statement filter (`USE`, `SHUTDOWN`, `RECONFIGURE`) is
+   session: the Azure SQL statement filter (`USE`, `SHUTDOWN`) is
    not enforced there, so `USE` works. (`BACKUP`/`RESTORE` are a separate case:
    they are not supported in any session and return `Msg 40510`; Azure SQL Database
    in the cloud likewise does not support them, so do not rely on them on `master`
