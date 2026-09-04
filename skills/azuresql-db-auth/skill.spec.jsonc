@@ -12,7 +12,7 @@
     "provision",
     "read"
   ],
-  "maturity": "draft",
+  "maturity": "preview",
   "applies_to": [
     "azure-sql-db",
     "azure-sql-db-container"
@@ -49,7 +49,7 @@
         "expect": {
           "error": 12844
         },
-        "why": "The obvious repair for the refusal above is to turn containment on, and the skill records that this fails too. CORRECTED 2026-09-04: the shipped body says Msg 12824 with the text 'contained database authentication must be configured', and the engine says Msg 12844, 'ALTER DATABASE statement failed; this functionality is not available in the current edition of SQL Server.' Measured on build 12.0.2000.8, EngineEdition 5, Edition 'SQL Azure', in a scratch container. 12824 was never run against an engine; it survived weeks of review because a plausible number reads like a measured one. SKILL.md line 41, SKILL.md line 128 and references/auth-and-secrets.md line 52 still carry 12824 and the wrong text, and are owned elsewhere. Without this probe an agent reading only the first refusal will spend its next step trying exactly this statement. CURRENT is used so the claim is measured against the scratch database the lane holds rather than a database named in advance."
+        "why": "The obvious repair for the refusal above is to turn containment on, and the skill records that this fails too. The engine says Msg 12844, 'ALTER DATABASE statement failed; this functionality is not available in the current edition of SQL Server.' Measured on build 12.0.2000.8, EngineEdition 5, Edition 'SQL Azure', in a scratch container. The body of this skill previously carried a different, unmeasured error number with the text 'contained database authentication must be configured'; it survived weeks of review because a plausible number reads like a measured one. SKILL.md and references/auth-and-secrets.md were corrected on the same integration branch as this probe, so body and probe now agree. Without this probe an agent reading only the first refusal will spend its next step trying exactly this statement. CURRENT is used so the claim is measured against the scratch database the lane holds rather than a database named in advance."
       },
       {
         "sql": "CREATE USER [probe-app@contoso.com] FROM EXTERNAL PROVIDER;",

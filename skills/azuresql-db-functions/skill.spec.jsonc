@@ -13,7 +13,7 @@
     "write",
     "execute"
   ],
-  "maturity": "draft",
+  "maturity": "preview",
   "applies_to": [
     "azure-sql-db-container"
   ],

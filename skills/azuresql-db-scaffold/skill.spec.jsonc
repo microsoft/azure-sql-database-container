@@ -14,7 +14,7 @@
     "execute",
     "provision"
   ],
-  "maturity": "draft",
+  "maturity": "preview",
   "applies_to": [
     "azure-sql-db-container"
   ],
