@@ -88,9 +88,10 @@ Server=your-server.database.windows.net,1433;Database=appdb;Authentication=Activ
 ```
 
 `Encrypt=true` everywhere. `TrustServerCertificate=true` **only** for the local
-self-signed cert; never against the cloud. Use `User Id=` / `Password=` (not
-`Uid=` / `Pwd=`) for the .NET/ADO.NET form; for ODBC (pyodbc) the equivalents are
-`Uid=` / `Pwd=` and `Authentication=ActiveDirectoryMsi` for managed identity.
+self-signed cert; never against the cloud. The .NET/ADO.NET form spells the
+keywords `User Id=` / `Password=` as house style; `Uid=` / `Pwd=` are documented
+SqlClient synonyms and work too. ODBC (pyodbc) has its own keyword set and uses
+`Uid=` / `Pwd=`, plus `Authentication=ActiveDirectoryMsi` for managed identity.
 
 ## Managed identity in the cloud (and why not Default)
 

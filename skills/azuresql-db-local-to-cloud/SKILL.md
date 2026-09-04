@@ -38,8 +38,10 @@ connection string (and, with it, the auth method).
 
 ## The single env var, two values
 
-Standardize on `SQL_CONNECTION_STRING`. Use `User Id=` / `Password=` /
-`Database=` (never `Uid=` / `Pwd=`).
+Standardize on `SQL_CONNECTION_STRING`. House style spells the keywords
+`User Id=` / `Password=` / `Database=` so every example matches. `Uid=` and
+`Pwd=` are documented SqlClient synonyms and work too. ODBC strings are a
+separate grammar and use `Uid=` / `Pwd=` as their own keywords.
 
 Local (container, SA auth):
 
@@ -217,7 +219,7 @@ body stays an overview.
 - The app reads exactly one connection variable, `SQL_CONNECTION_STRING`.
 - Local string uses SA auth + `TrustServerCertificate=true`; cloud string uses
   `Authentication=Active Directory Default` + `Encrypt=true`.
-- Use `User Id=` / `Password=` / `Database=`, not `Uid=` / `Pwd=`.
+- The .NET-style string spells the keywords `User Id=` / `Password=` / `Database=` as house style. `Uid=` / `Pwd=` are valid synonyms, so they are not a failure. An ODBC string keeps ODBC's own `Uid=` / `Pwd=`.
 - Switching environments changes the connection string only. The diff to app
   code between local and cloud is zero lines.
 - If a validation rule above fails, or you had to deviate from this skill to make the task work, that is a bug in this skill: load the **azuresql-db-feedback** skill and offer to file a report.

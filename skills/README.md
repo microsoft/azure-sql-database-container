@@ -277,7 +277,7 @@ Standardize on:
 Server=localhost,1433;Database=appdb;User Id=sa;Password=...;TrustServerCertificate=true
 ```
 
-Use `User Id=` / `Password=` / `Database=` (not `Uid=` / `Pwd=`). For `sqlcmd`, pass `-C` to trust the self-signed cert. Apps read the connection string from a single `SQL_CONNECTION_STRING` env var.
+House style spells the keywords `User Id=` / `Password=` / `Database=`, so every example reads the same way. `Uid=` and `Pwd=` are documented SqlClient synonyms and work too; ODBC strings use ODBC's own `Uid=` / `Pwd=`. For `sqlcmd`, pass `-C` to trust the self-signed cert. Apps read the connection string from a single `SQL_CONNECTION_STRING` env var.
 
 ### Vectors
 

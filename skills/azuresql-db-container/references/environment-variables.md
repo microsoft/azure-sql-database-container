@@ -59,8 +59,8 @@ host machine, use `localhost,HOST_PORT`.
   `docker run`.
 - Apps read the connection from `SQL_CONNECTION_STRING`, not from scattered
   literals.
-- The connection string uses `User Id=`/`Password=`/`Database=`, not the short
-  forms.
+- The connection string spells the keywords `User Id=`/`Password=`/`Database=`.
+  That is house style; the short forms are valid synonyms, not a failure.
 
 ## Do not
 

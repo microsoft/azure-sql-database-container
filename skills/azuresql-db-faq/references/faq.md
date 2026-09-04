@@ -9,7 +9,7 @@
 - [Platform / image / access](#platform--image--access)
 - [Tooling](#tooling)
 - [Parity with the cloud](#parity-with-the-cloud)
-- [Box-product features (intentionally absent, like the cloud)](#box-product-features-intentionally-absent-like-the-cloud)
+- [SQL Server features (intentionally absent, like the cloud)](#sql-server-features-intentionally-absent-like-the-cloud)
 - [Managed-service surfaces (not applicable to a container)](#managed-service-surfaces-not-applicable-to-a-container)
 
 Grouped by the four buckets from `SKILL.md`. When a question is not here, fall back
@@ -145,7 +145,7 @@ or a driver/ORM; use `BULK INSERT` only against Blob Storage via a `DATABASE SCO
 (collation, transaction isolation, ANSI settings) do not match the cloud exactly and
 can cause subtle edge-case differences. Set the ones you depend on explicitly.
 
-## Box-product features (intentionally absent, like the cloud)
+## SQL Server features (intentionally absent, like the cloud)
 
 **Why are SQL Agent jobs / FILESTREAM / linked servers / Windows Authentication /
 cross-server distributed transactions missing?** These exist in SQL Server but not in Azure SQL Database, so they are intentionally absent here too.

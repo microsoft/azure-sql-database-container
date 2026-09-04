@@ -48,7 +48,8 @@ one-shot that creates `appdb`, and a `depends_on` gate.
   string (`Database=appdb`, or `-d appdb` for sqlcmd).
 - App connection string (single `SQL_CONNECTION_STRING` env var, service name host):
   `Server=sqldb,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true`
-  (use `User Id=`/`Password=`/`Database=`, not `Uid=`/`Pwd=`).
+  (house style spells it `User Id=`/`Password=`/`Database=`; `Uid=`/`Pwd=` are
+  valid synonyms).
 - The image does **NOT** auto-run `/docker-entrypoint-initdb.d/*.sql` (a
   Postgres/MySQL convention, not honored here). Seed in the init one-shot with
   `sqlcmd -d appdb -i seed.sql` AFTER `appdb` exists.

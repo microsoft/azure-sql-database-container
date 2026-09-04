@@ -145,7 +145,8 @@ Driver={ODBC Driver 18 for SQL Server};Server=your-server.database.windows.net,1
 ```
 
 (Note: ODBC keyword syntax uses `Uid`/`Pwd`; the application-level mssql and
-.NET strings use `User Id`/`Password`. Keep each in its native form.)
+.NET strings spell it `User Id`/`Password`. Keep each in its native form. In a
+.NET string either spelling works, and the long one is house style here.)
 
 ```python
 # app.py  ->  python app.py

@@ -78,7 +78,8 @@ run `docker login` as a step before the tests (see **azuresql-db-ci**).
    `IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;`).
 4. Build the connection string from the mapped host port and hand it to the test:
    `Server=localhost,<mappedPort>;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true`.
-   Use `User Id=` / `Password=` / `Database=` (not `Uid=` / `Pwd=`); sqlcmd uses `-C`.
+   House style spells the keywords `User Id=` / `Password=` / `Database=`; `Uid=` / `Pwd=` are
+   documented SqlClient synonyms and work too. sqlcmd uses `-C`.
 5. **Dispose** the container when the fixture/suite ends so nothing leaks.
 
 Scope the container to the level you need: one per test suite/class for speed, or one per

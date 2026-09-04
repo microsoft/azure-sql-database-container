@@ -73,7 +73,8 @@ Standardize on one form and read it from a single `SQL_CONNECTION_STRING` env va
 Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
 ```
 
-- Use `User Id=` / `Password=` / `Database=`, NOT `Uid=` / `Pwd=`.
+- Spell the keywords `User Id=` / `Password=` / `Database=` as house style. `Uid=` / `Pwd=` are
+  documented SqlClient synonyms and work too.
 - `Database=appdb`, never `master`, for migrations and app work.
 - `TrustServerCertificate=true` for the local self-signed cert.
 - If you chose a non-default `HOST_PORT` above, use `Server=localhost,<HOST_PORT>`.

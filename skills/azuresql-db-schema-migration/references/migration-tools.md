@@ -29,7 +29,8 @@ the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 - Canonical ADO.NET / sqlcmd connection string:
   `Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true`
 - One env var holds it: `SQL_CONNECTION_STRING`. Apps and most tools read it.
-- Use `User Id=`/`Password=`/`Database=`, not `Uid=`/`Pwd=`.
+- Spell the keywords `User Id=`/`Password=`/`Database=` as house style. `Uid=`/`Pwd=` are
+  documented SqlClient synonyms and work too.
 - If you started on a non-default host port, replace `localhost,1433` with `localhost,<HOST_PORT>`.
 
 ## EF Core (.NET)

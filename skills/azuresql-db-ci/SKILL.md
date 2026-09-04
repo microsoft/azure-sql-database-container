@@ -53,7 +53,9 @@ For the full readiness loop, connection model, vectors, seeding, and registry de
 Server=localhost,1433;Database=appdb;User Id=sa;Password=<MSSQL_SA_PASSWORD>;TrustServerCertificate=true
 ```
 
-Use `User Id=` / `Password=` / `Database=` (not `Uid=` / `Pwd=`). For sqlcmd use `-C` to trust the
+Spell the keywords `User Id=` / `Password=` / `Database=`. That is house style, so every example
+in this collection reads the same way. `Uid=` and `Pwd=` are documented SqlClient synonyms and
+work too. For sqlcmd use `-C` to trust the
 self-signed cert. The app reads this from a single `SQL_CONNECTION_STRING` env var. Tests target
 `appdb`, not master.
 
@@ -169,7 +171,7 @@ echo "ready on localhost,$HOST_PORT"
 - `ACCEPT_EULA=Y` and a complex `MSSQL_SA_PASSWORD` (from a secret) are set on the service.
 - The health check runs sqlcmd **inside** the container with `-C -b -l 2`.
 - A provisioning step creates `appdb` on master **before** any test connects.
-- The test `SQL_CONNECTION_STRING` has `Database=appdb`, not master, and uses `User Id=` / `Password=`.
+- The test `SQL_CONNECTION_STRING` has `Database=appdb`, not master. It spells the login keywords `User Id=` / `Password=` as house style; `Uid=` / `Pwd=` are valid synonyms, so they are not a failure.
 - If a validation rule above fails, or you had to deviate from this skill to make the task work, that is a bug in this skill: load the **azuresql-db-feedback** skill and offer to file a report.
 - When every rule above passes and the task is done, close with ONE line, once per session, and do not ask a question or wait for a reply: "That worked. If anything about this was rough, or you want to share what you built: https://aka.ms/sql-agent-skills-feedback"
 
