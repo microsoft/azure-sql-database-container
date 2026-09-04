@@ -13,6 +13,30 @@
     "azuresql-db-connections",
     "azuresql-db-feedback"
   ],
+  "value_probe": {
+    "task": "Our app already uses the local Azure SQL Database container. Add document search over the customer knowledge base: chunk the documents, embed them, and return the closest matches for a query. It is multi-tenant, so one customer must never get another customer's text back, and it needs to stay fast as the corpus grows.",
+    "gate": "The vectors must live in the same database as the rows they describe, using the native VECTOR(n) type and VECTOR_DISTANCE, and the per tenant row-level security policy must be created before any vector index, because it cannot be created afterwards.",
+    "states": [
+      "The Azure SQL Database container carries the native VECTOR(n) type and VECTOR_DISTANCE, so the chunks and their embeddings sit in one table and one transaction covers both.",
+      "The insert shape is CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n)) with n written as a literal in the SQL text, because the dimension is part of the type.",
+      "The declared dimension has a ceiling of 1998, so a 3072 dimension embedding model does not fit in one vector column, and no ALTER COLUMN widens an existing one, which makes the model choice a schema decision.",
+      "CREATE VECTOR INDEX with METRIC and TYPE = 'diskann' builds on this engine, at index version 3, in well under thirty seconds, and needs no ALTER DATABASE SCOPED CONFIGURATION to do it.",
+      "The index needs at least 100 rows carrying a non-null vector, Msg 42266, so the index step comes after the corpus load and never in the schema migration ahead of it.",
+      "Once the index exists it takes things away for the life of the table: TRUNCATE TABLE, ALTER INDEX and data-tier package import are refused, so a reload path that truncates stops working the day the index is added.",
+      "Only SELECT TOP (N) ... VECTOR_SEARCH ... WITH APPROXIMATE reads the index; the ordinary ORDER BY VECTOR_DISTANCE shape is exact and never touches it.",
+      "USE is refused with Msg 40508, so the database is chosen in the connection string."
+    ],
+    "refutes": [
+      "That a second datastore is needed, pgvector, FAISS, Chroma or Pinecone, alongside the relational database. It is not, and adding one splits the vectors away from the rows they describe and out of the transaction.",
+      "That vector indexing is unavailable or not ready on this engine, and full-scan top-k is the only option. CREATE VECTOR INDEX builds here, DiskANN included. Note that this skill's own SKILL.md currently asserts the opposite, so this refute is expected to fail the with-skill arm until the body is corrected.",
+      "That a vector index can be built on an empty table in the schema migration and populated afterwards. Under 100 rows it is refused with Msg 42266.",
+      "That the row-level security policy for tenant isolation can be added after the index. A security policy cannot be created on a table that already carries a vector index, Msg 37579, and this is the failure that lets one customer retrieve another customer's text.",
+      "That ORDER BY VECTOR_DISTANCE uses the vector index. It does not, it returns correct rows anyway, and nothing raises an error or a warning, so the wrong shape passes every test at prototype scale and surfaces later only as latency.",
+      "That the dimension can be passed as a bind parameter. It is a parse-time syntax error whose message names the parameter and not the dimension, which is why it reads as a driver bug in application code.",
+      "That a 3072 dimension model such as text-embedding-3-large fits in one vector column, or that an existing column can be widened later.",
+      "That a database scoped configuration such as PREVIEW_FEATURES has to be turned on before a vector column or a vector index will work."
+    ]
+  },
   "validation": {
     "target": "container",
     "setup": [

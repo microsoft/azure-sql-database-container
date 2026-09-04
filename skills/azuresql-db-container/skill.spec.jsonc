@@ -23,6 +23,27 @@
     "azuresql-db-import",
     "azuresql-db-testing"
   ],
+  "value_probe": {
+    "task": "We are shipping this service on Azure SQL Database next quarter. Set up the database locally in Docker so development runs against the same thing we deploy to. Add the service to docker-compose.yml, have it create an appdb database and run my schema.sql on first start, and give me the connection string my app should use.",
+    "gate": "The answer must reach for the Azure SQL Database container image rather than mcr.microsoft.com/mssql/server, and must create appdb explicitly on a master connection because this engine creates no database on its own.",
+    "states": [
+      "The image is the Azure SQL Database container from the preview registry, and the identity is confirmed with SELECT SERVERPROPERTY('EngineEdition') returning 5 and SERVERPROPERTY('Edition') returning 'SQL Azure'.",
+      "The database is created with CREATE DATABASE appdb over a connection to master, before anything else connects.",
+      "The application selects the database in the connection string, in Initial Catalog or Database, and never with a USE statement.",
+      "Schema and seed run as an explicit step the developer or compose file invokes, because the image runs no init directory.",
+      "Readiness is a retry loop that polls the engine with a real query until it answers, not a fixed sleep and not the container reporting Up.",
+      "The SA password must satisfy the complexity policy, and Encrypt plus a local-only TrustServerCertificate belong on the local connection string."
+    ],
+    "refutes": [
+      "That mcr.microsoft.com/mssql/server is the Azure SQL Database image. It is SQL Server, a different product with a different engine edition and a different supported surface.",
+      "That a .sql file placed in /docker-entrypoint-initdb.d is executed at startup. That is a Postgres and MySQL convention, the directory is not in this image, and a seed placed there runs silently never.",
+      "That naming a database in the connection string causes the engine to create it. It does not, and the connection simply fails until the database has been created on master.",
+      "That USE appdb selects the database. In a user-database session it is refused with Msg 40508.",
+      "That a container reporting Up is a container that is serving. A password that fails the complexity policy leaves the container Up while the engine inside it never starts, and every connection then fails looking like a networking fault.",
+      "That sp_configure or RECONFIGURE is available for tuning the local engine. sp_configure is absent rather than blocked, and the engine answers Msg 2812.",
+      "That SQL Server Agent is available for scheduling local jobs. There is no Agent on this engine and no msdb database."
+    ]
+  },
   "validation": {
     "target": "container",
     "probes": [

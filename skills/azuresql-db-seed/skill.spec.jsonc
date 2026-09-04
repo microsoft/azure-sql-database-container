@@ -19,6 +19,26 @@
     "azuresql-db-import",
     "azuresql-db-scaffold"
   ],
+  "value_probe": {
+    "task": "I have customers.csv and orders.csv sitting on my laptop and an empty appdb in the local Azure SQL Database container. Load both files into it, then generate about a thousand more synthetic orders on top so the dashboard has something to render. Give me something I can re-run.",
+    "gate": "The file load must move off the engine and onto a client-side tool such as bcp or a driver-based seeder, and the inserts must go parents before children rather than switching the foreign keys off.",
+    "states": [
+      "This engine reads bulk data only from Azure Blob Storage, through a database scoped credential and an external data source, so a path on the developer's machine is never a valid source.",
+      "bcp ships in the image at /opt/mssql-tools18/bin/bcp and streams the file over the connection from the client side, which is why it works where the engine-side read does not.",
+      "This is Azure SQL Database parity rather than a container limitation, so the same constraint applies in the cloud.",
+      "Parents are inserted before children, and generated identity values are captured with OUTPUT ... INTO a table variable so child rows can resolve their parents.",
+      "A thousand rows are generated set-based from a tally, for example TOP (1000) ROW_NUMBER() over a cross join of sys.all_objects, in one statement.",
+      "The seed is idempotent, and appdb has to exist, created on a master connection, before any seed can run."
+    ],
+    "refutes": [
+      "That BULK INSERT can read a path on the machine, either the host path or a path inside the container. It is refused with Msg 12713 regardless of whether the file is there.",
+      "That OPENROWSET(BULK ...) is the way round the BULK INSERT refusal. It is refused the same way, with Msg 12713, and the message says OPENROWSET is not allowed to read local files.",
+      "That copying the CSV into the container with docker cp makes the path valid. The restriction is on the engine reading local files at all, not on the file being missing.",
+      "That the foreign key failure, Msg 547, is best repaired by disabling or NOCHECKing the constraints for the load. That loads the data and leaves the referential integrity of the fixture unproven.",
+      "That volume is generated with a WHILE loop of single-row INSERTs, when a set-based tally produces the same thousand rows in one statement.",
+      "That a seed can be dropped into an init directory to run at container start."
+    ]
+  },
   "validation": {
     "target": "container",
     "probes": [

@@ -21,6 +21,26 @@
     "azuresql-db-from-sql-server",
     "azuresql-db-schema-migration"
   ],
+  "value_probe": {
+    "task": "We have a copy of the production database and I want it running in the Azure SQL Database container on my machine so I can debug against real data instead of fixtures. Walk me through getting it in, and tell me how I know it actually arrived intact.",
+    "gate": "The answer must route to SqlPackage against a .bacpac or .dacpac run from the host, and must say plainly that there is no restore path on this engine rather than offering a .bak workaround.",
+    "states": [
+      "BACKUP and RESTORE are refused in every session with Msg 40510, matching Azure SQL Database in the cloud, so a .bak is not a route in.",
+      "The supported route is SqlPackage: /Action:Import for a .bacpac carrying schema and data, /Action:Publish for a .dacpac carrying schema alone.",
+      "The target database has to exist and be empty before /Action:Import is pointed at it, created on a master connection, and SqlPackage targets that user database rather than master.",
+      "SqlPackage is a host tool, installed with dotnet tool install -g microsoft.sqlpackage, and is not in the container image, so the command runs on the developer's machine against the mapped host port.",
+      "This engine carries no SQL Server Agent jobs, no server-scoped logins, no linked servers, no filestream, no explicit filegroup placement and no cross-database three-part-name references, and an import that meets any of them reports it in the log.",
+      "The import log is read before the copy is called faithful, because the objects that did not come across are named there and not in the exit code."
+    ],
+    "refutes": [
+      "That RESTORE DATABASE ... FROM DISK works once the .bak is copied into the container. It is refused with Msg 40510, and there is no restore path at all.",
+      "That the container is SQL Server underneath, so the usual backup and restore workflow applies with a different path.",
+      "That SqlPackage /Action:Import creates the database it is pointed at. It does not, and the import fails until an empty database exists.",
+      "That SqlPackage can be run with docker exec inside the container. The image does not ship it.",
+      "That SqlPackage should be pointed at master and told the database name. It targets the user database directly.",
+      "That a zero exit code means a faithful copy. Unsupported objects are reported in the log while the run still finishes, so an unread log is the difference between a database that matches the source and one that merely finished importing."
+    ]
+  },
   "validation": {
     "target": "container",
     "probes": [

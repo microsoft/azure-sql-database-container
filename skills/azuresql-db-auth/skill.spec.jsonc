@@ -21,6 +21,26 @@
     "azuresql-db-connections",
     "azuresql-db-local-to-cloud"
   ],
+  "value_probe": {
+    "task": "Security review flagged that our service connects to the database as sa. We run the Azure SQL Database container locally and Azure SQL Database in production. Create a dedicated account for the app with only the permissions it needs, give me the connection string, and tell me what has to change when the same app points at the cloud.",
+    "gate": "The local recipe must be a server login created on a master connection plus a database user mapped to it in the application database, and the answer must not offer CREATE USER with a password as the local path.",
+    "states": [
+      "sa is a bootstrap and provisioning credential; an application connecting with it holds every permission in the engine and has no smaller blast radius left to fall back on.",
+      "Locally: CREATE LOGIN on a master connection, then CREATE USER ... FOR LOGIN in the application database, then ALTER ROLE db_datareader and db_datawriter ADD MEMBER.",
+      "db_owner is not granted, because membership of db_datareader and db_datawriter is the least privilege an ordinary application needs.",
+      "Encrypt=true belongs on every connection string in both environments; TrustServerCertificate=true is a local-only concession to the container's self-signed certificate.",
+      "In production the setting is Active Directory Managed Identity, which names one identity, rather than Active Directory Default, which walks a credential chain that is slower and ambiguous about which identity connected.",
+      "The secret does not live in appsettings.json or in source control; the local password comes from an environment variable and the cloud path removes the password entirely."
+    ],
+    "refutes": [
+      "That CREATE USER ... WITH PASSWORD, the contained database user that is the recommended shape in Azure SQL Database in the cloud, works on the container. It is refused with Msg 15007, and this inversion is the single fact the skill exists for.",
+      "That the refusal is repaired by turning containment on. ALTER DATABASE ... SET CONTAINMENT = PARTIAL is refused with Msg 12844, this functionality is not available in the current edition of SQL Server.",
+      "That the refusal is a syntax error in the statement, to be fixed by rewriting it. The statement is correct; the engine does not support the shape.",
+      "That CREATE USER ... FROM EXTERNAL PROVIDER works against a container started with no Entra configuration. It is refused with Msg 37525, naming Azure Active Directory as not configured for this instance.",
+      "That TrustServerCertificate=true is part of the connection string and can be carried to the cloud. Against a real certificate it silently turns certificate validation off.",
+      "That Active Directory Default is the production Entra setting for a service with a managed identity."
+    ]
+  },
   "validation": {
     "target": "container",
     "probes": [

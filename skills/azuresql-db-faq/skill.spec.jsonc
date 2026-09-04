@@ -13,6 +13,27 @@
     "azuresql-db-import",
     "azuresql-db-feedback"
   ],
+  "value_probe": {
+    "task": "We are evaluating the Azure SQL Database container for our dev environments and the team has questions. Can we take nightly backups of a developer's database and restore one when somebody trashes theirs? Can we manage these from the Azure portal? Does it do vector similarity search? And of the things it cannot do, which are permanent and which just are not finished yet?",
+    "gate": "Every answer must be sorted into whether it is an engine feature, a managed service feature that cannot exist in a container, a SQL Server only feature Azure SQL Database does not have either, or a Private Preview gap, and any current gap must point at the live Known limitations page rather than a recited list.",
+    "states": [
+      "BACKUP DATABASE and RESTORE DATABASE are refused in every session with Msg 40510, so the local persistence answer is a Docker named volume rather than a backup file.",
+      "Automated backups, point in time restore, geo-replication, elastic pools and Azure portal management are managed service features that live around the engine, so they are absent by construction and will not appear later.",
+      "The native VECTOR(n) type and VECTOR_DISTANCE are engine features and are present locally, so vector similarity search runs on the container with no second datastore and no extension.",
+      "A SQL Server remedy is not automatically available: sp_configure is absent with Msg 2812, there is no SQL Server Agent and no msdb, and USE is refused in a user-database session with Msg 40508.",
+      "The container is x64; a non-x64 host runs it under emulation, which is not the same as being supported.",
+      "The gap list is a live document, so the answer links the Known limitations page rather than reciting a snapshot that will age."
+    ],
+    "refutes": [
+      "That BACKUP DATABASE works locally because it is SQL Server underneath. It is refused with Msg 40510.",
+      "That point in time restore, automated backups or geo-replication can be enabled on the container with the right configuration. They are not engine features and cannot exist here.",
+      "That the container can be registered with or managed from the Azure portal.",
+      "That vector search needs an extension, a preview flag or a separate vector database. The type and the distance function are in the engine.",
+      "That a limitation observed today is permanent, or that a permanent architectural absence is a preview gap. Sorting the two is the whole answer, and getting it backwards sends a team to wait for something that will never ship or to build round something that lands next month.",
+      "That an ARM64 host is supported because the image runs there.",
+      "That the current limitations can be recited from memory as a fixed list."
+    ]
+  },
   "validation": {
     "target": "container",
     "setup": [
