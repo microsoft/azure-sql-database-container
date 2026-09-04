@@ -1,5 +1,4 @@
 {
-  "$schema": "https://github.com/microsoft/azure-sql-skills-lab/spec/schemas/skill.spec.schema.json",
   "id": "azuresql-db-scaffold",
   "domain": "azure-sql-database-container",
   "value": [
