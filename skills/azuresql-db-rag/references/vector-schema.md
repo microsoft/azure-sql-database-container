@@ -160,7 +160,8 @@ Measured 2026-08-29 on `12.0.2000.8`, `EngineEdition` 5: 2000 rows of `VECTOR(3)
 indexed in 478 ms, visible in `sys.indexes` as `type_desc` `VECTOR`, and queried
 through `vector_search(...)`.
 
-It needs `SET QUOTED_IDENTIFIER ON`, which is off by default in `sqlcmd`. Without
+It needs `SET QUOTED_IDENTIFIER ON` (and `SET ANSI_NULLS ON`), which are off by
+default in `sqlcmd`. Without
 it you get `Msg 1934`, whose text names indexed views, computed columns, filtered
 indexes, query notifications, XML methods and spatial indexes, and never the
 session setting that caused it.
@@ -183,6 +184,39 @@ Measured 2026-08-31 on `12.0.2000.8` unless marked as documented.
 | `INSERT`, `UPDATE`, `DELETE` all work with the index in place | measured. Older index versions made the table read only |
 | The table needs a primary key clustered index | documented |
 | Vector indexes cannot be partitioned and are not replicated to subscribers | documented |
+| A **security policy and a vector index cannot share a table** on the container, in either order | `Msg 37579` creating the policy after the index, `Msg 42244` creating the index after the policy. Both measured. **Documented nowhere.** The two coexist on Azure SQL Database, so this is a parity gap |
+| The `vector` column tops out at **1998 dimensions**, so a 3072-dimension model does not fit | `Msg 2717, The size (1999) given to the column 'v' exceeds the maximum allowed (1998)`. Learn states the same ceiling. The dimension cannot be widened later by `ALTER COLUMN`, even on an empty table |
+
+### The security policy conflict, in full
+
+A chunk table is a second copy of the source text, so the row-level security
+policy protecting the original table does not reach it. Add a vector index and no
+policy can be put on the chunk table at all, which leaves the tenant filter in the
+retrieval query's `WHERE` clause as the entire boundary, held up by a test rather
+than by the engine.
+
+```text
+Msg 37579, Level 16, State 1
+The security policy 'p_chunks' cannot reference tables with vector indexes.
+Table 'dbo.chunks' has a vector index.
+
+Msg 42244
+A vector index cannot be created on tables with security policies.
+Table 'dbo.chunks' has security policy 'p_chunks'.
+```
+
+**Where the sources disagree:** Microsoft Learn's `CREATE VECTOR INDEX`
+limitations list names partitioning, the clustered primary key, replication,
+`TRUNCATE TABLE` and data-tier package import, and the `vector` type's limitations
+page names constraints, indexes, ledger tables and Always Encrypted. As of
+2026-09-03 neither mentions security policies. The refusal above is this skill's
+own measurement. If it ever stops reproducing, the product moved.
+
+Three ways to live with it: keep the tenant filter in the query and test that
+removing it changes the row count; drop the vector index on the tenant-scoped
+table and take exact search; or split the table, with the indexed vector column on
+a policy-free table joined back to a policy-bearing table holding the chunk text
+and tenant column.
 
 ## Two things that will bite later, both documented rather than measured
 
