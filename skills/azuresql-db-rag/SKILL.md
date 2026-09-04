@@ -111,15 +111,18 @@ embedding service changes only the endpoint and the dimension `n`, nothing else.
 ```python
 import requests
 
-EMBED_URL = "http://localhost:11434/api/embeddings"
+EMBED_URL = "http://localhost:11434/api/embed"
 EMBED_MODEL = "nomic-embed-text"   # 768 dims
 EMBED_DIM = 768
 
 def embed(text: str) -> list[float]:
     # Pluggable: swap EMBED_URL/EMBED_MODEL/EMBED_DIM for a cloud endpoint.
-    r = requests.post(EMBED_URL, json={"model": EMBED_MODEL, "prompt": text})
+    # /api/embed takes "input" and returns "embeddings", a LIST of vectors (one per
+    # input), so index [0] for a single string. The older /api/embeddings route took
+    # "prompt" and returned a flat "embedding"; it still answers but is superseded.
+    r = requests.post(EMBED_URL, json={"model": EMBED_MODEL, "input": text})
     r.raise_for_status()
-    return r.json()["embedding"]
+    return r.json()["embeddings"][0]
 ```
 
 ## Step 4: insert embeddings (dimension is a LITERAL)

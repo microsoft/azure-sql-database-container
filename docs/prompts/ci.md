@@ -51,7 +51,7 @@ jobs:
     env:
       SQL_CONNECTION_STRING: "Server=localhost,1433;Database=appdb;User Id=sa;Password=${{ secrets.SQL_SA_PASSWORD }};TrustServerCertificate=true"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # The engine does not auto-create databases. Provision appdb once (sqlcmd lives in the
       # service container, so exec into it rather than relying on sqlcmd on the runner).
@@ -62,8 +62,8 @@ jobs:
             -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
 
       # Replace with your stack's setup and test commands:
-      - uses: actions/setup-node@v4
-        with: { node-version: 20 }
+      - uses: actions/setup-node@v7
+        with: { node-version: 24 }
       - run: npm ci
       - run: npm test    # tests read SQL_CONNECTION_STRING from the environment
 ```

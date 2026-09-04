@@ -87,9 +87,11 @@ npm install @prisma/client@6
 export DATABASE_URL="sqlserver://localhost:1433;database=appdb;user=sa;password=YourStr0ng_Passw0rd;trustServerCertificate=true"
 ```
 
-Pinned to Prisma 6; Prisma 7 moved the datasource `url` into a prisma.config.ts and
-requires a driver adapter (@prisma/adapter-mssql). The in-schema
-`url = env("DATABASE_URL")` below is valid on Prisma 6.
+Pinned to Prisma 6 (6.19.3) on purpose. The in-schema `url = env("DATABASE_URL")`
+below is valid on Prisma 6 and **invalid on Prisma 7** (7.10.0, the current stable),
+which fails validation with "The datasource property `url` is no longer supported in
+schema files". Pin the major explicitly rather than letting npm pick: `prisma` has
+carried 8.x prereleases on its `latest` dist-tag.
 
 `schema.prisma`:
 
@@ -112,8 +114,9 @@ authoring and may prompt or reset. Both require `appdb` to already exist; Prisma
 shadow-database step also needs an account that can create databases, which `sa`
 has here.
 
-Prisma 7 note: the SQL Server connector moves to the driver adapter
-`@prisma/adapter-mssql`. Install it and wire the client:
+Moving to Prisma 7: the SQL Server connector goes through the driver adapter
+`@prisma/adapter-mssql` (7.10.0), and the CLI reads the connection URL from
+`prisma.config.ts` instead of the schema. Install the adapter and wire the client:
 
 ```bash
 npm install @prisma/adapter-mssql
@@ -134,8 +137,19 @@ const adapter = new PrismaMssql({
 const prisma = new PrismaClient({ adapter });
 ```
 
-The `DATABASE_URL` above still drives the `prisma migrate` CLI; the adapter is for
-the runtime client.
+On Prisma 6 the `DATABASE_URL` above drives both the `prisma migrate` CLI and the
+schema. On Prisma 7 the adapter covers the runtime client only, and the CLI needs a
+`prisma.config.ts` that reads the same variable:
+
+```ts
+import { defineConfig, env } from "prisma/config";
+
+export default defineConfig({
+  schema: "prisma/schema.prisma",
+  migrations: { path: "prisma/migrations" },
+  datasource: { url: env("DATABASE_URL") },
+});
+```
 
 ## Alembic (Python)
 

@@ -164,8 +164,10 @@ npm install -D prisma@6
 npm install @prisma/client@6
 ```
 
-Pinned to Prisma 6; Prisma 7 moved the datasource `url` into a prisma.config.ts and requires a
-driver adapter (@prisma/adapter-mssql).
+Pinned to Prisma 6 (6.19.3) on purpose: Prisma 7 (7.10.0, the current stable) rejects the
+`url = env("DATABASE_URL")` block below and wants a `prisma.config.ts` plus a driver adapter
+(`@prisma/adapter-mssql`). Pin the major explicitly rather than letting npm pick: `prisma` has
+carried 8.x prereleases on its `latest` dist-tag.
 
 `prisma/schema.prisma`:
 

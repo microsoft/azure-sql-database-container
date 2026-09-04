@@ -107,8 +107,14 @@ npx prisma migrate deploy          # apply committed migrations (CI / prod-like)
 npx prisma migrate dev --name init # author + apply a new migration (local dev)
 ```
 
-Pinned to Prisma 6; Prisma 7 moved the datasource `url` into a prisma.config.ts and
-requires a driver adapter (@prisma/adapter-mssql). See references for the adapter wiring.
+Keep the `@6`. Prisma 7 is the current stable (7.10.0), and it **rejects** the
+`url = env("DATABASE_URL")` datasource block below: `prisma migrate` stops at
+validation with "The datasource property `url` is no longer supported in schema
+files". Prisma 7 moves the connection URL into a `prisma.config.ts` and wants a
+driver adapter (`@prisma/adapter-mssql`) on the client, so it is a config change,
+not a version bump. Pin the major explicitly rather than letting npm pick: `prisma`
+has carried 8.x prereleases on its `latest` dist-tag. See references for the
+Prisma 7 wiring.
 
 ### Alembic (Python)
 
