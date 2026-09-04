@@ -22,7 +22,7 @@ specifics, and the honest answers are often nuanced.
 ## The mental model: engine vs. managed service vs. SQL Server
 
 The container is the **Azure SQL Database engine, running locally**. It is not the
-managed cloud service, and it is not the SQL Server. Sort almost any
+managed cloud service, and it is not SQL Server. Sort almost any
 "is X supported" question into one of four buckets and the answer follows:
 
 1. **Engine features -> present.** T-SQL dialect, system views, `VECTOR` type and
@@ -64,7 +64,7 @@ limitations list (kept in step with the docs) is in [references/limitations.md](
 - When the question is about a current gap, give the workaround and point to the
   live, always-current list: https://microsoft.github.io/azure-sql-database-container/known-limitations.html
 - Distinguish "the engine does not do this" (a real gap) from "the managed cloud
-  service does this, the engine does not" (by design) from "the SQL Server does
+  service does this, the engine does not" (by design) from "SQL Server does
   this, Azure SQL Database does not" (intentionally absent).
 - If this skill's answer was wrong, outdated, or missing, that is a bug in this skill: load the **azuresql-db-feedback** skill and offer to file a report.
 

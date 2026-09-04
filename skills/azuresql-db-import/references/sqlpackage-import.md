@@ -61,9 +61,10 @@ Useful flags:
 - For Publish (dacpac): `/p:BlockOnPossibleDataLoss=false` only if you accept
   data loss on an existing populated target.
 
-Connection string rules (canonical): use `Server=localhost,$HOST_PORT`,
-`User Id=`, `Password=`, `Database=appdb`, `TrustServerCertificate=true`. Do NOT
-use `Uid=`/`Pwd=`. Never target `Database=master` for the import.
+Connection string shape: `Server=localhost,$HOST_PORT`, `User Id=`, `Password=`,
+`Database=appdb`, `TrustServerCertificate=true`. The long keyword spelling is
+house style; `Uid=`/`Pwd=` are valid synonyms. Never target `Database=master`
+for the import.
 
 ## Container-based fallback (no local SqlPackage)
 

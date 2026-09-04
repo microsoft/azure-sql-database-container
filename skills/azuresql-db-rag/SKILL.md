@@ -55,8 +55,8 @@ wrong image. Use the image below instead.
    the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 3. A `master` connection is for provisioning only. Do real work on `appdb`.
 
-Standard connection string (use `User Id=`/`Password=`/`Database=`, never
-`Uid=`/`Pwd=`):
+Standard connection string. House style spells it `User Id=`/`Password=`/`Database=`;
+`Uid=`/`Pwd=` are documented SqlClient synonyms and work too.
 
 ```
 Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
@@ -152,8 +152,9 @@ with pyodbc.connect(CONN) as conn:
     conn.commit()
 ```
 
-The ODBC connection string uses `Uid=`/`Pwd=` because that is ODBC's own keyword
-set; application-level config strings use the canonical `User Id=`/`Password=`.
+The ODBC connection string uses `Uid=`/`Pwd=` because ODBC is a different grammar
+with its own keyword set. Application-level config strings spell it
+`User Id=`/`Password=` as house style.
 
 ## Step 5: top-k similarity search (cosine)
 

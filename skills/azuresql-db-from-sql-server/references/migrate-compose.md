@@ -76,8 +76,8 @@ services:
 4. **`provision` one-shot service** runs `CREATE DATABASE appdb` on a master
    connection before the app starts. The engine does not auto-create databases.
 5. **App connection string** re-pointed from `Database=master` to
-   `Database=appdb`. Keep `User Id=` / `Password=` / `Database=` (not `Uid=` /
-   `Pwd=`), keep `TrustServerCertificate=true`.
+   `Database=appdb`. Keep `User Id=` / `Password=` / `Database=` as house style
+   (`Uid=` / `Pwd=` are valid synonyms), keep `TrustServerCertificate=true`.
 
 ## Seeding
 

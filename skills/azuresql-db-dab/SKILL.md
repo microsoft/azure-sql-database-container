@@ -71,7 +71,8 @@ export SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Pa
 ```
 
 `TrustServerCertificate=true` is required for the container's self-signed cert.
-Use `User Id=` / `Password=` / `Database=` (not `Uid=` / `Pwd=`).
+House style spells the keywords `User Id=` / `Password=` / `Database=`, which keeps the examples
+consistent. `Uid=` and `Pwd=` are documented SqlClient synonyms and work too.
 
 ## Step 3: init, add entities, start
 

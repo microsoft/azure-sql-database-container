@@ -114,7 +114,9 @@ string (`Database=appdb`, or `-d appdb` for sqlcmd). Standardize on one
 Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
 ```
 
-Use `User Id=` / `Password=` / `Database=`, not `Uid=` / `Pwd=`. For sqlcmd use
+House style spells the keywords `User Id=` / `Password=` / `Database=`, which
+keeps the examples consistent. `Uid=` and `Pwd=` are documented SqlClient
+synonyms and work too. For sqlcmd use
 `-C` to trust the self-signed cert and `-d appdb` to pick the database.
 
 ### 6. Seed AFTER provisioning (no auto-init folder)
@@ -174,7 +176,7 @@ development; use a full-scan top-k query for now.
 - Do not rely on database auto-creation or on `/docker-entrypoint-initdb.d/*.sql`.
 - Do not use `USE appdb`; select the database in the connection string.
 - Do not call a non-x64 host "supported"; just add `--platform linux/amd64` on non-x64 hosts.
-- Do not use `Uid=` / `Pwd=`; use `User Id=` / `Password=`.
+- Prefer `User Id=` / `Password=` in the .NET-style string. That is house style, not a requirement: `Uid=` / `Pwd=` are valid synonyms.
 - Do not pass the vector dimension as a bind parameter.
 - Do not keep SQL Agent, FILESTREAM, full Service Broker, cross-server distributed transactions, or Windows Auth.
 
