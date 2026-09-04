@@ -64,6 +64,23 @@
       }
     ]
   },
+  "value_probe": {
+    "task": "Our compose stack already has an api and a worker, and we are adding a SQL database service for local development. The api keeps crashing on its first query at startup and I would rather not wrap the data layer in retry code. Wire the database in properly.",
+    "gate": "The answer must gate the app on a health check that proves the engine accepts a login, and must create the database in a separate step that the app also waits on before it starts.",
+    "states": [
+      "the health check runs sqlcmd from /opt/mssql-tools18/bin inside the database container, with -C for the self signed certificate and -b so a SQL error sets the exit code",
+      "the app waits with depends_on condition service_healthy rather than a plain depends_on list",
+      "a one shot init service gated on service_healthy creates the database and exits, and the app additionally waits on condition service_completed_successfully",
+      "inside the compose network the app reaches the engine by service name, not localhost, and the service sets platform linux/amd64"
+    ],
+    "refutes": [
+      "that a plain depends_on waits for the database to be ready, when it waits only for the container to be created",
+      "that the app can keep the laptop connection string and reach the engine at localhost from inside its own container",
+      "that mounting the seed or create script at /docker-entrypoint-initdb.d makes it run, when this image does not honour that convention and the failure surfaces as empty tables rather than an error",
+      "that the crash is an application problem to be solved with retry or backoff code in the data layer",
+      "that the engine will create the database named in the app's connection string, so no init step is needed"
+    ]
+  },
   "triggering": {
     "explicit": [
       "Use the azuresql-db-sidecar skill",

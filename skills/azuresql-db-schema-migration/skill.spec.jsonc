@@ -96,6 +96,24 @@
       }
     ]
   },
+  "value_probe": {
+    "task": "Our dev bootstrap script runs docker compose up and then applies migrations, and the migration step fails with a connection error even though the container is up and listening on 1433 and the credentials are the ones in the compose file. Work out what is wrong and fix the script.",
+    "gate": "The answer must identify that the target database has to be created on a master connection before the migration tool connects, and must add a readiness wait whose exit code actually reflects a SQL error rather than a started container.",
+    "states": [
+      "the engine does not auto create a database on connect, so the database is provisioned on a master connection first and then named in the connection string",
+      "the readiness loop runs sqlcmd with -b so that a transient startup error sets the exit code instead of being read as success",
+      "USE is refused in a user database session with Msg 40508, so a migration script cannot switch context and the database belongs in the connection string",
+      "the engine reports EngineEdition 5 and Edition 'SQL Azure', which is why a migration proved here says anything about production",
+      "a VECTOR column carries its dimension as a literal in the DDL"
+    ],
+    "refutes": [
+      "that connecting creates the database when it is missing, the way the tooling for other engines does",
+      "that the failure is bad credentials, a wrong port or a firewall, when it is a database that was never provisioned against an engine that is healthy",
+      "that sqlpackage /Action:Publish cannot create the target database and needs it provisioned first, when Publish does create it",
+      "that installing prisma at its current major works against the documented schema.prisma, when Prisma 7 stops at validation with the datasource property url no longer being supported in schema files and moves the URL into prisma.config.ts, which is why the major is pinned at 6",
+      "that a readiness check on the container starting, or a fixed sleep, is enough before the first migration"
+    ]
+  },
   "triggering": {
     "explicit": [
       "Use the azuresql-db-schema-migration skill",

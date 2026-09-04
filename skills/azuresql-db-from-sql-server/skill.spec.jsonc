@@ -77,6 +77,25 @@
       }
     ]
   },
+  "value_probe": {
+    "task": "Our local dev compose runs mcr.microsoft.com/mssql/server and our production database is Azure SQL Database. We want local development to run the same engine as production. Tell me what to change in the project.",
+    "gate": "The answer must go past swapping the image name, to the statement filter this engine enforces, the database that is no longer created for you, and the seed that stops running.",
+    "states": [
+      "the SQL Server image reports EngineEdition 2, 3, 4 or 8, while this engine reports 5 with Edition 'SQL Azure' and enforces the same statement filter as the cloud service",
+      "the database must be created on a master connection because the engine does not auto create one on connect",
+      "USE is refused in a user database session with Msg 40508, so scripts select the database in their connection string instead",
+      "BACKUP and RESTORE are refused with Msg 40510, and ALTER DATABASE CURRENT SET RECOVERY SIMPLE is refused with Msg 40517, so a supported statement can be half accepted",
+      "SQL Server Agent, FILESTREAM and FileTable, cross instance Service Broker, linked servers, cross server distributed transactions and Windows authentication are all absent, and ordinary DDL and DML carry over unchanged"
+    ],
+    "refutes": [
+      "that the two images are interchangeable, so swapping the image name and keeping the rest of the configuration is the whole migration",
+      "that sp_configure is blocked by the statement filter or by a missing permission, when it is absent and answers Msg 2812, could not find stored procedure, which sends an agent hunting for a grant that does not exist",
+      "that BACKUP still works locally because it is a local container, when it is refused with Msg 40510 exactly as in the cloud",
+      "that a script which runs clean against master proves the migration, when master is a provisioning session where the statement filter is not enforced",
+      "that SQL files in /docker-entrypoint-initdb.d still seed the database, when that convention was never honoured by this image and the seed silently never runs",
+      "that cross database three part names keep working after the move"
+    ]
+  },
   "triggering": {
     "explicit": [
       "Use the azuresql-db-from-sql-server skill",

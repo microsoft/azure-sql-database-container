@@ -72,6 +72,22 @@
       }
     ]
   },
+  "value_probe": {
+    "task": "Bootstrap a new web app with a local SQL database in Docker, so a teammate can clone the repo, run one command, and end up with the schema applied and the sample rows loaded. I want it to match what we run in Azure.",
+    "gate": "The answer must create the application database explicitly on a master connection before the first migration runs, and must run the seed file itself rather than relying on an entrypoint init directory to pick it up.",
+    "states": [
+      "the image is the Azure SQL Database container, which reports EngineEdition 5 and Edition 'SQL Azure', and it is set to platform linux/amd64 because the image is x64 only",
+      "the database is created on a master connection before any migration or seed step",
+      "the seed runs by invoking sqlcmd against the user database after that database exists",
+      "the target database is selected in the connection string and never with USE"
+    ],
+    "refutes": [
+      "that a SQL file mounted at /docker-entrypoint-initdb.d is executed on first start, when that is a Postgres and MySQL convention this image does not honour and the scaffold then reports success with an empty schema",
+      "that connecting with the database named in the connection string creates it, so the first migration run fails against an engine that is working perfectly",
+      "that a script can switch database context with USE, which a user database session refuses with Msg 40508 exactly as in Azure SQL Database in the cloud",
+      "that mcr.microsoft.com/mssql/server is the same product, when a scaffold built against it can use statements this engine and the cloud service both refuse"
+    ]
+  },
   "triggering": {
     "explicit": [
       "Use the azuresql-db-scaffold skill",
