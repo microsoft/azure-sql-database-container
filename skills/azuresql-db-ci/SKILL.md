@@ -89,7 +89,7 @@ jobs:
           --health-retries 20
           --health-start-period 30s
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       # The engine does NOT auto-create databases. Provision appdb on master first,
       # via docker exec into the service container (runner needs no sqlcmd).
