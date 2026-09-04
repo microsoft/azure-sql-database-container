@@ -36,11 +36,12 @@ keeps the secret out of source control.
   `Password=` / `Database=` and `TrustServerCertificate=true` for the local
   self-signed cert.
 - **Container-specific and verified:** a SQL **contained** user
-  (`CREATE USER ... WITH PASSWORD`) does **not** work on the container today
-  (`CREATE USER ... WITH PASSWORD` and `ALTER DATABASE ... SET CONTAINMENT = PARTIAL`
-  both fail: `Msg 15007` / `Msg 12824`). Create a SQL app identity as a
-  **server login mapped to a database user** instead. This is the inverse of
-  Azure SQL Database in the cloud, where the contained user is the norm.
+  (`CREATE USER ... WITH PASSWORD`) does **not** work on the container today, and
+  you cannot turn it on. `CREATE USER ... WITH PASSWORD` fails with `Msg 15007`.
+  `ALTER DATABASE ... SET CONTAINMENT = PARTIAL` fails with `Msg 12844`, because
+  the container's edition does not have partial containment at all. Create a SQL
+  app identity as a **server login mapped to a database user** instead. This is the
+  inverse of Azure SQL Database in the cloud, where the contained user is the norm.
 
 ## Step 1: create a least-privilege user (not `sa`)
 
@@ -125,7 +126,7 @@ Per-stack secret handling (Key Vault, user-secrets, `.env`) is in
 ## Do not
 
 - Do not connect the application as `sa`; `sa` is for provisioning only.
-- Do not try to create a SQL contained user with `CREATE USER ... WITH PASSWORD` on the container; it fails (`Msg 15007`), and `ALTER DATABASE ... SET CONTAINMENT = PARTIAL` fails too (`Msg 12824`). Use a server login plus a mapped database user locally.
+- Do not try to create a SQL contained user with `CREATE USER ... WITH PASSWORD` on the container; it fails with `Msg 15007`. Do not try to turn partial containment on either: `ALTER DATABASE ... SET CONTAINMENT = PARTIAL` fails with `Msg 12844`, because the container's edition does not have that functionality. Use a server login plus a mapped database user locally.
 - Do not grant the app `db_owner` or server admin when read/write roles suffice.
 - Do not commit the connection string or the SA password; use a secret store or a git-ignored env var.
 - Do not set `TrustServerCertificate=true` against Azure SQL Database in the cloud; that disables cert validation on a real certificate.

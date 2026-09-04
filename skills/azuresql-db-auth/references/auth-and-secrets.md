@@ -46,11 +46,13 @@ ALTER ROLE db_datareader ADD MEMBER appuser;
 ALTER ROLE db_datawriter ADD MEMBER appuser;
 ```
 
-**This does not work on the container today.** `CREATE USER ... WITH PASSWORD`
-returns `Msg 15007` ('...' is not a valid login or you do not have permission),
-and trying to enable it with `ALTER DATABASE appdb SET CONTAINMENT = PARTIAL`
-returns `Msg 12824` (contained database authentication must be configured).
-Locally, use the login-plus-user recipe above; the app code and connection string
+**This does not work on the container today, and you cannot turn it on.**
+`CREATE USER ... WITH PASSWORD` returns `Msg 15007` ('...' is not a valid login or
+you do not have permission). `ALTER DATABASE appdb SET CONTAINMENT = PARTIAL`
+returns `Msg 12844` ("ALTER DATABASE statement failed; this functionality is not
+available in the current edition of SQL Server"). The container's edition does not
+have partial containment, so there is no contained database authentication setting
+for you to configure. Locally, use the login-plus-user recipe above; the app code and connection string
 are identical either way (username plus password). This is the inverse of the
 cloud, where contained users are preferred and server logins are limited.
 
