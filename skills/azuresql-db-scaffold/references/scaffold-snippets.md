@@ -7,15 +7,6 @@ also read `DATABASE_URL`. Image is
 `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest` (NOT the
 `mcr.microsoft.com/mssql/server` SQL Server image). On a non-x64 host add `platform: linux/amd64`.
 
-## Provision appdb first (every stack below assumes this has run)
-
-The engine does not auto-create databases. On a master connection:
-
-```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
-  -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
-```
-
 ## Contents
 
 - [Provision appdb first](#provision-appdb-first-every-stack-below-assumes-this-has-run)
@@ -24,6 +15,15 @@ docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0n
 - [FastAPI (SQLAlchemy / pyodbc)](#fastapi-sqlalchemy--pyodbc)
 - [Next.js (Prisma)](#nextjs-prisma)
 - [NestJS (Prisma or TypeORM)](#nestjs-prisma-or-typeorm)
+
+## Provision appdb first (every stack below assumes this has run)
+
+The engine does not auto-create databases. On a master connection:
+
+```bash
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
+  -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
+```
 
 ## Shared: compose service
 
@@ -89,8 +89,13 @@ dotnet ef migrations add InitialCreate
 dotnet ef database update
 ```
 
-Data access: EF Core parameterizes LINQ predicates by default. Never concatenate a value into
-raw SQL.
+Typed, parameterized data access (EF parameterizes by default):
+
+```csharp
+var widgets = await db.Widgets
+    .Where(w => w.Name == name)   // name is parameterized, never concatenated
+    .ToListAsync();
+```
 
 For the migration workflow in depth, see the **azuresql-db-schema-migration** skill.
 
@@ -183,7 +188,11 @@ docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0n
 npx prisma migrate dev --name init
 ```
 
-Data access: Prisma Client parameterizes every input.
+Typed, parameterized data access (Prisma Client parameterizes all inputs):
+
+```ts
+const widgets = await prisma.widget.findMany({ where: { name } });
+```
 
 ## NestJS (Prisma or TypeORM)
 
@@ -228,6 +237,13 @@ npm run typeorm -- migration:generate ./src/migrations/Init -d ./src/AppDataSour
 npm run typeorm -- migration:run -d ./src/AppDataSource.ts
 ```
 
-Data access: TypeORM binds `:name`-style parameters. Never string-concatenate a value.
+Typed, parameterized data access (TypeORM binds parameters):
+
+```ts
+const widgets = await repo
+  .createQueryBuilder("w")
+  .where("w.name = :name", { name })   // bound, never string-concatenated
+  .getMany();
+```
 
 For the full migration workflow across stacks, see the **azuresql-db-schema-migration** skill.
