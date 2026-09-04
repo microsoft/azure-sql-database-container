@@ -334,12 +334,9 @@ choice once the table is large enough for a full scan to hurt.
   not this engine.
 - Do not pass the vector dimension as a bind parameter; it fails with
   `Incorrect syntax near '@P3'`. Interpolate it as a literal.
-- Avoid `USE` to switch databases. In a user-database session (the
-  Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly
-  as in Azure SQL Database in the cloud. A `master` connection is a provisioning
-  session where the Azure statement filter is not enforced, so `USE` appears to work there, but `master` is for provisioning
-  only, not application work. Always select the target database in the connection
-  string (`Database=appdb`, or `-d appdb` for sqlcmd).
+- Do not use `USE appdb` to switch databases; a user-database session returns
+  `Msg 40508`, exactly as in Azure SQL Database in the cloud. Select the target
+  database in the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 - Do not run `CREATE VECTOR INDEX` without `SET QUOTED_IDENTIFIER ON`; the error it raises
   names indexed views and spatial indexes and never mentions the setting.
 - Do not plan a vector index and a security policy on the same table on the container.

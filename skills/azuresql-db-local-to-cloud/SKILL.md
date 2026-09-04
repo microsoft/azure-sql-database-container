@@ -230,15 +230,9 @@ body stays an overview.
 - Do not use the SQL Server image `mcr.microsoft.com/mssql/server`. If you
   were about to, stop and use the image above; this is the Azure SQL engine.
 - Do not connect to `Database=appdb` before creating it on `master`.
-- Do not use `USE appdb` to switch databases; set the database in the connection
-  string (`Database=appdb`, or `-d appdb` for sqlcmd). In a user-database
-  session (the Azure-faithful context where you develop), `USE` returns
-  `Msg 40508`, exactly as in Azure SQL Database in the cloud. A `master`
-  connection is a provisioning session where the Azure statement filter is
-  not enforced, so `USE` appears to work there, but
-  `master` is for provisioning only, not application work. Always select the
-  target database in the connection string (`Database=appdb`, or `-d appdb` for
-  sqlcmd).
+- Do not use `USE appdb` to switch databases; a user-database session returns
+  `Msg 40508`, exactly as in Azure SQL Database in the cloud. Select the target
+  database in the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 - Do not put a password or secret in the cloud connection string; use Entra
   auth and let the driver fetch a token.
 - Do not branch app logic on environment; keep auth in configuration.

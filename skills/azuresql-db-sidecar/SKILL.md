@@ -183,13 +183,9 @@ The app container reaches the database at `sqldb,1433` over the compose network.
 - Do not point the app at `localhost`; inside compose it is the `sqldb` service.
 - Do not rely on the app to create `appdb`, and do not assume the engine
   auto-creates it; the `sqldb-init` one-shot must run first.
-- Do not use `USE appdb` to switch databases. In a user-database session
-  (the Azure-faithful context where you develop), `USE` returns `Msg 40508`,
-  exactly as in Azure SQL Database in the cloud. A `master` connection is a
-  provisioning session where the Azure statement filter is not enforced,
-  so `USE` appears to work there, but `master` is for
-  provisioning only, not application work. Always select the target database in
-  the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
+- Do not use `USE appdb` to switch databases; a user-database session returns
+  `Msg 40508`, exactly as in Azure SQL Database in the cloud. Select the target
+  database in the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 - Do not drop `--platform` / `platform: linux/amd64`; the image is x64 only.
 - Do not depend on `/docker-entrypoint-initdb.d/*.sql`; it is not honored here.
 - Do not call a non-x64 host "supported"; it runs under emulation only.

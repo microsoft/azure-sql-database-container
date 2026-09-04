@@ -7,8 +7,18 @@ also read `DATABASE_URL`. Image is
 `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest` (NOT the
 `mcr.microsoft.com/mssql/server` SQL Server image). On a non-x64 host add `platform: linux/amd64`.
 
+## Provision appdb first (every stack below assumes this has run)
+
+The engine does not auto-create databases. On a master connection:
+
+```bash
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
+  -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
+```
+
 ## Contents
 
+- [Provision appdb first](#provision-appdb-first-every-stack-below-assumes-this-has-run)
 - [Shared: compose service](#shared-compose-service)
 - [.NET Aspire (EF Core)](#net-aspire-ef-core)
 - [FastAPI (SQLAlchemy / pyodbc)](#fastapi-sqlalchemy--pyodbc)
@@ -61,12 +71,8 @@ Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;Tru
 SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
 ```
 
-Provision appdb (once, on master) before the first migration:
-
-```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
-  -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
-```
+Provision appdb (once, on master) before the first migration: see
+[Provision appdb first](#provision-appdb-first-every-stack-below-assumes-this-has-run).
 
 `Program.cs` reads the single env var:
 
@@ -83,13 +89,8 @@ dotnet ef migrations add InitialCreate
 dotnet ef database update
 ```
 
-Typed, parameterized data access (EF parameterizes by default):
-
-```csharp
-var widgets = await db.Widgets
-    .Where(w => w.Name == name)   // name is parameterized, never concatenated
-    .ToListAsync();
-```
+Data access: EF Core parameterizes LINQ predicates by default. Never concatenate a value into
+raw SQL.
 
 For the migration workflow in depth, see the **azuresql-db-schema-migration** skill.
 
@@ -101,12 +102,8 @@ For the migration workflow in depth, see the **azuresql-db-schema-migration** sk
 SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
 ```
 
-Provision appdb on master before the app connects:
-
-```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
-  -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
-```
+Provision appdb on master before the app connects (see
+[Provision appdb first](#provision-appdb-first-every-stack-below-assumes-this-has-run)).
 
 `db.py`: build a SQLAlchemy URL from the canonical string via pyodbc.
 
@@ -186,11 +183,7 @@ docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0n
 npx prisma migrate dev --name init
 ```
 
-Typed, parameterized data access (Prisma Client parameterizes all inputs):
-
-```ts
-const widgets = await prisma.widget.findMany({ where: { name } });
-```
+Data access: Prisma Client parameterizes every input.
 
 ## NestJS (Prisma or TypeORM)
 
@@ -202,12 +195,8 @@ DATABASE_URL=sqlserver://localhost:1433;database=appdb;user=sa;password=YourStr0
 MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd
 ```
 
-Provision appdb on master before bootstrapping:
-
-```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
-  -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
-```
+Provision appdb on master before bootstrapping (see
+[Provision appdb first](#provision-appdb-first-every-stack-below-assumes-this-has-run)).
 
 Prisma path: same pinned install (`npm install prisma@6 @prisma/client@6`), `schema.prisma`, and
 `npx prisma migrate dev --name init` as Next.js above.
@@ -239,13 +228,6 @@ npm run typeorm -- migration:generate ./src/migrations/Init -d ./src/AppDataSour
 npm run typeorm -- migration:run -d ./src/AppDataSource.ts
 ```
 
-Typed, parameterized data access (TypeORM binds parameters):
-
-```ts
-const widgets = await repo
-  .createQueryBuilder("w")
-  .where("w.name = :name", { name })   // bound, never string-concatenated
-  .getMany();
-```
+Data access: TypeORM binds `:name`-style parameters. Never string-concatenate a value.
 
 For the full migration workflow across stacks, see the **azuresql-db-schema-migration** skill.

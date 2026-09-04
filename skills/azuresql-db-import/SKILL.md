@@ -120,13 +120,8 @@ This engine is Azure SQL Database (Engine Edition 5), so SQL Server features
 that Azure SQL DB does not support will fail or be skipped on import:
 
 - Cross-database three-part-name references and most cross-DB queries.
-- `USE <db>` in scripts: avoid `USE` to switch databases. In a user-database
-  session (the Azure-faithful context where you develop), `USE` returns
-  `Msg 40508`, exactly as in Azure SQL Database in the cloud. A `master` connection
-  is a provisioning session where the Azure statement filter is not
-  enforced, so `USE` appears to work there, but `master` is
-  for provisioning only, not application work. Always select the target database in
-  the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
+- `USE <db>` in scripts: a user-database session returns `Msg 40508`. Select the
+  target database in the connection string (`Database=appdb`, or `-d appdb`).
 - Server-scoped objects: SQL Agent jobs, server-level logins/linked servers,
   filestream, certain CLR and filegroup/physical-file settings.
 - Instance-level `DATABASE_DEFAULT` collation assumptions and unsupported
