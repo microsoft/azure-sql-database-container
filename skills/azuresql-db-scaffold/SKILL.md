@@ -90,7 +90,8 @@ the self-signed cert. For Prisma (NestJS / Next.js) the same instance is also ex
 
 Per-stack scaffold snippets (compose service, `.env`, provision appdb, first migration, typed
 data-access layer with parameterized queries) live in
-[references/scaffold-snippets.md](references/scaffold-snippets.md):
+[references/scaffold-snippets.md](references/scaffold-snippets.md); open it once you know which
+of these you are scaffolding:
 
 - .NET Aspire (EF Core)
 - FastAPI (SQLAlchemy / pyodbc)

@@ -130,7 +130,8 @@ docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourSt
 ### 7. Remove SQL Server-only features
 
 Some features exist only in the SQL Server image and must be removed or replaced.
-Flag and fix every hit. Full table in [references/sql-server-vs-azure-feature-matrix.md](references/sql-server-vs-azure-feature-matrix.md).
+Flag and fix every hit. Open [references/sql-server-vs-azure-feature-matrix.md](references/sql-server-vs-azure-feature-matrix.md)
+when you meet a feature this list does not name.
 
 - **SQL Server Agent** jobs: not available; use an external scheduler.
 - **FILESTREAM / FileTable**: not supported; store blobs in columns or external storage.

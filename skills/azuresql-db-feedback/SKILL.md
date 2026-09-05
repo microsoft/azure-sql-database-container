@@ -105,7 +105,7 @@ dropdown values, and worked examples for all three templates are in
 - The user saw the exact title, body and labels before anything was submitted, and said yes.
 - The report went to the right template: a skill problem on the skills form, a container problem on the container form.
 - No SA password, registry credential or access token appears in any field. Re-read the body once more before submitting.
-- Every dropdown value is verbatim from `references/issue-fields.md`, or the field was left out.
+- Every dropdown value is verbatim from the field reference, which you open before building any URL, or the field was left out.
 - A prefilled report uses a full `github.com` URL, never an `aka.ms` link, because those drop the query string.
 - Tier 1 succeeded when `gh issue create` printed the new issue URL; tier 2 succeeded when the user opened the URL and the form came up with the fields already filled in. If neither happened, the report was not filed: say so rather than implying it was.
 

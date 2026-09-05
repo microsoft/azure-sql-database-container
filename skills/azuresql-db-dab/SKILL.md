@@ -48,7 +48,8 @@ first, use **azuresql-db-container** or **azuresql-db-scaffold**.
 ## Step 1: install DAB
 
 Two supported ways. Pick the CLI for local dev; pick the container to wire DAB
-into a compose stack (see [references/dab-snippets.md](references/dab-snippets.md)).
+into a compose stack. Open [references/dab-snippets.md](references/dab-snippets.md) when you want
+that compose service rather than the CLI.
 
 ```bash
 # CLI (.NET 8 required): installs the `dab` command
@@ -127,7 +128,8 @@ from the same `dab-config.json`**, at `http://localhost:5000/mcp` by default,
 enabled by default. This is an additional API surface Data API Builder provides
 over your configured entities - it is not, and should not be presented as, a
 standalone "MSSQL MCP server." How to point an MCP client at it and how to
-scope the exposed tools is in [references/dab-mcp.md](references/dab-mcp.md).
+scope the exposed tools is in [references/dab-mcp.md](references/dab-mcp.md); open it when a user
+asks to point an MCP client at DAB, or to narrow which entities it exposes.
 
 ## Validation rules
 

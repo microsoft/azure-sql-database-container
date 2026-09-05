@@ -54,8 +54,9 @@ docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>
 
 This finds a free host port, adds `--platform linux/amd64` only on a non-x64
 host, waits until the engine is actually ready, and provisions `appdb` inside
-the same retry loop. Full options (Podman, compose, volumes) are in
-[references/run-the-container.md](references/run-the-container.md) and [references/wait-until-ready.md](references/wait-until-ready.md).
+the same retry loop. Open [references/run-the-container.md](references/run-the-container.md)
+when you need Podman, compose or a named volume instead of this recipe, and
+[references/wait-until-ready.md](references/wait-until-ready.md) when the readiness loop has to change.
 
 ```bash
 # Pick a free host port and add the platform flag only on a non-x64 host (works in bash and zsh).
@@ -87,7 +88,8 @@ the latest. Cache behavior and refresh detail: [references/image-and-registry.md
   three of upper case, lower case, digits, and symbols). The engine listens on container port `1433`.
 - App convention: apps read one `SQL_CONNECTION_STRING` env var.
 
-Details: [references/environment-variables.md](references/environment-variables.md).
+Open [references/environment-variables.md](references/environment-variables.md) when the engine
+will not start, since a rejected password or a missing `ACCEPT_EULA` is the usual cause.
 
 ### 3b. Optional: Microsoft Entra ID authentication
 
@@ -98,7 +100,8 @@ Configure Entra with the `MSSQL_AAD_*` variables and a mounted certificate. Pass
 `MSSQL_AAD_SERVER_ADMIN_SID` to bootstrap an Entra server admin at start (no
 post-init `CREATE LOGIN`). SQL auth (`sa`) remains the simple local default.
 
-Full recipe: [references/entra-auth.md](references/entra-auth.md).
+Open [references/entra-auth.md](references/entra-auth.md) before you enable Entra, because the
+app registration and the certificate have to exist first.
 
 ### 4. Connect and VERIFY the engine identity (self-check guard)
 
@@ -131,7 +134,8 @@ A non-zero exit means the setup is wrong. Read the error, fix it, and run it aga
 
 ## The three connection-model facts (state these plainly)
 
-These bite every newcomer. Full workflow in [references/connection-model.md](references/connection-model.md).
+These bite every newcomer. Open [references/connection-model.md](references/connection-model.md)
+when a connection is refused before you have created a database.
 
 1. **The engine does NOT auto-create databases on connect.** You must
    `CREATE DATABASE appdb` on a **master** connection before you connect with
@@ -170,8 +174,9 @@ with `-d appdb`.
 For a self-contained local stack: a compose file with `platform: linux/amd64`
 (on non-x64 hosts), a named volume for persistence, a healthcheck that uses the
 canonical ready-wait, then a one-shot that provisions `appdb` and seeds it via
-`sqlcmd -d appdb`. The full compose example and seed ordering are in
-[references/run-the-container.md](references/run-the-container.md) and [references/wait-until-ready.md](references/wait-until-ready.md).
+`sqlcmd -d appdb`. Open [references/run-the-container.md](references/run-the-container.md) for
+the full compose example, and [references/wait-until-ready.md](references/wait-until-ready.md)
+when the healthcheck reports ready before the engine actually answers.
 
 ## Stop and clean up
 

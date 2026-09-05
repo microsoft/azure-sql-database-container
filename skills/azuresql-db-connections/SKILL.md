@@ -105,8 +105,8 @@ socket errors.
 
 ## Per-stack
 
-Copy-pasteable pooling config and transient-only retry for each stack live in
-[references/retry-snippets.md](references/retry-snippets.md):
+Open [references/retry-snippets.md](references/retry-snippets.md) when you are wiring one of
+these stacks; it carries copy-pasteable pooling config and transient-only retry for each:
 
 - **.NET** (`Microsoft.Data.SqlClient`): pooling keywords (`Max Pool Size`, `Min Pool Size`,
   `Pooling=true`) and connection-string retry keywords (`ConnectRetryCount`,

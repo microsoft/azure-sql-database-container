@@ -118,8 +118,8 @@ dotnet user-secrets init
 dotnet user-secrets set "SQL_CONNECTION_STRING" "Server=localhost,1433;Database=appdb;User Id=appuser;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
 ```
 
-Per-stack secret handling (Key Vault, user-secrets, `.env`) is in
-[references/auth-and-secrets.md](references/auth-and-secrets.md).
+Open [references/auth-and-secrets.md](references/auth-and-secrets.md) when you need the
+per-stack handling for Key Vault, user-secrets or `.env`.
 
 ## Validation rules
 

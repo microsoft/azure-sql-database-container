@@ -86,7 +86,8 @@ run `docker login` as a step before the tests (see **azuresql-db-ci**).
 Scope the container to the level you need: one per test suite/class for speed, or one per
 test for full isolation. Per-language recipes (wait strategy, appdb provisioning, connection
 string, dispose) live in
-[references/testcontainers-snippets.md](references/testcontainers-snippets.md):
+[references/testcontainers-snippets.md](references/testcontainers-snippets.md); open it once you
+know which language the tests are in:
 
 - .NET: Testcontainers for .NET + an xUnit `IAsyncLifetime` fixture.
 - Node / TypeScript: `testcontainers` + a Jest `globalSetup` / `globalTeardown`.

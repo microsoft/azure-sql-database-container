@@ -59,8 +59,8 @@ exist yet fails with `Msg 547` (conflict with the FOREIGN KEY constraint). So in
 order: parents first, then the rows that reference them.
 
 For a simple `dbo.author` -> `dbo.book` model that means: insert authors, capture their ids, then
-insert books that reference those author ids. Full copy-pasteable T-SQL is in
-[references/seed-snippets.md](references/seed-snippets.md).
+insert books that reference those author ids. Open [references/seed-snippets.md](references/seed-snippets.md)
+when you need the copy-pasteable T-SQL for a model with more than two tables.
 
 Rules of thumb:
 
@@ -74,13 +74,14 @@ Rules of thumb:
 
 To create realistic volume (hundreds or thousands of rows) do it set-based with a numbers/tally
 approach rather than a row-by-row loop. A tally derived from system views produces a sequence you
-join against to fan out rows in a single statement. The runnable example (generate 1000 rows) is in
-[references/seed-snippets.md](references/seed-snippets.md). Wrap large inserts in an explicit
+join against to fan out rows in a single statement. Open [references/seed-snippets.md](references/seed-snippets.md)
+when you want the runnable version, which generates 1000 rows. Wrap large inserts in an explicit
 transaction so a mid-load failure rolls back cleanly.
 
 ## Step 4: pick your recipe
 
-Per-stack seed recipes live in [references/seed-snippets.md](references/seed-snippets.md):
+Per-stack seed recipes live in [references/seed-snippets.md](references/seed-snippets.md); open it
+once you know your data source and your stack:
 
 - **T-SQL**: multi-table seed in FK order (`dbo.author` -> `dbo.book`) run via
   `docker exec -i sqldb ... -d appdb -i seed.sql`, plus the set-based "generate 1000 rows" example.
