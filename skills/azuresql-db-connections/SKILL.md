@@ -19,6 +19,16 @@ Make the app's database connections reliable with **connection pooling** and **r
 transient-fault handling**. This is the **Azure SQL engine** (Private Preview), not the SQL
 Server image.
 
+Verified on 2026-09-05 against the container image
+`sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`, reporting `EngineEdition`
+5, Edition `SQL Azure`, build `12.0.2000.8`. All five executable checks behind this skill
+passed: the engine identity, `Msg 40508` for `USE`, a TCP session on the mapped port, and the
+two resource-governance dynamic management views returning nothing locally. Of the ten
+transient error numbers in the retry list below, nine are in this build's `sys.messages` and
+`Msg 10929` is not. It stays in the list because it is a cloud resource-governance error the
+container has no reason to raise, and it is sourced from Microsoft Learn rather than from that
+run.
+
 ## Why do this locally (local-to-cloud parity)
 
 The local container rarely drops a connection, so it is tempting to skip pooling and retry. Do

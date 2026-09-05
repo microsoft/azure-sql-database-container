@@ -25,6 +25,14 @@ service container. This is the local Azure SQL engine, not the SQL Server image
 For the full readiness loop, connection model, vectors, seeding, and registry detail, load the
 **azuresql-db-container** skill.
 
+Verified on 2026-09-05 against the container image
+`sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`, reporting `EngineEdition`
+5, Edition `SQL Azure`, build `12.0.2000.8`. All four executable checks behind this skill
+passed: the engine identity, that a test session is on the user database and not `master`,
+`Msg 40508` for `USE`, and `sqlcmd` at `/opt/mssql-tools18/bin/sqlcmd` inside the image. The
+workflow YAML itself was not executed by that run; what was checked is the engine behaviour
+the workflow rests on.
+
 ## Load-bearing facts (inlined)
 
 - **Image:** `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`

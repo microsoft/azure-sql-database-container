@@ -20,6 +20,14 @@ and test against. This is the **Azure SQL engine** (Private Preview), not the SQ
 Use this skill for populating data. For bootstrapping a whole new app use **azuresql-db-scaffold**;
 for restoring an existing `.bacpac` use **azuresql-db-import**.
 
+Verified on 2026-09-05 against the container image
+`sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`, reporting `EngineEdition`
+5, Edition `SQL Azure`, build `12.0.2000.8`. All seven executable checks behind this skill
+passed: the engine identity, `Msg 12713` for `BULK INSERT` and for `OPENROWSET(BULK ...)`
+against a local file, `Msg 547` for a child row inserted before its parent, `OUTPUT ... INTO`
+capturing generated identity values, the tally recipe fanning out 1000 rows, and `bcp`
+shipping in the image.
+
 ## Engine facts that shape seeding
 
 - USE this engine image:

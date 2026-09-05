@@ -25,6 +25,16 @@ the SQL Server image. `SELECT SERVERPROPERTY('EngineEdition')` returns `5`
 and `SERVERPROPERTY('Edition')` returns `'SQL Azure'`, the same as the cloud. So
 the SQL surface your code depends on is the same in both places.
 
+Verified on 2026-09-05 against the container image
+`sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`, reporting `EngineEdition`
+5, Edition `SQL Azure`, build `12.0.2000.8`. All six executable checks behind this skill
+passed on the container: the engine identity, `Msg 40508` for `USE`, `Msg 40510` for `BACKUP`
+and `RESTORE`, a parameterised insert with `OUTPUT inserted.id`, the single-database model,
+and `sqlcmd` at `/opt/mssql-tools18/bin/sqlcmd`. That run measured the container only. The
+cloud half of the parity claim, and the Microsoft Entra ID and managed identity setup for it,
+was not exercised there, so validate against a real Azure SQL Database once before declaring
+readiness.
+
 ## The one rule
 
 **Do not change application code between local and cloud.** The application reads

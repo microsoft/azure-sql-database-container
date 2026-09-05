@@ -33,6 +33,15 @@ Database container** (Private Preview) using **Azure Functions** and the first-p
 > [references/event-driven.md](references/event-driven.md) when you need the reason CES cannot
 > run here, or when a user asks for it by name.
 
+Verified on 2026-09-05 against the container image
+`sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`, reporting `EngineEdition`
+5, Edition `SQL Azure`, build `12.0.2000.8`. All six executable checks behind this skill
+passed: change tracking enabled on a user database, compatibility level 130 or higher,
+`OPENJSON` present, and, against Azure Functions Core Tools 4.12.0, that `func templates list`
+still advertises a SQL trigger template while `func new --template SqlTrigger` is refused with
+`Unknown template 'SqlTrigger'`, with an HTTP template succeeding in the same project as the
+control.
+
 ## Load-bearing facts (inlined; full engine detail in azuresql-db-container)
 
 - This is the **Azure SQL Database engine** (Private Preview), not the SQL Server

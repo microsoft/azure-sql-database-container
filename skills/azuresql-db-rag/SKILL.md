@@ -20,6 +20,14 @@ Store embeddings and run similarity search directly in the Azure SQL Database
 engine using the native `VECTOR(n)` type and `VECTOR_DISTANCE`. No separate
 vector store needed.
 
+Verified on 2026-09-05 against the container image
+`sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`, reporting `EngineEdition`
+5, Edition `SQL Azure`, build `12.0.2000.8`. All twelve executable checks behind this skill
+passed, including `CREATE VECTOR INDEX` building at index version 3, `Msg 42266` below 100
+rows, the 1998 dimension ceiling, `Msg 37579` for a security policy on a table that already
+carries a vector index, and an exact scan and an index-backed search returning the same row.
+The dated measurements further down record when each of those claims was first taken.
+
 ## Identity (read this first)
 
 This targets the **Azure SQL Database engine** running locally in a container,
