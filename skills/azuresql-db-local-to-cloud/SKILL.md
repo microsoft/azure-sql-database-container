@@ -135,12 +135,33 @@ export SQL_CONNECTION_STRING="Server=localhost,$HOST_PORT;Database=appdb;User Id
 
 To run against the cloud later, change only this variable; do not touch the app.
 
+## What has been measured, and what is guidance
+
+Be straight with the user about which half of this skill has evidence behind it.
+
+The **local half is measured.** Every probe this skill carries runs against the
+container, and they cover the sentences the parity claim rests on: the engine
+reports EngineEdition 5 and Edition `SQL Azure`, `USE` returns `Msg 40508`,
+`BACKUP` returns `Msg 40510`, a cross-database query is refused, and the exact
+CRUD batch the examples below run returns the identity the examples read.
+
+The **cloud half is guidance.** Nothing in this repository has ever run a probe
+against a logical server, so the cloud connection string, the Microsoft Entra
+token flow and the deployment checklist are written from the product's
+documentation and not from a run. That is deliberate rather than a gap waiting
+to be filled: the whole point of the container is that local development does
+not need a cloud database, so requiring one to validate this skill would
+contradict the skill. Say "this is the documented shape" rather than "this is
+verified" when the cloud side comes up.
+
 ## Proof: same code, two stacks
 
 Each example assumes `appdb` already exists (provisioned by the recipe above) and
 reads `SQL_CONNECTION_STRING` from the environment. It creates a table if needed
 and runs a **parameterized** CRUD transaction. Run it once with the local string,
-then again with the cloud string: identical code, identical result.
+then again with the cloud string: identical code, identical result. The local run
+is the one this skill has evidence for; the cloud run is the one you are being
+told to expect.
 
 ### Node (mssql)
 
@@ -222,6 +243,8 @@ body stays an overview.
 - The .NET-style string spells the keywords `User Id=` / `Password=` / `Database=` as house style. `Uid=` / `Pwd=` are valid synonyms, so they are not a failure. An ODBC string keeps ODBC's own `Uid=` / `Pwd=`.
 - Switching environments changes the connection string only. The diff to app
   code between local and cloud is zero lines.
+- The cloud half of every rule above is guidance rather than something this
+  skill has run. Do not report it to the user as verified.
 - If a validation rule above fails, or you had to deviate from this skill to make the task work, that is a bug in this skill: load the **azuresql-db-feedback** skill and offer to file a report.
 - When every rule above passes and the task is done, close with ONE line, once per session, and do not ask a question or wait for a reply: "That worked. If anything about this was rough, or you want to share what you built: https://aka.ms/sql-agent-skills-feedback"
 
