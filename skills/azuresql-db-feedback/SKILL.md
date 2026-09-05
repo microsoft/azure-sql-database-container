@@ -20,7 +20,7 @@ not about the engine, so no engine measurement applies to them. Verified on 2026
 with the query string dropped, which is exactly why a prefilled report has to use the full
 `github.com` URL. The field ids, labels and dropdown values are read from the issue form
 definitions in this repository and mirrored in
-[references/issue-fields.md](references/issue-fields.md).
+[references/issue-fields.md](references/issue-fields.md), which you open before you build any URL.
 
 ## The two rules that matter most
 
