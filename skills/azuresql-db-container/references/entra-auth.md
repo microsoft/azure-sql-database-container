@@ -9,6 +9,15 @@ For app registration, certificate creation, and Kubernetes deployments, follow
 the Learn tutorial:
 [Configure Microsoft Entra ID authentication for SQL Server on containers](https://learn.microsoft.com/sql/linux/security/authentication/container-kubernetes-microsoft-entra-deployment).
 
+## Contents
+
+- [Prerequisites](#prerequisites): what to have in place before you start.
+- [Required environment variables](#required-environment-variables): the `MSSQL_AAD_*` set the engine reads at start.
+- [Optional: bootstrap an Entra server admin at start](#optional-bootstrap-an-entra-server-admin-at-start): create the admin without a post-init `CREATE LOGIN`.
+- [Example: enable Entra on start](#example-enable-entra-on-start): the full run command with the certificate mounted.
+- [Verify](#verify): how to confirm the engine accepted the configuration.
+- [Do not](#do-not): the mistakes that make this fail silently.
+
 ## Prerequisites
 
 1. A Microsoft Entra application registration with a certificate uploaded.

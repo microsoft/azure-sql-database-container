@@ -29,8 +29,9 @@ Database container** (Private Preview) using **Azure Functions** and the first-p
 > Event-driven note: Azure SQL **Change Event Streaming (CES)** is the *cloud*
 > path for streaming row changes, and it **cannot run against the local
 > container** (it is unsupported on the Linux engine and streams only to Azure
-> Event Hubs public endpoints). Locally, use the SQL trigger below. See
-> [references/event-driven.md](references/event-driven.md).
+> Event Hubs public endpoints). Locally, use the SQL trigger below. Open
+> [references/event-driven.md](references/event-driven.md) when you need the reason CES cannot
+> run here, or when a user asks for it by name.
 
 ## Load-bearing facts (inlined; full engine detail in azuresql-db-container)
 
@@ -110,9 +111,9 @@ func new --name Books                              # pick an HTTP trigger templa
 
 Then wire the SQL bindings into the function. Per-language snippets (HTTP GET via
 input binding, HTTP POST upsert via output binding) are in
-[references/functions-snippets.md](references/functions-snippets.md); binding
-attribute/`function.json` fields are in
-[references/functions-bindings-reference.md](references/functions-bindings-reference.md).
+[references/functions-snippets.md](references/functions-snippets.md); open it once you know your
+language. Open [references/functions-bindings-reference.md](references/functions-bindings-reference.md)
+when a binding attribute or a `function.json` field is rejected.
 
 Output-binding requirements: the target table must have a **primary key**
 (the binding upserts via `MERGE`), and the database **compatibility level must

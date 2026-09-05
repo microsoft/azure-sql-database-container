@@ -131,7 +131,7 @@ Combine an ordinary `WHERE` with the distance ordering. Filter first, then rank:
 
 ```sql
 SELECT TOP (5) content,
-       VECTOR_DISTANCE('cosine', embedding, CAST('[...]' AS VECTOR(768))) AS distance
+       VECTOR_DISTANCE('cosine', embedding, CAST('[...query vector...]' AS VECTOR(768))) AS distance
 FROM chunks
 WHERE source = N'handbook.pdf'
 ORDER BY distance ASC;

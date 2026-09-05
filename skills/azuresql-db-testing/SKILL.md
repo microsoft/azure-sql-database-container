@@ -79,13 +79,15 @@ run `docker login` as a step before the tests (see **azuresql-db-ci**).
 4. Build the connection string from the mapped host port and hand it to the test:
    `Server=localhost,<mappedPort>;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true`.
    House style spells the keywords `User Id=` / `Password=` / `Database=`; `Uid=` / `Pwd=` are
-   documented SqlClient synonyms and work too. sqlcmd uses `-C`.
+   documented SqlClient synonyms and work too. The same option is spelled `-C` on the
+   command line the **azuresql-db-container** skill carries.
 5. **Dispose** the container when the fixture/suite ends so nothing leaks.
 
 Scope the container to the level you need: one per test suite/class for speed, or one per
 test for full isolation. Per-language recipes (wait strategy, appdb provisioning, connection
 string, dispose) live in
-[references/testcontainers-snippets.md](references/testcontainers-snippets.md):
+[references/testcontainers-snippets.md](references/testcontainers-snippets.md); open it once you
+know which language the tests are in:
 
 - .NET: Testcontainers for .NET + an xUnit `IAsyncLifetime` fixture.
 - Node / TypeScript: `testcontainers` + a Jest `globalSetup` / `globalTeardown`.

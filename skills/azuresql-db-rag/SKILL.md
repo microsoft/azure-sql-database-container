@@ -98,8 +98,8 @@ CREATE TABLE docs (
 );"
 ```
 
-Full schema notes, dimension choice, and metadata-filtering patterns:
-[references/vector-schema.md](references/vector-schema.md).
+Open [references/vector-schema.md](references/vector-schema.md) when you are choosing a dimension,
+or when a search has to filter on metadata as well as rank by distance.
 
 ## Step 3: embed text (the one network exception)
 

@@ -81,8 +81,8 @@ The application code does not branch on this. The driver reads the
 `Authentication=` keyword (or its absence) from the connection string and does
 the right thing. That is the whole point: auth is configuration, not code.
 
-Full walkthrough, token flow, and per-stack auth setup: see
-[references/auth-local-vs-cloud.md](references/auth-local-vs-cloud.md).
+Open [references/auth-local-vs-cloud.md](references/auth-local-vs-cloud.md) when you are setting
+up the cloud side, since it carries the token flow and the per-stack auth setup.
 
 ## Minimal load-bearing facts about the local container
 
@@ -239,9 +239,9 @@ try {
 
 ### Python (pyodbc) reference
 
-A third stack and the deployment checklist live in
-[references/auth-local-vs-cloud.md](references/auth-local-vs-cloud.md) so this
-body stays an overview.
+Open [references/auth-local-vs-cloud.md](references/auth-local-vs-cloud.md) when your stack is
+Python, or when you are ready to deploy, because a third stack and the deployment checklist live
+there rather than here.
 
 ## Validation rules
 
