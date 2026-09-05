@@ -19,6 +19,15 @@ from the cloud" questions accurately, instead of guessing from general SQL Serve
 or Azure SQL Database knowledge. A base model does not know this preview product's
 specifics, and the honest answers are often nuanced.
 
+Verified on 2026-09-05 against the container image
+`sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`, reporting `EngineEdition`
+5, Edition `SQL Azure`, build `12.0.2000.8`. All seven executable checks behind this skill
+passed: the engine identity, `Msg 40510` for `BACKUP` and for `RESTORE`, `Msg 40508` for
+`USE`, `Msg 15007` for a contained user, `Msg 12844` for `SET CONTAINMENT = PARTIAL`, and `Msg
+12713` for `BULK INSERT` from a local file. The gap list this skill summarises tracks the
+published Known limitations page, which moves independently of that run, so read the live page
+before repeating a gap claim.
+
 ## The mental model: engine vs. managed service vs. SQL Server
 
 The container is the **Azure SQL Database engine, running locally**. It is not the

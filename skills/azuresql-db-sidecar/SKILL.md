@@ -20,6 +20,17 @@ Dev Container as a service the app reaches by **service name** (`sqldb,1433`),
 never `localhost`. Keep existing services intact; add the database, an init
 one-shot that creates `appdb`, and a `depends_on` gate.
 
+Verified on 2026-09-05 against the container image
+`sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`, reporting `EngineEdition`
+5, Edition `SQL Azure`, build `12.0.2000.8`. The four executable checks behind this skill
+passed: `docker compose config` accepting the file this skill emits, with the platform
+override, the escaped health check and both `depends_on` conditions; the same parse refusing
+an invented condition name, which is the control that stops the first check being vacuous;
+`sqlcmd` at `/opt/mssql-tools18/bin/sqlcmd` inside the engine image; and a running stack
+reporting the database container as `Running` before it is `healthy`, with its health log
+beginning on a failed check. The Compose parse was measured on 2026-09-04 on the Docker
+Compose CLI of the authoring host, not inside the image.
+
 ## Load-bearing facts (inlined; full detail in azuresql-db-container)
 
 - This is the **Azure SQL Database engine** (Private Preview), not the SQL

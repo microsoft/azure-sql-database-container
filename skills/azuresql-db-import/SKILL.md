@@ -17,6 +17,12 @@ description: >-
 Bring an existing database INTO the local container from a
 `.bacpac` (schema + data) or `.dacpac` (schema only) using SqlPackage.
 
+Verified on 2026-09-05 against the container image
+`sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`, reporting `EngineEdition`
+5, Edition `SQL Azure`, build `12.0.2000.8`. All five executable checks behind this skill
+passed: the engine identity, `Msg 40508` for `USE`, `Msg 40510` for `RESTORE`, and that
+SqlPackage runs on the host because the image does not ship it.
+
 ## What this is (load-bearing facts)
 
 This is the **Azure SQL Database engine** running locally (Private Preview):

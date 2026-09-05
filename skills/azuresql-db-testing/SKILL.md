@@ -23,6 +23,14 @@ This skill is about tests that manage their own engine lifecycle in-process
 into a CI pipeline as a service container via workflow YAML. If the goal is a CI job
 rather than in-code test setup, use **azuresql-db-ci** instead.
 
+Verified on 2026-09-05 against the container image
+`sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`, reporting `EngineEdition`
+5, Edition `SQL Azure`, build `12.0.2000.8`. All six executable checks behind this skill
+passed: the engine identity, `Msg 40508` for `USE`, that the engine inside the container
+listens on `1433` so a random mapped host port works, that connecting creates no database, the
+native `VECTOR(n)` type, and `sqlcmd` at `/opt/mssql-tools18/bin/sqlcmd` for the wait
+strategy. The Testcontainers recipes themselves were not executed by that run.
+
 ## Use the right image (interception point)
 
 - USE this engine image:
@@ -79,8 +87,8 @@ run `docker login` as a step before the tests (see **azuresql-db-ci**).
 4. Build the connection string from the mapped host port and hand it to the test:
    `Server=localhost,<mappedPort>;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true`.
    House style spells the keywords `User Id=` / `Password=` / `Database=`; `Uid=` / `Pwd=` are
-   documented SqlClient synonyms and work too. The same option is spelled `-C` on the
-   command line the **azuresql-db-container** skill carries.
+   documented SqlClient synonyms and work too. `TrustServerCertificate=true` is spelled `-C`
+   on the `sqlcmd` command line the **azuresql-db-container** skill carries.
 5. **Dispose** the container when the fixture/suite ends so nothing leaks.
 
 Scope the container to the level you need: one per test suite/class for speed, or one per

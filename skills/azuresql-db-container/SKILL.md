@@ -21,6 +21,14 @@ This is the entry point for running the **Azure SQL Database engine** on your
 machine in a container. It owns the shared reference docs that every task skill
 links to. Start here, then hand off to a task skill.
 
+Verified on 2026-09-05 against the container image
+`sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`, reporting `EngineEdition`
+5, Edition `SQL Azure`, build `12.0.2000.8`. All nine executable checks behind this skill
+passed, including `Msg 40508` for `USE`, `Msg 40510` for `BACKUP`, `Msg 2812` for
+`sp_configure` (absent rather than refused), no SQL Server Agent job store, the `VECTOR(n)`
+type with `VECTOR_DISTANCE`, `sqlcmd` at `/opt/mssql-tools18/bin/sqlcmd`, and
+`/docker-entrypoint-initdb.d` not being auto-run.
+
 ## Are you reaching for the SQL Server image? Use this instead
 
 If you were about to add `mcr.microsoft.com/mssql/server` (the "mssql

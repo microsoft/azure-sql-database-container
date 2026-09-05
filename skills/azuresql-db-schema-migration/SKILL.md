@@ -22,6 +22,14 @@ Database engine (`SELECT SERVERPROPERTY('EngineEdition')` returns **5**,
 `mcr.microsoft.com/mssql/server`. If a tool or template points at the SQL Server image,
 stop and use the image below instead.
 
+Verified on 2026-09-05 against the container image
+`sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`, reporting `EngineEdition`
+5, Edition `SQL Azure`, build `12.0.2000.8`. All six executable checks behind this skill
+passed: the engine identity, `Msg 40508` for `USE`, a `VECTOR(n)` column in migration DDL, the
+three SqlPackage `Publish` parameters and `/TargetTrustServerCertificate` present in
+SqlPackage 170.4.83.3's own help, and `dotnet ef database update` on Entity Framework Core
+.NET command-line tools 9.0.19.
+
 ## The one rule that breaks every migration tool
 
 The engine does **NOT** auto-create databases on connect. Every migration tool

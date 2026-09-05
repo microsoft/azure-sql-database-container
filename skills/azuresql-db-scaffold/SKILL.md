@@ -18,6 +18,14 @@ description: >-
 Bootstrap a new app with the **Azure SQL Database container** (Private Preview) as the default
 local database. This is the **Azure SQL engine**, not the SQL Server image.
 
+Verified on 2026-09-05 against the container image
+`sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`, reporting `EngineEdition`
+5, Edition `SQL Azure`, build `12.0.2000.8`. The three executable checks behind this skill
+passed: the engine identity, `Msg 40508` for `USE`, and a native `VECTOR(n)` column with the
+double cast through `NVARCHAR(MAX)`. The per-stack scaffolds themselves were not executed by
+that run, so their snippets are checked for shape against the stacks' own documentation rather
+than measured end to end.
+
 ## Use the right image (interception point)
 
 - USE this engine image:

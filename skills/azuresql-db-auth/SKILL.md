@@ -21,6 +21,15 @@ connect as. This skill wires the app to a **least-privilege user**, picks the
 in the cloud, changing only the connection string), secures the connection, and
 keeps the secret out of source control.
 
+Verified on 2026-09-05 against the container image
+`sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`, reporting `EngineEdition`
+5, Edition `SQL Azure`, build `12.0.2000.8`. All seven executable checks behind this skill
+passed, including `Msg 15007` for a contained user, `Msg 12844` for `SET CONTAINMENT =
+PARTIAL`, `Msg 37525` for `CREATE USER ... FROM EXTERNAL PROVIDER` on a container started
+without Entra configuration, and the fixed database roles this skill grants. The cloud side of
+this guidance, Azure Key Vault and managed identity, was not measured by that run and comes
+from Microsoft Learn.
+
 ## Load-bearing facts (inlined; full engine detail in azuresql-db-container)
 
 - This is the **Azure SQL Database engine** (Private Preview), not the SQL Server

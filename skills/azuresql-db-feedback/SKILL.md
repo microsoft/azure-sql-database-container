@@ -13,6 +13,15 @@ to the user to submit.
 
 **Repository:** `microsoft/azure-sql-database-container` (both the container and the skills live here).
 
+The claims in this skill are about issue forms in `microsoft/azure-sql-database-container`,
+not about the engine, so no engine measurement applies to them. Verified on 2026-09-05:
+`aka.ms/sql-agent-skills-feedback` still answers `301` to
+`https://github.com/microsoft/azure-sql-database-container/issues/new?template=skill_feedback.yml`
+with the query string dropped, which is exactly why a prefilled report has to use the full
+`github.com` URL. The field ids, labels and dropdown values are read from the issue form
+definitions in this repository and mirrored in
+[references/issue-fields.md](references/issue-fields.md).
+
 ## The two rules that matter most
 
 1. **Never create an issue without explicit confirmation.** Show the user the full title and body first and
