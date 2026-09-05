@@ -39,7 +39,7 @@ managed cloud service, and it is not SQL Server. Sort almost any
 4. **In-progress in this preview -> works with a caveat:** the VS Code MSSQL
    extension UI and SSMS, and full PaaS restriction enforcement, are still being
    completed. `CREATE VECTOR INDEX` used to belong here and no longer does: it
-   works, and the Known limitations page has not caught up. See below.
+   works, and the Known limitations page says so. See below.
 
 ## Most-asked questions (quick answers)
 

@@ -61,7 +61,7 @@ remove or replace every usage.
 - Native `VECTOR(n)` column type and `VECTOR_DISTANCE('cosine', a, b)` for
   embedding search. Insert with `CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n))` where `n` is a literal,
   never a bind parameter. `CREATE VECTOR INDEX` (DiskANN) **works on this
-  image**, measured, and the Known limitations page has not caught up. It needs
+  image**, measured, and the Known limitations page says so. It needs
   `SET QUOTED_IDENTIFIER ON` and at least 100 rows with non-null vectors
   (`Msg 42266` below that). Full-scan top-k stays exact and stays the right
   choice for a small table.

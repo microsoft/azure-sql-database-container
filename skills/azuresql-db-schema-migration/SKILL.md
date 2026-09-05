@@ -141,7 +141,7 @@ literal, never a bind parameter (a parameter dimension fails with "Incorrect
 syntax near '@P3'"); the inner `NVARCHAR(MAX)` cast keeps a real embedding's
 JSON from being sent as ntext, which the engine rejects (error 529).
 `CREATE VECTOR INDEX` (DiskANN) **works on this image**, measured, and the Known
-limitations page has not caught up. Three things matter in a migration:
+limitations page says so. Three things matter in a migration:
 
 - It needs `SET QUOTED_IDENTIFIER ON` in the session running the DDL, and it refuses
   to build on fewer than 100 rows with non-null vectors (`Msg 42266`). So the index
