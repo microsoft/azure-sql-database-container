@@ -101,7 +101,13 @@ data-access layer with parameterized queries) live in
 
 The skeleton creates the schema via your stack's migration tool. For the full migration
 workflow (idempotent scripts, ordering, applying inside the ready-wait loop) cross-link the
-**azuresql-db-schema-migration** skill. Seed only AFTER appdb exists:
+**azuresql-db-schema-migration** skill. For a Next.js or NestJS skeleton that is:
+
+```bash
+npx prisma migrate dev --name init
+```
+
+Seed only AFTER appdb exists:
 
 ```bash
 docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -d appdb -i seed.sql

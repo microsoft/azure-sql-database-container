@@ -110,6 +110,14 @@ The connection string carries a credential. Never commit it or the SA password.
 - In the cloud, store it in **Azure Key Vault** and reference it, or use managed
   identity so there is no password to store at all.
 
+For a .NET project the local value goes in the secret store rather than in a file
+that can be committed:
+
+```bash
+dotnet user-secrets init
+dotnet user-secrets set "SQL_CONNECTION_STRING" "Server=localhost,1433;Database=appdb;User Id=appuser;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
+```
+
 Per-stack secret handling (Key Vault, user-secrets, `.env`) is in
 [references/auth-and-secrets.md](references/auth-and-secrets.md).
 

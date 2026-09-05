@@ -88,6 +88,20 @@ Per-stack seed recipes live in [references/seed-snippets.md](references/seed-sni
 - **Node**: `@faker-js/faker` generating rows, inserted with the `mssql` driver using parameters.
 - **Python**: `Faker` generating rows, inserted with `pyodbc` (ODBC Driver 18) using parameters.
 
+`bcp` streams the file over the connection, so it loads a local CSV that
+`BULK INSERT` cannot reach. Copy the file in, then load it (`-u` trusts the
+container's self-signed certificate, `-F 2` skips the header row):
+
+```bash
+docker cp authors.csv sqldb:/tmp/authors.csv
+docker exec sqldb /opt/mssql-tools18/bin/bcp dbo.author_stage in /tmp/authors.csv \
+  -S localhost -U sa -P "YourStr0ng_Passw0rd" -d appdb -u -c -t ',' -F 2
+```
+
+The staging table and the follow-up insert into the real table are in
+[references/seed-snippets.md](references/seed-snippets.md); read it when the CSV
+columns do not line up with the target table.
+
 ## Validation rules
 
 - appdb exists (created on a **master** connection) BEFORE any seed statement runs.
