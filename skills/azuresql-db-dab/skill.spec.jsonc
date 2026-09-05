@@ -27,7 +27,7 @@
     "write",
     "execute"
   ],
-  "maturity": "draft",
+  "maturity": "preview",
   "applies_to": [
     "azure-sql-db-container"
   ],
@@ -41,8 +41,9 @@
   "validation": {
     "target": "container",
     "setup": [
-      "the Data API builder CLI installed as a global dotnet tool, since every probe below is a CLI probe and none of them opens a database connection",
-      "the Azure SQL Database container running with a provisioned user database, for the manual checks in assert that a probe cannot make"
+      "the Data API builder CLI installed as a global dotnet tool, since the five CLI probes below read the configuration it writes",
+      "sqlcmd and curl on the host, for the three engine probes below, which build a table in the scratch database and then read it back through a running Data API builder",
+      "nothing else. The engine probes reach the scratch database over PROBE_PORT and PROBE_DB, which the lane sets, so no container has to be started by hand"
     ],
     "assert": [
       "the user database exists, created on a master connection, before the tool is started",
@@ -91,6 +92,33 @@
           "succeeds": true
         },
         "why": "The exact command line the body prints for exposing a table, run to the end. It settles that the entity name and the source object are two different things that land in two different places, which is the detail the body calls out, and it makes visible what anonymous:* actually writes: one role named anonymous holding the wildcard action, which is unauthenticated full create, read, update and delete. That is why the body restricts it to local development. Measured 2026-09-04 on 2.0.9."
+      },
+      {
+        "where": "host",
+        "cmd": "d=$(mktemp -d) && cd \"$d\" && p=$((PROBE_PORT+3000)) && export SQL_CONNECTION_STRING=\"Server=localhost,$PROBE_PORT;Database=$PROBE_DB;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true\" && sqlcmd -S \"localhost,$PROBE_PORT\" -U sa -P 'YourStr0ng_Passw0rd' -C -d \"$PROBE_DB\" -Q \"IF OBJECT_ID('dbo.Books') IS NULL CREATE TABLE dbo.Books (Id int NOT NULL PRIMARY KEY, Title nvarchar(100) NOT NULL); DELETE FROM dbo.Books; INSERT INTO dbo.Books (Id, Title) VALUES (1, N'Dune'), (2, N'Neuromancer');\" > /dev/null 2>&1; dab init --database-type mssql --connection-string \"@env('SQL_CONNECTION_STRING')\" --host-mode Development > /dev/null 2>&1 && dab add Book --source dbo.Books --source.type table --permissions \"anonymous:*\" > /dev/null 2>&1 && (ASPNETCORE_URLS=\"http://localhost:$p\" dab start > dab.log 2>&1 & echo $! > dab.pid) && for i in $(seq 1 60); do curl -sf \"http://localhost:$p/api/Book\" -o rest.json && break; sleep 1; done; kill \"$(cat dab.pid)\" 2>/dev/null; python3 -c \"import json,sys; v=json.load(open('rest.json'))['value']; sys.exit(0 if [(r['Id'], r['Title']) for r in v] == [(1,'Dune'),(2,'Neuromancer')] else 1)\"",
+        "engine": true,
+        "expect": {
+          "succeeds": true
+        },
+        "why": "The first probe in this skill that opens a database connection. The five above it prove the CLI writes a file; this one proves the file serves the container. It creates dbo.Books with two known rows in the scratch database, generates the configuration exactly as Step 3 of the body does, starts the engine and reads GET /api/Book back, asserting both rows and both column values. It goes red for engine reasons: the login refused, the self-signed certificate rejected if TrustServerCertificate stops being honoured, the table absent, or the rows coming back different. Watched both ways on 2026-09-04 against build 12.0.2000.8 on Data API builder 2.0.9: green with the table present, red against a database where dbo.Books does not exist."
+      },
+      {
+        "where": "host",
+        "cmd": "d=$(mktemp -d) && cd \"$d\" && p=$((PROBE_PORT+3001)) && export SQL_CONNECTION_STRING=\"Server=localhost,$PROBE_PORT;Database=$PROBE_DB;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true\" && sqlcmd -S \"localhost,$PROBE_PORT\" -U sa -P 'YourStr0ng_Passw0rd' -C -d \"$PROBE_DB\" -Q \"IF OBJECT_ID('dbo.Books') IS NULL CREATE TABLE dbo.Books (Id int NOT NULL PRIMARY KEY, Title nvarchar(100) NOT NULL); DELETE FROM dbo.Books; INSERT INTO dbo.Books (Id, Title) VALUES (1, N'Dune'), (2, N'Neuromancer');\" > /dev/null 2>&1; dab init --database-type mssql --connection-string \"@env('SQL_CONNECTION_STRING')\" --host-mode Development > /dev/null 2>&1 && dab add Book --source dbo.Books --source.type table --permissions \"anonymous:*\" > /dev/null 2>&1 && (ASPNETCORE_URLS=\"http://localhost:$p\" dab start > dab.log 2>&1 & echo $! > dab.pid) && for i in $(seq 1 60); do curl -sf -X POST \"http://localhost:$p/graphql\" -H 'Content-Type: application/json' -d '{\"query\":\"{ books { items { Id Title } } }\"}' -o gql.json && grep -q '\"data\"' gql.json && break; sleep 1; done; kill \"$(cat dab.pid)\" 2>/dev/null; python3 -c \"import json,sys; d=json.load(open('gql.json')); i=d.get('data',{}).get('books',{}).get('items'); sys.exit(0 if i == [{'Id':1,'Title':'Dune'},{'Id':2,'Title':'Neuromancer'}] else 1)\"",
+        "engine": true,
+        "expect": {
+          "succeeds": true
+        },
+        "why": "The other half of the headline claim, which is that one configuration file serves REST and GraphQL over the same tables with no application code. The probe above settles REST; this one issues the query the body prints, against the same generated configuration and the same scratch database, and asserts the same two rows come back under data.books.items. It goes red if the GraphQL surface stops being generated, if the plural query name changes, or if the engine answers differently on the two paths. Watched both ways on 2026-09-04 on Data API builder 2.0.9: green with the table present, red against a database where dbo.Books does not exist, where GraphQL never returns a data block at all."
+      },
+      {
+        "where": "host",
+        "cmd": "d=$(mktemp -d) && cd \"$d\" && p=$((PROBE_PORT+3002)) && n=\"never_provisioned_$$\" && export SQL_CONNECTION_STRING=\"Server=localhost,$PROBE_PORT;Database=$n;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true\" && dab init --database-type mssql --connection-string \"@env('SQL_CONNECTION_STRING')\" --host-mode Development > /dev/null 2>&1 && dab add Book --source dbo.Books --source.type table --permissions \"anonymous:*\" > /dev/null 2>&1 && (ASPNETCORE_URLS=\"http://localhost:$p\" dab start > dab.log 2>&1 & echo $! > dab.pid) && sleep 25; served=1; curl -sf -o /dev/null \"http://localhost:$p/api/Book\" && served=0; kill \"$(cat dab.pid)\" 2>/dev/null; test \"$served\" = 1 && grep -qF \"Cannot open database \\\"$n\\\" requested by the login\" dab.log",
+        "engine": true,
+        "expect": {
+          "succeeds": true
+        },
+        "why": "The claim the value probe used to carry alone: the tool does not create the database, and this engine does not auto-create one on connect, so pointing the configuration at a database nobody provisioned fails rather than quietly working. The probe names a database that cannot exist, starts the tool against it, and asserts two things together: no request is ever served, and the tool's own log carries the engine's refusal, Cannot open database ... requested by the login. It asserts the text and not a number because the refusal arrives as a login failure through the client, where sqlcmd prints no Msg number and exits 0, so no number was measured and none is written here. It goes red the moment the engine starts creating a database it was merely asked for. Watched both ways on 2026-09-04: green against an unprovisioned name, red when the same body is pointed at a database that does exist, where the tool comes up and serves."
       }
     ]
   },

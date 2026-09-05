@@ -1,10 +1,13 @@
 {
   "id": "azuresql-db-feedback",
   "domain": "azure-sql-database-container",
-  "value": ["corrects-a-wrong-assumption", "multi-step-with-silent-failures"],
+  "value": [
+    "corrects-a-wrong-assumption",
+    "multi-step-with-silent-failures"
+  ],
   "correction": "Told that something went wrong, an agent says to file an issue and hands the work back to the user, who is the one person in the room without the facts. The agent already holds all of them: which skill it was following, the instruction it followed, what it actually had to do instead, the image tag, the host, the runtime, the failing command and the error text. So the report gets built rather than requested. Three things about building it are not obvious and each one is a real failure. The report goes to one of two different issue templates, and the test that settles which is not what broke but whether the instructions were right: if the skill said the correct thing and the engine still failed, it is a product bug, and if the skill said the wrong thing, said nothing, or was not loaded at all, it is a skill bug, including the case where the task succeeded anyway because the agent worked around the skill. That last case is the one nobody files, and it is the most useful report there is. Everything submitted is world readable, so the SA password, registry credentials, whole connection strings, access tokens and any customer data come out before anything is shown. And a prefilled report has to travel on a full github.com URL: an aka.ms short link drops the entire query string, so every field the agent filled in is lost silently and the user opens an empty form with no indication anything was dropped. Above all, nothing is ever submitted without an explicit yes, the offer is made once, and no is an answer.",
   "value_declaration": {
-    "rationale": "This skill's kernel is project-specific routing: which of two issue templates a report belongs in and where it is filed. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach redacting a pasted connection string, asking before submitting, and how to write a good bug report, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted. Its maturity stays draft regardless, and not because of this argument. Its single probe is an HTTPS redirect check that covers almost none of the skill, so the probe rung underneath value is unmet.",
+    "rationale": "This skill's kernel is project-specific routing: which of two issue templates a report belongs in and where it is filed. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach redacting a pasted connection string, asking before submitting, and how to write a good bug report, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted. Its maturity is decided by its probes and not by this argument. This skill has no engine surface at all, so it declares validation.target of none and is judged on the instrument that does fit it, which is whether the short link its reports travel on still resolves to the template it names.",
     "covers": [
       "the two distinct issue templates this product uses and the test that decides between them, which exists only in this project",
       "the aka.ms destination a report is filed to, which is project-specific and in no training data",
@@ -19,7 +22,7 @@
     "expires_when": "the-container-reaches-public-preview"
   },
   "posture": ["read"],
-  "maturity": "draft",
+  "maturity": "preview",
   "applies_to": ["azure-sql-db-container"],
   "value_probe": {
     "task": "The steps you gave me for the local database did not work. I got it going in the end by ignoring one of them, but the next person is going to hit the same wall and lose an afternoon. Can you make sure the team that owns this hears about it?",
@@ -41,7 +44,7 @@
     ]
   },
   "validation": {
-    "target": "container",
+    "target": "none",
     "setup": [
       "network access from the host, for the redirect probe only"
     ],
@@ -58,7 +61,9 @@
       {
         "cmd": "sh -c 'curl -fsS -o /dev/null -w \"%{redirect_url}\" \"https://aka.ms/sql-agent-skills-feedback?title=PROBE&labels=PROBE\" | grep -q \"issues/new?template=skill_feedback.yml$\"'",
         "where": "host",
-        "expect": { "succeeds": true },
+        "expect": {
+          "succeeds": true
+        },
         "why": "The one claim in this skill an engine of any kind can settle, and the reason it is worth a probe is that being wrong about it fails silently: the user opens a form, sees it empty, and has no way to know a filled report was dropped on the way. Measured on 2026-09-04, aka.ms/sql-agent-skills-feedback answers 301 to https://github.com/microsoft/azure-sql-database-container/issues/new?template=skill_feedback.yml, with title and labels gone. The grep anchors on the end of the redirect target, so the probe fails both if a query string survives, which would mean the skill's prohibition is now unnecessary, and if the short link is ever repointed at a different template, which would misroute every report this skill files. It runs on the host because it is a link, not a database: nothing about it involves the engine, and the container has no reason to carry curl."
       }
     ]

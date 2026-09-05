@@ -28,7 +28,7 @@
     "execute",
     "provision"
   ],
-  "maturity": "draft",
+  "maturity": "preview",
   "applies_to": [
     "azure-sql-db-container"
   ],
@@ -42,8 +42,8 @@
   "validation": {
     "target": "container",
     "setup": [
-      "a Docker Compose implementation on the host that can parse a file without a running daemon, since both compose probes below are pure configuration parsing",
-      "the Azure SQL Database container image, for the one probe that asserts what the image itself carries"
+      "a Docker Compose implementation on the host, and the engine image pulled, since the two stack probes below bring a real Compose stack up and the two configuration probes parse a file without contacting a daemon",
+      "room for one more engine container beside the one the lane is already running. Each stack probe caps its engine at 2 GiB and tears the stack down on exit, including on failure"
     ],
     "assert": [
       "the application's connection string names the database service by its Compose service name and never localhost",
@@ -76,6 +76,15 @@
           "succeeds": true
         },
         "why": "Both the health check and the init one-shot invoke sqlcmd at this absolute path inside the engine image, and the init service does it by running a second copy of the engine image purely as a client. If the image ever stops carrying the tools at this path, the health check never turns healthy, the init service never runs, and the application waits on a gate that will not open, with nothing in the Compose output naming a missing binary. This is a container probe on purpose: the path does not exist on a developer's host and asserting it there would be the mistake that cost five probes a red run on 2026-09-02."
+      },
+      {
+        "where": "host",
+        "cmd": "d=$(mktemp -d) && cd \"$d\" && P=\"sqldblab_sidecar_$$\" && cleanup() { docker compose -p \"$P\" down -v --remove-orphans > /dev/null 2>&1; }; trap cleanup EXIT; I=\"sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest\"; printf 'services:\\n  sqldb:\\n    image: %s\\n    platform: linux/amd64\\n    environment:\\n      ACCEPT_EULA: \"Y\"\\n      MSSQL_SA_PASSWORD: \"YourStr0ng_Passw0rd\"\\n    mem_limit: 2g\\n    healthcheck:\\n      test: [\"CMD-SHELL\", \"/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \\\\\"$$MSSQL_SA_PASSWORD\\\\\" -C -b -l 2 -Q \\\\\"SELECT 1\\\\\" || exit 1\"]\\n      interval: 2s\\n      timeout: 10s\\n      retries: 60\\n      start_period: 0s\\n  app:\\n    image: %s\\n    platform: linux/amd64\\n    entrypoint: [\"/bin/sh\", \"-c\", \"sleep 600\"]\\n    depends_on:\\n      sqldb:\\n        condition: service_healthy\\n' \"$I\" \"$I\" > compose.yaml; ok=1; for attempt in 1 2; do docker compose -p \"$P\" up -d sqldb > /dev/null 2>&1 || { cleanup; continue; }; c=$(docker compose -p \"$P\" ps -q sqldb); test -n \"$c\" || { cleanup; continue; }; test \"$(docker inspect -f '{{.State.Running}}' \"$c\")\" = true || { cleanup; continue; }; test \"$(docker inspect -f '{{.State.Health.Status}}' \"$c\")\" != healthy || { echo \"the engine reported healthy before the first check could be read\" >&2; exit 1; }; for i in $(seq 1 110); do test \"$(docker inspect -f '{{.State.Health.Status}}' \"$c\")\" = healthy && break; sleep 1; done; docker inspect -f '{{json .State.Health}}' \"$c\" > health.json; python3 -c \"import json,sys\nh=json.load(open('health.json')); log=h['Log']\nprint('health status ' + h['Status'] + ', check exit codes ' + repr([e['ExitCode'] for e in log]), file=sys.stderr)\nif h['Status'] != 'healthy': sys.exit(2)\nsys.exit(0 if any(e['ExitCode'] != 0 for e in log) and log[0]['ExitCode'] != 0 else 1)\"; case $? in 0) ok=0; break;; 1) exit 1;; esac; echo \"attempt $attempt: the engine never accepted a login, which is the cold start rather than the claim; retrying once\" >&2; cleanup; done; test \"$ok\" = 0 && docker compose -p \"$P\" up -d --wait app > /dev/null 2>&1 && docker compose -p \"$P\" exec -T app /opt/mssql-tools18/bin/sqlcmd -S sqldb -U sa -P YourStr0ng_Passw0rd -C -b -l 5 -Q \"SELECT 1\" > /dev/null 2>&1 && ! docker compose -p \"$P\" exec -T app /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P YourStr0ng_Passw0rd -C -b -l 3 -Q \"SELECT 1\" > /dev/null 2>&1",
+        "engine": true,
+        "expect": {
+          "succeeds": true
+        },
+        "why": "Everything this skill turns on, measured on a running stack rather than argued, and in ONE probe because it is one stack: an engine start under x64 emulation is the expensive part, and when this was two probes over two stacks the second one blew the lane's host-probe budget in a full run on 2026-09-04. It brings the database service up on its own, so the command returns before the gate opens, and asserts that Docker already reports the container Running while its health is not yet healthy. That is exactly the window a plain depends_on releases an app into. It then waits for healthy and reads Docker's own health log back, requiring it to end healthy and to BEGIN WITH A FAILED CHECK, so the engine demonstrably refused a login first and the health check the skill emits is what noticed. Then it starts the app service, whose gate is condition service_healthy, and logs in from inside it twice: by Compose service name, which must succeed, and at localhost, which must fail, because localhost inside the app container is the app container. It goes red if the engine reports healthy before the first check can be read, which would make the health check unnecessary; if the login over the Compose network is refused; or if localhost ever answers, which would mean the connection string carried over from a laptop would have worked and the correction is wrong. An engine that never accepts a login is the one outcome that gets a single retry, for the same measured reason the lane retries its own engine once: under x64 emulation this image aborts on boot often enough that one failure means nothing, and on a machine already running another lane it aborted twice on 2026-09-04. The retry cannot launder a false claim, because the assertion on the second stack is the same one. The health status and the sequence of check exit codes are printed to stderr on every run, pass or fail, because the first time this went red it reported nothing but exit 1 and a bare exit code cannot tell a refusal apart from a busy machine. Watched all four ways on 2026-09-04 against build 12.0.2000.8: green with health exit codes 1, 1, 0 and healthy in about ten seconds, red with a health check that asks the engine nothing, and red when the localhost half is pointed back at the service name so both connections succeed."
       }
     ]
   },

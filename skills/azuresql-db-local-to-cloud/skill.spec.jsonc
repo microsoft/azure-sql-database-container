@@ -1,10 +1,13 @@
 {
   "id": "azuresql-db-local-to-cloud",
   "domain": "azure-sql-database-container",
-  "value": ["not-in-training-data", "corrects-a-wrong-assumption"],
+  "value": [
+    "not-in-training-data",
+    "corrects-a-wrong-assumption"
+  ],
   "correction": "Asked whether an application built against the local container will run against Azure SQL Database, an agent starts rewriting the data layer: a second driver, a branch on an environment variable, a separate set of queries for the cloud. None of that is needed and all of it is harmful, because it doubles the code that has to be tested and halves the amount that local development actually proves. The local container is the Azure SQL Database engine, not the SQL Server image: it reports EngineEdition 5 and an Edition of 'SQL Azure', and it enforces the same statement filter, so USE is refused with Msg 40508 locally exactly as it is in the cloud and backup and restore are refused with Msg 40510 in both places. The application therefore reads one connection string from one environment variable, and only the server, the authentication fields and the TLS posture differ between the two values. Authentication in particular is configuration and not code: the driver reads the Authentication keyword and acquires a token, so the switch from the local SA login to a Microsoft Entra identity in the cloud changes a string, not a code path. The correction has a second half that is easy to overstate in the other direction. Sameness of engine is not sameness of environment. Some Azure SQL Database platform restrictions are not yet enforced by the container, so something the service will refuse can still succeed locally, and the managed service features around the engine, automated backup, point in time restore, geo-replication and elastic pools, have no local equivalent at all. So the rule is that the code does not change, and the claim that local success predicts cloud success is true for the engine surface and has to be confirmed once against a real Azure SQL Database before anybody calls it ready.",
   "value_declaration": {
-    "rationale": "This skill's kernel is that the local engine and the cloud service are the same engine, which is the claim that makes the whole rewrite unnecessary. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach configuring a connection string per environment, deploying to Azure, and managed identity as a concept, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted. Its maturity stays draft regardless, and not because of this argument. It declares target both and ran only against the container, so the cloud half of its own claim has never executed and the probe rung underneath value is unmet.",
+    "rationale": "This skill's kernel is that the local engine and the cloud service are the same engine, which is the claim that makes the whole rewrite unnecessary. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach configuring a connection string per environment, deploying to Azure, and managed identity as a concept, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted. Its maturity is decided by its probes and not by this argument. It now declares target container, which is what is measured and what can be measured: avoiding the cloud for local development is the container's value proposition, so requiring a logical server to validate this skill would contradict the skill. applies_to still names the cloud, and the body says which half has evidence behind it.",
     "covers": [
       "the local container being the same engine as the cloud service, EngineEdition 5 with Edition 'SQL Azure', so one data layer serves both",
       "USE refused with Msg 40508 and BACKUP refused with Msg 40510 locally exactly as in the cloud",
@@ -20,7 +23,7 @@
     "expires_when": "the-container-reaches-public-preview"
   },
   "posture": ["read", "write", "execute", "provision"],
-  "maturity": "draft",
+  "maturity": "preview",
   "applies_to": ["azure-sql-db-container", "azure-sql-db"],
   "related": [
     "azuresql-db-container",
@@ -30,10 +33,9 @@
     "azuresql-db-feedback"
   ],
   "validation": {
-    "target": "both",
+    "target": "container",
     "setup": [
-      "the Azure SQL Database container running, with a provisioned user database",
-      "an Azure SQL Database to promote to, for the half of the claim that cannot be settled locally"
+      "the Azure SQL Database container running, with a provisioned user database"
     ],
     "assert": [
       "the application reads exactly one connection variable, SQL_CONNECTION_STRING",
@@ -41,38 +43,63 @@
       "the local value uses SQL authentication and TrustServerCertificate, the cloud value uses a Microsoft Entra Authentication keyword and Encrypt",
       "no secret appears in the cloud connection string",
       "the user database is named in both connection strings and neither names master",
-      "the same code was actually executed against both targets, not only against the container"
+      "the cloud half of the claim is offered as guidance and never reported as verified: every probe here runs on the container, and no probe in this repository has ever run against a logical server"
     ],
     "probes": [
       {
         "sql": "SELECT CAST(SERVERPROPERTY('EngineEdition') AS int) AS engine_edition, CAST(SERVERPROPERTY('Edition') AS nvarchar(128)) AS edition;",
-        "expect": { "rows": [[5, "SQL Azure"]] },
+        "expect": {
+          "rows": [
+            [
+              5,
+              "SQL Azure"
+            ]
+          ]
+        },
         "why": "The stated reason the parity claim holds at all. The skill says in its second paragraph that this works because the container is the Azure SQL Database engine, and this probe is that sentence. Run against both targets it returns the same two values, which is the cheapest possible demonstration of the skill's whole thesis."
       },
       {
         "sql": "USE master;",
-        "expect": { "error": 40508 },
+        "expect": {
+          "error": 40508
+        },
         "why": "Parity of the statement filter, in the direction that helps: the container refuses locally what the service refuses in the cloud, so the mistake is caught on a laptop rather than after deployment. This is the probe that distinguishes the container from the SQL Server image, where the same statement succeeds and the developer learns nothing."
       },
       {
         "sql": "BACKUP DATABASE master TO DISK = N'/var/opt/mssql/data/probe_local_to_cloud.bak';",
-        "expect": { "error": 40510 },
+        "expect": {
+          "error": 40510
+        },
         "why": "A second refusal that is identical in both places, chosen because backup is the one people assume differs. Msg 40510 for BACKUP and RESTORE on this container is stated in the azuresql-db-faq skill's own text and in its references/limitations.md, and Azure SQL Database refuses them too, for a different reason: backups there are the platform's, not a statement's. Both refusals mean the local run and the cloud run agree, which is the claim."
       },
       {
         "sql": "CREATE TABLE dbo.todo_probe_ltc (id int IDENTITY(1,1) NOT NULL PRIMARY KEY CLUSTERED, title nvarchar(200) NULL, done bit NULL);\nINSERT INTO dbo.todo_probe_ltc (title, done) OUTPUT inserted.id VALUES (N'ship local-to-cloud', 0);",
-        "expect": { "rows": [[1]] },
+        "expect": {
+          "rows": [
+            [
+              1
+            ]
+          ]
+        },
         "why": "The exact SQL the skill's Node and .NET examples run, reduced to what the engine sees: a table create, a parameterised insert and OUTPUT inserted.id to recover the identity. This is the probe that has to return the same thing on both targets for the skill's promise to mean anything, and OUTPUT is in it deliberately, because that clause is where an author who does not trust the parity claim would reach for a second round trip in one environment and not the other."
       },
       {
         "sql": "DECLARE @cross_database_refused int = 0;\nBEGIN TRY\n  EXEC(N'SELECT TOP (1) name FROM master.sys.objects;');\nEND TRY\nBEGIN CATCH\n  SET @cross_database_refused = 1;\nEND CATCH\nSELECT @cross_database_refused AS cross_database_refused;",
-        "expect": { "rows": [[1]] },
+        "expect": {
+          "rows": [
+            [
+              1
+            ]
+          ]
+        },
         "why": "The single database model is enforced locally as well as in the cloud, so a query that reaches across databases fails on the laptop rather than at deployment. It is here rather than only in the migration skill because this is precisely the kind of thing an author adds late, after the local setup is working, and it is the difference between parity being claimed and parity being enforced. Refusal is asserted rather than a number, because no source consulted for this pass pins one to this statement."
       },
       {
         "cmd": "/opt/mssql-tools18/bin/sqlcmd -?",
         "where": "container",
-        "expect": { "succeeds": true },
+        "expect": {
+          "succeeds": true
+        },
         "why": "The canonical start recipe in this skill hardcodes this absolute path inside the image for its readiness loop, and the loop is what guarantees the user database exists before the application connects. If the path moves in a future image the recipe hangs rather than failing, which is the worst way for it to break. It runs in the container because the path is the image's, not a developer's."
       }
     ]
