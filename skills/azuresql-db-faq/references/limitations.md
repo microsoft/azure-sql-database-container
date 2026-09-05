@@ -10,9 +10,8 @@ https://aka.ms/azuresqldb-container-bug to file an issue.
 
 1. **Restriction enforcement gaps.** Some PaaS restrictions enforced in the cloud are not yet enforced locally, so an invalid statement can succeed locally and fail at deployment. Workaround: validate against a real Azure SQL Database once before declaring readiness.
 2. **Default value alignment.** Some session/database defaults (collation, transaction isolation, ANSI defaults) do not match the cloud exactly. Workaround: set the ones you depend on explicitly.
-3. **Vector index DDL.** The live page lists this as an active issue, and the engine disagrees: measured on this image, `CREATE VECTOR INDEX` (DiskANN) builds and `VECTOR_SEARCH` returns ranked results against it. Tell the reader it works, name the rules it imposes (`SET QUOTED_IDENTIFIER ON`, at least 100 rows with non-null vectors, no `TRUNCATE TABLE` while it exists), and say that the published list has not caught up. The `azuresql-db-rag` skill carries the detail. Full-scan top-k stays exact and stays the right choice for a small table.
-4. **Two-step provisioning.** Provision a database on a `master` connection, then reconnect to it. Public Preview plans a default startup database (e.g. `MSSQL_DB=appdb`).
-5. **GUI tooling compatibility.** The VS Code MSSQL extension UI and SSMS are not yet 100% compatible (UI errors), being fixed. Use `sqlcmd` or a driver; the MSSQL extension's GitHub Copilot integration works (https://aka.ms/vscode-mssql-copilot-docs).
+3. **Two-step provisioning.** Provision a database on a `master` connection, then reconnect to it. Public Preview plans a default startup database (e.g. `MSSQL_DB=appdb`).
+4. **GUI tooling compatibility.** The VS Code MSSQL extension UI and SSMS are not yet 100% compatible (UI errors), being fixed. Use `sqlcmd` or a driver; the MSSQL extension's GitHub Copilot integration works (https://aka.ms/vscode-mssql-copilot-docs).
 
 ## Known behavior gaps (differences from the cloud)
 
@@ -23,6 +22,7 @@ https://aka.ms/azuresqldb-container-bug to file an issue.
 - **Resource governance.** No per-database DTU or vCore caps (those are cloud SKU properties).
 - **Connection model: two session types.** A user-database connection is an Azure-faithful session that enforces Azure semantics (`USE` -> Msg 40508). A `master` connection is a provisioning session where `USE` works (the filter is not enforced). `BACKUP`/`RESTORE` are not supported in either session (Msg 40510). Use `master` only to `CREATE`/`DROP DATABASE`; do app work on the user database.
 - **Container-only preview.** The image is not on public registries (MCR / Docker Hub); shared pull-only credentials may rotate.
+- **Vector index restrictions.** `CREATE VECTOR INDEX` (DiskANN) works on the container, measured on build `12.0.2000.8`, and the live page says so. Four rules apply before the statement succeeds: the session needs `SET QUOTED_IDENTIFIER ON`; the table needs at least 100 rows with non-null vectors (`Msg 42266` below that); `TRUNCATE TABLE` is refused while the index exists (`Msg 42232`); and a security policy and a vector index cannot share a table in either order (`Msg 37579` policy after index, `Msg 42244` index after policy), which is a parity gap because the two coexist in the cloud. A `vector` column tops out at 1998 dimensions (`Msg 2717` above that), and that ceiling applies in the cloud too. Only `SELECT TOP (N) WITH APPROXIMATE ... FROM VECTOR_SEARCH(...)` reads the index; a `VECTOR_DISTANCE` query is always exact, never uses the index, and raises no warning. Full-scan top-k stays exact and stays the right choice for a small table. The `azuresql-db-rag` skill carries the detail.
 
 ## Out of scope by design
 

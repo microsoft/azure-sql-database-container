@@ -168,7 +168,7 @@ The Azure SQL Database engine has a native `VECTOR(n)` type and
 `VECTOR_DISTANCE('cosine', a, b)`. Insert with `CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n))` where **n
 is a LITERAL, never a bind parameter** (a parameter dimension fails with
 "Incorrect syntax near '@P3'"). `CREATE VECTOR INDEX` (DiskANN) **works on this image**, measured, and the Known
-limitations page has not caught up. It needs `SET QUOTED_IDENTIFIER ON` and at
+limitations page says so. It needs `SET QUOTED_IDENTIFIER ON` and at
 least 100 rows with non-null vectors (`Msg 42266` below that). Full-scan top-k
 stays exact and stays the right choice for a small table. The `azuresql-db-rag`
 skill carries the rules the index imposes.

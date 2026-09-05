@@ -36,7 +36,7 @@ before declaring readiness.
   a real embedding's JSON (which exceeds the driver's 4000-char threshold) from
   being sent as ntext, which the engine rejects (error 529).
 - `CREATE VECTOR INDEX` (DiskANN) **works on this image**, measured, and the
-  Known limitations page has not caught up. It needs `SET QUOTED_IDENTIFIER ON`
+  Known limitations page says so. It needs `SET QUOTED_IDENTIFIER ON`
   in the session running the DDL (`Msg 1934` without it, and that message never
   names the setting) and at least 100 rows with non-null vectors (`Msg 42266`
   below that). Once it exists, `TRUNCATE TABLE` on that table is refused
