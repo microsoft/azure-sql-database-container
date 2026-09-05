@@ -6,6 +6,22 @@
     "multi-step-with-silent-failures"
   ],
   "correction": "Asked to load a CSV into this engine, an agent writes BULK INSERT against a path on the machine and expects it to read the file. It cannot. This engine reads bulk data only from Azure Blob Storage, through a database scoped credential and an external data source, and a local path is refused with Msg 12713. That is Azure SQL Database parity rather than a container limitation, so the workaround is not to find the right path, it is to change tool: bcp streams the file over the connection from the client side, and the driver seeders do the same. The second habit is seeding in whatever order the tables were written, which fails on the first child row whose parent does not exist yet with Msg 547, and the repair an agent then reaches for is to disable the constraints, which loads the data and leaves the referential integrity of the fixture unproven. The third is generating volume with a row-by-row loop, where a set-based tally produces the same thousand rows in one statement. Underneath all three sits the container's own rule: appdb does not exist until it is created on a master connection, and no seed can run before it does.",
+  "value_declaration": {
+    "rationale": "This skill's kernel is that the tool an agent reaches for cannot read a local file at all, and the failure names a path rather than the rule. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach reading and generating CSV data, and driver-side batch insert code, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted.",
+    "covers": [
+      "BULK INSERT from a local path being refused with Msg 12713, because this engine reads bulk data from Azure Blob Storage only",
+      "OPENROWSET BULK from a local path being refused the same way, so it is not the workaround it looks like",
+      "bcp being present in the image and streaming from the client side, which is the change of tool the situation actually needs",
+      "parent-before-child ordering, whose failure is Msg 547 and names a constraint rather than an ordering rule"
+    ],
+    "does_not_cover": [
+      "reading and generating CSV data, and driver-side batch insert code",
+      "the general practice of seeding tables in dependency order"
+    ],
+    "decided_by": "Carlos Robles",
+    "decided_on": "2026-09-04",
+    "expires_when": "the-container-reaches-public-preview"
+  },
   "posture": [
     "write",
     "execute"

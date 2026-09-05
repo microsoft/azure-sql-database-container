@@ -7,6 +7,26 @@
     "changes-too-fast-to-memorize"
   ],
   "correction": "Asked to run Azure SQL Database locally, or simply to add a local SQL database to a project, an agent reaches for mcr.microsoft.com/mssql/server and calls it done. That is SQL Server, a different product with a different engine edition and a different supported surface, so code that passes locally can still fail the first time it meets the cloud. The Azure SQL Database container is a separate image in a private preview registry, and it behaves like the platform rather than like the boxed engine in three ways an agent consistently gets wrong. It does not create a database when a connection names one, so the database has to be created on a master connection first. It refuses USE in a user-database session, so the database is selected in the connection string and never in a statement. It runs no seed directory, because /docker-entrypoint-initdb.d is a Postgres and MySQL convention that this image does not honour, and a seed placed there runs silently never. A fourth belief costs the most time: that a container reporting Up is a container that is serving. A password that fails the complexity policy leaves the container Up while the engine inside it never starts, and every connection then fails in a way that reads like a networking fault.",
+  "value_declaration": {
+    "rationale": "This skill's kernel is the whole set of ways this image behaves like the platform rather than like the boxed engine. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach Docker run and Compose syntax, port publishing, volume mounts and the shape of a readiness loop, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted.",
+    "covers": [
+      "the engine never creating a database when a connection names one, so it is created on a master connection first",
+      "USE being refused in a user-database session with Msg 40508",
+      "BACKUP and RESTORE being refused with Msg 40510",
+      "sp_configure being absent rather than blocked, so the engine answers Msg 2812 and there is nothing to be permitted to call",
+      "there being no msdb and therefore no SQL Server Agent on this engine",
+      "/docker-entrypoint-initdb.d being absent from the image, so a seed placed there runs silently never",
+      "the native VECTOR(n) type and VECTOR_DISTANCE being present on this build",
+      "a container reporting Up while the engine inside it never started, which is what a password failing the complexity policy produces"
+    ],
+    "does_not_cover": [
+      "Docker run and Compose syntax, port publishing and volume mounts",
+      "retry with backoff as a pattern, as distinct from the fact that Up is not serving"
+    ],
+    "decided_by": "Carlos Robles",
+    "decided_on": "2026-09-04",
+    "expires_when": "the-container-reaches-public-preview"
+  },
   "posture": [
     "provision",
     "execute",
@@ -89,7 +109,7 @@
         "expect": {
           "error": 2812
         },
-        "why": "Measured on this image in a sibling project: sp_configure is absent rather than refusing, so the engine answers with Msg 2812, could not find stored procedure. It is worth a round trip because the failure mode is misread constantly. An agent that sees a refusal assumes a permission or a filter and goes looking for a way to be allowed, when there is nothing there to be allowed to call. The parity checklist lists RECONFIGURE among the statements the Azure filter blocks; this probe pins the companion procedure, which is the one an agent actually types first. If this ever returns a different number, the surface has changed and the parity checklist needs re-reading rather than the probe being patched."
+        "why": "Measured on this image in a sibling project: sp_configure is absent rather than refusing, so the engine answers with Msg 2812, could not find stored procedure. It is worth a round trip because the failure mode is misread constantly. An agent that sees a refusal assumes a permission or a filter and goes looking for a way to be allowed, when there is nothing there to be allowed to call. The parity checklist used to list RECONFIGURE among the statements the Azure filter blocks, which read as a refusal and blurred the two failures together; it now records the absence instead, and this probe pins it. If this ever returns a different number, the surface has changed and the parity checklist needs re-reading rather than the probe being patched."
       },
       {
         "sql": "SELECT COUNT(*) AS msdb_present FROM sys.databases WHERE name = 'msdb';",

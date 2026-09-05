@@ -7,6 +7,21 @@
     "multi-step-with-silent-failures"
   ],
   "correction": "Adding a SQL database to an existing Compose stack, an agent writes a service for mcr.microsoft.com/mssql/server, gives the application a plain depends_on, and points the application's connection string at localhost. Every one of those is wrong here. The image is a different product: the Azure SQL Database container reports EngineEdition 5 and Edition 'SQL Azure'. Inside a Compose network the application reaches the engine by service name, and localhost inside the application container is the application container, so a connection string carried over from a laptop setup connects to nothing. A plain depends_on waits only for the container to be created, not for the engine to accept a login, so the application starts first and its startup connection fails against an engine that is merely still starting. And the database itself has to be created: this engine does not auto-create one on connect, and mounting a seed script at /docker-entrypoint-initdb.d does nothing because that is a Postgres and MySQL convention this image does not honour. The shape that actually works is a health check that runs the engine image's own sqlcmd from /opt/mssql-tools18/bin inside the container, a one-shot init service gated on service_healthy that creates the database and exits, and an application gated on both service_healthy and service_completed_successfully.",
+  "value_declaration": {
+    "rationale": "This skill's kernel is what a healthcheck for THIS image has to invoke, and which image it is invoking it in. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach Compose file syntax, service naming, and reaching a container by service name rather than localhost, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted. Its maturity stays draft regardless, and not because of this argument. Two of its probes parse a Compose file on the host and the third checks that a binary is executable in the image, so nothing has been asked of the engine and the probe rung underneath value is unmet.",
+    "covers": [
+      "the image being the Azure SQL Database engine and not mcr.microsoft.com/mssql/server",
+      "sqlcmd living at /opt/mssql-tools18/bin/sqlcmd in this image, which is what a healthcheck must invoke and what a copied one gets wrong",
+      "depends_on waiting only for the container, so a condition on a real engine healthcheck is required rather than optional"
+    ],
+    "does_not_cover": [
+      "Compose file syntax and service naming, including that a container is reached by service name rather than localhost, all ordinary Compose knowledge",
+      "the general practice of gating a dependent service on a healthcheck"
+    ],
+    "decided_by": "Carlos Robles",
+    "decided_on": "2026-09-04",
+    "expires_when": "the-container-reaches-public-preview"
+  },
   "posture": [
     "read",
     "write",

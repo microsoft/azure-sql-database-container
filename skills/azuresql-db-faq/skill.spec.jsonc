@@ -3,6 +3,22 @@
   "domain": "azure-sql-database-container",
   "value": ["not-in-training-data", "corrects-a-wrong-assumption", "changes-too-fast-to-memorize"],
   "correction": "Asked whether the Azure SQL Database container supports some feature, an agent answers from general SQL Server and Azure knowledge and is confidently wrong in both directions at once. It promises managed service features the container cannot have, because those live around the engine rather than in it: automated backups, point in time restore, geo-replication, elastic pools, and any form of Azure portal management. And it denies engine features the container does have, or offers a SQL Server remedy that this engine refuses. The fix is not a longer list of facts, it is a way to sort the question. Every capability question falls into one of four buckets, and the bucket determines the answer: engine features are present, managed service features are absent by construction, SQL Server only features are absent because Azure SQL Database does not have them either, and a small set of things are incomplete because this is a Private Preview. The answers that need to be exact are exact and are not recallable. BACKUP DATABASE and RESTORE DATABASE return Msg 40510 in every session, so the local persistence answer is a Docker named volume rather than a backup file. USE against another database returns Msg 40508 in a user database session and appears to work only on a master connection, which is a provisioning session. Creating an application identity is inverted from the cloud: a SQL contained user fails with Msg 15007 and turning containment on fails with Msg 12844, so the answer is a server login with a mapped database user, which is the opposite of the guidance for Azure SQL Database. BULK INSERT from a local file fails with Msg 12713, because the source has to be Azure Blob Storage. And the current gap list is a live document, so the honest answer names the live known limitations page rather than reciting a snapshot that will age.",
+  "value_declaration": {
+    "rationale": "This skill's kernel is a way to sort a capability question, and every bucket boundary is an engine refusal that only this engine produces. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach general Azure SQL Database and SQL Server feature knowledge, which is exactly what the buckets sort, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted.",
+    "covers": [
+      "BACKUP and RESTORE being refused with Msg 40510, which is the boundary of the managed-service bucket",
+      "USE being refused with Msg 40508",
+      "the contained user refused with Msg 15007 and CONTAINMENT PARTIAL refused with Msg 12844",
+      "BULK INSERT from a local path refused with Msg 12713, because this engine reads bulk data from Azure Blob Storage only"
+    ],
+    "does_not_cover": [
+      "general Azure SQL Database and SQL Server feature knowledge, which is what the buckets sort rather than what they add",
+      "how to phrase a hedged answer when a question does not resolve"
+    ],
+    "decided_by": "Carlos Robles",
+    "decided_on": "2026-09-04",
+    "expires_when": "the-container-reaches-public-preview"
+  },
   "posture": ["read", "inspect"],
   "maturity": "preview",
   "applies_to": ["azure-sql-db-container"],

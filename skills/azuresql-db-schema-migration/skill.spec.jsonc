@@ -7,6 +7,22 @@
     "multi-step-with-silent-failures"
   ],
   "correction": "Pointing a migration tool at a local SQL container, an agent assumes what every other engine has taught it: that connecting creates the database if it is missing, and that the tool can switch database context on its own. Neither holds here. The Azure SQL Database container does not auto-create a database on connect, so the migration run fails on its first connection against an engine that is healthy, and the failure reads as a connectivity or credentials problem rather than a missing database. The target database has to be created on a master connection first, and then named in the connection string, because switching context with USE is refused in a user-database session with error 40508 exactly as it is in Azure SQL Database in the cloud. The timing is a second trap: the engine is not ready the moment the container starts, so a migration fired straight after the container command sees a transient startup error rather than a schema problem, and a readiness loop that does not make a SQL error set the exit code will treat that error as success and move on. The engine is also the cloud engine and not the SQL Server image, reporting EngineEdition 5 and Edition 'SQL Azure', which is the entire reason a migration proved here is worth anything about production.",
+  "value_declaration": {
+    "rationale": "This skill's kernel is that two things every other engine has taught a migration tool are false here. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach Entity Framework Core migrations, SqlPackage usage and migration safety practice such as expand and contract, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted.",
+    "covers": [
+      "the engine not auto-creating a database, so a migration run fails on its first connection against a healthy engine and reads as a credentials fault",
+      "USE being refused with Msg 40508, so the tool cannot switch database context and the database is named in the connection string",
+      "the target-server and trust-server-certificate flags SqlPackage needs against the container's self-signed certificate",
+      "the native vector column type being usable from a migration on this build"
+    ],
+    "does_not_cover": [
+      "Entity Framework Core migrations and SqlPackage usage, which are publicly documented",
+      "migration safety practice such as expand and contract, which is ordinary material"
+    ],
+    "decided_by": "Carlos Robles",
+    "decided_on": "2026-09-04",
+    "expires_when": "the-container-reaches-public-preview"
+  },
   "posture": [
     "read",
     "write",

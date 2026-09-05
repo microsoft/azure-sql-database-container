@@ -7,6 +7,21 @@
     "changes-too-fast-to-memorize"
   ],
   "correction": "Asked for an API over the tables in a local database, an agent writes a controller layer and an ORM by hand, because that is what almost every example in its training data does. Microsoft ships a first-party engine that serves REST and GraphQL over the same configuration file with no application code, and against the Azure SQL Database container it needs nothing special from the engine at all: it connects over the ordinary protocol with a plain connection string, so none of the change tracking or feature enablement that an event-driven design would need applies here. Two things around it are then assumed wrongly. The database is assumed to appear: this engine does not auto-create one on connect, so the tool starts and fails to reach a database that was never provisioned on a master connection. And the API surface is assumed to be the two the author asked for: current builds also publish a Model Context Protocol endpoint from the very same configuration, enabled by default, which is an API surface this tool provides over the configured entities and is not, and must not be presented as, a standalone Microsoft SQL MCP server.",
+  "value_declaration": {
+    "rationale": "This skill's kernel is what the Data API builder does and does not need from THIS engine, and one endpoint nobody asked for. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach Data API builder CLI usage, its configuration file shape, its REST and GraphQL path defaults, and API design generally, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted. Its maturity stays draft regardless, and not because of this argument. All five of its probes run the CLI on the host and no statement reaches a database, so the probe rung underneath value is unmet.",
+    "covers": [
+      "the engine not auto-creating a database, so the tool starts and fails to reach one that was never provisioned",
+      "this engine needing no change tracking and no feature enablement for this tool, unlike the event-driven path an agent reaches for",
+      "the Model Context Protocol endpoint being published from the same configuration and enabled by default, and NOT being a standalone Microsoft SQL MCP server"
+    ],
+    "does_not_cover": [
+      "Data API builder CLI usage and its configuration file shape, which are public and documented",
+      "REST and GraphQL API design, and the hand-written controller layer the skill argues against"
+    ],
+    "decided_by": "Carlos Robles",
+    "decided_on": "2026-09-04",
+    "expires_when": "the-container-reaches-public-preview"
+  },
   "posture": [
     "read",
     "write",

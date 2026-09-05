@@ -180,12 +180,9 @@ echo "ready on localhost,$HOST_PORT"
 - Do not use the SQL Server image `mcr.microsoft.com/mssql/server`; use the Azure SQL DB image.
 - Do not connect with `Database=appdb` before provisioning appdb on master; the engine will not
   auto-create it.
-- Do not `USE appdb` to switch databases. In a user-database session (the Azure-faithful
-  context where you develop), `USE` returns `Msg 40508`, exactly as in Azure SQL Database in the
-  cloud. A `master` connection is a provisioning session where the Azure statement filter is
-  not enforced, so `USE` appears to work there, but `master` is for
-  provisioning only, not application work. Always select the target database in the connection string
-  (`Database=appdb`, or `-d appdb` for sqlcmd).
+- Do not use `USE appdb` to switch databases; a user-database session returns
+  `Msg 40508`, exactly as in Azure SQL Database in the cloud. Select the target
+  database in the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 - Do not run tests against master; master is for provisioning only.
 - Do not rely on `/docker-entrypoint-initdb.d/*.sql`; it is not honored. Seed with `sqlcmd -d appdb -i`.
 - Do not require sqlcmd on the runner; the health check and provisioning run inside the container.

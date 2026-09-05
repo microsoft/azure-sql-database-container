@@ -14,6 +14,10 @@ before declaring readiness.
 - **Cross-server DTC / distributed transactions**: no cross-server MSDTC.
 - **Windows Authentication / NTLM**: not available; use SQL authentication
   (`sa` or a SQL login) with the standardized connection string.
+- **`sp_configure`**: absent, not blocked. It returns `Msg 2812` ("Could not find
+  stored procedure 'sp_configure'"), which is a missing object rather than a
+  refusal, so no permission or flag unblocks it. Instance-level tuning has no
+  equivalent here; drop the step rather than trying to translate it.
 - **Cross-database `USE`**: avoid `USE` to switch databases. In a user-database
   session (the Azure-faithful context where you develop), `USE` returns
   `Msg 40508`, exactly as in Azure SQL Database in the cloud. A `master`
@@ -45,7 +49,7 @@ See the `azuresql-db-rag` task skill for full patterns.
 ## Current preview limitations
 
 - **`master` is a provisioning session**: the Azure SQL statement filter (`USE`,
-  `SHUTDOWN`, `RECONFIGURE`) is not enforced there, so `USE` works. (`BACKUP` and
+  `SHUTDOWN`) is not enforced there, so `USE` works. (`BACKUP` and
   `RESTORE` are not supported in any session and return `Msg 40510`; Azure SQL
   Database in the cloud likewise does not support them.) Never develop or validate
   against `master`; use it only to

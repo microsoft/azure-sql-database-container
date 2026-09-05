@@ -127,7 +127,17 @@ func start        # HTTP endpoints on http://localhost:7071/api/<name>
 
 ## Step 4: event-driven with the SQL trigger (the local mechanism)
 
-The SQL trigger fires your function when rows change. It requires **Change
+The SQL trigger fires your function when rows change.
+
+**There is no SQL trigger template to scaffold from, even though the tooling
+lists one.** `func templates list` advertises a `SQL Trigger` entry, but
+`func new --template SqlTrigger` exits non-zero with
+`Unknown template 'SqlTrigger'`: the listing and the scaffolder disagree, and no
+flag reconciles them. Scaffold an HTTP trigger instead (`func new --name
+ToDoTrigger --template HttpTrigger`, which succeeds in the same project) and
+write the trigger binding in by hand, as below.
+
+The trigger requires **Change
 Tracking** on the database and table. Enable it once (on `appdb`, not `master`):
 
 ```sql
@@ -179,6 +189,7 @@ move to least-privilege or to the cloud.
 - Do not expect the function app to create `appdb`; provision it on a master connection first.
 - Do not try to make Change Event Streaming (CES) work locally - it is unsupported on the local (Linux) engine and streams only to Azure Event Hubs. Use the SQL trigger locally.
 - Do not use an output binding against a table with no primary key, or below compatibility level 130.
+- Do not scaffold with `func new --template SqlTrigger`; the template is listed but cannot be created. Create an HTTP trigger and add the binding by hand.
 - Do not use the `Connection` binding keyword for SQL bindings; it is `ConnectionStringSetting` / `connectionStringSetting`.
 - Do not commit `local.settings.json` (it holds the connection string / SA password) or drop `TrustServerCertificate=true` / `--platform linux/amd64` on a non-x64 host.
 

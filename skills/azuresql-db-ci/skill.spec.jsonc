@@ -7,6 +7,22 @@
     "multi-step-with-silent-failures"
   ],
   "correction": "Asked for a CI job that tests against a local SQL engine, an agent writes a service container for mcr.microsoft.com/mssql/server and treats the rest as solved, because every published example of a database service container is written that way. Three things are then wrong at once. The image is the wrong product: the Azure SQL Database container is a different engine that reports EngineEdition 5 and Edition 'SQL Azure', so a test suite that passes against the SQL Server image has not been run against the engine the application will meet in Azure. The readiness gate is wrong: docker reporting the service as started does not mean the engine accepts logins, and a health check that shells out to a client tool on the runner fails because the hosted runner has no such tool, while the health check the image can satisfy runs sqlcmd from /opt/mssql-tools18/bin inside the container itself. And the database is wrong: this engine does not auto-create a database on connect, so the first test step opening a connection with Database=appdb fails against an engine that is running perfectly, which reads as a connectivity problem and is not one. The provisioning statement has to run on a master connection before any test connects, and the tests then have to be pointed at the user database, because a suite that quietly runs against master will pass and prove nothing about the database the application uses.",
+  "value_declaration": {
+    "rationale": "This skill's kernel is which engine the CI service container is actually running and what readiness means for it. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach GitHub Actions workflow syntax, the services block, job matrices and the shape of a retry loop, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted.",
+    "covers": [
+      "the service container being the Azure SQL Database engine, EngineEdition 5 with Edition 'SQL Azure', and not the SQL Server image every published example uses",
+      "USE being refused in a user-database session with Msg 40508, so the database is selected in the connection string",
+      "sqlcmd living at /opt/mssql-tools18/bin/sqlcmd inside the image, which is the path every readiness command in the body depends on",
+      "the provisioning session on master being a different session from the one the statement filter is enforced in"
+    ],
+    "does_not_cover": [
+      "GitHub Actions workflow syntax, the services block and job matrices, all abundant in training data",
+      "retry with backoff as a pattern, as distinct from what the readiness gate has to poll"
+    ],
+    "decided_by": "Carlos Robles",
+    "decided_on": "2026-09-04",
+    "expires_when": "the-container-reaches-public-preview"
+  },
   "posture": [
     "read",
     "write",

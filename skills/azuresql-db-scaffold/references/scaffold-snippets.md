@@ -9,11 +9,21 @@ also read `DATABASE_URL`. Image is
 
 ## Contents
 
+- [Provision appdb first](#provision-appdb-first-every-stack-below-assumes-this-has-run)
 - [Shared: compose service](#shared-compose-service)
 - [.NET Aspire (EF Core)](#net-aspire-ef-core)
 - [FastAPI (SQLAlchemy / pyodbc)](#fastapi-sqlalchemy--pyodbc)
 - [Next.js (Prisma)](#nextjs-prisma)
 - [NestJS (Prisma or TypeORM)](#nestjs-prisma-or-typeorm)
+
+## Provision appdb first (every stack below assumes this has run)
+
+The engine does not auto-create databases. On a master connection:
+
+```bash
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
+  -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
+```
 
 ## Shared: compose service
 
@@ -61,12 +71,8 @@ Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;Tru
 SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
 ```
 
-Provision appdb (once, on master) before the first migration:
-
-```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
-  -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
-```
+Provision appdb (once, on master) before the first migration: see
+[Provision appdb first](#provision-appdb-first-every-stack-below-assumes-this-has-run).
 
 `Program.cs` reads the single env var:
 
@@ -101,12 +107,8 @@ For the migration workflow in depth, see the **azuresql-db-schema-migration** sk
 SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
 ```
 
-Provision appdb on master before the app connects:
-
-```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
-  -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
-```
+Provision appdb on master before the app connects (see
+[Provision appdb first](#provision-appdb-first-every-stack-below-assumes-this-has-run)).
 
 `db.py`: build a SQLAlchemy URL from the canonical string via pyodbc.
 
@@ -202,12 +204,8 @@ DATABASE_URL=sqlserver://localhost:1433;database=appdb;user=sa;password=YourStr0
 MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd
 ```
 
-Provision appdb on master before bootstrapping:
-
-```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
-  -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
-```
+Provision appdb on master before bootstrapping (see
+[Provision appdb first](#provision-appdb-first-every-stack-below-assumes-this-has-run)).
 
 Prisma path: same pinned install (`npm install prisma@6 @prisma/client@6`), `schema.prisma`, and
 `npx prisma migrate dev --name init` as Next.js above.

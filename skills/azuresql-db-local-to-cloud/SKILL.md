@@ -101,6 +101,16 @@ Just enough to run the examples on a fresh container. For full detail see the
   `CREATE DATABASE appdb` on a **master** connection before connecting with
   `Database=appdb`. The `master` connection is for provisioning only; do real
   work on `appdb`.
+- `BACKUP` and `RESTORE` are refused in every session with `Msg 40510`, locally
+  exactly as in the cloud. Backing the container up and restoring the file into
+  Azure SQL Database is not a promotion path; move schema and data with
+  SqlPackage (see the **azuresql-db-import** skill).
+- Cross-database queries are refused locally as they are in the cloud, so an
+  application that keeps every object in one user database passes locally for the
+  same reason it will pass against the service.
+- `IDENTITY` columns behave here as they do in the cloud. The examples below use
+  `INT IDENTITY PRIMARY KEY` unchanged against both, which is one of the places a
+  rewrite is usually and needlessly proposed.
 - Avoid `USE` to switch databases. In a user-database session (the
   Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly
   as in Azure SQL Database in the cloud. A `master` connection is a provisioning
@@ -253,15 +263,9 @@ body stays an overview.
 - Do not use the SQL Server image `mcr.microsoft.com/mssql/server`. If you
   were about to, stop and use the image above; this is the Azure SQL engine.
 - Do not connect to `Database=appdb` before creating it on `master`.
-- Do not use `USE appdb` to switch databases; set the database in the connection
-  string (`Database=appdb`, or `-d appdb` for sqlcmd). In a user-database
-  session (the Azure-faithful context where you develop), `USE` returns
-  `Msg 40508`, exactly as in Azure SQL Database in the cloud. A `master`
-  connection is a provisioning session where the Azure statement filter is
-  not enforced, so `USE` appears to work there, but
-  `master` is for provisioning only, not application work. Always select the
-  target database in the connection string (`Database=appdb`, or `-d appdb` for
-  sqlcmd).
+- Do not use `USE appdb` to switch databases; a user-database session returns
+  `Msg 40508`, exactly as in Azure SQL Database in the cloud. Select the target
+  database in the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 - Do not put a password or secret in the cloud connection string; use Entra
   auth and let the driver fetch a token.
 - Do not branch app logic on environment; keep auth in configuration.

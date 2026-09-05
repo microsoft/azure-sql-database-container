@@ -6,6 +6,21 @@
     "multi-step-with-silent-failures"
   ],
   "correction": "Because the local container almost never drops a connection, an agent hardening a data-access layer against it concludes that pooling and retry are cloud concerns and leaves them out, or adds a retry loop that catches every exception. Both are wrong and both look fine locally. Azure SQL Database throttles, fails over and closes idle connections, so a client with no retry turns routine platform behaviour into hard user-visible errors, and the code that never needed retry locally is the same code that meets the cloud. A blanket retry is worse than none: it re-runs a login failure, a syntax error and a constraint violation until the attempt budget is gone, so the real fault surfaces slower and wearing the wrong name, and it re-runs a non-idempotent INSERT whose first attempt already committed before the connection dropped, which double-applies the write with no error anywhere. The second habit is opening a connection per query, or building the connection string per request, which quietly creates one pool per distinct string and defeats pooling entirely while every individual call still works.",
+  "value_declaration": {
+    "rationale": "This skill's kernel is which transient error numbers and platform views this engine really carries, as opposed to a remembered list. The Azure SQL Database container is a gated private preview and the image is not publicly available, so no model has training data on the product, and the arm of a two-arm value run that ran without this skill would fail for the least interesting reason available: it has never heard of the thing. Running that measurement across all seventeen container skills would spend around a thousand model requests to re-establish what the product's release status already establishes. Carlos Robles accepted value for this collection on 2026-09-04 on this written argument instead. THIS IS A DECLARATION AND NOT A MEASUREMENT, and nothing may report it as one. The argument reaches only the container-specific corrections listed in covers, which are the ones no training data contains. It does not reach connection pooling and retry with backoff, which every driver documents and every model already writes, which is ordinary material an ordinary model already handles, and whether this skill improves an answer there is unmeasured and stays unmeasured. The argument ends when the Azure SQL Database container reaches Public Preview: training data begins to contain the product, the premise that nothing could know it stops being true, and this skill has to be measured or demoted.",
+    "covers": [
+      "USE being refused with Msg 40508 locally exactly as in the cloud, so the database is named in the connection string",
+      "which transient error numbers this engine actually carries in sys.messages, checked rather than recalled",
+      "sys.dm_db_resource_stats and sys.dm_user_db_resource_governance being absent from this engine, so a local throttling diagnostic written against either does not run"
+    ],
+    "does_not_cover": [
+      "connection pooling and retry with backoff as patterns, which are ordinary driver material",
+      "the general argument that a blanket catch-all retry is worse than no retry at all"
+    ],
+    "decided_by": "Carlos Robles",
+    "decided_on": "2026-09-04",
+    "expires_when": "the-container-reaches-public-preview"
+  },
   "posture": [
     "read",
     "write",

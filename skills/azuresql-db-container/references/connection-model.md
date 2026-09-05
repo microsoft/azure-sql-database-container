@@ -14,9 +14,10 @@ The single most common source of failures. Read this before connecting an app.
    session where the Azure statement filter is not enforced, so
    `USE` appears to work there, but `master` is for
    provisioning only, not application work. Always select the target database in
-   the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
+   the connection string (`Database=appdb`, or `-d appdb` for sqlcmd). The fix is
+   always to set the target database in the connection, never in a statement.
 3. **A `master` connection is for provisioning only.** `master` is a provisioning
-   session: the Azure SQL statement filter (`USE`, `SHUTDOWN`, `RECONFIGURE`) is
+   session: the Azure SQL statement filter (`USE`, `SHUTDOWN`) is
    not enforced there, so `USE` works. (`BACKUP`/`RESTORE` are a separate case:
    they are not supported in any session and return `Msg 40510`; Azure SQL Database
    in the cloud likewise does not support them, so do not rely on them on `master`
@@ -49,16 +50,6 @@ docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0n
 
 Apps must include `Database=appdb` in the connection string. They should never
 issue `USE`. See `connect-and-query.md` for the full connection string.
-
-## Why to avoid USE
-
-Avoid `USE` to switch databases. In a user-database session (the
-Azure-faithful context where you develop), `USE` returns `Msg 40508`, exactly as
-in Azure SQL Database in the cloud. A `master` connection is a provisioning
-session where the Azure statement filter is not enforced, so `USE` appears to work there, but `master` is for provisioning
-only, not application work. Always select the target database in the connection
-string (`Database=appdb`, or `-d appdb` for sqlcmd). The fix is always to set the
-target database in the connection (string or `-d`), not in a statement.
 
 ## Seeding pattern (never USE)
 

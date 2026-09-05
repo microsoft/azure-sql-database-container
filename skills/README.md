@@ -183,6 +183,56 @@ Conventions this collection holds itself to:
 | Every skill stands alone, even where that means repeating a canonical fact | A user may install one skill, not the collection. Duplication is deliberate; drift is guarded by an automated check that the shared facts agree across all skills |
 | Each skill ends by pointing at `azuresql-db-feedback` if its own instructions failed | A skill that quietly gets worked around is a bug we would otherwise never hear about |
 
+### How ready a skill is: `maturity` in the sidecar
+
+Each skill carries a `skill.spec.jsonc` beside its `SKILL.md`. It is not installed with the skill and
+it is not read by any agent. It is the authoring record, and its `maturity` field says **how much has
+actually been run against the skill**, decided from evidence rather than from how finished it feels.
+
+| Value | Means | Count today |
+| --- | --- | --- |
+| `draft` | Nothing has run that could have contradicted it | 4 |
+| `preview` | Its probes ran against a real engine and passed | 13 |
+| `ga` | `preview`, plus the value question settled | 0 |
+
+**Evidence sets the ceiling. An author may declare below it and nobody may declare above it.**
+
+The probes live in each sidecar under `validation.probes`, each with the claim in the body it
+defends. The four at `draft` are there for missing probe evidence and not for anything they got
+wrong: `azuresql-db-dab` and `azuresql-db-sidecar` have probes that never reach a database,
+`azuresql-db-local-to-cloud` declares both targets and has only ever run against the container, and
+`azuresql-db-feedback` has a single HTTPS check that covers almost none of the skill.
+
+### `value_declaration`, and why nothing here is `ga`
+
+The third rung asks whether a skill changes an **answer**, which is normally settled by running one
+task twice, once with the skill and once without. Every sidecar here carries a `value_declaration`
+recording that for this collection, that question was answered by a **written argument** instead, on
+4 September 2026.
+
+**It is a declaration, not a measurement, and it is never reported as one.** The reason it is
+allowed here and nowhere else is that the Azure SQL Database container is a gated private preview.
+No model has training data on the product, so the arm running without the skill would fail for the
+least interesting reason available: it has never heard of the thing.
+
+**The argument does not cover a whole skill,** which is why each block carries both `covers` and
+`does_not_cover`. It reaches the corrections no training data contains, such as `Msg 40508`,
+`Msg 12844`, `Msg 12713`, `Msg 40510`, the absent `/docker-entrypoint-initdb.d`, the engine never
+creating a database on connect, and the vector surface. It reaches none of the generic material
+wrapped around them, such as retry with backoff, Compose YAML, workflow service containers or ORM
+scaffolding, and whether these skills improve an answer there is unmeasured.
+
+**So no skill here is marked `ga`, and that is deliberate.** The declaration raises the ceiling, and
+all seventeen sit below it on purpose. Marking a skill generally available for a product that is not
+generally available would read as a claim about the product, and the argument that earns the rung is
+itself an argument from the product being pre-release. The 13 stay at `preview` and the 4 stay at
+`draft` until the product moves.
+
+**Every declaration expires when the container reaches Public Preview.** At that point training data
+begins to contain the product, the premise stops holding, and all seventeen need revisiting. That is
+recorded in `expires_when` on every sidecar, as a fixed token rather than prose, so a check can find
+it: `the-container-reaches-public-preview`.
+
 ### Knowledge layers
 
 Every skill in this collection carries its knowledge in the same three layers, following Anthropic's
