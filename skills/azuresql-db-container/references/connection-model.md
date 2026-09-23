@@ -30,9 +30,12 @@ The single most common source of failures. Read this before connecting an app.
 ### Step 1: connect to master and create the database
 
 ```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
 ```
+
+`$MSSQL_SA_PASSWORD` is the value generated (or set) when the container was
+started; see `run-the-container.md`. Do not hardcode a literal password here.
 
 When no `-d` is given, sqlcmd connects to `master`. This is provisioning, so
 that is correct here.
@@ -40,7 +43,7 @@ that is correct here.
 ### Step 2: connect to the user database for real work
 
 ```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b \
   -d appdb -Q "SELECT DB_NAME() AS CurrentDatabase;"
 ```
 
@@ -59,7 +62,7 @@ after provisioning, and target the database with `-d appdb`, not `USE`:
 ```bash
 # 1. provision appdb on master (see Step 1)
 # 2. seed it by selecting appdb in the connection
-docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
+docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b \
   -d appdb -i /path/in/container/seed.sql
 ```
 

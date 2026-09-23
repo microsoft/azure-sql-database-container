@@ -48,7 +48,7 @@ not the secret, in the file. DAB resolves `@env('NAME')` from the environment at
 `dab start`. Keep the value in `SQL_CONNECTION_STRING`:
 
 ```
-Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
+Server=localhost,1433;Database=appdb;User Id=sa;Password=$MSSQL_SA_PASSWORD;TrustServerCertificate=true
 ```
 
 `database-type` is `mssql` for the Azure SQL engine (the same value used for

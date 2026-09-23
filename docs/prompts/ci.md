@@ -39,7 +39,7 @@ jobs:
           ACCEPT_EULA: "Y"
           MSSQL_SA_PASSWORD: ${{ secrets.SQL_SA_PASSWORD }}
         ports:
-          - 1433:1433
+          - "127.0.0.1:1433:1433"
         # The runner has no sqlcmd; let the service report readiness with a health check
         # that runs sqlcmd INSIDE the container. Actions blocks the job's steps until it passes.
         options: >-

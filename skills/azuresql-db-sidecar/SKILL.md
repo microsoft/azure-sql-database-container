@@ -58,7 +58,7 @@ Compose CLI of the authoring host, not inside the image.
   only, not application work. Always select the target database in the connection
   string (`Database=appdb`, or `-d appdb` for sqlcmd).
 - App connection string (single `SQL_CONNECTION_STRING` env var, service name host):
-  `Server=sqldb,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true`
+  `Server=sqldb,1433;Database=appdb;User Id=sa;Password=$MSSQL_SA_PASSWORD;TrustServerCertificate=true`
   (house style spells it `User Id=`/`Password=`/`Database=`; `Uid=`/`Pwd=` are
   valid synonyms).
 - The image does **NOT** auto-run `/docker-entrypoint-initdb.d/*.sql` (a
@@ -82,9 +82,9 @@ services:
     platform: linux/amd64        # x64-only image; required on a non-x64 host
     environment:
       ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "YourStr0ng_Passw0rd"
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD}"
     ports:
-      - "1433:1433"              # optional; only to reach it from the host
+      - "127.0.0.1:1433:1433"              # optional; only to reach it from the host
     healthcheck:
       # -b: a SQL error sets the exit code, so transient startup errors
       # (e.g. Msg 913) are retried, not masked. -l 2: short login timeout.
@@ -103,7 +103,7 @@ services:
       sqldb:
         condition: service_healthy
     environment:
-      MSSQL_SA_PASSWORD: "YourStr0ng_Passw0rd"
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD}"
     # If you have seed.sql, mount it and add: -i /seed/seed.sql on a -d appdb call.
     # volumes:
     #   - ./seed.sql:/seed/seed.sql:ro
@@ -123,7 +123,7 @@ services:
         condition: service_completed_successfully
     environment:
       # Host is the SERVICE NAME sqldb, not localhost.
-      SQL_CONNECTION_STRING: "Server=sqldb,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
+      SQL_CONNECTION_STRING: "Server=sqldb,1433;Database=appdb;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=true"
 ```
 
 Bring it up (after `docker login`, see above):
@@ -161,7 +161,7 @@ Use Docker Compose as the Dev Container backend so the same `sqldb` +
   "workspaceFolder": "/workspace",
   "runServices": ["sqldb", "sqldb-init"],
   "remoteEnv": {
-    "SQL_CONNECTION_STRING": "Server=sqldb,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
+    "SQL_CONNECTION_STRING": "Server=sqldb,1433;Database=appdb;User Id=sa;Password=${localEnv:MSSQL_SA_PASSWORD};TrustServerCertificate=true"
   }
 }
 ```

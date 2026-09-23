@@ -14,16 +14,18 @@ Read the entire instruction set before executing.
 
 ### 1. Confirm the database and set the connection string
 
-The database is the Azure SQL engine image `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest` (EngineEdition=5), not `mcr.microsoft.com/mssql/server`. Put the connection string in `local.settings.json` under the setting name `SqlConnectionString`:
+The database is the Azure SQL engine image `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest` (EngineEdition=5), not `mcr.microsoft.com/mssql/server`. Put the connection string in `local.settings.json` under the setting name `SqlConnectionString`, reusing the `$MSSQL_SA_PASSWORD` generated (or set) when the container was started - never hardcode a literal password here:
 
-```json
+```bash
+cat > local.settings.json <<EOF
 {
   "IsEncrypted": false,
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-    "SqlConnectionString": "Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
+    "SqlConnectionString": "Server=localhost,1433;Database=appdb;User Id=sa;Password=${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD};TrustServerCertificate=true"
   }
 }
+EOF
 ```
 
 Bindings reference it via `ConnectionStringSetting` / `connectionStringSetting` (not `Connection`).

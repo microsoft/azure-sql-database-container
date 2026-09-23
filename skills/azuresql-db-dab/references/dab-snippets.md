@@ -17,7 +17,8 @@ Assumes the container is running and `appdb` is provisioned (see
 ```bash
 dotnet tool install --global Microsoft.DataApiBuilder   # once; needs .NET 8
 
-export SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
+export MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
+export SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=true"
 
 dab init --database-type mssql \
   --connection-string "@env('SQL_CONNECTION_STRING')" \
@@ -36,14 +37,15 @@ network:
 docker network create appnet 2>/dev/null
 
 # SQL engine on the network (name: sqldb)
+MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
 docker run -d --name sqldb --network appnet --platform linux/amd64 \
-  -e ACCEPT_EULA=Y -e MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd \
-  -p 1433:1433 sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
+  -e ACCEPT_EULA=Y -e "MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD}" \
+  -p 127.0.0.1:1433:1433 sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 # ... wait for ready + CREATE DATABASE appdb (see azuresql-db-container) ...
 
 # DAB on the same network; connection host is sqldb, not localhost
 docker run -d --name dab --network appnet -p 5000:5000 \
-  -e SQL_CONNECTION_STRING="Server=sqldb,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true" \
+  -e SQL_CONNECTION_STRING="Server=sqldb,1433;Database=appdb;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=true" \
   -v "$PWD/dab-config.json:/App/dab-config.json" \
   mcr.microsoft.com/azure-databases/data-api-builder:latest
 ```
@@ -67,7 +69,7 @@ services:
       sqldb-init:
         condition: service_completed_successfully
     environment:
-      SQL_CONNECTION_STRING: "Server=sqldb,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
+      SQL_CONNECTION_STRING: "Server=sqldb,1433;Database=appdb;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=true"
     ports:
       - "5000:5000"
     volumes:
@@ -104,7 +106,7 @@ DAB serves whatever is in the table; to see non-empty results, seed after
 
 ```bash
 docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa \
-  -P YourStr0ng_Passw0rd -C -b -d appdb -Q \
+  -P "$MSSQL_SA_PASSWORD" -C -b -d appdb -Q \
   "IF OBJECT_ID('dbo.Books') IS NULL CREATE TABLE dbo.Books(id INT IDENTITY PRIMARY KEY, title NVARCHAR(200));
    INSERT INTO dbo.Books(title) VALUES (N'Dune'),(N'Neuromancer');"
 ```

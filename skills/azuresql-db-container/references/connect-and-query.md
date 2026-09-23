@@ -4,6 +4,12 @@ How to connect with sqlcmd (host and in-container) and the standardized
 connection strings for drivers, ORMs, and VS Code. Every example assumes `appdb`
 was already provisioned (see `connection-model.md`).
 
+`YourStr0ng_Passw0rd` below is a placeholder for the shape of a password only.
+It is not the SA password for a container you started - that value is
+`$MSSQL_SA_PASSWORD`, generated (or set) when the container was launched (see
+`run-the-container.md`). Substitute the real value; the runnable commands below
+already do this via `$MSSQL_SA_PASSWORD`.
+
 ## Contents
 
 - sqlcmd in the container
@@ -22,7 +28,7 @@ avoid a dependency at all). Use `-C` to trust the self-signed certificate and
 `-b` so a SQL error sets the exit code.
 
 ```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b \
   -d appdb -Q "SELECT DB_NAME() AS db, SERVERPROPERTY('EngineEdition') AS EngineEdition;"
 ```
 
@@ -32,7 +38,7 @@ Use the host port chosen by the free-port loop (here shown as `1433`). The
 comma form `localhost,PORT` selects the port.
 
 ```bash
-sqlcmd -S localhost,1433 -U sa -P "YourStr0ng_Passw0rd" -C -b \
+sqlcmd -S localhost,1433 -U sa -P "$MSSQL_SA_PASSWORD" -C -b \
   -d appdb -Q "SELECT SERVERPROPERTY('Edition') AS Edition;"
 ```
 

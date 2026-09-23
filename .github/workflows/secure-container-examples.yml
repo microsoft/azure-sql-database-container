@@ -1,0 +1,18 @@
+name: Secure container examples
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reject unsafe SQL port and password examples
+        run: bash scripts/check-secure-container-examples.sh

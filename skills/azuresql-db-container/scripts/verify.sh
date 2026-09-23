@@ -19,7 +19,7 @@ set -euo pipefail
 # Config (override via env)
 # ----------------------------------------------------------------------------
 IMAGE="${IMAGE:-sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest}"
-SA_PASSWORD="${MSSQL_SA_PASSWORD:-YourStr0ng_Passw0rd}"
+SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
 CONTAINER="${CONTAINER:-sqldb-verify}"
 SQLCMD="/opt/mssql-tools18/bin/sqlcmd"
 
@@ -78,7 +78,7 @@ echo "==> Starting engine: $IMAGE"
 docker run -d --name "$CONTAINER" "${PLATFORM[@]}" \
   -e "ACCEPT_EULA=Y" \
   -e "MSSQL_SA_PASSWORD=$SA_PASSWORD" \
-  -p "$HOST_PORT:1433" \
+  -p "127.0.0.1:$HOST_PORT:1433" \
   "$IMAGE" >/dev/null
 
 # ----------------------------------------------------------------------------

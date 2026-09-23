@@ -53,7 +53,7 @@ shipping in the image.
 Seeding into a database that does not exist fails. Create appdb on a **master** connection first:
 
 ```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
 ```
 
@@ -104,7 +104,7 @@ container's self-signed certificate, `-F 2` skips the header row):
 ```bash
 docker cp authors.csv sqldb:/tmp/authors.csv
 docker exec sqldb /opt/mssql-tools18/bin/bcp dbo.author_stage in /tmp/authors.csv \
-  -S localhost -U sa -P "YourStr0ng_Passw0rd" -d appdb -u -c -t ',' -F 2
+  -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -d appdb -u -c -t ',' -F 2
 ```
 
 The staging table and the follow-up insert into the real table are in

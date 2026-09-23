@@ -19,7 +19,7 @@ The database is the Azure SQL engine image `sqldbpreview-dpgaeqhmgphzd4bk.azurec
 ### 2. Provide the connection string via an environment variable
 
 ```bash
-export SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
+export SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=$MSSQL_SA_PASSWORD;TrustServerCertificate=true"
 ```
 
 Use `User Id=` / `Password=` / `Database=` and `TrustServerCertificate=true` (self-signed cert). Never write the connection string into `dab-config.json`.

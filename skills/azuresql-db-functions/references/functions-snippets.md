@@ -25,15 +25,19 @@ func new --name Books        # choose an HTTP trigger template, then add binding
 
 ## local.settings.json
 
-```json
+Reuse the `$MSSQL_SA_PASSWORD` generated (or set) when the container was started - never hardcode a literal password:
+
+```bash
+cat > local.settings.json <<EOF
 {
   "IsEncrypted": false,
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-    "SqlConnectionString": "Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
+    "SqlConnectionString": "Server=localhost,1433;Database=appdb;User Id=sa;Password=${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD};TrustServerCertificate=true"
   }
 }
+EOF
 ```
 
 ## C# isolated: HTTP GET (input) and POST upsert (output)
@@ -131,6 +135,6 @@ curl -X POST http://localhost:7071/api/todo \
 
 # Trigger check: insert a row, watch func output log the Insert change
 docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa \
-  -P YourStr0ng_Passw0rd -C -b -d appdb -Q \
+  -P "$MSSQL_SA_PASSWORD" -C -b -d appdb -Q \
   "INSERT INTO dbo.ToDo(Id,title,completed) VALUES (NEWID(),N'via trigger',0);"
 ```

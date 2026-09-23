@@ -76,7 +76,7 @@ single `SQL_CONNECTION_STRING` contract the other skills use (replace `1433`
 with the host port your container chose if 1433 was occupied):
 
 ```bash
-export SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
+export SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=$MSSQL_SA_PASSWORD;TrustServerCertificate=true"
 ```
 
 `TrustServerCertificate=true` is required for the container's self-signed cert.
