@@ -1,0 +1,13 @@
+{
+  "name": "azure-sql-database-container-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:site": "node scripts/build-site.mjs",
+    "build:site:telemetry": "node scripts/build-site.mjs --telemetry",
+    "test": "node --test scripts/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

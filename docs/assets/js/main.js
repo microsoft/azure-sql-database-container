@@ -35,25 +35,202 @@
 
   function copyText(text, btn) {
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(function () { flash(btn); }, function () {});
+      return navigator.clipboard.writeText(text).then(function () {
+        flash(btn);
+        return true;
+      }, function () {
+        return false;
+      });
     } else {
       var ta = document.createElement("textarea");
       ta.value = text; document.body.appendChild(ta); ta.select();
-      try { document.execCommand("copy"); flash(btn); } catch (e) {}
+      var copied = false;
+      try {
+        copied = document.execCommand("copy");
+        if (copied) flash(btn);
+      } catch (e) {}
       document.body.removeChild(ta);
+      return Promise.resolve(copied);
     }
   }
 
-  // ---- analytics: fan a custom event out to whatever provider loaded ----
-  // No-ops until an analytics provider is configured (see _includes/analytics.html).
+  // ---- analytics ----
+  function currentView() {
+    return document.body.getAttribute("data-view") || "unknown";
+  }
+
+  function browserFamily() {
+    var ua = navigator.userAgent || "";
+    if (/Edg\//.test(ua)) return "edge";
+    if (/Chrome\//.test(ua)) return "chrome";
+    if (/Firefox\//.test(ua)) return "firefox";
+    if (/Safari\//.test(ua)) return "safari";
+    return "other";
+  }
+
+  function osFamily() {
+    var ua = navigator.userAgent || "";
+    if (/Windows/.test(ua)) return "windows";
+    if (/Android/.test(ua)) return "android";
+    if (/iPhone|iPad|iPod/.test(ua)) return "ios";
+    if (/Mac OS/.test(ua)) return "macos";
+    if (/Linux/.test(ua)) return "linux";
+    return "other";
+  }
+
+  function deviceClass() {
+    var ua = navigator.userAgent || "";
+    if (/iPad|Tablet/.test(ua)) return "tablet";
+    if (/Mobile|Android|iPhone|iPod/.test(ua)) return "mobile";
+    return "desktop";
+  }
+
+  function localeGroup() {
+    var language = (navigator.language || "other").slice(0, 2).toLowerCase();
+    return ["de", "en", "fr", "ja"].indexOf(language) >= 0 ? language : "other";
+  }
+
+  function referrerCategory() {
+    if (!document.referrer) return "direct";
+    try {
+      var hostname = new URL(document.referrer).hostname.toLowerCase();
+      if (hostname === "github.com" || /\.github\.com$/.test(hostname)) return "github";
+      if (
+        /\.microsoft\.com$/.test(hostname) ||
+        hostname === "microsoft.github.io" ||
+        /\.microsoft\.github\.io$/.test(hostname)
+      ) return "microsoft";
+      if (/google\.|bing\.com$|duckduckgo\.com$/.test(hostname)) return "search";
+    } catch (error) {
+      console.warn("[telemetry] could not classify referrer", error);
+    }
+    return "other";
+  }
+
+  function isLandingPage() {
+    if (!document.referrer) return true;
+    try {
+      return new URL(document.referrer).origin !== location.origin;
+    } catch (error) {
+      return true;
+    }
+  }
+
+  function browserContext() {
+    return {
+      browserFamily: browserFamily(),
+      deviceClass: deviceClass(),
+      localeGroup: localeGroup(),
+      osFamily: osFamily(),
+      pagePath: location.pathname,
+      referrerCategory: referrerCategory(),
+      timeZoneOffsetMinutes: String(new Date().getTimezoneOffset()),
+      view: currentView()
+    };
+  }
+
   function track(name, props) {
+    var properties = Object.assign(browserContext(), props || {});
+    var measurements = { count: 1 };
+    try { console.log("[telemetry]", name, properties); } catch (e) {}
     try {
       if (window.appInsights && typeof window.appInsights.trackEvent === "function") {
-        window.appInsights.trackEvent({ name: name }, props || {});
+        window.appInsights.trackEvent({ name: name }, properties, measurements);
       }
-      // Microsoft Clarity and GA4 fan-out slot in here when those providers are added.
-    } catch (e) {}
+    } catch (error) {
+      console.warn("[telemetry] App Insights event failed", error);
+    }
+    try {
+      if (
+        window.mssqlAgentSkillsTelemetry &&
+        typeof window.mssqlAgentSkillsTelemetry.track === "function"
+      ) {
+        window.mssqlAgentSkillsTelemetry.track(name, properties, measurements);
+      }
+    } catch (error) {
+      console.warn("[telemetry] 1DS event failed", error);
+    }
   }
+
+  function actionLocation(element) {
+    if (element.closest(".hero")) return "hero";
+    if (element.closest(".skill-card")) return "skill-card";
+    if (element.closest(".prose")) return "prose";
+    if (element.closest(".nav")) return "nav";
+    if (element.closest(".footer")) return "footer";
+    return "other";
+  }
+
+  function scenarioFromUrl(value) {
+    try {
+      var pathname = new URL(value, location.href).pathname;
+      return pathname.split("/").pop().replace(/\.(md|html)$/, "");
+    } catch (error) {
+      return "unknown";
+    }
+  }
+
+  function destinationType(link) {
+    var href = link.getAttribute("href") || "";
+    if (/^mailto:/i.test(href)) return "feedback";
+    try {
+      var url = new URL(link.href, location.href);
+      if (/youtube\.com$|youtu\.be$/.test(url.hostname)) return "youtube";
+      if (url.hostname === "github.com") return "github";
+      if (url.hostname === "skills.sh") return "skills-sh";
+      if (/learn\.microsoft\.com$/.test(url.hostname)) return "docs";
+      if (/signup|preview-signup/.test(url.href)) return "signup";
+    } catch (error) {}
+    return "other";
+  }
+
+  function destinationId(link) {
+    try {
+      var url = new URL(link.href, location.href);
+      if (url.hostname === "github.com") return "github";
+      if (url.hostname === "skills.sh") return "skills-sh";
+      if (/learn\.microsoft\.com$/.test(url.hostname)) return "microsoft-learn";
+      if (/youtube\.com$|youtu\.be$/.test(url.hostname)) return "youtube";
+      if (/signup|preview-signup/.test(url.href)) return "container-preview";
+      return url.hostname.replace(/^www\./, "") || "other";
+    } catch (error) {
+      return "other";
+    }
+  }
+
+  function harnessId(element) {
+    var headings = Array.prototype.slice.call(
+      document.querySelectorAll(".prose h2[id], .prose h3[id]")
+    );
+    var section = "";
+    headings.forEach(function (heading) {
+      if (heading.compareDocumentPosition(element) & 4) section = heading.id;
+    });
+    return {
+      "claude-code": "claude",
+      "codex": "codex",
+      "cursor": "cursor",
+      "vs-code-with-github-copilot": "vscode-copilot"
+    }[section];
+  }
+
+  function commandDetails(text, index, element) {
+    var skill = /--skill\s+([A-Za-z0-9._-]+)/.exec(text || "");
+    if (skill) {
+      return { contentId: skill[1], contentType: "skill-install" };
+    }
+    if (/npx skills add|plugin marketplace add|plugin (?:install|add)/.test(text || "")) {
+      var harness = harnessId(element);
+      return {
+        contentId: "azure-sql-database-container",
+        contentType: harness ? "harness-install" : "collection-install",
+        ...(harness ? { harnessId: harness } : {})
+      };
+    }
+    return { contentId: currentView() + "-command-" + (index + 1), contentType: "command" };
+  }
+
+  track("site/action", { action: "pageView", isLanding: isLandingPage() });
 
   // shareable anchors on doc-page headings (kramdown already gives them ids)
   document.querySelectorAll(".prose h2[id], .prose h3[id]").forEach(function (h) {
@@ -111,20 +288,25 @@
   });
 
   // inline copy (commands, code blocks)
-  document.querySelectorAll("[data-copy], [data-copy-text]").forEach(function (btn) {
+  document.querySelectorAll("[data-copy], [data-copy-text]").forEach(function (btn, index) {
     btn.addEventListener("click", function () {
       var text = btn.getAttribute("data-copy-text");
       if (!text) {
         var target = document.querySelector(btn.getAttribute("data-copy"));
         text = target ? target.innerText : "";
       }
-      copyText(normalizeCommand(text), btn);
-      track("copy_command", { kind: /npx skills add/.test(text || "") ? "install" : "command" });
+      copyText(normalizeCommand(text), btn).then(function (copied) {
+        if (!copied) return;
+        track("site/action", Object.assign({
+          action: "contentCopied",
+          actionLocation: actionLocation(btn)
+        }, commandDetails(text, index, btn)));
+      });
     });
   });
 
   // add a copy button to every code block in the docs
-  document.querySelectorAll(".prose pre").forEach(function (pre) {
+  document.querySelectorAll(".prose pre").forEach(function (pre, index) {
     var btn = document.createElement("button");
     btn.className = "copy-btn code-copy";
     btn.type = "button";
@@ -132,8 +314,16 @@
     btn.innerHTML = '<span class="copy-label">Copy</span>';
     btn.addEventListener("click", function () {
       var code = pre.querySelector("code") || pre;
-      copyText(normalizeCommand(code.innerText), btn);
-      track("copy_code", {});
+      var text = normalizeCommand(code.innerText);
+      copyText(text, btn).then(function (copied) {
+        if (!copied) return;
+        var details = commandDetails(text, index, pre);
+        if (details.contentType === "command") details.contentType = "code";
+        track("site/action", Object.assign({
+          action: "contentCopied",
+          actionLocation: "prose"
+        }, details));
+      });
     });
     pre.appendChild(btn);
   });
@@ -142,10 +332,52 @@
   document.querySelectorAll("[data-prompt]").forEach(function (btn) {
     btn.addEventListener("click", function () {
       var url = btn.getAttribute("data-prompt");
-      track("copy_prompt", { prompt: url });
-      fetch(url).then(function (r) { return r.text(); }).then(function (text) {
-        copyText(text, btn);
+      var scenario = scenarioFromUrl(url);
+      fetch(url).then(function (r) {
+        if (!r.ok) throw new Error("prompt fetch failed");
+        return r.text();
+      }).then(function (text) {
+        return copyText(text, btn);
+      }).then(function (copied) {
+        if (!copied) return;
+        track("site/action", {
+          action: "copyPrompt",
+          actionLocation: "skill-card",
+          scenario: scenario
+        });
       }).catch(function () {});
+    });
+  });
+
+  document.querySelectorAll(".card-view").forEach(function (link) {
+    link.addEventListener("click", function () {
+      track("site/action", {
+        action: "viewPrompt",
+        actionLocation: "skill-card",
+        scenario: scenarioFromUrl(link.href)
+      });
+    });
+  });
+
+  document.querySelectorAll(".skill-card").forEach(function (link) {
+    link.addEventListener("click", function () {
+      var contentId = link.querySelector(".skill-tag");
+      track("site/action", {
+        action: "contentOpened",
+        actionLocation: "skill-card",
+        contentId: contentId ? contentId.textContent.trim() : "skills",
+        contentType: "skill"
+      });
+    });
+  });
+
+  document.querySelectorAll("a.demo-link").forEach(function (link) {
+    link.addEventListener("click", function () {
+      track("site/action", {
+        action: "mediaEngaged",
+        contentId: "container-demo",
+        mediaAction: "start"
+      });
     });
   });
 
@@ -165,7 +397,12 @@
   runtimeGroups.forEach(function (group) {
     group.querySelectorAll(".runtime-tab").forEach(function (tab) {
       tab.addEventListener("click", function () {
-        setRuntime(tab.getAttribute("data-runtime"));
+        var runtime = tab.getAttribute("data-runtime");
+        setRuntime(runtime);
+        track("site/action", {
+          action: "runtimeSelected",
+          runtimeId: runtime === "wslc" ? "wsl" : runtime
+        });
       });
     });
   });
@@ -191,7 +428,11 @@
       swap.setAttribute("data-active", env);
     }
     buttons.forEach(function (b) {
-      b.addEventListener("click", function () { setEnv(b.getAttribute("data-env")); });
+      b.addEventListener("click", function () {
+        var environment = b.getAttribute("data-env");
+        setEnv(environment);
+        track("site/action", { action: "pathSelected", pathId: environment });
+      });
     });
     setEnv("local");
   }
@@ -200,12 +441,27 @@
   document.querySelectorAll("a[href]").forEach(function (a) {
     var href = a.getAttribute("href");
     var inNav = a.closest && a.closest(".nav");
-    if (href && href.charAt(0) !== "#" && !inNav) {
-      a.setAttribute("target", "_blank");
-      a.setAttribute("rel", "noopener noreferrer");
-      var host = "";
-      try { host = new URL(a.href, location.href).hostname; } catch (e) {}
-      a.addEventListener("click", function () { track("outbound_click", { host: host, href: href }); });
+    if (href && href.charAt(0) !== "#") {
+      if (!inNav) {
+        a.setAttribute("target", "_blank");
+        a.setAttribute("rel", "noopener noreferrer");
+      }
+      if (
+        a.classList.contains("card-view") ||
+        a.classList.contains("skill-card") ||
+        a.classList.contains("demo-link")
+      ) return;
+      var url;
+      try { url = new URL(a.href, location.href); } catch (e) {}
+      if (!url || url.origin === location.origin) return;
+      a.addEventListener("click", function () {
+        track("site/action", {
+          action: "outboundClicked",
+          actionLocation: actionLocation(a),
+          destinationId: destinationId(a),
+          destinationType: destinationType(a)
+        });
+      });
     }
   });
 })();

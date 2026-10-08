@@ -8,6 +8,9 @@
   {%- if site.analytics.app_insights_connection_string and site.analytics.app_insights_connection_string != "" -%}
     {%- include analytics/app-insights.html -%}
   {%- endif -%}
+  {%- if site.analytics.one_ds_instrumentation_key and site.analytics.one_ds_instrumentation_key != "" -%}
+    {%- include analytics/one-ds.html -%}
+  {%- endif -%}
   {%- comment -%}
     Microsoft Clarity and Google Analytics 4 slot in here when site.analytics.clarity_id /
     site.analytics.ga4_id are set (each in its own analytics/<provider>.html partial). See the

@@ -1,0 +1,9 @@
+source "https://rubygems.org"
+
+gem "github-pages", group: :jekyll_plugins
+
+# Ruby 3.4+ removed these libraries from the default distribution.
+gem "base64"
+gem "bigdecimal"
+gem "csv"
+gem "logger"

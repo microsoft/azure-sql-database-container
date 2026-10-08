@@ -1,0 +1,26 @@
+{%- comment -%}
+  Microsoft first-party 1DS telemetry. The checked-in bundle is generated from
+  the shared AgentSkills browser client. Local previews are disabled unless
+  JEKYLL_ENV=production is set explicitly.
+{%- endcomment -%}
+<script src="{{ '/assets/js/mssql-agent-skills-telemetry.js' | relative_url }}"></script>
+<script>
+(function () {
+  if (navigator.doNotTrack === "1" || window.doNotTrack === "1") return;
+  var sdk = window.MssqlAgentSkillsTelemetry;
+  if (!sdk || typeof sdk.createBrowserTelemetryClient !== "function") {
+    console.warn("[telemetry] 1DS browser bundle did not load");
+    return;
+  }
+  try {
+    window.mssqlAgentSkillsTelemetry = sdk.createBrowserTelemetryClient({
+      instrumentationKey: "{{ site.analytics.one_ds_instrumentation_key }}",
+      sourceId: "azure-sql-database-container",
+      collectorVersion: "{{ site.telemetry_build_version | default: 'container-site' }}",
+      environment: "{% if jekyll.environment == 'production' %}production{% else %}local{% endif %}"
+    });
+  } catch (error) {
+    console.warn("[telemetry] could not initialize 1DS", error);
+  }
+})();
+</script>

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 {% include head.html %}
-<body>
+<body data-view="{{ page.name | remove: '.md' | remove: '.html' }}">
 {% include nav.html %}
 <main id="main" class="doc">
   <div class="container doc-inner">
