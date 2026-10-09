@@ -13,12 +13,14 @@ repo: "https://github.com/microsoft/azure-sql-database-container"
 public_repo: "https://github.com/microsoft/azure-sql-database-container"
 youtube_id: "S6PWxUAUspY"
 demo_link: "https://aka.ms/azuresqldb-container-demo"
+telemetry_build_version: "container-site"
 
 # Web analytics (client-side). Loads only when `enabled` is true and a provider is configured.
 # The Application Insights connection string is browser-embeddable and is not a secret.
 analytics:
   enabled: true
   app_insights_connection_string: "InstrumentationKey=c19fefc8-7c54-4c31-a081-6893153bb911;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/;ApplicationId=cd119e2c-6b36-43c2-8703-04d5bc1a86c7"
+  one_ds_instrumentation_key: "29a207bb14f84905966a8f22524cb730-25407f35-11b6-4d4e-8114-ab9e843cb52f-7380"
   clarity_id: ""   # set the Microsoft Clarity project id to enable Clarity (separate change)
   ga4_id: ""       # set the GA4 measurement id (G-XXXXXXX) to enable GA4 (separate change)
 

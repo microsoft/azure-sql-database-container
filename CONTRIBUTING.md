@@ -38,12 +38,16 @@ These were considered and **deliberately left out**. Please do not add them back
 The site is Jekyll and is published from `docs/` with GitHub Pages. To preview it:
 
 ```bash
-cd docs
-bundle install
-bundle exec jekyll serve
+cd docs && bundle install && cd ..
+npm install
+npm run build:site
+python3 -m http.server 8766 --bind 127.0.0.1 --directory _site
 ```
 
-Then open `http://localhost:4000`.
+Then open `http://127.0.0.1:8766/`.
+
+To intentionally send local test events to the real 1DS tenant, build with
+`npm run build:site:telemetry` instead.
 
 ## Style
 
