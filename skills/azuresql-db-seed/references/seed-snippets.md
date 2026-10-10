@@ -4,7 +4,7 @@ Copy-pasteable recipes to fill **appdb** with realistic sample data. Every snipp
 container is running (named `sqldb`) and **appdb is already provisioned on a master connection**:
 
 ```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
 ```
 
@@ -89,7 +89,7 @@ Run it against appdb (note `-d appdb`, and `-i` to read the file piped in):
 
 ```bash
 docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd \
-  -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -d appdb -i /dev/stdin < seed.sql
+  -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b -d appdb -i /dev/stdin < seed.sql
 ```
 
 If you would rather copy the file into the container first:
@@ -97,7 +97,7 @@ If you would rather copy the file into the container first:
 ```bash
 docker cp seed.sql sqldb:/tmp/seed.sql
 docker exec sqldb /opt/mssql-tools18/bin/sqlcmd \
-  -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -d appdb -i /tmp/seed.sql
+  -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b -d appdb -i /tmp/seed.sql
 ```
 
 ## T-SQL: generate 1000 rows (set-based tally)
@@ -173,17 +173,17 @@ columns match the CSV so the `IDENTITY` column is not in the mapping:
 docker cp authors.csv sqldb:/tmp/authors.csv
 
 # Create a staging table that matches the CSV (no identity column).
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -d appdb \
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b -d appdb \
   -Q "DROP TABLE IF EXISTS dbo.author_stage; CREATE TABLE dbo.author_stage (full_name NVARCHAR(200), country NVARCHAR(100));"
 
 # -c character mode, -t field terminator, -F 2 first data row (skip header), -d appdb target db,
 # -u trusts the container's self-signed cert (bcp uses ODBC Driver 18, which validates certs by default).
 docker exec sqldb /opt/mssql-tools18/bin/bcp dbo.author_stage in /tmp/authors.csv \
-  -S localhost -U sa -P "YourStr0ng_Passw0rd" -d appdb -u \
+  -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -d appdb -u \
   -c -t ',' -F 2 -b 10000
 
 # Move staged rows into the real table so author_id auto-generates.
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -d appdb \
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b -d appdb \
   -Q "INSERT INTO dbo.author (full_name, country) SELECT full_name, country FROM dbo.author_stage; DROP TABLE dbo.author_stage;"
 ```
 

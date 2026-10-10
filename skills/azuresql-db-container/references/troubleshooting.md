@@ -29,8 +29,9 @@ just because `docker ps` says it is running. Fix the env vars and recreate:
 
 ```bash
 docker rm -f sqldb 2>/dev/null
-docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
-  -p "1433:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
+MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
+docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
+  -p "127.0.0.1:1433:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
 ## Password policy rejection (the container stays "Up" but nothing connects)
@@ -57,10 +58,11 @@ container has no effect.
 
 ```bash
 HOST_PORT=1433; while lsof -nP -iTCP:"$HOST_PORT" -sTCP:LISTEN >/dev/null 2>&1; do HOST_PORT=$((HOST_PORT+1)); done
+MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
 echo "using $HOST_PORT"
 ```
 
-Then run with `-p "$HOST_PORT:1433"` and connect to `localhost,$HOST_PORT`.
+Then run with `-p "127.0.0.1:$HOST_PORT:1433"` and connect to `localhost,$HOST_PORT`.
 
 ## "no matching manifest" on a non-x64 host
 
@@ -69,7 +71,7 @@ manifest. Add the platform flag to run under emulation:
 
 ```bash
 docker run -d --name sqldb --platform linux/amd64 -e "ACCEPT_EULA=Y" \
-  -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" -p "1433:1433" \
+  -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" -p "127.0.0.1:1433:1433" \
   sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
@@ -92,7 +94,7 @@ fails because the database does not exist, provision it on a `master`
 connection first:
 
 ```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
 ```
 
@@ -110,8 +112,8 @@ If `SELECT SERVERPROPERTY('EngineEdition')` does not return `5`, or
 
 ```bash
 docker rm -f sqldb 2>/dev/null
-docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
-  -p "1433:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
+docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
+  -p "127.0.0.1:1433:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
 ## Stale image (missing a recent fix)

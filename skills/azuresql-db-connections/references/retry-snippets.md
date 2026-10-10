@@ -21,7 +21,7 @@ The engine does not auto-create databases. Create appdb on a master connection b
 snippet below connects with `Database=appdb`:
 
 ```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
 ```
 

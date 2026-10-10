@@ -131,7 +131,7 @@ that can be committed:
 
 ```bash
 dotnet user-secrets init
-dotnet user-secrets set "SQL_CONNECTION_STRING" "Server=localhost,1433;Database=appdb;User Id=appuser;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
+dotnet user-secrets set "SQL_CONNECTION_STRING" "Server=localhost,1433;Database=appdb;User Id=appuser;Password=$MSSQL_SA_PASSWORD;TrustServerCertificate=true"
 ```
 
 Open [references/auth-and-secrets.md](references/auth-and-secrets.md) when you need the

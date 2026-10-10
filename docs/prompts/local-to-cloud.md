@@ -25,8 +25,9 @@ Run the container locally on port 1433 with a strong SA password. Set `ACCEPT_EU
 docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io
 # The image is x64-only; on a non-x64 host this adds --platform linux/amd64 to run it under emulation.
 PLATFORM=(); case "$(docker info -f '{{.Architecture}}' 2>/dev/null)" in x86_64|amd64) ;; *) PLATFORM=(--platform linux/amd64);; esac
-docker run --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd" \
-    -p 1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
+MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
+docker run --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD}" \
+    -p 127.0.0.1:1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
 The registry path and image tag are provisional during Private Preview; use the exact values provided when you sign up at https://aka.ms/sqldbcontainerpreview-signup (pull-only; may be rotated during the preview) if different.
@@ -38,7 +39,7 @@ The engine is not ready the instant `docker run` returns. Wait for it to accept 
 # brief window where the engine accepts connections but is still bringing databases online.
 # -b makes sqlcmd return a non-zero exit code on a SQL error (otherwise the loop would not retry).
 until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd \
-    -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b -l 2 \
+    -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b -l 2 \
     -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do
   sleep 2
 done
@@ -54,14 +55,16 @@ Ensure `package.json` has `"type": "module"`.
 
 ### 3. Create the `.env` file
 
-Create `.env` at the project root if it does not exist. Use a single `SQL_CONNECTION_STRING` so the same code points at local or cloud by swapping only this value.
+Create `.env` at the project root if it does not exist. Use a single `SQL_CONNECTION_STRING` so the same code points at local or cloud by swapping only this value, reusing the `$MSSQL_SA_PASSWORD` generated in step 1.
 
-```dotenv
+```bash
+cat > .env <<EOF
 # Local: Azure SQL Database container
-SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
+SQL_CONNECTION_STRING="Server=localhost,1433;Database=appdb;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=true"
 
 # Cloud (for later): Azure SQL Database. Only the server and auth change; the application does not.
 # SQL_CONNECTION_STRING="Server=tcp:<your-server>.database.windows.net,1433;Database=appdb;Authentication=Active Directory Default;Encrypt=true"
+EOF
 ```
 
 Add `.env` to `.gitignore`. The `appdb` database was created in step 1; the app connects to it directly (the engine does not create databases on connect).

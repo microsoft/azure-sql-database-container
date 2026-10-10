@@ -66,17 +66,19 @@ use **azuresql-db-container** or **azuresql-db-scaffold**.
 ## Step 1: the connection string setting
 
 The bindings read the connection string from an app setting. Use the name
-`SqlConnectionString` (the docs' convention). In `local.settings.json`:
+`SqlConnectionString` (the docs' convention), reusing the `$MSSQL_SA_PASSWORD` generated (or set) when the container was started - never a literal password. Generate `local.settings.json`:
 
-```json
+```bash
+cat > local.settings.json <<EOF
 {
   "IsEncrypted": false,
   "Values": {
     "AzureWebJobsStorage": "UseDevelopmentStorage=true",
     "FUNCTIONS_WORKER_RUNTIME": "dotnet-isolated",
-    "SqlConnectionString": "Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true"
+    "SqlConnectionString": "Server=localhost,1433;Database=appdb;User Id=sa;Password=${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD};TrustServerCertificate=true"
   }
 }
+EOF
 ```
 
 `TrustServerCertificate=true` is required for the container's self-signed cert.

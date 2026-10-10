@@ -21,8 +21,15 @@ also read `DATABASE_URL`. Image is
 The engine does not auto-create databases. On a master connection:
 
 ```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
+```
+
+Generate (or reuse) the shared SA password once, before writing any `.env` file below, so the
+compose service, the app, and every ORM read the same credential:
+
+```bash
+export MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
 ```
 
 ## Shared: compose service
@@ -37,9 +44,9 @@ services:
     # platform: linux/amd64
     environment:
       ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "YourStr0ng_Passw0rd"
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD}"
     ports:
-      - "1433:1433"
+      - "127.0.0.1:1433:1433"
     healthcheck:
       test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -b -l 2 -Q \"SELECT 1\""]
       interval: 5s
@@ -51,24 +58,29 @@ services:
     depends_on:
       sqldb:
         condition: service_healthy
+    environment:
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD}"
     entrypoint: ["/bin/bash", "-c"]
-    command: >
-      "/opt/mssql-tools18/bin/sqlcmd -S sqldb -U sa -P 'YourStr0ng_Passw0rd' -C -b
-       -Q \"IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;\""
+    command:
+      - >
+        /opt/mssql-tools18/bin/sqlcmd -S sqldb -U sa -P "$$MSSQL_SA_PASSWORD" -C -b
+        -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
 ```
 
 Connection string the app consumes (host side, port 1433):
 
 ```
-Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
+Server=localhost,1433;Database=appdb;User Id=sa;Password=$MSSQL_SA_PASSWORD;TrustServerCertificate=true
 ```
 
 ## .NET Aspire (EF Core)
 
 `.env` / user-secrets:
 
-```
-SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
+```bash
+cat > .env <<EOF
+SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=true
+EOF
 ```
 
 Provision appdb (once, on master) before the first migration: see
@@ -103,8 +115,10 @@ For the migration workflow in depth, see the **azuresql-db-schema-migration** sk
 
 `.env`:
 
-```
-SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
+```bash
+cat > .env <<EOF
+SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=true
+EOF
 ```
 
 Provision appdb on master before the app connects (see
@@ -154,9 +168,11 @@ Prisma needs a `sqlserver://` URL. Provide both env vars; keep them describing t
 
 `.env`:
 
-```
-SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
-DATABASE_URL=sqlserver://localhost:1433;database=appdb;user=sa;password=YourStr0ng_Passw0rd;trustServerCertificate=true;encrypt=true
+```bash
+cat > .env <<EOF
+SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=true
+DATABASE_URL=sqlserver://localhost:1433;database=appdb;user=sa;password=${MSSQL_SA_PASSWORD};trustServerCertificate=true;encrypt=true
+EOF
 ```
 
 Install Prisma (pinned to v6):
@@ -183,7 +199,7 @@ datasource db {
 Provision appdb on master, THEN run the first migration (Prisma will not create the database):
 
 ```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStr0ng_Passw0rd" -C -b \
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;"
 npx prisma migrate dev --name init
 ```
@@ -198,10 +214,12 @@ const widgets = await prisma.widget.findMany({ where: { name } });
 
 `.env` (the same vars as Next.js; the TypeORM DataSource below also reads `MSSQL_SA_PASSWORD`):
 
-```
-SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=YourStr0ng_Passw0rd;TrustServerCertificate=true
-DATABASE_URL=sqlserver://localhost:1433;database=appdb;user=sa;password=YourStr0ng_Passw0rd;trustServerCertificate=true;encrypt=true
-MSSQL_SA_PASSWORD=YourStr0ng_Passw0rd
+```bash
+cat > .env <<EOF
+SQL_CONNECTION_STRING=Server=localhost,1433;Database=appdb;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=true
+DATABASE_URL=sqlserver://localhost:1433;database=appdb;user=sa;password=${MSSQL_SA_PASSWORD};trustServerCertificate=true;encrypt=true
+MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD}
+EOF
 ```
 
 Provision appdb on master before bootstrapping (see
@@ -220,7 +238,7 @@ export const AppDataSource = new DataSource({
   host: "localhost",
   port: 1433,
   username: "sa",
-  password: process.env.MSSQL_SA_PASSWORD ?? "YourStr0ng_Passw0rd",
+  password: process.env.MSSQL_SA_PASSWORD ?? (() => { throw new Error("MSSQL_SA_PASSWORD not set"); })(),
   database: "appdb",                 // selected here, never via USE
   options: { trustServerCertificate: true },
   entities: [/* ... */],
