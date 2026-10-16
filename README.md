@@ -2,7 +2,7 @@
 
 Run and build against Azure SQL Database, right on your local environment. Try it before you deploy, run your tests in CI, and ship with no code change. Free for development, with no Azure subscription and no credit card required.
 
-[![Sign Up](https://img.shields.io/badge/Sign%20Up-brightgreen?logo=github)](https://aka.ms/sqldbcontainerpreview-signup)
+[![Sign Up](https://img.shields.io/badge/Sign%20Up-brightgreen?logo=github)](https://aka.ms/azuresqldb-container-signup)
 [![Documentation](https://img.shields.io/badge/Documentation-blue?logo=github)](https://aka.ms/azuresqldb-container)
 [![Report Bug](https://img.shields.io/badge/Report%20Bug-red?logo=github)](https://aka.ms/azuresqldb-container-bug)
 [![Request Feature](https://img.shields.io/badge/Request%20Feature-blue?logo=github)](https://aka.ms/azuresqldb-container-feature-request)
@@ -20,7 +20,7 @@ The Azure SQL Database container is the Azure SQL Database engine, running local
 For the first time, developers can build, test, and ship applications against the Azure SQL Database engine without an Azure subscription and without a shared cloud instance. When you deploy to Azure SQL Database in the Microsoft Azure cloud, it is a connection-string change, not a code change.
 
 > [!IMPORTANT]
-> The container image is in a private registry. **[Sign up for the Private Preview](https://aka.ms/sqldbcontainerpreview-signup)** to get the registry username and password you need to pull it. Signing up is the only way to get access.
+> The container image is in a private registry. **[Sign up for the Private Preview](https://aka.ms/azuresqldb-container-signup)** to get the registry username and password you need to pull it. Signing up is the only way to get access.
 
 ## Global Table of Contents
 
