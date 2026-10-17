@@ -5,7 +5,7 @@
 #
 # Steps:
 #   1. Pick a free host port starting at 1433.
-#   2. Add --platform linux/amd64 only on a non-x64 host.
+#   2. Let the runtime select the matching image architecture.
 #   3. docker run the engine image (FAIL CLOSED on the SQL Server image).
 #   4. Wait-until-ready with the sqlcmd -C -b -l 2 retry loop.
 #   5. Assert EngineEdition=5 AND Edition='SQL Azure' (non-zero exit otherwise).
@@ -53,14 +53,8 @@ done
 echo "==> Using host port $HOST_PORT"
 
 # ----------------------------------------------------------------------------
-# 2. Add --platform linux/amd64 only on a non-x64 host.
+# 2. Let the runtime select the matching image architecture.
 # ----------------------------------------------------------------------------
-PLATFORM=()
-case "$(docker info -f '{{.Architecture}}' 2>/dev/null)" in
-  x86_64|amd64) ;;
-  *) PLATFORM=(--platform linux/amd64); echo "==> Non-x64 host: adding ${PLATFORM[*]}" ;;
-esac
-
 # ----------------------------------------------------------------------------
 # 3. docker run the engine image.
 # ----------------------------------------------------------------------------
@@ -75,7 +69,7 @@ trap cleanup EXIT
 
 docker rm -f "$CONTAINER" >/dev/null 2>&1 || true
 echo "==> Starting engine: $IMAGE"
-docker run -d --name "$CONTAINER" "${PLATFORM[@]}" \
+docker run -d --name "$CONTAINER" \
   -e "ACCEPT_EULA=Y" \
   -e "MSSQL_SA_PASSWORD=$SA_PASSWORD" \
   -p "127.0.0.1:$HOST_PORT:1433" \

@@ -39,7 +39,8 @@ Learn.
   image `mcr.microsoft.com/mssql/server`. `SERVERPROPERTY('EngineEdition')`
   returns `5`, `Edition` returns `'SQL Azure'`.
 - Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`
-  (x64; on a non-x64 host add `--platform linux/amd64`). Required env
+  (multi-architecture: `linux/amd64` and `linux/arm64`; the runtime selects
+  the matching image). Required env
   `ACCEPT_EULA=Y` + a complex `MSSQL_SA_PASSWORD`. Engine listens on 1433.
 - The engine does **NOT** auto-create databases. `CREATE DATABASE appdb` on a
   **master** connection first; do not `USE` to switch databases (a user-database

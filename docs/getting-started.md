@@ -70,7 +70,7 @@ The skills work across Claude Code, GitHub Copilot (VS Code and CLI), Codex, and
 Add a local Azure SQL Database to this project, then scaffold the schema, migrations, and data-access layer for my stack.
 ```
 
-**Why use the skills?** They already know the private preview registry, the x64 image, the connection model (the engine does not auto-create databases, so they provision a database first, named `appdb` in these examples or whatever name you choose), the readiness wait, and the local-to-cloud story. So your agent stands up a real Azure SQL Database the right way the first time, instead of reaching for the SQL Server image (`mcr.microsoft.com/mssql/server`) or inventing behavior the engine does not have. Browse the [skills on GitHub](https://github.com/microsoft/azure-sql-database-container/tree/main/skills).
+**Why use the skills?** They already know the private preview registry, the multi-architecture image, the connection model (the engine does not auto-create databases, so they provision a database first, named `appdb` in these examples or whatever name you choose), the readiness wait, and the local-to-cloud story. So your agent stands up a real Azure SQL Database the right way the first time, instead of reaching for the SQL Server image (`mcr.microsoft.com/mssql/server`) or inventing behavior the engine does not have. Browse the [skills on GitHub](https://github.com/microsoft/azure-sql-database-container/tree/main/skills).
 
 ## Manual: run it yourself
 
@@ -105,19 +105,11 @@ docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=${MSSQL_SA_PASS
     -p 127.0.0.1:1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
-On a non-x64 host, copy this version instead. It adds `--platform linux/amd64` so the x64 image runs under emulation:
-
-```bash
-export MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
-docker run --platform linux/amd64 --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD}" \
-    -p 127.0.0.1:1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
-```
-
 Confirm it is up with `docker ps --filter "name=sqldb"`; you should see `sqldb` in `Up` status. If it exited, run `docker logs sqldb`. The most common cause is a password that does not meet the complexity policy.
 
 > **NOTE:** Keep `MSSQL_SA_PASSWORD` in the environment rather than source control. The generated value meets the default SQL password complexity policy. Set your own value before running the command if preferred.
 
-Prefer `docker compose`? Set the password the same way as above, then create a `docker-compose.yml` and run `docker compose up -d`. On a non-x64 host, add `platform: linux/amd64` under the `sqldb` service.
+Prefer `docker compose`? Set the password the same way as above, then create a `docker-compose.yml` and run `docker compose up -d`. The runtime selects the matching image architecture.
 
 ```bash
 export MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
@@ -200,7 +192,7 @@ The commands below use `docker`. If you run Podman, containerd, Rancher Desktop,
 Fastest path if you are stuck. Copy this and paste it into your agent (Claude Code, GitHub Copilot, Codex, or Cursor). It knows your machine and your runtime, and it can read the logs itself:
 
 ```text
-My local Azure SQL Database container is not working. Diagnose it. Check my container runtime is installed, running, and set to Linux containers; check it has enough memory (the engine needs at least 2 GB); check port 1433 is free; check the image is running under linux/amd64 on this host; then read the container logs and tell me the actual cause and the fix.
+My local Azure SQL Database container is not working. Diagnose it. Check my container runtime is installed, running, and set to Linux containers; check it has enough memory (the engine needs at least 2 GB); check port 1433 is free; check the image architecture matches this host (`linux/amd64` or `linux/arm64`); then read the container logs and tell me the actual cause and the fix.
 ```
 
 With the [agent skills](#fastest-let-your-ai-agent-set-it-up) installed it already knows the image, the connection model, and the known failure modes, so it will usually name the cause on the first try. If it cannot fix it, it will offer to file a report for you.
@@ -243,12 +235,7 @@ Either way: fix the cause, remove the container (`docker rm -f sqldb`), and run 
 
 ### "no matching manifest" or "exec format error"
 
-The image is **x64 only** (`linux/amd64`). On Apple Silicon or any other non-x64 host, add `--platform linux/amd64` to run it under emulation:
-
-```bash
-docker run --platform linux/amd64 --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD}" \
-    -p 127.0.0.1:1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
-```
+The image provides `linux/amd64` and `linux/arm64` variants, and current container runtimes select the matching architecture automatically. Check that your runtime is up to date, then pull the image again. Do not force `--platform linux/amd64` on an ARM64 host unless you specifically need to run the x64 image under emulation.
 
 ### Port 1433 is already in use
 

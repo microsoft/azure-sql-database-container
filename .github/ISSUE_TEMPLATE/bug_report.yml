@@ -23,8 +23,11 @@ body:
       label: Host OS
       options:
         - macOS (x86_64 / Intel)
+        - macOS (ARM64 / Apple Silicon)
         - Linux (x86_64)
+        - Linux (ARM64)
         - Windows 11 (x86_64)
+        - Windows 11 (ARM64 / WSL2)
         - Other (describe below)
     validations:
       required: true

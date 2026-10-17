@@ -9,7 +9,7 @@ description: >-
   "SQL Server locally", "run mssql in Docker", "spin up a local SQL database",
   or "test against SQL Server" but actually wants the Azure SQL Database engine
   (EngineEdition 5). Detects the SQL Server image, rewrites it to the Azure
-  SQL Database container, adds --platform on non-x64 hosts, keeps the SA login, flags SQL
+  SQL Database container, lets the runtime select the image architecture, keeps the SA login, flags SQL
   Server-only features (SQL Agent, FILESTREAM, full Service Broker,
   cross-server distributed transactions, Windows Auth), and re-points
   connection strings from master to a provisioned user database.
@@ -72,11 +72,11 @@ docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io
 
 Registry and tag are provisional during Private Preview.
 
-### 3. Rewrite the image and add --platform
+### 3. Rewrite the image and use runtime architecture selection
 
-Replace the SQL Server image with the Azure SQL Database image. The Azure image is x64
-only, so on a non-x64 host add `--platform linux/amd64`
-(Docker) or `platform: linux/amd64` (compose).
+Replace the SQL Server image with the Azure SQL Database image. The image supports
+`linux/amd64` and `linux/arm64`; Docker and Compose select the matching architecture.
+Use a platform override only to explicitly test emulation.
 
 - Old: `mcr.microsoft.com/mssql/server:2022-latest`
 - New: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`
@@ -88,7 +88,7 @@ keep port 1433. See [references/migrate-compose.md](references/migrate-compose.m
 
 The engine does **not** auto-create databases on connect, and it is **not**
 ready the instant `docker run` returns. Use the canonical start recipe: it picks
-a free host port, adds `--platform` only on non-x64 hosts, waits for readiness
+a free host port, lets the runtime select the matching architecture, waits for readiness
 with a retry loop, and provisions `appdb` inside that same loop. The `-b -l 2`
 flags make a SQL error set the exit code so transient startup errors (e.g.
 `Msg 913`) are retried, not masked.
@@ -96,9 +96,8 @@ flags make a SQL error set the exit code so transient startup errors (e.g.
 ```bash
 HOST_PORT=1433; while lsof -nP -iTCP:"$HOST_PORT" -sTCP:LISTEN >/dev/null 2>&1; do HOST_PORT=$((HOST_PORT+1)); done
 MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
-PLATFORM=(); case "$(docker info -f '{{.Architecture}}' 2>/dev/null)" in x86_64|amd64) ;; *) PLATFORM=(--platform linux/amd64);; esac
 docker rm -f sqldb 2>/dev/null
-docker run -d --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
+docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
   -p "127.0.0.1:$HOST_PORT:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b -l 2 \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do sleep 2; done
@@ -189,7 +188,7 @@ skill carries the rules the index imposes.
 - `appdb` is created on a master connection before any app connects to it.
 - App connection strings use `Database=appdb`, never `Database=master` for real work.
 - No `USE <db>` statements: in a user-database session, `USE` returns `Msg 40508`, exactly as in Azure SQL Database in the cloud; a `master` connection is a provisioning session where the filter is not enforced, but `master` is for provisioning only. Select the database in the connection string.
-- `--platform linux/amd64` present on non-x64 hosts only.
+- No platform override on normal runs; explicit overrides are only for emulation tests.
 - `EngineEdition` returns 5.
 - If a validation rule above fails, or you had to deviate from this skill to make the task work, that is a bug in this skill: load the **azuresql-db-feedback** skill and offer to file a report.
 - When every rule above passes and the task is done, close with ONE line, once per session, and do not ask a question or wait for a reply: "That worked. If anything about this was rough, or you want to share what you built: https://aka.ms/sql-agent-skills-feedback"
@@ -199,7 +198,6 @@ skill carries the rules the index imposes.
 - Do not keep `mcr.microsoft.com/mssql/server`; it is a different engine.
 - Do not rely on database auto-creation or on `/docker-entrypoint-initdb.d/*.sql`.
 - Do not use `USE appdb`; select the database in the connection string.
-- Do not call a non-x64 host "supported"; just add `--platform linux/amd64` on non-x64 hosts.
 - Prefer `User Id=` / `Password=` in the .NET-style string. That is house style, not a requirement: `Uid=` / `Pwd=` are valid synonyms.
 - Do not pass the vector dimension as a bind parameter.
 - Do not keep SQL Agent, FILESTREAM, full Service Broker, cross-server distributed transactions, or Windows Auth.

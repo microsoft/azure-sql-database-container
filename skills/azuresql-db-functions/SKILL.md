@@ -48,7 +48,7 @@ control.
   image `mcr.microsoft.com/mssql/server`. `SERVERPROPERTY('EngineEdition')`
   returns `5`, `SERVERPROPERTY('Edition')` returns `'SQL Azure'`.
 - Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`
-  (x64, `linux/amd64`). Registry is private: sign in first with
+  (multi-architecture: `linux/amd64` and `linux/arm64`). Registry is private: sign in first with
   `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io` using the shared
   pull-only credentials from https://aka.ms/sqldbcontainerpreview-signup (they
   may rotate). Registry and tag are provisional during Private Preview.
@@ -57,7 +57,8 @@ control.
 - The engine does **NOT** auto-create databases. Run `CREATE DATABASE appdb` on
   a **master** connection before the function app connects with `Database=appdb`.
   Do not use `USE` to switch databases; select it in the connection string.
-- On a non-x64 host add `--platform linux/amd64`.
+- The runtime selects the matching architecture. Use `--platform linux/amd64`
+  only to explicitly test x64 emulation.
 
 For the full engine model (readiness loop, vectors, troubleshooting) see the
 **azuresql-db-container** skill; to start the container and provision `appdb`,
@@ -203,7 +204,7 @@ move to least-privilege or to the cloud.
 - Do not use an output binding against a table with no primary key, or below compatibility level 130.
 - Do not scaffold with `func new --template SqlTrigger`; the template is listed but cannot be created. Create an HTTP trigger and add the binding by hand.
 - Do not use the `Connection` binding keyword for SQL bindings; it is `ConnectionStringSetting` / `connectionStringSetting`.
-- Do not commit `local.settings.json` (it holds the connection string / SA password) or drop `TrustServerCertificate=true` / `--platform linux/amd64` on a non-x64 host.
+- Do not commit `local.settings.json` (it holds the connection string / SA password) or drop `TrustServerCertificate=true`.
 
 ## References
 

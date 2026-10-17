@@ -14,7 +14,7 @@ The scenario prompts below can be run as written, or replaced with the correspon
 - [ ] Plan includes a readiness wait (retry loop) rather than querying immediately after docker run
 - [ ] Plan explicitly creates the user database (CREATE DATABASE) rather than assuming auto-creation
 - [ ] Application connection targets the user database, not master
-- [ ] Non-x64 host handling is addressed (--platform linux/amd64) or the plan is explicitly x64-scoped
+- [ ] Runtime-selected `linux/amd64` or `linux/arm64` architecture is used; an explicit platform override appears only for an emulation test
 
 ## Scenario 2: add the database to docker-compose or a Dev Container (prompt: T2)
 
@@ -22,7 +22,7 @@ The scenario prompts below can be run as written, or replaced with the correspon
 - [ ] App reaches the database by service name, not localhost
 - [ ] Healthcheck present so dependents wait until the engine is ready
 - [ ] Database provisioning handled (init step or documented manual step), not assumed automatic
-- [ ] platform: linux/amd64 addressed for non-x64 hosts
+- [ ] Compose leaves platform selection to the runtime unless explicitly testing emulation
 - [ ] Single connection string surfaced through an environment variable, not hardcoded
 
 ## Scenario 3: CI integration (prompt: T4)

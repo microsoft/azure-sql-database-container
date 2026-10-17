@@ -19,14 +19,14 @@ EngineEdition `5` and Edition `'SQL Azure'` are the cloud engine's fingerprint. 
 
 | Skill | What it does |
 | --- | --- |
-| **azuresql-db-container** | Start the Azure SQL Database engine locally the correct way: free-port selection, conditional `--platform linux/amd64` on non-x64 hosts, ready-wait retry loop, and `CREATE DATABASE appdb` provisioning. The foundation every other skill builds on. |
+| **azuresql-db-container** | Start the Azure SQL Database engine locally the correct way: free-port selection, runtime-selected architecture, ready-wait retry loop, and `CREATE DATABASE appdb` provisioning. The foundation every other skill builds on. |
 | **azuresql-db-from-sql-server** | Migrate a workflow off the SQL Server image (`mcr.microsoft.com/mssql/server`) onto the real cloud engine. Swaps the image, fixes the connection model, and verifies EngineEdition=5 / Edition='SQL Azure'. |
 | **azuresql-db-local-to-cloud** | Take a database that works against the local engine and move it to Azure SQL Database in the cloud. Because it is the same engine, parity is the default, not a porting exercise. |
 | **azuresql-db-schema-migration** | Apply and version schema changes against the engine: idempotent DDL, ordered migration scripts, run against `appdb` (never `master`). |
 | **azuresql-db-import** | Load data into `appdb` after provisioning: bulk and script-based import. Does **not** rely on auto-run init directories (that convention is not honored here). |
 | **azuresql-db-rag** | Build retrieval-augmented generation on the engine's native `VECTOR(n)` type and `VECTOR_DISTANCE('cosine', a, b)`, using full-scan top-k for a small corpus and a DiskANN vector index once a full scan starts to hurt. |
 | **azuresql-db-ci** | Run the engine in continuous integration: ephemeral container, ready-wait, provision, seed, test, tear down. Fails closed on the wrong image. |
-| **azuresql-db-sidecar** | Run the engine as a sidecar alongside an app (compose-style), with `platform: linux/amd64` on non-x64 hosts and a single `SQL_CONNECTION_STRING` contract. |
+| **azuresql-db-sidecar** | Run the engine as a sidecar alongside an app (compose-style), with runtime-selected architecture and a single `SQL_CONNECTION_STRING` contract. |
 | **azuresql-db-scaffold** | Scaffold a new app wired to the engine: connection string via one `SQL_CONNECTION_STRING` env var, provisioning step, and seed step in the correct order. |
 | **azuresql-db-dab** | Stand up an instant no-code REST + GraphQL API over the engine with Data API Builder (DAB): `dab init`/`add`/`start`, `@env()` connection, entities and relationships. Also serves DAB's built-in MCP endpoint (a DAB API surface, not a standalone SQL MCP server). |
 | **azuresql-db-functions** | Build a serverless API and event-driven handlers with Azure Functions + the Azure SQL bindings: HTTP CRUD via input/output bindings, and the SQL trigger (Change Tracking) as the local event-driven mechanism. CES is cloud-only. |
@@ -293,7 +293,7 @@ server label (`microsoft-learn`) is yours to choose; the fully-qualified tool pr
 
 Every skill in this collection holds these facts true. If a generated workflow contradicts any of them, it is wrong.
 
-- **Image:** `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest` (x64 / linux/amd64, private preview registry). Sign in first: `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>` (enter the password when prompted). It is **not** `mcr.microsoft.com/mssql/server`.
+- **Image:** `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest` (multi-architecture: linux/amd64 and linux/arm64, private preview registry). Sign in first: `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>` (enter the password when prompted). It is **not** `mcr.microsoft.com/mssql/server`.
 
   > **Note:** the registry username and password are **provided when you sign up for the Private Preview** at https://aka.ms/sqldbcontainerpreview-signup. They are shared and pull-only, must be treated as secrets (do not redistribute), and may be rotated during the preview.
 - **EULA:** `ACCEPT_EULA=Y` is required.
@@ -303,7 +303,7 @@ Every skill in this collection holds these facts true. If a generated workflow c
 
 ### Platform
 
-The image is x64 only. On a non-x64 host, add `--platform linux/amd64` (Docker) or `platform: linux/amd64` (compose) to run it under x64 emulation.
+The image supports `linux/amd64` and `linux/arm64`; Docker and Compose select the matching architecture automatically. Set `--platform linux/amd64` (Docker) or `platform: linux/amd64` (Compose) only to explicitly test x64 emulation.
 
 ### Connection model (three facts that bite)
 
@@ -335,15 +335,14 @@ Native `VECTOR(n)` column type and `VECTOR_DISTANCE('cosine', a, b)`. Insert wit
 
 ### Canonical start recipe
 
-Free port + conditional platform + ready-wait + provision `appdb`:
+Free port + runtime-selected architecture + ready-wait + provision `appdb`:
 
 ```bash
-# Pick a free host port and add the platform flag only on a non-x64 host (works in bash and zsh).
+# Pick a free host port (works in bash and zsh).
 HOST_PORT=1433; while lsof -nP -iTCP:"$HOST_PORT" -sTCP:LISTEN >/dev/null 2>&1; do HOST_PORT=$((HOST_PORT+1)); done
 MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
-PLATFORM=(); case "$(docker info -f '{{.Architecture}}' 2>/dev/null)" in x86_64|amd64) ;; *) PLATFORM=(--platform linux/amd64);; esac
 docker rm -f sqldb 2>/dev/null
-docker run -d --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
+docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
   -p "127.0.0.1:$HOST_PORT:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b -l 2 \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do sleep 2; done

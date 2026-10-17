@@ -38,7 +38,7 @@ docker network create appnet 2>/dev/null
 
 # SQL engine on the network (name: sqldb)
 MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
-docker run -d --name sqldb --network appnet --platform linux/amd64 \
+docker run -d --name sqldb --network appnet \
   -e ACCEPT_EULA=Y -e "MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD}" \
   -p 127.0.0.1:1433:1433 sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 # ... wait for ready + CREATE DATABASE appdb (see azuresql-db-container) ...

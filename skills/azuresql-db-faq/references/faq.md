@@ -85,9 +85,10 @@ first: `CAST(CAST(? AS NVARCHAR(MAX)) AS VECTOR(n))`, with `n` a literal dimensi
 
 ## Platform / image / access
 
-**Is a non-x64 host supported?** The image is x64 only (`linux/amd64`). On a
-non-x64 host it runs under emulation when you add `--platform linux/amd64` (Docker) or
-`platform: linux/amd64` (compose). Treat that as "runs under emulation", not "supported".
+**Is ARM64 supported?** Yes. The image supports native `linux/amd64` and
+`linux/arm64`; the container runtime selects the matching architecture
+automatically. Use `--platform linux/amd64` (Docker) or
+`platform: linux/amd64` (Compose) only to explicitly test x64 emulation.
 
 **Why isn't the image on Docker Hub or MCR?** This is a container-only Private Preview.
 The image is in a private registry; the shared, pull-only username and password are

@@ -23,13 +23,13 @@ The container is for **local development** (your inner loop). It is not a produc
 
 ## Supported host platforms
 
-The image is x64 (`linux/amd64`); on a non-x64 host, add `--platform linux/amd64`.
+The image provides `linux/amd64` and `linux/arm64` variants. Container runtimes select the matching architecture automatically.
 
-| Host OS                        | Architecture | Status                                       |
-| ------------------------------ | ------------ | -------------------------------------------- |
-| macOS 14 or later              | x86_64       | Supported (native)                           |
-| Linux (Ubuntu, Debian, Fedora) | x86_64       | Supported (native)                           |
-| Windows 11                     | x86_64       | Supported (WSL2)                             |
+| Host OS                        | Architecture    | Status           |
+| ------------------------------ | --------------- | ---------------- |
+| macOS 14 or later              | x86_64, ARM64   | Supported        |
+| Linux (Ubuntu, Debian, Fedora) | x86_64, ARM64   | Supported        |
+| Windows 11                     | x86_64, ARM64   | Supported (WSL2) |
 
 ## Supported container runtimes
 

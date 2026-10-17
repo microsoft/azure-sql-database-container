@@ -40,8 +40,9 @@ invokes being present inside the image. The Testcontainers recipes themselves we
   above from a **generic container** instead.
 - Verify identity once running: `SELECT SERVERPROPERTY('EngineEdition')` returns **5**,
   `SERVERPROPERTY('Edition')` returns **'SQL Azure'**.
-- Image is x64 only. On a non-x64 host set the container platform to `linux/amd64`
-  (each language exposes this differently; see the snippets).
+- The image supports `linux/amd64` and `linux/arm64`; the runtime selects the
+  matching architecture. Set the platform to `linux/amd64` only to explicitly
+  test x64 emulation (each language exposes this differently; see the snippets).
 
 For full engine detail (readiness, vectors, troubleshooting) see the **azuresql-db-container** skill.
 
@@ -80,7 +81,7 @@ run `docker login` as a step before the tests (see **azuresql-db-ci**).
 1. Build a generic container from the engine image with `ACCEPT_EULA=Y` and a complex
    `MSSQL_SA_PASSWORD` (example literal: `YourStr0ng_Passw0rd`; at least 8 characters using
    at least three of upper case, lower case, digits, and symbols). Expose container port
-   1433. On a non-x64 host, set the image platform to `linux/amd64`.
+   1433. The runtime selects the matching architecture automatically.
 2. Attach a **wait-for-ready** strategy so `Start` returns only once the engine answers.
 3. Provision `appdb` on a master connection (a `SELECT 1` plus
    `IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;`).
@@ -131,7 +132,7 @@ parameter** (a parameter dimension fails with "Incorrect syntax near '@P3'").
 - Do not assume `appdb` exists; provision it on a master connection first.
 - Do not hardcode host port 1433; read the mapped port and build the string from it.
 - Do not use `USE appdb` to switch databases; put it in the connection string.
-- Do not call a non-x64 host "supported", and do not pass the vector dimension as a bind parameter.
+- Do not set an explicit platform for normal runs, and do not pass the vector dimension as a bind parameter.
 
 ## References
 

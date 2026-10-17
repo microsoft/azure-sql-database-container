@@ -102,7 +102,7 @@
       "the service container runs the Azure SQL Database container image, not mcr.microsoft.com/mssql/server, and the engine reports EngineEdition 5 with Edition 'SQL Azure'",
       "readiness comes from a health check that runs sqlcmd from /opt/mssql-tools18/bin inside the service container, because the hosted runner ships no SQL client of its own",
       "a CREATE DATABASE statement runs on a master connection before the first test, and the tests then name the user database in their connection string",
-      "the service needs ACCEPT_EULA and a complex MSSQL_SA_PASSWORD, and the image is x64 only"
+      "the service needs ACCEPT_EULA and a complex MSSQL_SA_PASSWORD, and the image supports linux/amd64 and linux/arm64"
     ],
     "refutes": [
       "that the engine creates the database named in the connection string on first connect, so the job can go straight from starting the service to running tests with Database=appdb",

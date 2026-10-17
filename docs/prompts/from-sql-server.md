@@ -32,12 +32,11 @@ Replace `mcr.microsoft.com/mssql/server:<tag>` with the engine image:
 sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
-Keep `ACCEPT_EULA=Y` and the `sa` password. The image is x64 only; on a non-x64 host add `--platform linux/amd64` (Docker) or `platform: linux/amd64` (compose). In a shell snippet that adds the flag conditionally, build it as an array so it is safe in both bash and zsh:
+Keep `ACCEPT_EULA=Y` and the `sa` password. The image provides `linux/amd64` and `linux/arm64` variants; current container runtimes select the matching architecture automatically.
 
 ```bash
-PLATFORM=(); case "$(docker info -f '{{.Architecture}}' 2>/dev/null)" in x86_64|amd64) ;; *) PLATFORM=(--platform linux/amd64);; esac
 MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
-docker run -d --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD}" \
+docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD}" \
     -p 127.0.0.1:1433:1433 sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
@@ -80,13 +79,13 @@ Expect `EngineEdition = 5` and `Edition = SQL Azure`. The SQL Server image retur
 ## Validation rules
 
 - No `mcr.microsoft.com/mssql/server` remains in compose, Dockerfiles, run scripts, CI, or Dev Container.
-- `--platform linux/amd64` is added on non-x64 hosts (compose `platform:` or the array-form shell snippet).
+- The runtime selects the matching architecture for supported x64 and ARM64 hosts.
 - `appdb` is created on a `master` connection before the app connects with `Database=appdb`; no `USE` to switch databases.
 - At least one SQL Server-only feature is flagged (or the app confirmed not to use any).
 - `EngineEdition = 5` against the running container.
 
 ## Do not
 
-- Do not keep the SQL Server image or call a non-x64 host "supported".
+- Do not keep the SQL Server image.
 - Do not develop against `master`; do real work on the user database.
 - Do not commit the SA password or the registry credentials.

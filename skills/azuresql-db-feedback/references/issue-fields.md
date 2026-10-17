@@ -112,12 +112,15 @@ Title prefix is `[Bug]: `.
 ### `host-os` values (verbatim)
 
 - `macOS (x86_64 / Intel)`
+- `macOS (ARM64 / Apple Silicon)`
 - `Linux (x86_64)`
+- `Linux (ARM64)`
 - `Windows 11 (x86_64)`
+- `Windows 11 (ARM64 / WSL2)`
 - `Other (describe below)`
 
-Map from `uname -srm`. Apple Silicon runs the x64 image under emulation and still reports `arm64`; it is
-still macOS, so use `macOS (x86_64 / Intel)` and mention the emulation in the description. If you cannot tell,
+Map from `uname -srm`. Native Apple Silicon and Linux ARM64 hosts use the ARM64
+options. Windows 11 ARM64 is supported through WSL2. If you cannot tell,
 **omit the parameter** rather than guessing.
 
 ## Container feature fields (`feature_request.yml`)
@@ -166,10 +169,11 @@ about 8,000 characters:
 If it genuinely will not fit, prefill the short fields, leave the long one for the user, and give them the
 trimmed text in the chat to paste in.
 
-## Worked example: a skill bug
+## Worked example: a historical skill bug
 
-The `azuresql-db-container` skill omitted `--platform` on an Apple Silicon host, so the container died and the
-agent had to add the flag itself.
+This example records an issue from before the image published a native ARM64
+variant. The current skill relies on runtime architecture selection; do not use
+the historical commands below as current setup instructions.
 
 ```
 https://github.com/microsoft/azure-sql-database-container/issues/new

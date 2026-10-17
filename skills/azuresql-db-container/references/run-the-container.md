@@ -1,13 +1,13 @@
 # Run the container
 
-How to start the engine with Docker, Podman, or compose, including the
-conditional platform flag, free-port selection, and volumes. The image tag lives
+How to start the engine with Docker, Podman, or compose, including automatic
+architecture selection, free-port selection, and volumes. The image tag lives
 in `image-and-registry.md`. The readiness loop lives in `wait-until-ready.md`.
 
 ## Contents
 
 - Canonical Docker recipe
-- Why the platform flag is conditional
+- Explicit emulation testing
 - Free-port selection
 - Podman
 - Docker compose (named volume + healthcheck)
@@ -16,17 +16,16 @@ in `image-and-registry.md`. The readiness loop lives in `wait-until-ready.md`.
 
 ## Canonical Docker recipe
 
-This is the shape to reuse. It picks a free host port, adds the platform flag
-only on a non-x64 host, removes any stale container, starts the engine, then
+This is the shape to reuse. It picks a free host port, lets the runtime select
+the matching architecture, removes any stale container, starts the engine, then
 waits for readiness while provisioning `appdb` in the same loop.
 
 ```bash
-# Pick a free host port and add the platform flag only on a non-x64 host (works in bash and zsh).
+# Pick a free host port (works in bash and zsh).
 HOST_PORT=1433; while lsof -nP -iTCP:"$HOST_PORT" -sTCP:LISTEN >/dev/null 2>&1; do HOST_PORT=$((HOST_PORT+1)); done
 MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
-PLATFORM=(); case "$(docker info -f '{{.Architecture}}' 2>/dev/null)" in x86_64|amd64) ;; *) PLATFORM=(--platform linux/amd64);; esac
 docker rm -f sqldb 2>/dev/null
-docker run -d --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
+docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
   -p "127.0.0.1:$HOST_PORT:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b -l 2 \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do sleep 2; done
@@ -36,13 +35,13 @@ echo "ready on localhost,$HOST_PORT"
 The engine always listens on `1433` inside the container; only the host port
 varies.
 
-## Why the platform flag is conditional
+## Explicitly test x64 emulation
 
-The image is x64 only. On an x64 host, passing `--platform` is unnecessary. On a
-non-x64 host, the daemon would otherwise fail to find a matching manifest, so
-add `--platform linux/amd64` to run under emulation. The `case` block above sets
-`PLATFORM` only when needed. Do not call non-x64 a supported architecture; it
-runs under emulation.
+The image supports `linux/amd64` and `linux/arm64`; the runtime selects the
+matching architecture automatically. To explicitly test x64 emulation on an
+ARM64 host, add `--platform linux/amd64` to the Docker or Podman command, or
+`platform: linux/amd64` to Compose. Do not add the platform override to normal
+development runs.
 
 ## Free-port selection
 
@@ -56,23 +55,23 @@ Podman uses the same arguments. Sign in first (see `image-and-registry.md`).
 
 ```bash
 MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
-podman run -d --name sqldb --platform linux/amd64 -e "ACCEPT_EULA=Y" \
+podman run -d --name sqldb -e "ACCEPT_EULA=Y" \
   -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" -p "127.0.0.1:1433:1433" \
   sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
-Drop `--platform linux/amd64` on an x64 host. Then provision and wait exactly as
-in `wait-until-ready.md` (use `podman exec` in place of `docker exec`).
+Then provision and wait exactly as in `wait-until-ready.md` (use `podman exec`
+in place of `docker exec`).
 
 ## Docker compose (named volume + healthcheck)
 
-On a non-x64 host keep `platform: linux/amd64`; remove that line on x64.
+The runtime selects the matching architecture; use a `platform` override only
+to explicitly test emulation.
 
 ```yaml
 services:
   sqldb:
     image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
-    platform: linux/amd64
     environment:
       ACCEPT_EULA: "Y"
       MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD}"
@@ -110,7 +109,7 @@ docker compose exec -T sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P
 ## Do not
 
 - Do not use `mcr.microsoft.com/mssql/server`.
-- Do not add `--platform` unconditionally; gate it on a non-x64 host.
+- Do not add a platform override to normal runs; use one only to explicitly test emulation.
 - Do not assume `appdb` exists after `docker run`; provision it (see
   `connection-model.md`).
 - Do not rely on a seed directory; the image does not auto-run init SQL.

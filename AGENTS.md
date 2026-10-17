@@ -16,7 +16,7 @@ The Azure SQL Database container is the Azure SQL Database engine, running local
 
 These drift easily; keep them aligned everywhere when you edit:
 
-- **x64 only.** The image is x64 (`linux/amd64`). Do not present a non-x64 host as a supported platform, and do not use runtime brand names (Apple Container, Rosetta, Docker Desktop). The only platform note is: "on a non-x64 host, add `--platform linux/amd64`."
+- **Multi-architecture.** The image supports `linux/amd64` and `linux/arm64`; let the container runtime select the matching architecture. Use `--platform linux/amd64` only when explicitly testing x64 emulation.
 - **The engine does not auto-create databases.** Provision `appdb` on a `master` connection before connecting to it. In a user-database session USE returns Msg 40508 (Azure-faithful); a master connection is a provisioning session where USE is not blocked. Select the database in the connection string and develop in the user database.
 - **Registry / image:** `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`. Registry, tag, and credentials are provisional during Private Preview.
 - **Do not advertise things that do not exist** (no empty sample folders, no unbuilt skill collections).

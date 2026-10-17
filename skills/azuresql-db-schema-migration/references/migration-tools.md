@@ -25,7 +25,7 @@ the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
 
 - Engine identity: `EngineEdition` 5, `Edition` 'SQL Azure'. Not the SQL Server image.
 - Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`
-  (x64 / linux/amd64 only; on a non-x64 host add `--platform linux/amd64`).
+  (supports native linux/amd64 and linux/arm64; the runtime selects the matching architecture).
 - Canonical ADO.NET / sqlcmd connection string:
   `Server=localhost,1433;Database=appdb;User Id=sa;Password=$MSSQL_SA_PASSWORD;TrustServerCertificate=true`
 - One env var holds it: `SQL_CONNECTION_STRING`. Apps and most tools read it.

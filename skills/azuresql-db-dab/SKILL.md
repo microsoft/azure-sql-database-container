@@ -37,7 +37,7 @@ rows from a table in the container.
   image `mcr.microsoft.com/mssql/server`. `SERVERPROPERTY('EngineEdition')`
   returns `5`, `SERVERPROPERTY('Edition')` returns `'SQL Azure'`.
 - Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`
-  (x64, `linux/amd64`). Registry is private: sign in first with
+  (multi-architecture: `linux/amd64` and `linux/arm64`). Registry is private: sign in first with
   `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io` using the shared
   pull-only credentials from https://aka.ms/sqldbcontainerpreview-signup (they
   may rotate). Registry and tag are provisional during Private Preview.
@@ -47,7 +47,8 @@ rows from a table in the container.
   a **master** connection before DAB connects with `Database=appdb`. Do not use
   `USE` to switch databases (in a user-database session it returns
   `Msg 40508`); select the database in the connection string.
-- On a non-x64 host add `--platform linux/amd64`.
+- The runtime selects the matching architecture. Use `--platform linux/amd64`
+  only to explicitly test x64 emulation.
 
 For the full engine model (readiness loop, vectors, troubleshooting) see the
 **azuresql-db-container** skill. To start the container and provision `appdb`
@@ -161,7 +162,7 @@ asks to point an MCP client at DAB, or to narrow which entities it exposes.
 - Do not hardcode the connection string (or the SA password) into `dab-config.json`; use `@env('SQL_CONNECTION_STRING')`.
 - Do not ship `anonymous:*` permissions to production; it is unauthenticated full CRUD for local dev only.
 - Do not describe DAB's MCP endpoint as a standalone Microsoft SQL MCP server; it is an API surface DAB provides.
-- Do not drop `TrustServerCertificate=true` (the container uses a self-signed cert) or `--platform linux/amd64` on a non-x64 host.
+- Do not drop `TrustServerCertificate=true` (the container uses a self-signed cert).
 
 ## References
 

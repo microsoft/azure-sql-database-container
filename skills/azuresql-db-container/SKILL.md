@@ -60,19 +60,18 @@ docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>
 
 ### 2. Start the container (canonical recipe)
 
-This finds a free host port, adds `--platform linux/amd64` only on a non-x64
-host, waits until the engine is actually ready, and provisions `appdb` inside
+This finds a free host port, lets the runtime select the matching image
+architecture, waits until the engine is actually ready, and provisions `appdb` inside
 the same retry loop. Open [references/run-the-container.md](references/run-the-container.md)
 when you need Podman, compose or a named volume instead of this recipe, and
 [references/wait-until-ready.md](references/wait-until-ready.md) when the readiness loop has to change.
 
 ```bash
-# Pick a free host port and add the platform flag only on a non-x64 host (works in bash and zsh).
+# Pick a free host port (works in bash and zsh).
 HOST_PORT=1433; while lsof -nP -iTCP:"$HOST_PORT" -sTCP:LISTEN >/dev/null 2>&1; do HOST_PORT=$((HOST_PORT+1)); done
 MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
-PLATFORM=(); case "$(docker info -f '{{.Architecture}}' 2>/dev/null)" in x86_64|amd64) ;; *) PLATFORM=(--platform linux/amd64);; esac
 docker rm -f sqldb 2>/dev/null
-docker run -d --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
+docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
   -p "127.0.0.1:$HOST_PORT:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b -l 2 \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do sleep 2; done
@@ -128,8 +127,8 @@ you started the wrong image. Connection strings for drivers and ORMs are in
 
 ### 5. Or prove the whole setup with one command
 
-`scripts/verify.sh` does the entire lifecycle above as a single fail-closed check: it picks a free port, adds
-`--platform` only on a non-x64 host, starts the engine, waits until ready, asserts `EngineEdition = 5` and
+`scripts/verify.sh` does the entire lifecycle above as a single fail-closed check: it picks a free port, lets
+the runtime select the matching architecture, starts the engine, waits until ready, asserts `EngineEdition = 5` and
 `Edition = 'SQL Azure'`, provisions `appdb`, and tears the container down again. It **refuses to run** against
 `mcr.microsoft.com/mssql/server`. Run it when you want to confirm the image, the registry sign-in, and the
 host platform are all correct before building on top of them:
@@ -180,8 +179,8 @@ with `-d appdb`.
 
 ## Offline / reproducible (compose + named volume + seed)
 
-For a self-contained local stack: a compose file with `platform: linux/amd64`
-(on non-x64 hosts), a named volume for persistence, a healthcheck that uses the
+For a self-contained local stack: a compose file that lets the runtime select
+the matching architecture, a named volume for persistence, a healthcheck that uses the
 canonical ready-wait, then a one-shot that provisions `appdb` and seeds it via
 `sqlcmd -d appdb`. Open [references/run-the-container.md](references/run-the-container.md) for
 the full compose example, and [references/wait-until-ready.md](references/wait-until-ready.md)
@@ -203,8 +202,9 @@ docker volume rm sqldb-data   # only if you created a named volume and want a cl
   See [references/paas-parity-checklist.md](references/paas-parity-checklist.md).
 - It does **not** auto-create databases and does **not** auto-run a seed
   directory.
-- The image is x64 only (`linux/amd64`). On a non-x64 host, add
-  `--platform linux/amd64` to run under emulation.
+- The image supports `linux/amd64` and `linux/arm64`; the runtime selects the
+  matching architecture. Use `--platform linux/amd64` only to explicitly test
+  x64 emulation.
 
 ## Hand off to a task skill
 
