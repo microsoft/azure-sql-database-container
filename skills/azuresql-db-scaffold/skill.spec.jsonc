@@ -93,7 +93,7 @@
     "task": "Bootstrap a new web app with a local SQL database in Docker, so a teammate can clone the repo, run one command, and end up with the schema applied and the sample rows loaded. I want it to match what we run in Azure.",
     "gate": "The answer must create the application database explicitly on a master connection before the first migration runs, and must run the seed file itself rather than relying on an entrypoint init directory to pick it up.",
     "states": [
-      "the image is the Azure SQL Database container, which reports EngineEdition 5 and Edition 'SQL Azure', and it is set to platform linux/amd64 because the image is x64 only",
+      "the image is the Azure SQL Database container, which reports EngineEdition 5 and Edition 'SQL Azure', and the runtime selects linux/amd64 or linux/arm64 automatically",
       "the database is created on a master connection before any migration or seed step",
       "the seed runs by invoking sqlcmd against the user database after that database exists",
       "the target database is selected in the connection string and never with USE"

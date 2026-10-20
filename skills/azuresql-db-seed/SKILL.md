@@ -31,7 +31,7 @@ shipping in the image.
 ## Engine facts that shape seeding
 
 - USE this engine image:
-  `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest` (x64 / linux/amd64).
+  `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest` (multi-architecture: linux/amd64 and linux/arm64).
   Do **NOT** use `mcr.microsoft.com/mssql/server` (the SQL Server image).
 - The registry is private (Private Preview): run `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io`
   first with the pull-only credentials from https://aka.ms/sqldbcontainerpreview-signup (they may rotate).
@@ -39,7 +39,8 @@ shipping in the image.
   `SERVERPROPERTY('Edition')` returns **'SQL Azure'**.
 - Required env when starting the container: `ACCEPT_EULA=Y` and a complex `MSSQL_SA_PASSWORD`
   (example literal used throughout: `YourStr0ng_Passw0rd`). The engine listens on **1433**.
-- On a non-x64 host add `--platform linux/amd64` to `docker run`.
+- The runtime selects the matching architecture. Use `--platform linux/amd64`
+  only to explicitly test x64 emulation.
 - The engine does **NOT** auto-create databases. You must `CREATE DATABASE appdb` on a **master**
   connection before you seed anything.
 - Do **NOT** use `USE appdb` to switch databases. In a user-database session `USE` returns
@@ -127,7 +128,7 @@ columns do not line up with the target table.
 - Do not seed before appdb exists; the engine does not auto-create it.
 - Do not insert child rows before their parents (you will hit `Msg 547`).
 - Do not commit real PII, customer data, or secrets as sample data.
-- Do not use the SQL Server image (`mcr.microsoft.com/mssql/server`) or call a non-x64 host "supported".
+- Do not use the SQL Server image (`mcr.microsoft.com/mssql/server`).
 - Do not build inserts with string concatenation; use parameters (or, for T-SQL fixtures, quoted literals you control).
 - Do not use `USE appdb`; select the database in the connection string or with `-d appdb`.
 

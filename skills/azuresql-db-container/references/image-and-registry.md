@@ -11,8 +11,9 @@ sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 
 - This is the **Azure SQL Database engine** (Private Preview), EngineEdition 5,
   Edition `'SQL Azure'`.
-- It is **x64 only** (`linux/amd64`). On a non-x64
-  host, run under emulation by adding `--platform linux/amd64`.
+- It supports `linux/amd64` and `linux/arm64`; the container runtime selects the
+  matching architecture. Use `--platform linux/amd64` only to explicitly test
+  x64 emulation.
 - The registry host and tag are **provisional during Private Preview** and may
   change. Treat this file as the place to update if they do.
 
@@ -60,7 +61,7 @@ explicitly to check for a newer build:
 docker pull sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
-On a non-x64 host:
+To explicitly test x64 emulation:
 
 ```bash
 docker pull --platform linux/amd64 \
@@ -75,5 +76,5 @@ For compose, `docker compose pull` (or `pull_policy: always` on the service) doe
 ## Do not
 
 - Do not use `mcr.microsoft.com/mssql/server`.
-- The image ships a single x64 (`linux/amd64`) build; there is no other tag.
+- The image supports native `linux/amd64` and `linux/arm64` builds.
 - Do not hardcode the registry host in many places; reference this file.

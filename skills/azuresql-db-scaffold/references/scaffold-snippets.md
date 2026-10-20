@@ -5,7 +5,7 @@ container is running and **appdb is already provisioned on a master connection**
 canonical start recipe in SKILL.md). Apps read `SQL_CONNECTION_STRING`; ORMs that need a URL
 also read `DATABASE_URL`. Image is
 `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest` (NOT the
-`mcr.microsoft.com/mssql/server` SQL Server image). On a non-x64 host add `platform: linux/amd64`.
+`mcr.microsoft.com/mssql/server` SQL Server image). The runtime selects the matching image architecture.
 
 ## Contents
 
@@ -40,8 +40,6 @@ export MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
 services:
   sqldb:
     image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
-    # On a non-x64 host, uncomment:
-    # platform: linux/amd64
     environment:
       ACCEPT_EULA: "Y"
       MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD}"
@@ -54,7 +52,6 @@ services:
       retries: 30
   provision:
     image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
-    # platform: linux/amd64
     depends_on:
       sqldb:
         condition: service_healthy

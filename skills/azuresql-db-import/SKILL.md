@@ -32,9 +32,10 @@ This is the **Azure SQL Database engine** running locally (Private Preview):
 and use this instead.
 
 - Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`
-  (x64, linux/amd64; private preview registry, sign in first). Registry/tag are
+  (multi-architecture: linux/amd64 and linux/arm64; private preview registry, sign in first). Registry/tag are
   provisional during Private Preview.
-- On a non-x64 host, add `--platform linux/amd64`.
+- The runtime selects the matching architecture. Use `--platform linux/amd64`
+  only to explicitly test x64 emulation.
 - The engine does **NOT** auto-create databases. You must `CREATE DATABASE appdb`
   on a **master** connection before importing into it.
 - **There is no restore path.** `BACKUP` and `RESTORE` are refused in every
@@ -61,17 +62,16 @@ This is the Private Preview supported import path. Always validate the result.
 
 ## Step 0: start the container and provision the target DB
 
-Reuse the canonical start recipe. It picks a free host port, adds `--platform`
-only on a non-x64 host, waits for readiness with a retry loop, and provisions the
+Reuse the canonical start recipe. It picks a free host port, lets the runtime
+select the matching architecture, waits for readiness with a retry loop, and provisions the
 target database `appdb` on master in that same loop.
 
 ```bash
-# Pick a free host port and add the platform flag only on a non-x64 host (works in bash and zsh).
+# Pick a free host port (works in bash and zsh).
 HOST_PORT=1433; while lsof -nP -iTCP:"$HOST_PORT" -sTCP:LISTEN >/dev/null 2>&1; do HOST_PORT=$((HOST_PORT+1)); done
 MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
-PLATFORM=(); case "$(docker info -f '{{.Architecture}}' 2>/dev/null)" in x86_64|amd64) ;; *) PLATFORM=(--platform linux/amd64);; esac
 docker rm -f sqldb 2>/dev/null
-docker run -d --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
+docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
   -p "127.0.0.1:$HOST_PORT:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b -l 2 \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do sleep 2; done
@@ -160,8 +160,7 @@ Read SqlPackage output for skipped/blocking items. See
   string instead.
 - Do not rely on `/docker-entrypoint-initdb.d/*.sql` auto-seeding; it is NOT
   honored by this image.
-- Do not call a non-x64 host "supported"; just add `--platform linux/amd64`
-  on a non-x64 host.
+- Do not add a platform override to normal runs; use one only to explicitly test emulation.
 - Do not treat a clean `docker run` as "ready"; provision inside the retry loop.
 
 ## References

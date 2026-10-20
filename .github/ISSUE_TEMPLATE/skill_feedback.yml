@@ -96,8 +96,8 @@ body:
       description: |
         This is the most useful thing you can tell us, and the thing we are otherwise blind to. If the agent followed the skill and it did not work, quote the instruction that was wrong or missing, and say what actually worked. If the agent had to improvise or work around the skill, tell us what it worked around.
       placeholder: |
-        The skill said to run:      docker run ... (without --platform)
-        What actually worked:       docker run --platform linux/amd64 ...
+        The skill said to run:      docker run ... (runtime-selected architecture)
+        What actually worked:       docker run --platform linux/amd64 ... (explicit emulation test)
     validations:
       required: false
 

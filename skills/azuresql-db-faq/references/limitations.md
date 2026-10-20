@@ -15,7 +15,6 @@ https://aka.ms/azuresqldb-container-bug to file an issue.
 
 ## Known behavior gaps (differences from the cloud)
 
-- **x64 image only; no native ARM64 build.** The image is `linux/amd64`. On an ARM64 host it runs under emulation: add `--platform linux/amd64` (Docker) or `platform: linux/amd64` (compose). Never say ARM64 is "supported", and do not promise a native build or a date. Feature requests: https://aka.ms/azuresqldb-container-feature-request
 - **Backup and restore.** `BACKUP DATABASE` / `RESTORE DATABASE` are not supported on the container (return `Msg 40510` in any session). Azure SQL Database in the cloud likewise does not support them. Use a Docker named volume for local persistence; use Azure SQL Database in the cloud for managed backups, point-in-time restore, and geo-replication.
 - **Always Encrypted with secure enclaves.** Basic Always Encrypted works; secure enclaves need host TEE support and are not validated.
 - **Auditing to Log Analytics or Storage.** Audit-to-file works; audit-to-cloud-targets is not applicable on the container.

@@ -36,10 +36,11 @@ the workflow rests on.
 ## Load-bearing facts (inlined)
 
 - **Image:** `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`
-  (x64, linux/amd64). It lives in a private preview registry; the runner must sign in with
+  (multi-architecture: linux/amd64 and linux/arm64). It lives in a private preview registry; the runner must sign in with
   `ACR_USERNAME` / `ACR_PASSWORD` secrets. Registry and tag are provisional during Private Preview.
-- **Platform:** the image is x64 only. CI hosted runners are x64, so no
-  `--platform` flag is needed there. On a non-x64 self-hosted runner, add `--platform linux/amd64`.
+- **Platform:** the image supports linux/amd64 and linux/arm64; the runtime
+  selects the matching architecture. Use `--platform linux/amd64` only to
+  explicitly test x64 emulation.
 - **Required env:** `ACCEPT_EULA=Y` and a complex `MSSQL_SA_PASSWORD` (8+ chars, upper/lower/digit/
   symbol), kept in a secret. Engine listens on 1433.
 - **Provision appdb first.** The engine does **NOT** auto-create databases on connect. You must
@@ -165,9 +166,8 @@ Free port, conditional platform, ready-wait, provision appdb in one shape:
 ```bash
 HOST_PORT=1433; while lsof -nP -iTCP:"$HOST_PORT" -sTCP:LISTEN >/dev/null 2>&1; do HOST_PORT=$((HOST_PORT+1)); done
 MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
-PLATFORM=(); case "$(docker info -f '{{.Architecture}}' 2>/dev/null)" in x86_64|amd64) ;; *) PLATFORM=(--platform linux/amd64);; esac
 docker rm -f sqldb 2>/dev/null
-docker run -d --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
+docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
   -p "127.0.0.1:$HOST_PORT:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b -l 2 \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do sleep 2; done
@@ -195,7 +195,7 @@ echo "ready on localhost,$HOST_PORT"
 - Do not run tests against master; master is for provisioning only.
 - Do not rely on `/docker-entrypoint-initdb.d/*.sql`; it is not honored. Seed with `sqlcmd -d appdb -i`.
 - Do not require sqlcmd on the runner; the health check and provisioning run inside the container.
-- Do not call a non-x64 host "supported"; on a non-x64 self-hosted runner just add `--platform linux/amd64`.
+- Do not add `--platform linux/amd64` to normal runs; it is only for explicitly testing emulation.
 
 ## Staying current
 

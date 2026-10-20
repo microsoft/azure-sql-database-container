@@ -50,19 +50,18 @@ provisioning only; run migrations against `appdb`.
 ## Start the container and provision appdb (canonical recipe)
 
 The engine is not ready the instant `docker run` returns. Wait with a retry loop
-and create `appdb` inside that same loop. Image is x64 only; on a non-x64 host the
-recipe adds `--platform linux/amd64` automatically. The registry is private during
+and create `appdb` inside that same loop. The image supports linux/amd64 and
+linux/arm64, and the runtime selects the matching architecture. The registry is private during
 Private Preview, so sign in first.
 
 ```bash
 docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io   # pull-only creds by signing up at https://aka.ms/sqldbcontainerpreview-signup
 
-# Pick a free host port and add the platform flag only on a non-x64 host (works in bash and zsh).
+# Pick a free host port (works in bash and zsh).
 HOST_PORT=1433; while lsof -nP -iTCP:"$HOST_PORT" -sTCP:LISTEN >/dev/null 2>&1; do HOST_PORT=$((HOST_PORT+1)); done
 MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
-PLATFORM=(); case "$(docker info -f '{{.Architecture}}' 2>/dev/null)" in x86_64|amd64) ;; *) PLATFORM=(--platform linux/amd64);; esac
 docker rm -f sqldb 2>/dev/null
-docker run -d --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
+docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
   -p "127.0.0.1:$HOST_PORT:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b -l 2 \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do sleep 2; done
@@ -193,7 +192,7 @@ docker exec -i sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa \
 - Do NOT expect databases to be auto-created on connect.
 - Do NOT use `USE <db>` to switch databases.
 - Do NOT rely on `/docker-entrypoint-initdb.d/` auto-seeding.
-- Do NOT call a non-x64 host "supported"; just add `--platform linux/amd64` on a non-x64 host.
+- Do not add a platform override to normal runs; use one only to explicitly test emulation.
 - Do NOT pass a vector dimension as a bind parameter.
 - Do NOT run migrations on a `master` connection.
 

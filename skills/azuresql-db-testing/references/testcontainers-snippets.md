@@ -6,7 +6,8 @@ test, and dispose after. Image is
 `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest` (NOT the Testcontainers
 `MsSql` preset / `mcr.microsoft.com/mssql/server` SQL Server image). Every recipe assumes
 Docker is already authenticated to the private registry (`docker login ...`); see SKILL.md.
-On a non-x64 host, set the image platform to `linux/amd64` where noted.
+The runtime selects the matching image architecture automatically. To explicitly
+test x64 emulation, set the image platform to `linux/amd64`.
 
 The engine is **not ready when the container starts**, and it does **not auto-create
 databases**: each recipe attaches a wait strategy and then runs
@@ -51,7 +52,7 @@ public sealed class AzureSqlFixture : IAsyncLifetime
                 "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa",
                 "-P", Sa, "-C", "-b", "-l", "2", "-Q", "SELECT 1"));
 
-        // On a non-x64 host, pin the platform:
+        // To explicitly test x64 emulation:
         // builder = builder.WithCreateParameterModifier(p => p.Platform = "linux/amd64");
 
         _container = builder.Build();
@@ -129,7 +130,7 @@ export default async function globalSetup() {
         `/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P '${SA}' -C -b -l 2 -Q 'SELECT 1'`,
       ),
     )
-    // On a non-x64 host, pin the platform: .withPlatform("linux/amd64")
+    // To explicitly test x64 emulation: .withPlatform("linux/amd64")
     .withStartupTimeout(120_000)
     .start();
 
@@ -215,7 +216,7 @@ def sql_connection_string():
         .with_env("ACCEPT_EULA", "Y")
         .with_env("MSSQL_SA_PASSWORD", SA)
         .with_exposed_ports(1433)
-        # On a non-x64 host, pin the platform:
+        # To explicitly test x64 emulation:
         # .with_kwargs(platform="linux/amd64")
     )
     container.start()
@@ -296,7 +297,7 @@ class WidgetIT {
                 "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P '" + SA
                     + "' -C -b -l 2 -Q 'SELECT 1'"))
             .withStartupTimeout(Duration.ofMinutes(2));
-    // On a non-x64 host, pin the platform via a custom image modifier or
+    // To explicitly test x64 emulation, set the platform via a custom image modifier or
     // -Dtestcontainers... platform setting for your Docker environment.
 
     private static String url(String database) {

@@ -31,8 +31,6 @@ services:
 
   sqldb:
     image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
-    # x64-only image; platform: linux/amd64 lets it run on a non-x64 host, no-op on x64.
-    platform: linux/amd64
     environment:
       MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD}"
       ACCEPT_EULA: "Y"
@@ -52,7 +50,6 @@ services:
   # target database (appdb) must be provisioned before the app starts.
   sqldb-init:
     image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
-    platform: linux/amd64
     depends_on:
       sqldb:
         condition: service_healthy

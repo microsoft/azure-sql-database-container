@@ -42,7 +42,7 @@ Seventeen skills ship in the collection. Each one stands alone and teaches your 
   <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-container" rel="noopener">
     <span class="skill-tag">azuresql-db-container</span>
     <h4>Start the engine <span class="arrow">&rarr;</span></h4>
-    <p>Free host port, <code>--platform linux/amd64</code> on non-x64 hosts, a ready-wait loop, and <code>CREATE DATABASE appdb</code> (the engine does not auto-create databases).</p>
+    <p>Automatic architecture selection, a ready-wait loop, and <code>CREATE DATABASE appdb</code> (the engine does not auto-create databases).</p>
   </a>
   <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-from-sql-server" rel="noopener">
     <span class="skill-tag">azuresql-db-from-sql-server</span>
@@ -117,7 +117,7 @@ Seventeen skills ship in the collection. Each one stands alone and teaches your 
   <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-faq" rel="noopener">
     <span class="skill-tag">azuresql-db-faq</span>
     <h4>Answer questions <span class="arrow">&rarr;</span></h4>
-    <p>What the container can and can't do, and why it differs from the cloud: backups, <code>USE</code>, vector index, x64-only, tooling.</p>
+    <p>What the container can and can't do, and why it differs from the cloud: backups, <code>USE</code>, vector index, tooling.</p>
   </a>
   <a class="skill-card" href="{{ site.repo }}/tree/main/skills/azuresql-db-feedback" rel="noopener">
     <span class="skill-tag">azuresql-db-feedback</span>

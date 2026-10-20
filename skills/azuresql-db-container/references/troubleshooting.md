@@ -7,7 +7,7 @@ Common failures and their fixes. Symptoms first.
 - Container won't start / exits immediately
 - Password policy rejection (the container stays "Up" but nothing connects)
 - Port already in use
-- "no matching manifest" on a non-x64 host
+- "no matching manifest" for a supported image architecture
 - Msg 40508 on USE
 - Cannot open database / database does not exist
 - Connecting too early (Msg 913 and friends)
@@ -64,10 +64,12 @@ echo "using $HOST_PORT"
 
 Then run with `-p "127.0.0.1:$HOST_PORT:1433"` and connect to `localhost,$HOST_PORT`.
 
-## "no matching manifest" on a non-x64 host
+## "no matching manifest" for a supported image architecture
 
-The image is x64 only. On a non-x64 host the daemon cannot find a native
-manifest. Add the platform flag to run under emulation:
+The image supports `linux/amd64` and `linux/arm64`, and the runtime normally
+selects the matching image. If the daemon cannot find a matching manifest, check
+that the image tag and container runtime are current. To explicitly test x64
+emulation on an ARM64 host, add the platform override:
 
 ```bash
 docker run -d --name sqldb --platform linux/amd64 -e "ACCEPT_EULA=Y" \
@@ -75,7 +77,7 @@ docker run -d --name sqldb --platform linux/amd64 -e "ACCEPT_EULA=Y" \
   sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 ```
 
-This is emulation, not native support. On an x64 host, omit `--platform`.
+This runs the x64 image under emulation. Omit `--platform` for native runs.
 
 ## Msg 40508 on USE
 

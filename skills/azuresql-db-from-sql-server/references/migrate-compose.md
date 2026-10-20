@@ -27,7 +27,6 @@ Problems carried over from the SQL Server image:
 - App connects to `master`; the Azure engine will not auto-create a user DB and
   `master` is for provisioning only.
 - No readiness wait; the engine is not ready when the container starts.
-- No `--platform`; the Azure image is x64 only.
 
 ## After (Azure SQL Database container)
 
@@ -35,8 +34,6 @@ Problems carried over from the SQL Server image:
 services:
   db:
     image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
-    # On a non-x64 host, uncomment the next line (the image is x64 only):
-    # platform: linux/amd64
     environment:
       ACCEPT_EULA: "Y"
       MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD}"
@@ -49,7 +46,6 @@ services:
       retries: 30
   provision:
     image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
-    # platform: linux/amd64
     depends_on:
       db:
         condition: service_healthy
@@ -73,8 +69,8 @@ services:
 
 1. **Image** rewritten to the container image. Sign in first:
    `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io`.
-2. **`platform: linux/amd64`** added (commented) for non-x64 hosts; the image is
-   x64 only.
+2. **Platform selection** is left to the container runtime, which selects the
+   matching native image architecture.
 3. **Healthcheck** uses `sqlcmd -C -b -l 2` so a SQL error sets the exit code and
    transient startup errors (e.g. `Msg 913`) are retried, not masked.
 4. **`provision` one-shot service** runs `CREATE DATABASE appdb` on a master

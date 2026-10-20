@@ -73,13 +73,13 @@ The container is OCI-compliant and runs on any modern container runtime.
 | containerd        | Supported |
 | Rancher Desktop   | Supported |
 
-Host platforms. The image is x64 (`linux/amd64`); on a non-x64 host, add `--platform linux/amd64`.
+Host platforms. The image provides `linux/amd64` and `linux/arm64` variants; container runtimes select the matching architecture automatically.
 
-| Host OS                        | Architecture | Status                                |
-| ------------------------------ | ------------ | ------------------------------------- |
-| macOS                          | x86_64       | Supported (native)                    |
-| Linux                          | x86_64       | Supported (native)                    |
-| Windows                        | x86_64       | Supported (WSL2)                      |
+| Host OS | Architecture  | Status           |
+| ------- | ------------- | ---------------- |
+| macOS   | x86_64, ARM64 | Supported        |
+| Linux   | x86_64, ARM64 | Supported        |
+| Windows | x86_64, ARM64 | Supported (WSL2) |
 
 See [Prerequisites](prerequisites.md) for setup details and [Known limitations](known-limitations.md) for current gaps.
 

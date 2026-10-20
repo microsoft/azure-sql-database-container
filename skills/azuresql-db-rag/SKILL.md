@@ -42,10 +42,11 @@ If you were about to pull `mcr.microsoft.com/mssql/server`, stop: that is the
 wrong image. Use the image below instead.
 
 - Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`
-  (x64, linux/amd64; private preview registry, sign in first with
+  (multi-architecture: linux/amd64 and linux/arm64; private preview registry, sign in first with
   `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io`). Registry and tag are
   provisional during Private Preview.
-- On a non-x64 host, add `--platform linux/amd64`.
+- The runtime selects the matching architecture. Use `--platform linux/amd64`
+  only to explicitly test x64 emulation.
 - For the full container lifecycle, readiness, and connection model, see the
   **azuresql-db-container** skill. The minimal facts you need are inlined below.
 
@@ -72,18 +73,17 @@ Server=localhost,1433;Database=appdb;User Id=sa;Password=$MSSQL_SA_PASSWORD;Trus
 
 ## Step 1: start the container and provision appdb (fresh-container safe)
 
-Run this canonical recipe. It picks a free host port, adds `--platform` only on a
-non-x64 host, waits for real readiness with a retry loop, and provisions `appdb`
+Run this canonical recipe. It picks a free host port, lets the runtime select the
+matching architecture, waits for real readiness with a retry loop, and provisions `appdb`
 inside that loop. The `-b -l 2` flags make transient startup errors (like
 `Msg 913`) fail the probe so they get retried, not masked.
 
 ```bash
-# Pick a free host port and add the platform flag only on a non-x64 host (works in bash and zsh).
+# Pick a free host port (works in bash and zsh).
 HOST_PORT=1433; while lsof -nP -iTCP:"$HOST_PORT" -sTCP:LISTEN >/dev/null 2>&1; do HOST_PORT=$((HOST_PORT+1)); done
 export MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
-PLATFORM=(); case "$(docker info -f '{{.Architecture}}' 2>/dev/null)" in x86_64|amd64) ;; *) PLATFORM=(--platform linux/amd64);; esac
 docker rm -f sqldb 2>/dev/null
-docker run -d --name sqldb "${PLATFORM[@]}" -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
+docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
   -p "127.0.0.1:$HOST_PORT:1433" sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 until docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -b -l 2 \
   -Q "IF DB_ID('appdb') IS NULL CREATE DATABASE appdb;" >/dev/null 2>&1; do sleep 2; done
@@ -355,8 +355,7 @@ choice once the table is large enough for a full scan to hurt.
   dimension cannot be widened later, so the fix belongs at embedding time.
 - Do not expect `/docker-entrypoint-initdb.d/*.sql` to auto-run; seed by running
   `sqlcmd -d appdb -i seed.sql` after provisioning appdb.
-- Do not call a non-x64 host "supported"; just add `--platform linux/amd64`
-  on a non-x64 host.
+- Do not add a platform override to normal runs; use one only to explicitly test emulation.
 
 ## References
 

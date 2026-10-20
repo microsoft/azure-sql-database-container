@@ -49,7 +49,7 @@
       "the application's connection string names the database service by its Compose service name and never localhost",
       "the database service declares a health check that runs sqlcmd inside the container rather than on the host",
       "a one-shot init service creates the user database and the application waits for it with service_completed_successfully",
-      "both the database service and the init service declare the linux/amd64 platform, because the image is x64 only",
+      "both database services use the runtime-selected architecture in normal compose files",
       "existing services in the stack are left unchanged apart from the depends_on that was added"
     ],
     "probes": [
@@ -59,7 +59,7 @@
         "expect": {
           "succeeds": true
         },
-        "why": "The shape this skill emits, put in front of the parser that will read it. It asserts that every key the skill depends on is still accepted by the Compose Specification implementation the reader has: the platform override the x64-only image needs, a CMD-SHELL health check carrying the doubled dollar sign that keeps Compose from interpolating the password variable, and both depends_on conditions including service_completed_successfully for the init one-shot. Measured 2026-09-04 on the Docker Compose CLI on this host, exit 0. The image names are deliberately placeholders and no image is pulled, no container is created and no daemon is contacted: config only parses. If a future Compose release renames or drops one of these keys, the snippet the skill hands a reader stops parsing and this probe is the first thing that says so."
+        "why": "The shape this skill emits, put in front of the parser that will read it. It asserts that the Compose Specification implementation accepts an explicit linux/amd64 override for emulation testing, a CMD-SHELL health check carrying the doubled dollar sign that keeps Compose from interpolating the password variable, and both depends_on conditions including service_completed_successfully for the init one-shot. The image names are deliberately placeholders and no image is pulled, no container is created and no daemon is contacted: config only parses. If a future Compose release renames or drops one of these keys, this probe detects it."
       },
       {
         "where": "host",
@@ -95,7 +95,7 @@
       "the health check runs sqlcmd from /opt/mssql-tools18/bin inside the database container, with -C for the self signed certificate and -b so a SQL error sets the exit code",
       "the app waits with depends_on condition service_healthy rather than a plain depends_on list",
       "a one shot init service gated on service_healthy creates the database and exits, and the app additionally waits on condition service_completed_successfully",
-      "inside the compose network the app reaches the engine by service name, not localhost, and the service sets platform linux/amd64"
+      "inside the compose network the app reaches the engine by service name, not localhost, and the runtime selects the matching architecture"
     ],
     "refutes": [
       "that a plain depends_on waits for the database to be ready, when it waits only for the container to be created",

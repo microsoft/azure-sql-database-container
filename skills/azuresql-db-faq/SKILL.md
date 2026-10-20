@@ -57,7 +57,7 @@ managed cloud service, and it is not SQL Server. Sort almost any
 - **"Can I take a backup?"** No: `BACKUP DATABASE` and `RESTORE DATABASE` return **Msg 40510 ("not supported in this version")** on the container, in every session. Azure SQL Database in the cloud likewise does not support them, because backups there are managed by the platform (not run with the `BACKUP` statement). For local data persistence, use a Docker named volume (`-v sqldb-data:/var/opt/mssql`); for managed backups, point-in-time restore, or geo-replication, use Azure SQL Database in the cloud.
 - **"Why does `USE otherdb` fail with Msg 40508?"** Because a connection to a user database is an Azure-faithful session that enforces the same restriction as Azure SQL Database in the cloud. Select the database in the connection string (`Database=appdb`), do not switch with `USE`. (`USE` "works" only on a `master` connection, which is a provisioning session.)
 - **"Why does connecting fail until I create the database?"** The engine does **not** auto-create databases on connect. Provision once on a `master` connection (`CREATE DATABASE appdb`), then connect with `Database=appdb`.
-- **"Is a non-x64 host supported? / Is there an ARM64 build?"** The image is x64 only; there is no native ARM64 build. On an ARM64 host it runs under emulation: add `--platform linux/amd64` (Docker) or `platform: linux/amd64` (compose). Say "runs under emulation", never "ARM64 is supported", and do not promise a native build or a date. If the user wants one, point them at https://aka.ms/azuresqldb-container-feature-request.
+- **"Is ARM64 supported? / Is there an ARM64 build?"** Yes. The image supports native `linux/amd64` and `linux/arm64`, and the runtime selects the matching architecture. Use `--platform linux/amd64` (Docker) or `platform: linux/amd64` (Compose) only to explicitly test x64 emulation.
 - **"Why can't I `CREATE VECTOR INDEX`?"** You probably can, and this is a place where the documentation and the engine disagree. The Known limitations page still lists vector index DDL as an active issue; measured on this image, the DiskANN index builds and `VECTOR_SEARCH` returns ranked results against it. Two things stop the statement: `SET QUOTED_IDENTIFIER ON` is required and is off by default in `sqlcmd` (without it, **Msg 1934**, whose text never names the setting), and the table needs at least **100 rows with non-null vectors** (below that, **Msg 42266**). Once the index exists, `TRUNCATE TABLE` on that table is refused (**Msg 42232**) and `DROP VECTOR INDEX` is not a statement (use `DROP INDEX name ON dbo.table`). Full-scan top-k stays exact and stays the right choice for a small table. Full detail: the `azuresql-db-rag` skill.
 - **"Is Microsoft Entra ID (Azure AD) authentication supported?"** Yes. Configure it with `MSSQL_AAD_CLIENT_ID`, `MSSQL_AAD_PRIMARY_TENANT`, and `MSSQL_AAD_CERTIFICATE_FILE_PATH` plus a mounted `.pfx` (empty export password). Optionally set `MSSQL_AAD_SERVER_ADMIN_NAME`, `MSSQL_AAD_SERVER_ADMIN_TYPE` (`0` = user, `1` = group), and `MSSQL_AAD_SERVER_ADMIN_SID` to bootstrap an Entra server admin at start. SQL auth (`sa`) remains the simple local default. Full recipe: the `azuresql-db-container` skill, whose `references/entra-auth.md` is the file to
 open before you configure any of this. Also see [Getting started: Microsoft Entra ID authentication](https://microsoft.github.io/azure-sql-database-container/getting-started.html#microsoft-entra-id-authentication).
@@ -85,7 +85,7 @@ current gap list with a workaround.
 
 - Never claim a managed-service feature (automated backup, PITR, geo-replication,
   elastic pools, portal management) exists on the container.
-- Never tell a user a non-x64 host is "supported"; it runs under emulation.
+- Do not describe native ARM64 as emulation; only an explicit `linux/amd64` override on ARM64 runs under emulation.
 - Never claim `BACKUP DATABASE` / `RESTORE DATABASE` work on the container; they return Msg 40510. (Azure SQL Database in the cloud likewise does not support them.) Use a Docker named volume for local persistence.
 
 ## Validation rules
@@ -94,7 +94,7 @@ current gap list with a workaround.
 - The answer names which of the three it is talking about: the container, Azure SQL Database in the cloud, or SQL Server. A claim that does not say which one is not an answer.
 - Any error number quoted appears in this skill, or in the full question list, which you open when the quick answers do not cover it. An invented message number is worse than saying you do not know.
 - A gap claim was checked against the live limitations page before it was stated, since that list moves and this skill carries a snapshot.
-- The answer says "runs under emulation" for a non-x64 host, and never "supported".
+- The answer states that ARM64 is supported natively and mentions emulation only for an explicit platform override.
 - If the question needed a command line rather than an answer, the user was handed to the skill that owns it rather than given a recipe from here.
 
 ## References

@@ -7,7 +7,7 @@ description: >-
   service name (not localhost), or for prompts like "add SQL to my compose",
   "add a database service", "depends_on database", "devcontainer SQL sidecar",
   "compose healthcheck for SQL", "wait for the database before starting the
-  app". Handles platform linux/amd64, the private registry login, the
+  app". Handles automatic architecture selection, the private registry login, the
   healthcheck wait-until-ready, and a one-shot init service that creates appdb
   (the engine does not auto-create databases). Not the SQL Server image. Prefer
   this for any compose or Dev Container SQL wiring.
@@ -38,14 +38,14 @@ Compose CLI of the authoring host, not inside the image.
   returns `5`, `SERVERPROPERTY('Edition')` returns `'SQL Azure'`. If you were
   about to use the SQL Server image, stop and use this instead.
 - Image: `sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest`
-  (x64, `linux/amd64`). Registry and tag are provisional during Private Preview.
+  (supports `linux/amd64` and `linux/arm64`). Registry and tag are provisional during Private Preview.
 - Registry credentials: the image lives in a private preview registry. Sign in
   first with `docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io` using the
   shared pull-only credentials provided when you sign up for the Private Preview
   at https://aka.ms/sqldbcontainerpreview-signup (they may rotate) before
   `docker compose up` or building the Dev Container.
-- Platform: x64 only. The compose snippets below set
-  `platform: linux/amd64` so the service starts on a non-x64 host.
+- Platform: the runtime selects the matching architecture. Add a platform
+  override only to explicitly test emulation.
 - Required env: `ACCEPT_EULA=Y` and a complex `MSSQL_SA_PASSWORD` (8+ chars,
   upper/lower/digit/symbol). Engine listens on 1433.
 - The engine does **NOT** auto-create databases on connect. You must
@@ -79,7 +79,6 @@ services:
 
   sqldb:
     image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
-    platform: linux/amd64        # x64-only image; required on a non-x64 host
     environment:
       ACCEPT_EULA: "Y"
       MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD}"
@@ -98,7 +97,6 @@ services:
   # (and seed it) before the app starts. Exits 0 when done.
   sqldb-init:
     image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
-    platform: linux/amd64
     depends_on:
       sqldb:
         condition: service_healthy
@@ -181,7 +179,7 @@ The app container reaches the database at `sqldb,1433` over the compose network.
   `condition: service_healthy`.
 - `sqldb-init` creates `appdb` and is gated by the app via
   `condition: service_completed_successfully`.
-- Both `sqldb` and `sqldb-init` set `platform: linux/amd64`.
+- The runtime selects the matching architecture for both `sqldb` and `sqldb-init`.
 - Connection string uses `User Id=` / `Password=` / `Database=` and
   `TrustServerCertificate=true`; sqlcmd uses `-C`.
 - Existing services are unchanged except for added `depends_on`.
@@ -197,9 +195,8 @@ The app container reaches the database at `sqldb,1433` over the compose network.
 - Do not use `USE appdb` to switch databases; a user-database session returns
   `Msg 40508`, exactly as in Azure SQL Database in the cloud. Select the target
   database in the connection string (`Database=appdb`, or `-d appdb` for sqlcmd).
-- Do not drop `--platform` / `platform: linux/amd64`; the image is x64 only.
+- Do not add a platform override to normal runs; use one only to explicitly test emulation.
 - Do not depend on `/docker-entrypoint-initdb.d/*.sql`; it is not honored here.
-- Do not call a non-x64 host "supported"; it runs under emulation only.
 
 ## Staying current
 
