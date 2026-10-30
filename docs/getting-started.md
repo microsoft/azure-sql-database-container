@@ -131,8 +131,7 @@ volumes:
 You do not need to install anything: the container bundles sqlcmd, so this works for everyone. The `-C` flag trusts the container's self-signed certificate:
 
 ```bash
-docker exec sqldb /opt/mssql-tools18/bin/sqlcmd \
-    -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -Q "SELECT @@VERSION;"
+docker exec sqldb /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "YourStrong!Passw0rd" -C -Q "SELECT @@VERSION;"
 ```
 
 You should see `Microsoft SQL Azure`, confirming you are on the Azure SQL Database engine.
