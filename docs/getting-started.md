@@ -96,24 +96,18 @@ With Podman, replace `docker` with `podman`. On Windows with [WSL containers](ht
 
 ### Step 2: start the container
 
-Generate a unique password for this shell, then start the container on port
-`1433`:
+Insert a unique and strong password, then start the container on port `1433`:
 
 ```bash
-export MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
-docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD}" \
-    -p 127.0.0.1:1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
+docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" -p 1433:1433 sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
+
 ```
 
 Confirm it is up with `docker ps --filter "name=sqldb"`; you should see `sqldb` in `Up` status. If it exited, run `docker logs sqldb`. The most common cause is a password that does not meet the complexity policy.
 
-> **NOTE:** Keep `MSSQL_SA_PASSWORD` in the environment rather than source control. The generated value meets the default SQL password complexity policy. Set your own value before running the command if preferred.
+> **NOTE:** Keep `MSSQL_SA_PASSWORD` in the environment rather than source control.Set your own value before running the command if preferred.
 
 Prefer `docker compose`? Set the password the same way as above, then create a `docker-compose.yml` and run `docker compose up -d`. The runtime selects the matching image architecture.
-
-```bash
-export MSSQL_SA_PASSWORD="${MSSQL_SA_PASSWORD:-Aa1%$(openssl rand -hex 16)}"
-```
 
 ```yaml
 services:
@@ -123,7 +117,7 @@ services:
     ports:
       - "127.0.0.1:1433:1433"
     environment:
-      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD}"
+      MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
       ACCEPT_EULA: "Y"
     volumes:
       - sqldb-data:/var/opt/mssql
