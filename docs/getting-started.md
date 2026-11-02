@@ -99,7 +99,7 @@ With Podman, replace `docker` with `podman`. On Windows with [WSL containers](ht
 Insert a unique and strong password, then start the container on port `1433`:
 
 ```bash
-docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" -p 1433:1433 sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
+docker run -d --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=YourStrong!Passw0rd" -p 127.0.0.1:1433:1433 sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest
 
 ```
 
