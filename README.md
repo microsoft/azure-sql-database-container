@@ -1,5 +1,16 @@
 # Azure SQL Database container
 
+> [!IMPORTANT]
+> **This repository and its documentation site are deprecated.** Azure SQL development guidance, including local container setup, is now available in the **[Azure SQL Developer Hub](https://aka.ms/azuresql-hub)**.
+>
+> - **Get started:** [Azure SQL Developer Hub](https://aka.ms/azuresql-hub)
+> - **Browse or contribute to the new documentation:** [microsoft/azure-sql-dev-hub](https://github.com/microsoft/azure-sql-dev-hub)
+> - **Install the SQL plugins and agent skills:** [microsoft/microsoft-sql](https://github.com/microsoft/microsoft-sql)
+>
+> The content below is retained for reference during the transition. Use the links above for current guidance and installation instructions.
+
+## Legacy documentation
+
 Run and build against Azure SQL Database, right on your local environment. Try it before you deploy, run your tests in CI, and ship with no code change. Free for development, with no Azure subscription and no credit card required.
 
 [![Sign Up](https://img.shields.io/badge/Sign%20Up-brightgreen?logo=github)](https://aka.ms/azuresqldb-container-signup)
