@@ -1,41 +1,14 @@
-# Azure SQL Database container
+# Azure SQL Database container: documentation has moved
 
-> The Azure SQL Database engine, running locally for development and CI. Build and test against the same engine, defaults, and T-SQL you run in the Microsoft Azure cloud, with AI-native capabilities built in. Free for local development; no Azure subscription required. Lift and shift to Azure SQL Database in the cloud is a connection-string change, not a code change. Status: Private Preview.
+This repository and its documentation site are deprecated. Use the Azure SQL Developer Hub for current Azure SQL development guidance, including local container setup.
 
-_Last updated: August 2026._
+## Current resources
 
-> Layered knowledge: each skill bundles its instructions and version-pinned config shapes, and can optionally use the public [Microsoft Learn MCP](https://learn.microsoft.com/api/mcp) (`microsoft_docs_search` / `microsoft_docs_fetch`) to fetch current Microsoft docs on demand.
+- [Azure SQL Developer Hub](https://aka.ms/azuresql-hub): getting started, local and cloud setup, and application development guidance.
+- [Developer Hub repository](https://github.com/microsoft/azure-sql-dev-hub): documentation source and contributions.
+- [Microsoft SQL plugins and agent skills](https://github.com/microsoft/microsoft-sql): the current catalog and installation instructions.
+- [Developer Hub agent index](https://microsoft.github.io/azure-sql-dev-hub/llms.txt): the current documentation index for agents.
 
-## Documentation
-- [What is the Azure SQL Database container](https://microsoft.github.io/azure-sql-database-container/what-is-the-container.html): the engine surface, AI-native capabilities, drivers and ORMs, and supported runtimes and platforms.
-- [Goals of the Private Preview](https://microsoft.github.io/azure-sql-database-container/goals-of-the-private-preview.html): what this preview sets out to learn and validate.
-- [Prerequisites](https://microsoft.github.io/azure-sql-database-container/prerequisites.html): supported hosts, container runtimes, system resources, and tooling.
-- [Getting started](https://microsoft.github.io/azure-sql-database-container/getting-started.html): pull the image, start the container, and run your first query in under a minute.
-- [Agent skills](https://microsoft.github.io/azure-sql-database-container/agent-skills.html): install the skills in Claude Code, Codex, Cursor, or VS Code with GitHub Copilot, and what each of the 17 skills does.
-- [Known limitations](https://microsoft.github.io/azure-sql-database-container/known-limitations.html): current gaps and workarounds.
-- [Feedback and how to engage](https://microsoft.github.io/azure-sql-database-container/feedback-and-how-to-engage.html): GitHub Issues and Discussions, the team email, and office hours.
+## Legacy reference
 
-## Build prompts
-Copy-and-run prompts to hand your AI coding agent, each building a scenario against the container:
-- [Build locally, ship to Azure (Node.js)](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/local-to-cloud.md)
-- [Prototype AI / RAG with vector search (Python + Ollama)](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/ai-rag.md)
-- [Run integration tests in CI](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/ci.md)
-- [Convert from the SQL Server image](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/from-sql-server.md)
-- [Develop offline](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/offline.md)
-- [Drop in as a sidecar](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/sidecar.md)
-- [Scaffold a new project](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/templates.md)
-- [Instant REST + GraphQL API with Data API Builder](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/dab.md)
-- [Serverless and event-driven with Azure Functions](https://github.com/microsoft/azure-sql-database-container/blob/main/docs/prompts/functions.md)
-- [Agent skills for Claude Code, GitHub Copilot, Codex, and Cursor](https://github.com/microsoft/azure-sql-database-container/tree/main/skills)
-
-## Key facts
-- Image: sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev, multi-architecture (`linux/amd64` and `linux/arm64`); supported on x64 and ARM64 hosts running macOS, Windows, or Linux. Container runtimes select the matching architecture automatically. It is the Azure SQL Database engine (SERVERPROPERTY('EngineEdition')=5, Edition='SQL Azure'), not the SQL Server image. The shared pull-only registry credentials are provided when you sign up for the Private Preview at https://aka.ms/sqldbcontainerpreview-signup and may rotate.
-- Connection: TCP port 1433; SQL login (sa) locally, Microsoft Entra in the cloud. Apps read the connection string from the SQL_CONNECTION_STRING environment variable.
-- AI-native: native vector data type, VECTOR_DISTANCE similarity search, AI_GENERATE_EMBEDDINGS, CREATE EXTERNAL MODEL, native JSON, and RegEx. DiskANN vector indexes work: CREATE VECTOR INDEX ... WITH (METRIC = 'cosine', TYPE = 'diskann') builds on the container, measured on build 12.0.2000.8. It needs SET QUOTED_IDENTIFIER ON and at least 100 rows with non-null vectors (99 rows return Msg 42266). TRUNCATE TABLE is refused while the index exists (Msg 42232), and a security policy and a vector index cannot share a table in either order (Msg 37579 and Msg 42244). Only SELECT TOP (N) WITH APPROXIMATE ... FROM VECTOR_SEARCH(...) reads the index. A VECTOR_DISTANCE query is always exact, never uses the index, and raises no warning. The index is measured at prototype scale only, so measure recall and query time on your own corpus before depending on it.
-- Parity: same engine, defaults, T-SQL, and error messages as Azure SQL Database in the cloud.
-- Microsoft Entra ID authentication is supported on the container: configure it with the MSSQL_AAD_* variables and a mounted certificate (see the Getting started page). SQL auth (sa) remains the simple local default.
-- Not supported on the container (use the workarounds on the Known limitations page): BACKUP / RESTORE.
-
-## Optional
-- [Repository](https://github.com/microsoft/azure-sql-database-container)
-- [Install the container agent skills](https://github.com/microsoft/azure-sql-database-container/tree/main/skills): npx skills add microsoft/azure-sql-database-container (works in Claude Code, Codex, Cursor, and VS Code with GitHub Copilot; in Claude Code and Codex you can also install them as a native plugin with /plugin marketplace add microsoft/azure-sql-database-container).
+The [original container documentation source](https://github.com/microsoft/azure-sql-database-container/tree/main/docs) is retained for reference during the transition. Use the current resources above for new setup and plugin installation.

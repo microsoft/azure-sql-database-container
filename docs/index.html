@@ -1,452 +1,56 @@
 ---
-layout: home
-title: Azure SQL Database container
+layout: null
+sitemap: false
 ---
-
-<!-- ============ HERO ============ -->
-<section class="hero">
-  <div class="hero-grid-bg" aria-hidden="true"></div>
-  <div class="hero-glow" aria-hidden="true"></div>
-  <div class="container hero-inner">
-    <div class="hero-copy">
-      <p class="eyebrow eyebrow-light"><span class="eyebrow-dot"></span>Private Preview</p>
-      <h1>The Azure SQL Database engine,<br>running <span class="grad">locally</span>.</h1>
-      <p class="hero-sub">Build and test against the same engine you run in the Microsoft Azure cloud. Try Azure SQL Database before you deploy, and run your tests in CI. Free for local development. No Azure subscription, no credit card.</p>
-      <div class="hero-cta">
-        <a class="btn btn-primary demo-link" href="{{ site.demo_link }}" rel="noopener">
-          <span class="play-glyph" aria-hidden="true"></span>Watch the demo
-        </a>
-        <a class="btn btn-ghost-light" href="https://aka.ms/sqldbcontainerpreview-signup" rel="noopener">Sign up</a>
-        <a class="btn btn-ghost-light" href="{{ '/getting-started.html' | relative_url }}">Get started</a>
-      </div>
-    </div>
-
-    <div class="hero-visual">
-      <a class="video demo-link" href="{{ site.demo_link }}" rel="noopener" aria-label="Play the demo video on YouTube">
-        <img src="{{ '/assets/img/container-cover.png' | relative_url }}" alt="Azure SQL Database container demo" loading="eager" width="1280" height="720">
-        <span class="video-play" aria-hidden="true"></span>
-        <span class="video-cap">Watch the 3-minute demo</span>
-      </a>
-    </div>
-  </div>
-  <div class="container hero-stats">
-    <div class="stat"><span class="stat-v">&lt; 1 min</span><span class="stat-l">From <code>docker pull</code> to your first query</span></div>
-    <div class="stat"><span class="stat-v">Free</span><span class="stat-l">For local development and CI. No subscription, no credit card.</span></div>
-    <div class="stat"><span class="stat-v">Same engine</span><span class="stat-l">Identical to Azure SQL Database in the cloud</span></div>
-  </div>
-</section>
-
-<!-- ============ COMPAT STRIP ============ -->
-<section class="strip">
-  <div class="container strip-inner">
-    <span class="strip-label">Works with the drivers, ORMs, and editors you already use</span>
-    <div class="chip-groups">
-      <div class="chip-group">
-        <span class="chip-label">Drivers</span>
-        <ul class="chips">
-          <li><a href="https://learn.microsoft.com/sql/connect/node-js/node-js-driver-for-sql-server" rel="noopener">node-mssql</a></li>
-          <li><a href="https://learn.microsoft.com/sql/connect/python/mssql-python/python-sql-driver-mssql-python" rel="noopener">mssql-python</a></li>
-          <li><a href="https://learn.microsoft.com/sql/connect/python/pyodbc/python-sql-driver-pyodbc" rel="noopener">pyodbc</a></li>
-          <li><a href="https://learn.microsoft.com/sql/connect/jdbc/microsoft-jdbc-driver-for-sql-server" rel="noopener">mssql-jdbc</a></li>
-        </ul>
-      </div>
-      <div class="chip-group">
-        <span class="chip-label">ORMs</span>
-        <ul class="chips">
-          <li><a href="https://learn.microsoft.com/sql/connect/sql-connection-libraries" rel="noopener">Prisma</a></li>
-          <li><a href="https://learn.microsoft.com/sql/connect/sql-connection-libraries" rel="noopener">SQLAlchemy</a></li>
-          <li><a href="https://learn.microsoft.com/ef/core/" rel="noopener">EF Core</a></li>
-          <li><a href="https://learn.microsoft.com/sql/connect/sql-connection-libraries" rel="noopener">Django</a></li>
-          <li><a href="https://learn.microsoft.com/sql/connect/sql-connection-libraries" rel="noopener">TypeORM</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ WHY ============ -->
-<section class="section" id="why">
-  <div class="container">
-    <div class="section-head">
-      <p class="eyebrow"><span class="eyebrow-dot"></span>Why the container</p>
-      <h2>Cloud parity, in your local environment.<a class="head-anchor" href="#why" aria-label="Link to this section">#</a></h2>
-      <p class="lead">This is the Azure SQL Database engine itself, running locally, for <strong>development</strong>. Build in your local inner loop, then deploy the same code to Azure SQL Database in the Microsoft Azure cloud for production.</p>
-    </div>
-
-    <div class="grid-3">
-      <article class="card">
-        <span class="tag">Same engine</span>
-        <h3>What runs locally runs in Azure</h3>
-        <p>It is the Azure SQL Database engine itself, with the same defaults, the same T-SQL, and the same error messages. When you deploy to the Microsoft Azure cloud, there are no behavior surprises.</p>
-      </article>
-      <article class="card card-accent">
-        <span class="tag tag-vector">AI-ready</span>
-        <h3>AI-ready, like Azure SQL Database</h3>
-        <p>Native <code>vector</code> type, <code>VECTOR_DISTANCE</code> search, <code>AI_GENERATE_EMBEDDINGS</code>, <code>CREATE EXTERNAL MODEL</code>, and DiskANN vector indexes with <code>CREATE VECTOR INDEX</code>. Build RAG locally with a local model, then switch to Azure OpenAI in the cloud.</p>
-      </article>
-      <article class="card">
-        <span class="tag">Lift and shift</span>
-        <h3>One codebase, two endpoints</h3>
-        <p>Same drivers, same T-SQL, same migrations. When you are ready, point the connection at Azure SQL Database and deploy the same app to the Microsoft Azure cloud. The application does not change.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- ============ SAME CODE (signature) ============ -->
-<section class="section section-rail" style="display: none;">
-  <div class="container">
-    <div class="section-head">
-      <p class="eyebrow"><span class="eyebrow-dot"></span>Inner loop to the cloud</p>
-      <h2>Same code. Only the connection string changes.</h2>
-      <p class="lead">Write your app once against the container. Ship it to Azure SQL Database in the cloud without touching the code.</p>
-    </div>
-
-    <div class="split">
-      <div class="split-cols">
-        <div class="codeblock">
-          <div class="codeblock-bar">
-            <span class="codeblock-badge badge-local">Local environment</span>
-            <span class="codeblock-name">.env</span>
-          </div>
-          <pre class="codeblock-body"><code id="env-local">SQL_CONNECTION_STRING=
-  Server=<span class="hl">localhost,1433</span>;
-  Database=appdb;
-  User Id=sa;TrustServerCertificate=true</code></pre>
-        </div>
-
-        <div class="codeblock">
-          <div class="codeblock-bar">
-            <span class="codeblock-badge badge-cloud">In Azure</span>
-            <span class="codeblock-name">.env</span>
-          </div>
-          <pre class="codeblock-body"><code id="env-cloud">SQL_CONNECTION_STRING=
-  Server=<span class="hl">app.database.windows.net</span>;
-  Database=appdb;
-  Authentication=Active Directory Default</code></pre>
-        </div>
-      </div>
-
-      <div class="codeblock codeblock-app">
-        <div class="codeblock-bar">
-          <span class="codeblock-name">app.js</span>
-          <span class="codeblock-badge">identical in both</span>
-        </div>
-        <pre class="codeblock-body"><code id="app-code"><span class="c-kw">import</span> sql <span class="c-kw">from</span> <span class="c-str">'mssql'</span>
-
-<span class="c-com">// reads the connection string from the environment</span>
-<span class="c-kw">const</span> pool = <span class="c-kw">await</span> sql.<span class="c-fn">connect</span>(process.env.<span class="c-var">SQL_CONNECTION_STRING</span>)
-
-<span class="c-kw">const</span> { recordset } = <span class="c-kw">await</span> pool.<span class="c-fn">query</span>`
-  <span class="c-sql">SELECT TOP 5</span> name,
-    <span class="c-sql">VECTOR_DISTANCE</span>(<span class="c-str">'cosine'</span>, embedding, <span class="c-var">@q</span>) <span class="c-sql">AS</span> score
-  <span class="c-sql">FROM</span> products <span class="c-sql">ORDER BY</span> score`</code></pre>
-      </div>
-    </div>
-    <p class="rail-foot">Two connection strings, side by side. The highlighted server is all that changes. Your <code>app.js</code> is identical in both.</p>
-  </div>
-</section>
-
-<!-- ============ QUICKSTART ============ -->
-<section class="section section-tint" id="quickstart">
-  <div class="container">
-    <div class="section-head">
-      <p class="eyebrow"><span class="eyebrow-dot"></span>Quickstart</p>
-      <h2>Up and running in three commands.<a class="head-anchor" href="#quickstart" aria-label="Link to this section">#</a></h2>
-      <p class="lead">New to containers? Sign up for the Private Preview to get your registry credentials, then sign in, start the container, and run your first query. The credentials are pull-only and may be rotated during the preview.</p>
-    </div>
-    <div class="qsteps">
-      <div class="qstep">
-        <span class="qstep-num">0</span>
-        <div class="qstep-body">
-          <h3>Sign up for the Private Preview</h3>
-          <p class="qstep-desc">Signing up is how you get the registry username and password. <a href="https://aka.ms/sqldbcontainerpreview-signup" rel="noopener">Sign up &rarr;</a></p>
-        </div>
-      </div>
-      <div class="qstep">
-        <span class="qstep-num">1</span>
-        <div class="qstep-body">
-          <h3>Sign in to the preview registry</h3>
-          <p class="qstep-desc">Use the username and password you received when you signed up.</p>
-          <div class="qstep-cmd-group" data-runtime-tabs>
-            <div class="runtime-tabs" aria-label="Container runtime">
-              <button class="runtime-tab is-active" type="button" data-runtime="docker">Docker</button>
-              <button class="runtime-tab" type="button" data-runtime="podman">Podman</button>
-              <button class="runtime-tab" type="button" data-runtime="containerd">containerd (nerdctl)</button>
-              <button class="runtime-tab" type="button" data-runtime="wslc">WSL container</button>
-            </div>
-            <div class="qstep-cmd" data-runtime-panel="docker">
-              <code><span class="cmd-p">$</span> docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u &lt;username&gt;</code>
-              <button class="copy-btn" type="button" data-copy-text="docker login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>"><span class="copy-label">Copy</span></button>
-            </div>
-            <div class="qstep-cmd" data-runtime-panel="podman" hidden>
-              <code><span class="cmd-p">$</span> podman login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u &lt;username&gt;</code>
-              <button class="copy-btn" type="button" data-copy-text="podman login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>"><span class="copy-label">Copy</span></button>
-            </div>
-            <div class="qstep-cmd" data-runtime-panel="containerd" hidden>
-              <code><span class="cmd-p">$</span> nerdctl login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u &lt;username&gt;</code>
-              <button class="copy-btn" type="button" data-copy-text="nerdctl login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>"><span class="copy-label">Copy</span></button>
-            </div>
-            <div class="qstep-cmd" data-runtime-panel="wslc" hidden>
-              <code><span class="cmd-p">$</span> wslc login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u &lt;username&gt;</code>
-              <button class="copy-btn" type="button" data-copy-text="wslc login sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io -u <username>"><span class="copy-label">Copy</span></button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="qstep">
-        <span class="qstep-num">2</span>
-        <div class="qstep-body">
-          <h3>Start the container</h3>
-          <p class="qstep-desc">Run it on port 1433 with a strong SA password. The runtime selects the matching image architecture automatically (see <a href="{{ '/getting-started.html' | relative_url }}#step-2-start-the-container">Getting started</a>).</p>
-          <div class="qstep-cmd-group" data-runtime-tabs>
-            <div class="runtime-tabs" aria-label="Container runtime">
-              <button class="runtime-tab is-active" type="button" data-runtime="docker">Docker</button>
-              <button class="runtime-tab" type="button" data-runtime="podman">Podman</button>
-              <button class="runtime-tab" type="button" data-runtime="containerd">containerd (nerdctl)</button>
-              <button class="runtime-tab" type="button" data-runtime="wslc">WSL container</button>
-            </div>
-            <div class="qstep-cmd" data-runtime-panel="docker">
-              <code><span class="cmd-p">$</span> MSSQL_SA_PASSWORD="Aa1%$(openssl rand -hex 16)"
-<span class="cmd-p">$</span> docker run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
-    -p 127.0.0.1:1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest</code>
-              <button class="copy-btn" type="button" data-copy-text="MSSQL_SA_PASSWORD=&quot;Aa1%$(openssl rand -hex 16)&quot;&#10;docker run --name sqldb -e &quot;ACCEPT_EULA=Y&quot; -e &quot;MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD&quot; \&#10;    -p 127.0.0.1:1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest"><span class="copy-label">Copy</span></button>
-            </div>
-            <div class="qstep-cmd" data-runtime-panel="podman" hidden>
-              <code><span class="cmd-p">$</span> MSSQL_SA_PASSWORD="Aa1%$(openssl rand -hex 16)"
-<span class="cmd-p">$</span> podman run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
-    -p 127.0.0.1:1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest</code>
-              <button class="copy-btn" type="button" data-copy-text="MSSQL_SA_PASSWORD=&quot;Aa1%$(openssl rand -hex 16)&quot;&#10;podman run --name sqldb -e &quot;ACCEPT_EULA=Y&quot; -e &quot;MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD&quot; \&#10;    -p 127.0.0.1:1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest"><span class="copy-label">Copy</span></button>
-            </div>
-            <div class="qstep-cmd" data-runtime-panel="containerd" hidden>
-              <code><span class="cmd-p">$</span> MSSQL_SA_PASSWORD="Aa1%$(openssl rand -hex 16)"
-<span class="cmd-p">$</span> nerdctl run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
-    -p 127.0.0.1:1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest</code>
-              <button class="copy-btn" type="button" data-copy-text="MSSQL_SA_PASSWORD=&quot;Aa1%$(openssl rand -hex 16)&quot;&#10;nerdctl run --name sqldb -e &quot;ACCEPT_EULA=Y&quot; -e &quot;MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD&quot; \&#10;    -p 127.0.0.1:1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest"><span class="copy-label">Copy</span></button>
-            </div>
-            <div class="qstep-cmd" data-runtime-panel="wslc" hidden>
-              <code><span class="cmd-p">$</span> MSSQL_SA_PASSWORD="Aa1%$(openssl rand -hex 16)"
-<span class="cmd-p">$</span> wslc run --name sqldb -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD" \
-    -p 127.0.0.1:1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest</code>
-              <button class="copy-btn" type="button" data-copy-text="MSSQL_SA_PASSWORD=&quot;Aa1%$(openssl rand -hex 16)&quot;&#10;wslc run --name sqldb -e &quot;ACCEPT_EULA=Y&quot; -e &quot;MSSQL_SA_PASSWORD=$MSSQL_SA_PASSWORD&quot; \&#10;    -p 127.0.0.1:1433:1433 -d sqldbpreview-dpgaeqhmgphzd4bk.azurecr.io/azure-sql/db-dev:latest"><span class="copy-label">Copy</span></button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="qstep">
-        <span class="qstep-num">3</span>
-        <div class="qstep-body">
-          <h3>Connect and query</h3>
-          <p class="qstep-desc">No host install needed: the container bundles <a href="https://learn.microsoft.com/sql/tools/sqlcmd/sqlcmd-utility" rel="noopener">sqlcmd</a>. Run your first query with exec.</p>
-          <div class="qstep-cmd-group" data-runtime-tabs>
-            <div class="runtime-tabs" aria-label="Container runtime">
-              <button class="runtime-tab is-active" type="button" data-runtime="docker">Docker</button>
-              <button class="runtime-tab" type="button" data-runtime="podman">Podman</button>
-              <button class="runtime-tab" type="button" data-runtime="containerd">containerd (nerdctl)</button>
-              <button class="runtime-tab" type="button" data-runtime="wslc">WSL container</button>
-            </div>
-            <div class="qstep-cmd" data-runtime-panel="docker">
-              <code><span class="cmd-p">$</span> docker exec sqldb /opt/mssql-tools18/bin/sqlcmd \
-    -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -Q "SELECT @@VERSION;"</code>
-              <button class="copy-btn" type="button" data-copy-text="docker exec sqldb /opt/mssql-tools18/bin/sqlcmd \&#10;    -S localhost -U sa -P &quot;$MSSQL_SA_PASSWORD&quot; -C -Q &quot;SELECT @@VERSION;&quot;"><span class="copy-label">Copy</span></button>
-            </div>
-            <div class="qstep-cmd" data-runtime-panel="podman" hidden>
-              <code><span class="cmd-p">$</span> podman exec sqldb /opt/mssql-tools18/bin/sqlcmd \
-    -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -Q "SELECT @@VERSION;"</code>
-              <button class="copy-btn" type="button" data-copy-text="podman exec sqldb /opt/mssql-tools18/bin/sqlcmd \&#10;    -S localhost -U sa -P &quot;$MSSQL_SA_PASSWORD&quot; -C -Q &quot;SELECT @@VERSION;&quot;"><span class="copy-label">Copy</span></button>
-            </div>
-            <div class="qstep-cmd" data-runtime-panel="containerd" hidden>
-              <code><span class="cmd-p">$</span> nerdctl exec sqldb /opt/mssql-tools18/bin/sqlcmd \
-    -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -Q "SELECT @@VERSION;"</code>
-              <button class="copy-btn" type="button" data-copy-text="nerdctl exec sqldb /opt/mssql-tools18/bin/sqlcmd \&#10;    -S localhost -U sa -P &quot;$MSSQL_SA_PASSWORD&quot; -C -Q &quot;SELECT @@VERSION;&quot;"><span class="copy-label">Copy</span></button>
-            </div>
-            <div class="qstep-cmd" data-runtime-panel="wslc" hidden>
-              <code><span class="cmd-p">$</span> wslc exec sqldb /opt/mssql-tools18/bin/sqlcmd \
-    -S localhost -U sa -P "$MSSQL_SA_PASSWORD" -C -Q "SELECT @@VERSION;"</code>
-              <button class="copy-btn" type="button" data-copy-text="wslc exec sqldb /opt/mssql-tools18/bin/sqlcmd \&#10;    -S localhost -U sa -P &quot;$MSSQL_SA_PASSWORD&quot; -C -Q &quot;SELECT @@VERSION;&quot;"><span class="copy-label">Copy</span></button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <p class="steps-foot">Want your AI agent to set it up, or prefer the full step-by-step? Read the <a href="{{ '/getting-started.html' | relative_url }}">full Get started guide &rarr;</a></p>
-  </div>
-</section>
-
-<!-- ============ AI AGENTS ============ -->
-<section class="section" id="ai-agents">
-  <div class="container">
-    <div class="section-head">
-      <p class="eyebrow"><span class="eyebrow-dot"></span>Built for AI-assisted development</p>
-      <h2>Bring your AI coding agent.<a class="head-anchor" href="#ai-agents" aria-label="Link to this section">#</a></h2>
-      <p class="lead">Point your agent at the container and let it scaffold the schema, write the migrations, and build the data layer against a real local database. The repo ships 17 ready-to-use <a href="{{ '/agent-skills.html' | relative_url }}">agent skills</a>.</p>
-    </div>
-    <div class="agents">
-      <a class="agent" href="https://docs.github.com/copilot/get-started/quickstart" rel="noopener">
-        <img class="agent-ico-copilot" src="{{ '/assets/img/agents/copilot.svg' | relative_url }}" alt="" width="34" height="34" aria-hidden="true">
-        <h3>GitHub Copilot</h3>
-        <p>App, CLI, and VS Code</p>
-      </a>
-      <a class="agent" href="https://code.claude.com/docs/en/setup" rel="noopener">
-        <img src="{{ '/assets/img/agents/claude.svg' | relative_url }}" alt="" width="34" height="34" aria-hidden="true">
-        <h3>Claude Code</h3>
-        <p>Container skill included</p>
-      </a>
-      <a class="agent" href="https://developers.openai.com/codex/quickstart" rel="noopener">
-        <img src="{{ '/assets/img/agents/codex.svg' | relative_url }}" alt="" width="34" height="34" aria-hidden="true">
-        <h3>Codex</h3>
-        <p>Terminal and IDE</p>
-      </a>
-      <a class="agent" href="https://cursor.com/download" rel="noopener">
-        <img src="{{ '/assets/img/agents/cursor.svg' | relative_url }}" alt="" width="34" height="34" aria-hidden="true">
-        <h3>Cursor</h3>
-        <p>AI-native editor</p>
-      </a>
-    </div>
-
-    <div class="skill">
-      <p class="skill-line">Install the agent skills once. They work across Claude Code, GitHub Copilot, Codex, and Cursor, then you just ask your agent in plain English.</p>
-      <p class="skill-line">Each skill carries layered knowledge and can optionally reach the public <a href="https://learn.microsoft.com/en-us/training/support/mcp" rel="noopener">Microsoft Learn MCP</a> for the current docs and schemas on demand.</p>
-      <div class="skill-cmd">
-        <code><span class="cmd-p">$</span> npx skills add microsoft/azure-sql-database-container</code>
-        <button class="copy-btn" type="button" data-copy-text="npx skills add microsoft/azure-sql-database-container"><span class="copy-label">Copy</span></button>
-      </div>
-      <a class="btn btn-primary skill-cta" href="{{ '/agent-skills.html' | relative_url }}">See all 17 skills and per-tool install &rarr;</a>
-      <div class="skill-links">
-        <a class="skill-link" href="{{ site.repo }}/tree/main/skills" rel="noopener">Browse on GitHub &rarr;</a>
-        <span class="skill-sep" aria-hidden="true">&middot;</span>
-        <a class="skill-link" href="https://skills.sh/microsoft/azure-sql-database-container" rel="noopener">Open on skills.sh &rarr;</a>
-      </div>
-    </div>
-
-  </div>
-
-</section>
-
-<!-- ============ USE CASES (JTBD) ============ -->
-<section class="section section-tint" id="build">
-  <div class="container">
-    <div class="section-head">
-      <p class="eyebrow"><span class="eyebrow-dot"></span>Use cases</p>
-      <h2>What can you build with it?<a class="head-anchor" href="#build" aria-label="Link to this section">#</a></h2>
-      <p class="lead">The everyday jobs a cloud-only database makes slow or expensive. Pick one, copy the prompt, and let your AI agent build it against the container.</p>
-    </div>
-    <div class="grid-3">
-      <article class="card">
-        <span class="tag">from sql server</span>
-        <h3>Already using the SQL Server image?</h3>
-        <p>Convert a project on the <code>mcr.microsoft.com/mssql/server</code> SQL Server image to the Azure SQL Database engine: swap the image, fix the connection model, and flag SQL Server-only features. Azure-faithful local dev.</p>
-        <div class="card-actions">
-          <button class="card-prompt" type="button" data-prompt="{{ '/prompts/from-sql-server.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
-          <a class="card-view" href="{{ site.repo }}/blob/main/docs/prompts/from-sql-server.md" rel="noopener">View</a>
-        </div>
-      </article>
-      <article class="card">
-        <span class="tag">local &rarr; cloud</span>
-        <h3>Build locally, ship to Azure</h3>
-        <p>Develop and test at local-disk speed with no cloud round trip, then deploy the same code to Azure SQL Database. Lift and shift is a connection-string change.</p>
-        <div class="card-actions">
-          <button class="card-prompt" type="button" data-prompt="{{ '/prompts/local-to-cloud.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
-          <a class="card-view" href="{{ site.repo }}/blob/main/docs/prompts/local-to-cloud.md" rel="noopener">View</a>
-        </div>
-      </article>
-      <article class="card">
-        <span class="tag tag-vector">ai / rag</span>
-        <h3>Prototype AI and RAG apps</h3>
-        <p>Build vector search and embeddings against a local database with a local model like Ollama, then switch to Azure OpenAI in the cloud. No cloud spend while you experiment.</p>
-        <div class="card-actions">
-          <button class="card-prompt" type="button" data-prompt="{{ '/prompts/ai-rag.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
-          <a class="card-view" href="{{ site.repo }}/blob/main/docs/prompts/ai-rag.md" rel="noopener">View</a>
-        </div>
-      </article>
-      <article class="card">
-        <span class="tag">ci</span>
-        <h3>Run integration tests in CI</h3>
-        <p>Spin the container up as a service in GitHub Actions or Azure Pipelines. Real end-to-end tests, with no Azure subscription and no shared-instance flakiness.</p>
-        <div class="card-actions">
-          <button class="card-prompt" type="button" data-prompt="{{ '/prompts/ci.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
-          <a class="card-view" href="{{ site.repo }}/blob/main/docs/prompts/ci.md" rel="noopener">View</a>
-        </div>
-      </article>
-      <article class="card">
-        <span class="tag">offline</span>
-        <h3>Develop offline</h3>
-        <p>Run demos, classes, and workshops with no internet. After the first pull, the container runs fully offline on a laptop.</p>
-        <div class="card-actions">
-          <button class="card-prompt" type="button" data-prompt="{{ '/prompts/offline.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
-          <a class="card-view" href="{{ site.repo }}/blob/main/docs/prompts/offline.md" rel="noopener">View</a>
-        </div>
-      </article>
-      <article class="card">
-        <span class="tag">compose</span>
-        <h3>Drop in as a sidecar</h3>
-        <p>Add SQL Database to a docker compose stack or a Dev Container as a sidecar service, wire-compatible with the drivers and ORMs you already use.</p>
-        <div class="card-actions">
-          <button class="card-prompt" type="button" data-prompt="{{ '/prompts/sidecar.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
-          <a class="card-view" href="{{ site.repo }}/blob/main/docs/prompts/sidecar.md" rel="noopener">View</a>
-        </div>
-      </article>
-      <article class="card">
-        <span class="tag">templates</span>
-        <h3>Scaffold new projects</h3>
-        <p>Start a new .NET Aspire, FastAPI, Next.js, or NestJS project with Azure SQL Database as the default local development resource.</p>
-        <div class="card-actions">
-          <button class="card-prompt" type="button" data-prompt="{{ '/prompts/templates.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
-          <a class="card-view" href="{{ site.repo }}/blob/main/docs/prompts/templates.md" rel="noopener">View</a>
-        </div>
-      </article>
-      <article class="card">
-        <span class="tag">rest / graphql</span>
-        <h3>Instant API over your tables</h3>
-        <p>Generate a no-code REST and GraphQL API over the local engine with Data API Builder. Point it at your tables, and get an MCP endpoint from the same config too.</p>
-        <div class="card-actions">
-          <button class="card-prompt" type="button" data-prompt="{{ '/prompts/dab.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
-          <a class="card-view" href="{{ site.repo }}/blob/main/docs/prompts/dab.md" rel="noopener">View</a>
-        </div>
-      </article>
-      <article class="card">
-        <span class="tag">serverless</span>
-        <h3>Serverless and event-driven</h3>
-        <p>Build an Azure Functions HTTP API with the Azure SQL bindings, and react to row changes locally with the SQL trigger (Change Tracking). No cloud services required.</p>
-        <div class="card-actions">
-          <button class="card-prompt" type="button" data-prompt="{{ '/prompts/functions.md' | relative_url }}"><span class="card-prompt-ico" aria-hidden="true"></span><span class="copy-label">Copy prompt</span></button>
-          <a class="card-view" href="{{ site.repo }}/blob/main/docs/prompts/functions.md" rel="noopener">View</a>
-        </div>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- ============ ENGAGE (dark) ============ -->
-<section class="section section-dark" id="engage">
-  <div class="hero-grid-bg" aria-hidden="true"></div>
-  <div class="container">
-    <div class="section-head section-head-light">
-      <p class="eyebrow eyebrow-light"><span class="eyebrow-dot"></span>Get involved</p>
-      <h2>You shape this preview.<a class="head-anchor" href="#engage" aria-label="Link to this section">#</a></h2>
-      <p class="lead lead-light">Your bugs and feature requests set the priorities. Reach the team directly, or pick the channel that fits your question.</p>
-    </div>
-    <div class="engage-cta">
-      <a class="btn btn-primary" href="https://aka.ms/azuresqldb-container-meet" rel="noopener">Connect with the team</a>
-      <a class="btn btn-ghost-light" href="mailto:azuresqldb-container@microsoft.com">Email the team</a>
-    </div>
-    <div class="grid-4">
-      <a class="res" href="{{ '/getting-started.html' | relative_url }}">
-        <h3>Read the docs &rarr;</h3>
-        <p>From prerequisites to your first query in under five minutes.</p>
-      </a>
-      <a class="res" href="{{ site.repo }}/discussions" rel="noopener">
-        <h3>Discussions &rarr;</h3>
-        <p>Ask a question, share what you built, or pitch an idea.</p>
-      </a>
-      <a class="res" href="https://aka.ms/azuresqldb-container-bug" rel="noopener">
-        <h3>Report a bug &rarr;</h3>
-        <p>A reproducible test case is the fastest path to a fix.</p>
-      </a>
-      <a class="res" href="{{ '/feedback-and-how-to-engage.html' | relative_url }}">
-        <h3>All channels &rarr;</h3>
-        <p>Email, Teams, office hours, and the full channel guide.</p>
-      </a>
-    </div>
-  </div>
-</section>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>We've moved | Azure SQL Developer Hub</title>
+  <meta name="description" content="Azure SQL development guidance, including local container setup, is now available in the Azure SQL Developer Hub.">
+  <link rel="canonical" href="https://microsoft.github.io/azure-sql-dev-hub/">
+  <script>window.location.replace("https://aka.ms/azuresql-hub");</script>
+  <meta http-equiv="refresh" content="0; url=https://aka.ms/azuresql-hub">
+  <style>
+    :root { color-scheme: light dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 3rem 1.5rem;
+      background: #f4f7fb;
+      color: #1b2a41;
+      font: 1.125rem/1.6 system-ui, -apple-system, sans-serif;
+    }
+    main {
+      max-width: 44rem;
+      margin: 5vh auto;
+      padding: clamp(1.5rem, 5vw, 3rem);
+      border-top: 4px solid #1366e0;
+      border-radius: 0.75rem;
+      background: #fff;
+      box-shadow: 0 0.5rem 2rem #0a183014;
+    }
+    h1 { margin: 0 0 1rem; font-size: clamp(1.75rem, 5vw, 2.5rem); line-height: 1.2; }
+    a { color: #0e4fb0; text-underline-offset: 0.15em; }
+    a:focus-visible { outline: 3px solid currentColor; outline-offset: 3px; }
+    li { margin-block: 0.5rem; }
+    @media (prefers-color-scheme: dark) {
+      body { background: #0a1830; color: #eef3fa; }
+      main { background: #0f2547; }
+      a { color: #8ec5ff; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>We've moved to the Azure SQL Developer Hub</h1>
+    <p>This documentation site is deprecated. Azure SQL development guidance, including local container setup, is now available in the Developer Hub.</p>
+    <p>If you are not redirected automatically, <a href="https://aka.ms/azuresql-hub">continue to the Azure SQL Developer Hub</a>.</p>
+    <ul>
+      <li><a href="https://github.com/microsoft/azure-sql-dev-hub">Developer Hub repository</a>: browse the source and contribute to the documentation.</li>
+      <li><a href="https://github.com/microsoft/microsoft-sql">Microsoft SQL plugins and agent skills</a>: go directly to the catalog and installation instructions.</li>
+    </ul>
+  </main>
+</body>
+</html>
